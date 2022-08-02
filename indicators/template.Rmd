@@ -20,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Ecosystem <- "" # e.g. "Skog og fjell"
 Egenskap  <- "" # e.g. "Primærproduksjon"
 ECT       <- "" # e.g. "Structural state characteristic"
+Contact   <- "" # e.g. "Anders Kolstad"
 ```
 
 ```{r, echo=F}
