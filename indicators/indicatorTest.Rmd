@@ -1,4 +1,41 @@
+# (PART\*) INDICATORS {-}
+
 # This is an indicator {-#test1}
+
+<br />
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+<!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
+
+```{r, echo=F}
+Ecosystem <- "Skog og fjell"
+Egenskap  <- "Primærproduksjon"
+ECT       <- "Structural state characteristic"
+Contact   <- "Anders Kolstad"
+```
+
+```{r, echo=F}
+metaData <- data.frame(Ecosystem,
+                       "Økologisk egenskap" = Egenskap,
+                       "ECT class" = ECT)
+knitr::kable(metaData)
+```
+
+
+<br />
+<br />
+
+<hr />
+
+
+
+
+<!-- Documenting you work below. Dtaa can be stores on NINA server, harvested using API or similar, or if it is not too big, stored under /data/ on this repository -->
 
 ```{r}
 plot(rnorm(10,10,10))
