@@ -1,0 +1,6 @@
+# This is an indicator {-#test1}
+
+```{r}
+plot(rnorm(10,10,10))
+```
+

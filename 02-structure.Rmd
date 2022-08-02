@@ -1,0 +1,18 @@
+# Overview {-}
+
+<!-- This page is useful because by calling the indicator rmd files as child files we bypass the need to sequentially numbering them. An overview page is anywhays useful.  -->
+
+## Test 1 {-}
+This indicator is about ....
+
+## Test 2 {-}
+And this indicator is about...
+
+
+```{r, child= c('indicators/indicatorTest.Rmd')}
+```
+
+```{r, child= c('indicators/indicatorTest2.Rmd')}
+```
+
+
