@@ -1,7 +1,7 @@
 ---
 title: "Template for indicator documentation"
 output:
-  pdf_document
+  html_document
 ---
 
 <!-- This is a template for how to document the indicator analyses. 
@@ -15,7 +15,7 @@ the analyses is repeatable by someone else. Be therefore very careful to annotat
 and comment on every step in the analysis. When completed, Anders will make a copy
 of the working file and put it in the folder below (indicators/). After modifying it
 slightly (mainly removing the top YAML header) the output will become available 
-on the website (https://ninanor.github.io/ecosystemCondition/) -->
+on the website (https://ninanor.github.io/ecosystemCondition/). -->
 
 
 <!-- Replace 'indicator name' with yor own indicator name  -->
@@ -59,4 +59,8 @@ Here's a nice plot,   Blablabla
 ```{r, fig.cap="This is my figure caption"}
 plot(rnorm(10,10,10))
 ```
+
+add more detailed instruction about georeferencing ect
+...
+
 

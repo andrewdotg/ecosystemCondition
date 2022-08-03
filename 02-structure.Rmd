@@ -2,10 +2,21 @@
 
 <!-- This page is useful because by calling the indicator rmd files as child files we bypass the need to sequentially numbering them. An overview page is anywhays useful.  -->
 
-## Test 1 {-}
+## Areal av isbreer / Glacier area {-}
 This indicator is about ....
 
-## Test 2 {-}
+
+```{r, echo=F}
+source("indicators/indicatorMetaData/Areal av isbreer.R")
+knitr::kable(t(out), 
+            format = "html",
+            caption = paste("Fakatark for tilstandindikatoren ", 
+                        out$Indikator, col.names = NULL))
+```
+
+
+
+## Indicator X {-}
 And this indicator is about...
 
 
