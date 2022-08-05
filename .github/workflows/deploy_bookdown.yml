@@ -39,6 +39,10 @@ jobs:
         run: |
          install.packages("terra", type="binary")
         shell: Rscript {0}
+      - name: Intstall stars
+        run: |
+         install.packages("stars", type="binary")
+        shell: Rscript {0}
       - name: Render Book
         run: Rscript -e 'bookdown::render_book("index.Rmd")'
       - uses: actions/upload-artifact@v1
