@@ -1,20 +1,26 @@
-# (PART\*) Indicators from the alpine assessment {-}
-
-# Areal av isbreer {-}
-
+---
+title: "Breareal"
+output:
+  html_document
+---
 
 ```{r setup, include=FALSE, message=FALSE}
 library(knitr)
 library(sf)
-library(raster) # only needed for creating boundary boxes, which can be done using sf
+library(raster) # kunne kanskje byttet til stars
 library(dplyr)
 library(lwgeom)
 library(tmap)
 library(dplyr)
-#library(ggplot2)
-#library(data.table)
+library(ggplot2)
+library(ggpubr)
+library(data.table)
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+
+
+# Areal av isbreer {-}
 
 <br />
 
@@ -63,11 +69,11 @@ The indicator is similarly assiged to the SEEA ECT class _C1 Landscape character
 ## Collinearities with other indicators
 None that are known.
 
-## Reference state and values
-### Reference state
+
+## Reference state
 The indicator uses the same reference state as all or most of the indicators developed in this and in similar projects, and is defined in [Nybø et al (2017): Fagsystem for fastsetting av god økologisk tilstand](https://www.regjeringen.no/no/dokumenter/fagsystem-for-fastsetting-av-god-okologisk-tilstand/id2558481/). As glacial extent is primarily, or solely, dependent on climate, we are in a case where we have actual data from the climatic reference period which is the previous normal period 1961-1990. 
 
-### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+## Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
 The reference value is zero change in glacial extent over time. The threshold for defining good ecological condition as set at a 40% reduction in glacial extent, as a default solution. This normalization follows a linear model, although a sigmoidal weibull function might be more appropriate. 
 
 The minimum value is set to zero.
@@ -88,7 +94,7 @@ Here we add a 3% error on each side of the estimates, same as what is reported f
 
 ## Analyses
 
-### Importing the data sets
+## Importing the data sets
 There are four data sets:
 
 * glacial atlas
@@ -100,7 +106,7 @@ We are assuming all glaciers are found in the mountins, se we do not need to mas
 
 
 
-#### Glacial atlas
+### Glacial atlas
 This is the new glacial atlas from 2018 and 2019 based on Sentinell (ref. Liss Marie Andreassen, NVE)
 ```{r import1}
 # This first part is if you are running this from the NINA R server. 
@@ -123,7 +129,7 @@ plot(breatlas$area)
 Most polygons are small, and then there are a couple of very big ones. The largest polygon is 50 km2, but note that some polygons are somewhat arbitrarily split.
 
 
-#### Map of Norway
+### Map of Norway
 This map is stored on the GitHub repository under _indicators/data/_. I will also transform it to the same UTM33 projection as the forst data set, and plot them on top of each other.
 ```{r import2}
 nor <- readRDS('data/norway_outline.RDS')%>%
@@ -135,7 +141,7 @@ plot(nor$geometry, axes=T, main = "Breatlas 2018-2019")
 ```
 
 
-#### N50
+### N50
 This is the old glacial extent map. Import it and transform it, same as before.
 
 ```{r import3}
@@ -187,7 +193,7 @@ The red areas in the map to the far right is where the ice has retreated for a s
 Now we need to devide the map into regions to then compare the area in n50 with the new glacial extent map _breatlas_.
 
 
-#### Regions
+### Regions
 Importing a shape file with the regional delineation. 
 
 ```{r import4}
@@ -268,8 +274,8 @@ rm(breatlas2)
 
 
 
-### Glacial area per region
-#### Contemporary area
+## Glacial area per region
+### Contemporary area
 
 Here is one method for getting the glacial area for each region.
 ```{r intersection}
@@ -319,7 +325,7 @@ barplot(
 Southern Norway has <1km2 of glaciers in 2018-2019.
 
 
-#### Same for N50
+### Same for N50
 ```{r intersection2}
 n50x <- st_make_valid(n50)
 #n50_reg <- st_intersection(n50x, reg)
@@ -369,7 +375,7 @@ In the figure above, the glacial area in the reference periond is in light grey 
 There was a little more glaicers in southern Norway in the reference period, but only 4 km2. The condition here will be very poor! I'm not entirely sure this is representative. The alternative is to set it to be NA, and I think I will do this - one could argue that glaciers are not as important of central to the alpine ecosystems in the south. 
 
 
-### Scaled indicator values
+## Scaled indicator values
 Making a table with the indicator values.
 ```{r skalert}
 myTbl <- tibble(region           = names(bretabell),
@@ -422,12 +428,12 @@ We've lost 30% of the glacial area over this time.
 
 
 
-### Uncertainty
+## Uncertainty
 NVE reports a 3% uncertainty with their method. This is interpret as if +- 3% represent a 99.9%CI for the estimate (ca 2 SD).
 In the [original indicator](https://ninanor.github.io/IBECA/areal-av-isbreer.html) I re-sampled the indicator value 10000 times here, with a 0.015sd, to get a distribution of indicator values. This time I will settle for reporting the sd as a single value below. 
 
 
-## Prepare export
+# Prepare export
 Now I can prepare the final exported data file. It will be a shape file with raw and scaled indicator values, reference reference values, and uncertainties.
 
 The names of the columns are standardised (region, v_YYYY, sd_YYYY, i_YYYY, and reference).
@@ -460,7 +466,7 @@ exp <- dplyr::select(reg_clipped,
 ```
 
 
-### Eksport shape file (final product)
+## Eksport shape file (final product)
 
 ```{r, eval=F}
 sf::st_write(exp, "indicatorMaps/breareal.shp")
