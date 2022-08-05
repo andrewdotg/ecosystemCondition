@@ -29,13 +29,16 @@ jobs:
             "downlit", 
             "xml2",
             "lwgeom",
-            "dplyr",
-            "terra"))       
+            "dplyr"))       
         shell: Rscript {0}
       - name: Intstall sf
         run: |
          install.packages("sf", type="binary")
-        shell: Rscript {0} 
+        shell: Rscript {0}
+      - name: Intstall terra
+        run: |
+         install.packages("terra", type="binary")
+        shell: Rscript {0}
       - name: Render Book
         run: Rscript -e 'bookdown::render_book("index.Rmd")'
       - uses: actions/upload-artifact@v1
