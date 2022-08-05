@@ -3,7 +3,7 @@
 # Areal av isbreer {-}
 
 
-```{r setup, include=FALSE, message=FALSE}
+```{r, include=FALSE, message=FALSE}
 library(knitr)
 library(sf)
 library(raster) # only needed for creating boundary boxes, which can be done using sf
@@ -102,7 +102,7 @@ We are assuming all glaciers are found in the mountins, se we do not need to mas
 
 #### Glacial atlas
 This is the new glacial atlas from 2018 and 2019 based on Sentinell (ref. Liss Marie Andreassen, NVE)
-```{r import1}
+```{r}
 # This first part is if you are running this from the NINA R server. 
 #breatlas <- sf::st_read('/data/P-Prosjekter/41201042_okologisk_tilstand_fastlandsnorge_2020_dataanaly/fjell2021/data/breatlas/breatlas_2018_2019/Breatlas_20182019_temp20210922_lma.shp')
 
@@ -113,7 +113,7 @@ All maps made in this project need to have the same CRS:  EPSG:25833 - ETRS89 / 
 This one is in UTM 33N ETRS89, even if it is defined in the old Proj.4 way.
 
 There are 6915 polygons. Let's calculate the area of the polygons and study the distribution of size classes. 
-```{r breareal}
+```{r}
 breatlas$area <- st_area(breatlas)
 par(mfrow=c(1,2))
 hist(breatlas$area)
@@ -125,7 +125,7 @@ Most polygons are small, and then there are a couple of very big ones. The large
 
 #### Map of Norway
 This map is stored on the GitHub repository under _indicators/data/_. 
-```{r import2}
+```{r}
 nor <- sf::read_sf("data/outlineOfNorway_EPSG25833.shp")
 
 plot(nor$geometry, axes=T, main = "Breatlas 2018-2019")
@@ -136,7 +136,7 @@ plot(nor$geometry, axes=T, main = "Breatlas 2018-2019")
 #### N50
 This is the old glacial extent map. Import it and transform it, same as before.
 
-```{r import3}
+```{r}
 #n50 <- sf::st_read('/data/P-Prosjekter/41201042_okologisk_tilstand_fastlandsnorge_2020_dataanaly/fjell2021/data/breatlas/n50/cryoclim_GAO_NO_1952_1985_UTM_33N.shp')%>%
 #  st_transform(crs = crs(breatlas))
 
@@ -152,7 +152,7 @@ plot(nor$geometry, axes=T, main = "n50 - 1952-1985")
 
 Let's now plot it all on top of each other.
 
-```{r plotter-alt}
+```{r}
 
 # define some boundary boxes for zooming in on specific regions
 myExt <- raster::extent(c(0, 100000, 6840000, 6900000))
@@ -188,7 +188,7 @@ Now we need to devide the map into regions to then compare the area in n50 with 
 #### Regions
 Importing a shape file with the regional delineation. 
 
-```{r import4}
+```{r}
 reg <- st_read("data/regions.shp")
 st_crs(reg)
 ```
@@ -229,7 +229,7 @@ unique(st_is_valid(breatlas, reason=T))[1:5]
 ```
 
 There is a convinient function to fix this.
-```{r make-valid}
+```{r}
 # requires lwgeom
 breatlas2 <- st_make_valid(breatlas)
 table(st_is_valid(breatlas2))
@@ -265,7 +265,7 @@ rm(breatlas2)
 #### Contemporary area
 
 Here is one method for getting the glacial area for each region.
-```{r intersection}
+```{r}
 # This intersection operation is a bit heavy, so I do it once and store it locally so that I can import it again quickly. 
 #brealtas_reg <- st_intersection(breatlas, reg)
 #saveRDS(brealtas_reg, "indicators/data/brealtas_reg_helperfile.rds")
@@ -289,7 +289,7 @@ plot(brealtas_reg$geometry[brealtas_reg$region=="Vestlandet"],
 It worked fine. 
 
 Calculating the area of the polygons
-```{r plotting-area-per-region}
+```{r}
 #Calculating the area of the polygons
 brealtas_reg$area_crop <- st_area(brealtas_reg)
 
@@ -313,7 +313,7 @@ Southern Norway has <1km2 of glaciers in 2018-2019.
 
 
 #### Same for N50
-```{r intersection2}
+```{r}
 n50x <- st_make_valid(n50)
 #n50_reg <- st_intersection(n50x, reg)
 #saveRDS(n50_reg, "indicators/data/n50_helperfile.rds")
@@ -333,7 +333,7 @@ plot(n50_reg$geometry[n50_reg$region=="Vestlandet"],
 
 Thats good. 
 Now I will plot the reference values (n50) and the contemporary data together.
-```{r plotting-ref-and-ind}
+```{r}
 n50_reg$area_crop <- st_area(n50_reg)
 
 n50tabell <- tapply(
@@ -364,7 +364,7 @@ There was a little more glaicers in southern Norway in the reference period, but
 
 ### Scaled indicator values
 Making a table with the indicator values.
-```{r skalert}
+```{r}
 myTbl <- tibble(region           = names(bretabell),
                 indikator        = bretabell,
                 referanseverdi   = n50tabell)
