@@ -124,14 +124,12 @@ Most polygons are small, and then there are a couple of very big ones. The large
 
 
 #### Map of Norway
-This map is stored on the GitHub repository under _indicators/data/_. I will also transform it to the same UTM33 projection as the forst data set, and plot them on top of each other.
+This map is stored on the GitHub repository under _indicators/data/_. 
 ```{r import2}
-nor <- readRDS('data/norway_outline.RDS')%>%
-  st_as_sf()%>%
-  st_transform(crs=crs(breatlas))
+nor <- sf::read_sf("data/outlineOfNorway_EPSG25833.shp")
+
 plot(nor$geometry, axes=T, main = "Breatlas 2018-2019")
   plot(breatlas$geometry, add=T, border = "blue")
-
 ```
 
 
@@ -191,13 +189,8 @@ Now we need to devide the map into regions to then compare the area in n50 with 
 Importing a shape file with the regional delineation. 
 
 ```{r import4}
-#reg <- st_read("/data/P-Prosjekter/41201042_okologisk_tilstand_fastlandsnorge_2020_dataanaly/FINAL/Raw_data/Geografisk_oppdeling/regioner_2010/regNorway_wgs84 - MERGED.shp")%>%
-#  st_transform(crs = crs(breatlas))
-
-reg <- st_read("P:/41201042_okologisk_tilstand_fastlandsnorge_2020_dataanaly/FINAL/Raw_data/Geografisk_oppdeling/regioner_2010/regNorway_wgs84 - MERGED.shp")%>%
-  st_transform(crs = crs(breatlas))
-
-
+reg <- st_read("data/regions.shp")
+st_crs(reg)
 ```
 
 Let's plot it to make sure it is correct.

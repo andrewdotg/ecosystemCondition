@@ -13,8 +13,8 @@ library(lwgeom)
 library(tmap)
 library(dplyr)
 library(ggplot2)
-library(ggpubr)
-library(data.table)
+#library(ggpubr)
+#library(data.table)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -118,6 +118,7 @@ breatlas <- sf::st_read('P:/41201042_okologisk_tilstand_fastlandsnorge_2020_data
 All maps made in this project need to have the same CRS:  EPSG:25833 - ETRS89 / UTM zone 33N.
 This one is in UTM 33N ETRS89, even if it is defined in the old Proj.4 way.
 
+
 There are 6915 polygons. Let's calculate the area of the polygons and study the distribution of size classes. 
 ```{r breareal}
 breatlas$area <- st_area(breatlas)
@@ -130,14 +131,12 @@ Most polygons are small, and then there are a couple of very big ones. The large
 
 
 ### Map of Norway
-This map is stored on the GitHub repository under _indicators/data/_. I will also transform it to the same UTM33 projection as the forst data set, and plot them on top of each other.
+This map is stored on the GitHub repository under _indicators/data/_. 
 ```{r import2}
-nor <- readRDS('data/norway_outline.RDS')%>%
-  st_as_sf()%>%
-  st_transform(crs=crs(breatlas))
+nor <- sf::read_sf("data/outlineOfNorway_EPSG25833.shp")
+
 plot(nor$geometry, axes=T, main = "Breatlas 2018-2019")
   plot(breatlas$geometry, add=T, border = "blue")
-
 ```
 
 
@@ -194,16 +193,11 @@ Now we need to devide the map into regions to then compare the area in n50 with 
 
 
 ### Regions
-Importing a shape file with the regional delineation. 
+Importing a shape file with the regional delineation. This file is also on github.
 
 ```{r import4}
-#reg <- st_read("/data/P-Prosjekter/41201042_okologisk_tilstand_fastlandsnorge_2020_dataanaly/FINAL/Raw_data/Geografisk_oppdeling/regioner_2010/regNorway_wgs84 - MERGED.shp")%>%
-#  st_transform(crs = crs(breatlas))
-
-reg <- st_read("P:/41201042_okologisk_tilstand_fastlandsnorge_2020_dataanaly/FINAL/Raw_data/Geografisk_oppdeling/regioner_2010/regNorway_wgs84 - MERGED.shp")%>%
-  st_transform(crs = crs(breatlas))
-
-
+reg <- st_read("data/regions.shp")
+st_crs(reg)
 ```
 
 Let's plot it to make sure it is correct.
