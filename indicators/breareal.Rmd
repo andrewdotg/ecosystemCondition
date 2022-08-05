@@ -6,6 +6,7 @@
 ```{r, include=FALSE, message=FALSE}
 library(knitr)
 library(sf)
+library(terra)
 library(raster) # only needed for creating boundary boxes, which can be done using sf
 library(dplyr)
 library(lwgeom)
