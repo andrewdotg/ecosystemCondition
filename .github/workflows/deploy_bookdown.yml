@@ -29,7 +29,8 @@ jobs:
             "downlit", 
             "xml2",
             "lwgeom",
-            "dplyr"))       
+            "dplyr",
+            "terra"))       
         shell: Rscript {0}
       - name: Intstall sf
         run: |
