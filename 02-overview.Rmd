@@ -1,6 +1,5 @@
 # Overview of indicators {-}
 
-<!-- This page is useful because by calling the indicator rmd files as child files we bypass the need to sequentially numbering them. An overview page is anywhays useful.  -->
 
 ## Areal av isbreer / Glacier area {-}
 This indicator reflects the relative loss of glacial area between tha last climatic normal persion and today.
@@ -20,11 +19,3 @@ knitr::kable(t(out),
 And this indicator is about...
 
 
-```{r, child= c('indicators/indicatorTest.Rmd')}
-```
-
-```{r, child= c('indicators/indicatorTest2.Rmd')}
-```
-
-```{r, child= c('indicators/breareal.Rmd')}
-```

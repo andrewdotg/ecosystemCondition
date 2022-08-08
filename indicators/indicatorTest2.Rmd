@@ -1,3 +1,0 @@
-# This is another indicator {-#test2}
-
-blablabla
