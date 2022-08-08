@@ -13,7 +13,7 @@ biblio-style: apalike
 csl: chicago-fullnote-bibliography.csl
 ---
 
-# Introduction {-}
+# About {-}
 
 On this site you may view the nitty gritty details for how certain indicators for ecosystem condition for Norway has been calculated.
 

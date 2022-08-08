@@ -1,5 +1,8 @@
 # Overview of indicators {-}
 
+*_Lacking content_*
+The idea of this page is to give a quick overview of the available indicators, and to possibly present the Norwegian fact sheets for each. For now this page is just an example what it could look like.
+
 
 ## Areal av isbreer / Glacier area {-}
 This indicator reflects the relative loss of glacial area between tha last climatic normal persion and today.

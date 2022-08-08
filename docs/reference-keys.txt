@@ -1,6 +1,6 @@
 tab:unnamed-chunk-1
 areal-av-isbreer
-introduction-1
+introduction
 about-the-underlying-data
 representativity-in-time-and-space
 original-units
