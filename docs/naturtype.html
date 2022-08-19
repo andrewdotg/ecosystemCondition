@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 3 On the application of the naturetype dataset | Indicators for Ecosystem Condition in Norway</title>
+<meta name="author" content="Anders L. Kolstad">
+<meta name="description" content="Work in progress Author: Anders L. Kolstad Date: 2022-08-19 Here I will investigate a specific data set, Naturtyper - Miljødirektoratets instruks and try to evaluate its usability for designing...">
+<meta name="generator" content="bookdown 0.27 with bs4_book()">
+<meta property="og:title" content="Chapter 3 On the application of the naturetype dataset | Indicators for Ecosystem Condition in Norway">
+<meta property="og:type" content="book">
+<meta property="og:url" content="https://ninanor.github.io/ecosystemCondition/index.html/naturtype.html">
+<meta property="og:description" content="Work in progress Author: Anders L. Kolstad Date: 2022-08-19 Here I will investigate a specific data set, Naturtyper - Miljødirektoratets instruks and try to evaluate its usability for designing...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 3 On the application of the naturetype dataset | Indicators for Ecosystem Condition in Norway">
+<meta name="twitter:description" content="Work in progress Author: Anders L. Kolstad Date: 2022-08-19 Here I will investigate a specific data set, Naturtyper - Miljødirektoratets instruks and try to evaluate its usability for designing...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Indicators for Ecosystem Condition in Norway</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">About</a></li>
+<li><a class="" href="overview-of-indicators.html">Overview of indicators</a></li>
+<li class="book-part">INDICATORS FROM THE ALPINE ASSESSMENT</li>
+<li><a class="" href="areal-av-isbreer.html"><span class="header-section-number">1</span> Areal av isbreer</a></li>
+<li class="book-part">INDICATORS FOR WETLANDS</li>
+<li><a class="" href="test1.html"><span class="header-section-number">2</span> This is an indicator</a></li>
+<li class="book-part">GENERAL TOPICS</li>
+<li><a class="active" href="naturtype.html"><span class="header-section-number">3</span> On the application of the naturetype dataset</a></li>
+<li><a class="" href="scaling-functions.html"><span class="header-section-number">4</span> Scaling functions</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/NINAnor/ecosystemCondition">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="naturtype" class="section level1" number="3">
+<h1>
+<span class="header-section-number">3</span> On the application of the naturetype dataset<a class="anchor" aria-label="anchor" href="#naturtype"><i class="fas fa-link"></i></a>
+</h1>
+<p><br></p>
+<p><em>Work in progress</em></p>
+<p>Author: Anders L. Kolstad</p>
+<p>Date: 2022-08-19</p>
+<p>Here I will investigate a specific data set, <a href="https://kartkatalog.geonorge.no/metadata/naturtyper-miljoedirektoratets-instruks/eb48dd19-03da-41e1-afd9-7ebc3079265c">Naturtyper - Miljødirektoratets instruks</a> and try to evaluate its usability for designing indicators for ecosystem condition. This involves assessing both the spatial and temporal representativity, as well as conseptual alignment with the <a href="https://www.regjeringen.no/no/dokumenter/fagsystem-for-fastsetting-av-god-okologisk-tilstand/id2558481/">Norwegian system for ecosystem condition assessments</a>.</p>
+<p>The precision in field mapping will not be assess in itself. We assume some, or even considerable, sampling error, but this is inherent to all field data.</p>
+<div id="import-data-and-general-summary-statistics" class="section level2" number="3.1">
+<h2>
+<span class="header-section-number">3.1</span> Import data and general summary statistics<a class="anchor" aria-label="anchor" href="#import-data-and-general-summary-statistics"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>Total mapped area</li>
+<li>Temporal trend</li>
+<li>Histogram of conditions (shiny?)</li>
+</ul>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># local path</span>
+<span class="co">#path &lt;- "data/R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb"</span>
+
+<span class="co"># server path</span>
+<span class="co">#path &lt;- "/data/P-Prosjekter/41201785_okologisk_tilstand_2022_2023/data/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb"</span>
+
+<span class="co"># temporary path </span>
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/data/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb"</span>
+
+
+<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span>dsn <span class="op">=</span> <span class="va">path</span><span class="op">)</span>
+<span class="co">#&gt; Reading layer `Naturtyper_NiN_norge_med_svalbard' from data source `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/data/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb' </span>
+<span class="co">#&gt;   using driver `OpenFileGDB'</span>
+<span class="co">#&gt; Simple feature collection with 95469 features and 35 fields</span>
+<span class="co">#&gt; Geometry type: MULTIPOLYGON</span>
+<span class="co">#&gt; Dimension:     XY</span>
+<span class="co">#&gt; Bounding box:  xmin: -74953.5 ymin: 6448986 xmax: 1075080 ymax: 7921283</span>
+<span class="co">#&gt; Projected CRS: ETRS89 / UTM zone 33N</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "identifikasjon_lokalid"     </span>
+<span class="co">#&gt;  [2] "faktaark"                   </span>
+<span class="co">#&gt;  [3] "hovedøkosystem"             </span>
+<span class="co">#&gt;  [4] "identifikasjon_navnerom"    </span>
+<span class="co">#&gt;  [5] "kartlegger"                 </span>
+<span class="co">#&gt;  [6] "kartleggingsdato"           </span>
+<span class="co">#&gt;  [7] "kartleggingsinstruks"       </span>
+<span class="co">#&gt;  [8] "kartleggingsår"             </span>
+<span class="co">#&gt;  [9] "kommuner"                   </span>
+<span class="co">#&gt; [10] "naturmangfoldbeskrivelse"   </span>
+<span class="co">#&gt; [11] "naturomradeid"              </span>
+<span class="co">#&gt; [12] "naturtype"                  </span>
+<span class="co">#&gt; [13] "naturtypekode"              </span>
+<span class="co">#&gt; [14] "lokalitetskvalitet"         </span>
+<span class="co">#&gt; [15] "mosaikk"                    </span>
+<span class="co">#&gt; [16] "naturmangfold"              </span>
+<span class="co">#&gt; [17] "nøyaktighet"                </span>
+<span class="co">#&gt; [18] "oppdragsgiver"              </span>
+<span class="co">#&gt; [19] "tilstand"                   </span>
+<span class="co">#&gt; [20] "tilstandbeskrivelse"        </span>
+<span class="co">#&gt; [21] "usikkerhet"                 </span>
+<span class="co">#&gt; [22] "usikkerhetsbeskrivelse"     </span>
+<span class="co">#&gt; [23] "ninbeskrivelsesvariabler"   </span>
+<span class="co">#&gt; [24] "ninkartleggingsenheter"     </span>
+<span class="co">#&gt; [25] "objtype"                    </span>
+<span class="co">#&gt; [26] "områdenavn"                 </span>
+<span class="co">#&gt; [27] "oppdragstaker"              </span>
+<span class="co">#&gt; [28] "prosjektid"                 </span>
+<span class="co">#&gt; [29] "prosjektnavn"               </span>
+<span class="co">#&gt; [30] "uk_ingenstatus"             </span>
+<span class="co">#&gt; [31] "uk_nærtruet"                </span>
+<span class="co">#&gt; [32] "uk_sebekrivelsenaturtype"   </span>
+<span class="co">#&gt; [33] "uk_sentraløkosystemfunksjon"</span>
+<span class="co">#&gt; [34] "uk_spesieltdårligkartlagt"  </span>
+<span class="co">#&gt; [35] "uk_truet"                   </span>
+<span class="co">#&gt; [36] "SHAPE"</span></code></pre></div>
+<p>Fix non-valid polygons</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/valid.html">st_make_valid</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
+<p>Import outline of Norway</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">nor</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="st">"data/outlineOfNorway_EPSG25833.shp"</span><span class="op">)</span></code></pre></div>
+<p>The dataset has 95k polygons, each with 36 variables:</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
+<span class="co">#&gt; [1] 95469    36</span></code></pre></div>
+<p>It therefore takes a little minute to render a plot, but this is the code to do it:</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">tmap_mode</span><span class="op">(</span><span class="st">"view"</span><span class="op">)</span>
+<span class="fu">tm_shape</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">tm_polygons</span><span class="op">(</span>col<span class="op">=</span><span class="st">"tilstand"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">tm_shape</span><span class="op">(</span><span class="va">nor</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">tm_polygons</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0</span>,border.col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></code></pre></div>
+<div id="area" class="section level3" number="3.1.1">
+<h3>
+<span class="header-section-number">3.1.1</span> Area<a class="anchor" aria-label="anchor" href="#area"><i class="fas fa-link"></i></a>
+</h3>
+<p>Calculating the area</p>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dat</span><span class="op">$</span><span class="va">area</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_area</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">area</span><span class="op">)</span>
+<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
+<span class="co">#&gt;      20     722    2891   17677    9026 8532702</span></code></pre></div>
+<p>The smallest polygons are 20 m2, and the biggset is 8.5 km2</p>
+<p>Sum of mapped area divided by Norwegian mainland area</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">area</span><span class="op">)</span><span class="op">/</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_area</a></span><span class="op">(</span><span class="va">nor</span><span class="op">)</span>
+<span class="co">#&gt; 0.005181438 [1]</span></code></pre></div>
+<p>About 0.5% has been mapped.
+It is therefore essential that these 0.5% are representative (of the remaining 99.5%).</p>
+</div>
+</div>
+<div id="overview-of-nature-types" class="section level2" number="3.2">
+<h2>
+<span class="header-section-number">3.2</span> Overview of nature types<a class="anchor" aria-label="anchor" href="#overview-of-nature-types"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>What are the dominant ecosystem groups recorded.</li>
+</ul>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">ggplot</span><span class="op">(</span><span class="va">dat</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">hovedøkosystem</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_bar</span><span class="op">(</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="naturtype_files/figure-html/unnamed-chunk-9-1.png" width="672"></div>
+<p>This project is concerned only with wetlands (våtmark), semi-natural areas (semi-naturlig mark) and naturally open areas below the forest line (naturlig åpne områder i lavlandet/under skoggrensa).</p>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dat</span><span class="op">$</span><span class="va">hovedøkosystem</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">hovedøkosystem</span> <span class="op">==</span> <span class="st">"Naturlig åpne områder i lavlandet"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">hovedøkosystem</span><span class="op">)</span>
+<span class="co">#&gt; [1] "Skog"                                  </span>
+<span class="co">#&gt; [2] "Semi-naturlig mark"                    </span>
+<span class="co">#&gt; [3] "Våtmark"                               </span>
+<span class="co">#&gt; [4] "Naturlig åpne områder under skoggrensa"</span>
+<span class="co">#&gt; [5] "Fjell"                                 </span>
+<span class="co">#&gt; [6] "Ingen"</span>
+<span class="va">utvlagt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Semi-naturlig mark"</span>,
+             <span class="st">"Våtmark"</span>,
+             <span class="st">"Naturlig åpne områder under skoggrensa"</span><span class="op">)</span>
+<span class="va">dat2</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">hovedøkosystem</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">utvlagt</span>,<span class="op">]</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">$</span><span class="va">area</span>, <span class="va">dat2</span><span class="op">$</span><span class="va">hovedøkosystem</span>, <span class="va">sum</span><span class="op">)</span>
+<span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>eco <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/row.names.html">row.names</a></span><span class="op">(</span><span class="va">temp</span><span class="op">)</span>,
+                   area <span class="op">=</span> <span class="va">temp</span><span class="op">)</span>
+<span class="fu">ggplot</span><span class="op">(</span><span class="va">temp</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">eco</span>, y<span class="op">=</span><span class="va">area</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_bar</span><span class="op">(</span>stat<span class="op">=</span><span class="st">"identity"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="naturtype_files/figure-html/unnamed-chunk-12-1.png" width="672"></div>
+<p>The same bias towards sami-natural areas are seen when looking at the area mapped, as when looking the number of polygons.</p>
+<ul>
+<li>What are the dominant nature types recorded.</li>
+</ul>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+
+<span class="va">temp</span> <span class="op">&lt;-</span> <span class="va">dat2</span><span class="op">[</span><span class="va">dat2</span><span class="op">$</span><span class="va">hovedøkosystem</span><span class="op">==</span><span class="st">"Våtmark"</span>,<span class="op">]</span>
+
+<span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">area</span>, <span class="va">temp</span><span class="op">$</span><span class="va">naturtype</span>, <span class="va">sum</span><span class="op">)</span>
+<span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>nat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/row.names.html">row.names</a></span><span class="op">(</span><span class="va">temp</span><span class="op">)</span>,
+                   area <span class="op">=</span> <span class="va">temp</span><span class="op">)</span>
+
+<span class="fu">ggplot</span><span class="op">(</span><span class="va">temp</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">area</span><span class="op">)</span>,<span class="op">]</span>, 
+       <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">nat</span>,
+           y <span class="op">=</span> <span class="va">area</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_bar</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="naturtype_files/figure-html/unnamed-chunk-13-1.png" width="672"></div>
+<ul>
+<li>Can we group these into main ecosystem type categories?</li>
+<li>Are there any regional differences</li>
+</ul>
+</div>
+<div id="environmental-space" class="section level2" number="3.3">
+<h2>
+<span class="header-section-number">3.3</span> Environmental space<a class="anchor" aria-label="anchor" href="#environmental-space"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>Extract environmental data from the polygons and compare against reference data points.</li>
+<li>Uni-variate (e.g. <em>boreal hei</em> plotted against elevation, oceanity, distance from roads, etc)</li>
+</ul>
+</div>
+<div id="represntaivity-in-mapping-units" class="section level2" number="3.4">
+<h2>
+<span class="header-section-number">3.4</span> Represntaivity in mapping units<a class="anchor" aria-label="anchor" href="#represntaivity-in-mapping-units"><i class="fas fa-link"></i></a>
+</h2>
+<p>Only a subset of nature types are mapped. How well do the mapped units represent, or cover, the range of nature types that is included for each main ecosystem group?</p>
+</div>
+<div id="conclution-1" class="section level2" number="3.5">
+<h2>
+<span class="header-section-number">3.5</span> Conclution 1<a class="anchor" aria-label="anchor" href="#conclution-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>Conclude about which main ecosystem types that can reliably assess using the available mapping units?</p>
+<p>What about suitability for defining reference values?</p>
+</div>
+<div id="suitability" class="section level2" number="3.6">
+<h2>
+<span class="header-section-number">3.6</span> Suitability<a class="anchor" aria-label="anchor" href="#suitability"><i class="fas fa-link"></i></a>
+</h2>
+<p>In the subset of mapping units that can be said to represent an ecosystem group, which NiN or MdirPRAM variables should we use?</p>
+</div>
+<div id="concrete-examples" class="section level2" number="3.7">
+<h2>
+<span class="header-section-number">3.7</span> Concrete examples<a class="anchor" aria-label="anchor" href="#concrete-examples"><i class="fas fa-link"></i></a>
+</h2>
+<div id="andel-lynghei-med-minst-to-faser-i-kystlynghei" class="section level3" number="3.7.1">
+<h3>
+<span class="header-section-number">3.7.1</span> Andel lynghei med minst to faser i kystlynghei<a class="anchor" aria-label="anchor" href="#andel-lynghei-med-minst-to-faser-i-kystlynghei"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="areal-uten-skadet-ogeller-død-røsslyng-i-kystlynghei" class="section level3" number="3.7.2">
+<h3>
+<span class="header-section-number">3.7.2</span> Areal uten skadet og/eller død røsslyng i kystlynghei<a class="anchor" aria-label="anchor" href="#areal-uten-skadet-ogeller-d%C3%B8d-r%C3%B8sslyng-i-kystlynghei"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="aktuell-bruksintensitet" class="section level3" number="3.7.3">
+<h3>
+<span class="header-section-number">3.7.3</span> Aktuell bruksintensitet<a class="anchor" aria-label="anchor" href="#aktuell-bruksintensitet"><i class="fas fa-link"></i></a>
+</h3>
+
+</div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="test1.html"><span class="header-section-number">2</span> This is an indicator</a></div>
+<div class="next"><a href="scaling-functions.html"><span class="header-section-number">4</span> Scaling functions</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#naturtype"><span class="header-section-number">3</span> On the application of the naturetype dataset</a></li>
+<li>
+<a class="nav-link" href="#import-data-and-general-summary-statistics"><span class="header-section-number">3.1</span> Import data and general summary statistics</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#area"><span class="header-section-number">3.1.1</span> Area</a></li></ul>
+</li>
+<li><a class="nav-link" href="#overview-of-nature-types"><span class="header-section-number">3.2</span> Overview of nature types</a></li>
+<li><a class="nav-link" href="#environmental-space"><span class="header-section-number">3.3</span> Environmental space</a></li>
+<li><a class="nav-link" href="#represntaivity-in-mapping-units"><span class="header-section-number">3.4</span> Represntaivity in mapping units</a></li>
+<li><a class="nav-link" href="#conclution-1"><span class="header-section-number">3.5</span> Conclution 1</a></li>
+<li><a class="nav-link" href="#suitability"><span class="header-section-number">3.6</span> Suitability</a></li>
+<li>
+<a class="nav-link" href="#concrete-examples"><span class="header-section-number">3.7</span> Concrete examples</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#andel-lynghei-med-minst-to-faser-i-kystlynghei"><span class="header-section-number">3.7.1</span> Andel lynghei med minst to faser i kystlynghei</a></li>
+<li><a class="nav-link" href="#areal-uten-skadet-ogeller-d%C3%B8d-r%C3%B8sslyng-i-kystlynghei"><span class="header-section-number">3.7.2</span> Areal uten skadet og/eller død røsslyng i kystlynghei</a></li>
+<li><a class="nav-link" href="#aktuell-bruksintensitet"><span class="header-section-number">3.7.3</span> Aktuell bruksintensitet</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/NINAnor/ecosystemCondition/blob/master/naturtype.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/NINAnor/ecosystemCondition/edit/master/naturtype.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2022-08-19.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer>
+</body>
+</html>
