@@ -5,5 +5,5 @@ delete_merged_file: true
 language:
   ui:
     chapter_name: "Chapter "
-rmd_files: ["index.Rmd", "02-overview.Rmd", "breareal.Rmd", "indicatorTest.Rmd", "naturtype.Rmd"]
+rmd_files: ["index.Rmd", "02-overview.Rmd", "breareal.Rmd", "indicatorTest.Rmd", "naturtype.Rmd", "scalingFunction.Rmd"]
 output_dir: "docs"

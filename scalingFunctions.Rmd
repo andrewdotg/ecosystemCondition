@@ -7,12 +7,28 @@ library(data.table)
 theme_set(theme_bw(base_size = 12))
 ```
 
+Author. Anders L. Kolstad
 
-Indicator for ecological condition may be scaled against a reference value to become normalised. Actually, in SEEA EA, unscaled or raw indikcatr are not called indicators at all, but simply referred to as variables. But scaling variables against reference conditions can be done in many ways. Here are some exampels, for inspiration.
+Date: `r Sys.Date()`
+
+
+Indicator for ecological condition may be scaled against a reference value to become normalised and hence comparable. In SEEA EA, un-scaled or raw indicators are not called indicators at all, but simply referred to as variables, and I will use this distinction here. Scaling variables against reference conditions can be done in many ways. Here are some examples, for inspiration.
 
 
 ```{r}
 set.seed(123)
+```
+
+Define plotting aesthetics
+```{r}
+low <- "red"
+high <- "green"
+scale_fill_gradient(low = low, high = high)
+ridge <- geom_density_ridges_gradient(scale = 3, size = .3)
+myColour <- "black"
+mySize <- 10
+myAlpha <- .7
+myShape <- 21
 ```
 
 
@@ -22,12 +38,13 @@ dat <- data.frame(variable1 = rnorm(50, 10, 4),
                   variable2 = rnorm(50, 30, 3))
 
 temp <- data.table::melt(setDT(dat))
+
 ggplot(temp,
        aes(x = value,
            y = variable,
            fill = stat(x)))+
-  geom_density_ridges_gradient(scale = 3, size = 0.3)+
-  scale_fill_gradient(low = 'red', high = 'green')
+  ridge+
+  scale_fill_gradient(low = low, high = high)
 ```
 
 Lets say that the reference condition for variable1 to equal 16, and for variable 2 its 35
@@ -59,41 +76,59 @@ temp <- melt(setDT(dat),
 
 ```{r}
 ggplot(dat)+
-  #geom_smooth(size=1.5, colour = "lightblue")+
   geom_point(
     aes(x = variable1, y = indicator1, fill = indicator1),
-             colour="black",
-             size=10,
-             alpha=.7,
-             shape=21)+
-  geom_vline(xintercept = 12,
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  geom_vline(xintercept = dat$referenceHigh1[1],
              linetype = "dashed",
              size =2)+
   
   geom_point(aes(x = variable2, y = indicator2, fill = indicator2),
-             colour="black",
-             size=10,
-             alpha=.7,
-             shape=21)+
-  geom_vline(xintercept = 35,
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  geom_vline(xintercept = dat$referenceHigh2,
              linetype = "dashed",
              size =2)+
   ylab("Indicator values")+
   xlab("Variable values")+
   
-  scale_fill_gradient("Indicator values", low = 'red', high = 'green')
+  scale_fill_gradient("Indicator values", low = low, high = high)
 ```
 
-The two indicator become more comparable, at least around the reference value. But perhaps a variable value around 25 for variabel2 is qctually quite bad. Here we have assumed that the value zero is the worst possible value. That may not always be the case
+To reverse what is good and what is bad condition: change the sign and add one.
+```{r}
+ggplot(dat)+
+  geom_point(
+    aes(x = variable1, y = indicator1*(-1)+1, fill = indicator1*(-1)+1),
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  geom_vline(xintercept = dat$referenceHigh1[1],
+             linetype = "dashed",
+             size =2)+
+  
+  ylab("Indicator values")+
+  xlab("Variable values")+
+  
+  scale_fill_gradient("Indicator values", low = low, high = high)
+```
+
+The two indicators become more comparable now that they are normalised. At least this is true around the reference value. But perhaps a variable value around 25 for variabel2 is actually quite bad, and in the above example I have assumed that the value zero is the worst possible value. That may not always be the case.
 
 ## Linear, with defined lower limit
-We can also say that the worst possible condition for thess variables are not zero, but for example say that it is 5 for variable1 and 28 for variable2.
+We can also say that the worst possible condition for these variables is not zero, but for example say that it is 5 for variable1 and 28 for variable2.
 ```{r}
 dat$referenceLow1 <- 5
 dat$referenceLow2 <- 28
 ```
 
-
+We can then normalise the data between these two reference values.
 ```{r}
 dat$indicator1_LowHigh <- (dat$variable1-dat$referenceLow1)/(dat$referenceHigh1 - dat$referenceLow1)
 dat$indicator1_LowHigh[dat$indicator1_LowHigh <0] <- 0
@@ -108,10 +143,10 @@ dat$indicator2_LowHigh[dat$indicator2_LowHigh >1] <- 1
 ggplot(dat)+
   geom_point(
     aes(x = variable1, y = indicator1_LowHigh, fill = indicator1_LowHigh),
-             colour="black",
-             size=10,
-             alpha=.7,
-             shape=21)+
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
   geom_vline(xintercept = 16,
              linetype = "dashed",
              size =2)+
@@ -120,10 +155,10 @@ ggplot(dat)+
              size =2)+
   
   geom_point(aes(x = variable2, y = indicator2_LowHigh, fill = indicator2_LowHigh),
-             colour="black",
-             size=10,
-             alpha=.7,
-             shape=21)+
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
   geom_vline(xintercept = 35,
              linetype = "dashed",
              size =2)+
@@ -133,7 +168,7 @@ ggplot(dat)+
   ylab("Indicator values")+
   xlab("Variable values")+
   
-  scale_fill_gradient("Indicator values", low = 'red', high = 'green')
+  scale_fill_gradient("Indicator values", low = low, high = high)
 ```
 
 
@@ -145,14 +180,16 @@ We can also define a threshold for good ecological condition. Lets for example s
 dat$thr1 <- 9
 ```
 
-```{r}
-dat$indicator1_breakPoint <- dat$indicator1_LowHigh
-dat$indicator1_breakPoint[dat$variable1 < dat$thr1] <- (1.6*dat$indicator1_LowHigh[dat$variable1 < dat$thr1])
 
-dat$indicator1_breakPoint[dat$variable1 > dat$thr1] <- (dat$variable1[dat$variable1 > dat$thr1]-
-                                                          dat$thr1[dat$variable1 > dat$thr1])/
-                                                        (dat$referenceHigh1[dat$variable1 > dat$thr1] - 
-                                                           dat$thr1[dat$variable1 > dat$thr1])+0.6
+Then we can normalise again, using what I refer to as break point normalisation. For the maths, see [here](https://stats.stackexchange.com/questions/281162/scale-a-number-between-a-range)
+```{r}
+dat$indicator1_breakPoint <- ifelse(dat$variable1 < dat$thr1,
+                                    ((dat$variable1-dat$referenceLow1)/(dat$thr1 - dat$referenceLow1))*(0.6-0)+0,
+                                    ((dat$variable1-dat$thr1)/(dat$referenceHigh1 - dat$thr1))*(1-0.6)+0.6
+                                    )
+
+dat$indicator1_breakPoint[dat$indicator1_breakPoint<0] <- 0
+dat$indicator1_breakPoint[dat$indicator1_breakPoint>1] <- 1
 
 ```
 
@@ -161,14 +198,14 @@ dat$indicator1_breakPoint[dat$variable1 > dat$thr1] <- (dat$variable1[dat$variab
 ggplot(dat)+
   geom_point(
     aes(x = variable1, y = indicator1_breakPoint, fill = indicator1_breakPoint),
-             colour="black",
-             size=10,
-             alpha=.7,
-             shape=21)+
-  geom_vline(xintercept = 16,
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  geom_vline(xintercept = dat$referenceHigh1[1],
              linetype = "dashed",
              size =2)+
-  geom_vline(xintercept = 5,
+  geom_vline(xintercept = dat$referenceLow1,
              linetype = "dashed",
              size =2)+
   geom_segment(aes(x = thr1, y = 0, xend = thr1, yend = 0.6),
@@ -181,11 +218,212 @@ ggplot(dat)+
   ylab("Indicator values")+
   xlab("Variable values")+
   
-  scale_fill_gradient("Indicator values", low = 'red', high = 'green')
+  scale_fill_gradient("Indicator values", low = low, high = high)
+```
+
+## Two-sided indicator
+
+An indicator may have an optimum value somewhere in the middle of its range, rather than a max or min value. You can then define a two-sided indicator.
+Lets say that variable2 is optimal when its at a level of 30, and values either lower or high are both bad.
+
+```{r}
+dat$referenceMid2 <- 30
 ```
 
 ```{r}
+dat$indicator2_twoSided <- ifelse(dat$variable2<dat$referenceMid2,
+                                  (dat$variable2-dat$referenceLow2)/(dat$referenceMid2-dat$referenceLow2),
+                                  ((dat$variable2-dat$referenceMid2)/(dat$referenceHigh2-dat$referenceMid2))*(-1)+1
+                                  )
+
+# truncating
+dat$indicator2_twoSided[dat$indicator2_twoSided<0] <- 0
+dat$indicator2_twoSided[dat$indicator2_twoSided>1] <- 1
+```
+
+
+
+```{r}
+ggplot(dat)+
+  geom_point(
+    aes(x = variable2, y = indicator2_twoSided, fill = indicator2_twoSided),
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  geom_vline(xintercept = dat$referenceMid2[1],
+             linetype = "dashed",
+             size =2)+
+  geom_vline(xintercept = dat$referenceLow2[1],
+             linetype = "dashed",
+             size =2)+
+  geom_vline(xintercept = dat$referenceHigh2[1],
+             linetype = "dashed",
+             size =2)+
+ 
+  ylab("Indicator values")+
+  xlab("Variable values")+
+  
+  scale_fill_gradient("Indicator values", low = low, high = high)
+```
+
+## Sigmoid transformation
+There are many other, non-linear ways to normalise an indicator. The correct choice for scaling function varies between indicators and depends on the nature of the indicator and what it represents, but also on the uncertainty around the reference values. Personally, I think the sigmoid function often makes a lot a sense. It is less sensitive to changes around the min and max reference values. A slight deviation from the reference condition can often not be described as a true reduction in condition. This is true for example when reference communities (ecosystemns defines as having or representing good condition) themselves show variation in the variable values, yet the reference value is fixed. A linear scaling will in these cases lead to what is referred to as underestimation biaz (making thing look worse than they really are).
+
+The equation for the sigmoid transformation that I use here comes from [Oliver at al. (2021)](https://www.sciencedirect.com/science/article/pii/S1470160X21000066); Eq. 1, Supplemetary Information S2.
+
+```{r}
+dat$indicator1_sigmoid <- 100.68*(1-exp(-5*(dat$indicator1_LowHigh)^2.5))/100
+```
+
+Finding the transformed indicator value when the variable equals the threshold
+```{r}
+sigmoid_thr <- 100.68*(1-exp(-5*((dat$thr1[1]-dat$referenceLow1[1])/(dat$referenceHigh1[1]-dat$referenceLow1[1]))^2.5))/100
 
 ```
 
 
+```{r}
+ggplot(dat)+
+  geom_point(
+    aes(x = variable1, y = indicator1_sigmoid, fill = indicator1_sigmoid),
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  
+  geom_vline(xintercept = dat$referenceLow1[1],
+             linetype = "dashed",
+             size =2)+
+  geom_vline(xintercept = dat$referenceHigh1[1],
+             linetype = "dashed",
+             size =2)+
+  
+  geom_segment(aes(x = thr1, y = 0, xend = thr1, yend = sigmoid_thr),
+               linetype="solid",
+               size=1)+
+  geom_segment(aes(x = 0, y = sigmoid_thr, xend = thr1, yend = sigmoid_thr),
+               linetype="solid",
+               size=1)+
+  
+  
+  ylab("Indicator values")+
+  xlab("Variable values")+
+  
+  scale_fill_gradient("Indicator values", low = low, high = high)
+```
+
+The solid helperlines point to the indicator value where the variable value equals the threshold. Later we will shift the values so that the indicator value becomes 0.6 at this point.
+
+Also plotted against the linearly normalised indicator values:
+```{r}
+ggplot(dat)+
+  geom_point(
+    aes(x = indicator1_LowHigh, y = indicator1_sigmoid, fill = indicator1_sigmoid),
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  
+  geom_vline(xintercept = 0.6,
+             linetype = "dashed",
+             size =2)+
+   geom_hline(yintercept = 0.6,
+             linetype = "dashed",
+             size =2)+
+  
+  ylab("Sigmoid-transformed\nIndicator values")+
+  xlab("Linear indicatior values")+
+  
+  scale_fill_gradient("Indicator values", low = low, high = high)
+```
+
+### Accounting for the threshold value
+
+We can account for the  threshold for good ecological condition when applying sigmoid transformation like this
+```{r}
+dat$indicator1_sigmoid_thr <- ifelse(dat$variable1<dat$thr1,
+                                     ((dat$indicator1_sigmoid-0)/(sigmoid_thr-0))*(0.6-0)+0,
+                                     ((dat$indicator1_sigmoid-sigmoid_thr)/(1-sigmoid_thr))*(1-0.6)+0.6
+                                     )
+ggplot(dat)+
+  geom_point(
+    aes(x = variable1, y = indicator1_sigmoid),
+             fill   = "grey", 
+             colour = myColour,
+             size   = 5,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  
+  geom_point(
+    aes(x = variable1, y = indicator1_sigmoid_thr, fill = indicator1_sigmoid_thr),
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  
+  geom_vline(xintercept = dat$referenceLow1[1],
+             linetype = "dashed",
+             size =1)+
+  geom_vline(xintercept = dat$referenceHigh1[1],
+             linetype = "dashed",
+             size =1)+
+  
+  geom_segment(aes(x = 0, y = sigmoid_thr, xend = thr1, yend = sigmoid_thr),
+               linetype="solid",
+               colour = "grey",
+               size=1)+
+  
+  geom_segment(aes(x = thr1, y = 0, xend = thr1, yend = 0.6),
+               linetype="solid",
+               size=1)+
+  geom_segment(aes(x = 0, y = 0.6, xend = thr1, yend = 0.6),
+               linetype="solid",
+               size=1)+
+  
+  
+  ylab("Indicator values")+
+  xlab("Variable values")+
+  
+  scale_fill_gradient("Indicator values", low = low, high = high)
+
+```
+
+
+## Exponential functoins
+Here are two example of exponential function:
+
+```{r}
+dat$indicator1_expConvex <- dat$indicator1_LowHigh^0.5
+dat$indicator1_expConcave <- dat$indicator1_LowHigh^2
+```
+
+
+```{r}
+
+ggplot(dat)+
+  geom_point(
+    aes(x = variable1, y = indicator1_expConvex, fill = indicator1_expConvex),
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  geom_point(
+    aes(x = variable1, y = indicator1_expConcave, fill = indicator1_expConcave),
+             colour = myColour,
+             size   = mySize,
+             alpha  = myAlpha,
+             shape  = myShape)+
+  
+  geom_vline(xintercept = dat$referenceLow1[1],
+             linetype = "dashed",
+             size =1)+
+  geom_vline(xintercept = dat$referenceHigh1[1],
+             linetype = "dashed",
+             size =1)+
+  ylab("Indicator values")+
+  xlab("Variable values")+
+  
+  scale_fill_gradient("Indicator values", low = low, high = high)
+
+```
