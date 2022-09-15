@@ -91,7 +91,7 @@ area_year$year <- row.names(area_year)
 area_year$area_km2 <- area_year$area/10^6
 ```
 
-```{r area_year, fig.cap="Temproal trend in nature type mapping using Miljødirektoratets Instruks"}
+```{r, fig.cap="Temproal trend in nature type mapping using Miljødirektoratets Instruks"}
 ggplot(area_year)+
   geom_bar(aes(x = year, y = area_km2),
            stat = "identity",
@@ -107,7 +107,7 @@ The rate of nature type mapping is strongly positive last three years. There are
 
 ## Condition
 A quick overview of the condition scores 
-```{r tilstand_overview, fig.cap="The overal distribution of condition scores"}
+```{r, fig.cap="The overal distribution of condition scores"}
 barplot(tapply(dat$area/10^6, factor(dat$tilstand), sum))
 ```
 
@@ -117,13 +117,13 @@ View(dat[dat$tilstand=="",])
 ```
 
 This figure show that these cases are not restricted to just one field season.
-```{r}
+```{r, fig.cap="Temporal trend in localities without condition scores."}
 barplot(table(dat$kartleggingsår[dat$tilstand==""]), 
         ylab="Number of localities without condition scores",
         xlab="Year")
 ```
 
-```{r}
+```{r, fig.cap="Main ecosystems with localities missing condition scores."}
 par(mar=c(5,20,1,1))
 barplot(table(dat$hovedøkosystem[dat$tilstand==""]),
         horiz = T, las=2,
@@ -132,7 +132,7 @@ barplot(table(dat$hovedøkosystem[dat$tilstand==""]),
 ```
 
 These cases are restricted to two main ecosystems, and one class where the main ecosystem is not recorded. Looking at some of those cases it is clear that they are not relevant for our work here, I and I don't know why they are in the data set to begin with.
-```{r}
+```{r, fig.cap="Nature types with localities missing condition scores."}
 par(mar=c(5,20,1,1))
 barplot(table(dat$naturtype[dat$tilstand==""]),
         horiz = T, las=2,
@@ -153,7 +153,7 @@ The field mapping instruction include and option for delineating mosaic types. L
 
 When an area displays a repeating pattern of mixed nature types that each are smaller than the minimum mapping unit MMU, these are grouped into as many overlapping polygons as there are unique nature types. Within the nature type polygons, these will have the same distribution of NiN-grunntyper (online you can see the percentage distribution, but our data set only has the presence/absence data) but be assigned different nature types (nature types is the Environmental agencies classification). The condition scoring can be unique to each overlapping nature type in the mosaic. But we don't know the precise location of the NiN-grunntyper that are part of mosaic nature types.
 
-```{r}
+```{r, fig.cap="The number of mosaic localities is relatively small."}
 barplot(table(dat$mosaikk),
         xlab = "Mosaic", ylab="Number of localities")
 ```
@@ -164,7 +164,7 @@ Fix duplicated `hovedøkosystem`
 dat$hovedøkosystem[dat$hovedøkosystem=="Naturlig åpne områder i lavlandet"] <- "Naturlig åpne områder under skoggrensa"
 ```
 
-```{r, fig.cap=Distribution of mosaic nature types across hovedøkosystem"}
+```{r, fig.cap="Distribution of mosaic nature types across hovedøkosystem"}
 par(mar=c(5,20,1,1))
 barplot(table(dat$hovedøkosystem[dat$mosaikk=="Ja"]),
         horiz = T, las=2,
@@ -241,7 +241,7 @@ temp <- dat[dat$n_ninkartleggingsenheter>1 & dat$mosaikk!="Ja",]
 barplot(table(temp$kartleggingsår), ylab="Number of localities with more than one NiN main type\n(mosaic localitie excluded) ")
 ```
 
-```{r multipleNiN}
+```{r, fig.cap="The ten most common nature types and the number of localities with with multiple NiN main types"}
 temp2 <- as.data.frame(table(temp$naturtype, temp$n_ninkartleggingsenheter))
 temp2 <- temp2[base::order(temp2$Freq, decreasing = T),][1:10,]
 par(mar=c(8,20,1,1))
@@ -250,7 +250,7 @@ barplot(temp2$Freq, names.arg = temp2$Var1, las=2,
 ```
 
 'Hule eiker' is a special case because these are recorded as points and not polygons, and they can be found in any NiN main type and any *hovedøkosystem*. 
-```{r, fig.cap="Table of the first 5 cases of Hule eiker, showing that this nature type can be found in several NiN main types and hovedøkosystem"}
+```{r, ="Table of the first 5 cases of Hule eiker, showing that this nature type can be found in several NiN main types and hovedøkosystem"}
 DT::datatable(
   dat[dat$naturtype=="Hule eiker",][1:5,c("naturtype", "hovedøkosystem", "ninkartleggingsenheter")])
 
@@ -267,7 +267,7 @@ dat_red <- dat_melt[dat_melt$n_ninkartleggingsenheter==1 &
                       dat_melt$mosaikk == "Nei",]
 ```
 
-```{r}
+```{r, fig.cap="NiN main type across five main ecosystems (Hule eiker, mosaic localities, and localities with >1 NiN main type excluded)"}
 ggplot(dat_red)+
   geom_bar(aes(x = ninkartleggingsenheter3),
            fill="grey",
@@ -294,7 +294,7 @@ target <- c("Semi-naturlig mark",
             "Naturlig åpne områder under skoggrensa")
 ```
 
-```{r, fig.cap="Number of localities for each combination of main ecosystem and NiN main type", fig.width= 8}
+```{r, fig.cap="Number of localities for each combination of main ecosystem and NiN main type"}
 ggplot(dat_red_tally[dat_red_tally$hovedøkosystem %in% target,],
        aes(x = ninkartleggingsenheter3,
                y = count))+
@@ -318,42 +318,43 @@ ggplot(dat_red_tally[dat_red_tally$hovedøkosystem %in% target,],
 Still some weird cases which I will look at in turn below.
 
 **Naturlig åpne områder under skoggrensa:**
-1. V10 (semi-naturlig våteng)
-  + One case of Åpen flomfastmark wrongly associated with V10 whan it should be T18.
-  + **Exclude** this case
-1. T8 (fulglefjelleng og fugltopp)
-  + Ok
-1. T6 (Standberg)
-  + Ok
-1. T33 (Semi naturlig strandeng)
-  + These are cases where either the `naturtype` should have been `semi-naturlig strandeng` (and hence the hovedøkosystem would be Semi-nat), or the `naturtype` is correctly recorded as `Strandeng` but then the NiN type should be `T12`.
-  + **Exclude**
-1. T32 (Semi-naturlig eng)
-  + Obvious error
-  + **Exclude**
-1. T30 (Flomskogsmark)
-  + Obvious error
-  + **Exclude**
-1. T29 (Grus og steindominert strand og strandlinje)
-  + Ok
-1. T21 (Sanddynemark)
-  + Ok
-1. T20 (Isinnfrysingsmark)
-  + Ok. Rare nature type
-1. T2 (Åpen grunlendt mark)
-  + Ok
-1. T18 (Åpne flomfastmark)
-  + Ok
-1. T17 (Aktiv skredmark)
-  + Ok
-1. T15 (Fosse-eng)
-  + Ok
-1. T13 (Rasmark)
-  + Ok
-1. T12 (Strandeng)
-  + Ok
-1. T1 (Nakent berg)
-  + Ok
+
+* V10 (semi-naturlig våteng)
+    + One case of Åpen flomfastmark wrongly associated with V10 whan it should be T18.
+    + **Exclude** this case
+* T8 (fulglefjelleng og fugltopp)
+    + Ok
+* T6 (Standberg)
+    + Ok
+* T33 (Semi naturlig strandeng)
+    + These are cases where either the `naturtype` should have been `semi-naturlig strandeng` (and hence the hovedøkosystem would be Semi-nat), or the `naturtype` is correctly recorded as `Strandeng` but then the NiN type should be `T12`.
+    + **Exclude**
+* T32 (Semi-naturlig eng)
+    + Obvious error
+    + **Exclude**
+* T30 (Flomskogsmark)
+    + Obvious error
+    + **Exclude**
+* T29 (Grus og steindominert strand og strandlinje)
+    + Ok
+* T21 (Sanddynemark)
+    + Ok
+* T20 (Isinnfrysingsmark)
+    + Ok. Rare nature type
+* T2 (Åpen grunlendt mark)
+    + Ok
+* T18 (Åpne flomfastmark)
+    + Ok
+* T17 (Aktiv skredmark)
+    + Ok
+* T15 (Fosse-eng)
+    + Ok
+* T13 (Rasmark)
+    + Ok
+* T12 (Strandeng)
+    + Ok
+* T1 (Nakent berg)
+    + Ok
 
 
 ```{r}
@@ -364,38 +365,49 @@ Still some weird cases which I will look at in turn below.
 `%!in%` <- Negate(`%in%`)
 dat_red2 <- dat_red[
   dat_red$hovedøkosystem!="Naturlig åpne områder under skoggrensa" |
-  dat_red$hovedøkosystem=="Naturlig åpne områder under skoggrensa" & dat_red$ninkartleggingsenheter3 %!in% c("T30", "T32", "T33", "V10"),]
+  dat_red$hovedøkosystem=="Naturlig åpne områder under skoggrensa" & 
+    dat_red$ninkartleggingsenheter3 %!in% c("T30", "T32", "T33", "V10"),]
 ```
 
 **Semi-naturlig mark**
 
-1. V9 (Semi-naturlig myr)
-  + Kystlynghei recorded as mire
-  + **Exclude**
-1. V10 (semi-nat våteng)
-  + Ok
-1. T41 (Oppdyrket mark med preg av semi-naturlig eng)
-  + Probably not always use correctly, but at least its the correct ``hovedkøosystem`
-  + Ok
-1. T40 (Sterkt endret fastmark med preg av semi-naturlig eng)
-  + Ok
-1. T4 (Fastmarksskogsmark)
-  + These should all be T32 (naturbeitemark, lauveng, hagemark, +++)
-  + **Exclude**
-1. T35 (Sterkt endret fastmark med løsmassedekke)
-  + Wrong NiN type given to eng-aktig sterkt endret fastmark (it should be T40)
-  + **Exclude**
-1. T31-34
-  + Ok
-1. T3 (Fjellhei, leside og tundra)
-  + Boreal hei (should've been T31)
-  + **Exclude**
-1. T12 (Strandeng)
-  + Should probably have been T33
-  + **Exclude**
-1. T1 (Nakent berg)
-  + Obvious mistake
-  + **Exclude**
+
+* V9 (Semi-naturlig myr)
+   + Kystlynghei recorded as mire
+   + **Exclude**
+
+* V10 (semi-nat våteng)
+   + Ok
+
+* T41 (Oppdyrket mark med preg av semi-naturlig eng)
+   + Probably not always use correctly, but at least its the correct ``hovedkøosystem`
+   + Ok
+
+* T40 (Sterkt endret fastmark med preg av semi-naturlig eng)
+   + Ok
+
+* T4 (Fastmarksskogsmark)
+   + These should all be T32 (naturbeitemark, lauveng, hagemark, +++)
+   + **Exclude**
+
+* T35 (Sterkt endret fastmark med løsmassedekke)
+   + Wrong NiN type given to eng-aktig sterkt endret fastmark (it should be T40)
+   + **Exclude**
+
+* T31-34
+   + Ok
+
+* T3 (Fjellhei, leside og tundra)
+   + Boreal hei (should've been T31)
+   + **Exclude**
+
+* T12 (Strandeng)
+   + Should probably have been T33
+   + **Exclude**
+
+* T1 (Nakent berg)
+   + Obvious mistake
+   + **Exclude**
   
 
 ```{r}
@@ -414,24 +426,30 @@ dat_red3 <- dat_red2[
 
 **Våtmark**
 
-Våtmakr doesn't distinguish between semi-natural and natural, so all V-types are correct, except perhaps the strongly modified V11-V13
-1. V11 (Torvtak)
+Våtmakr doesn't distinguish between semi-natural and natural, so all V-types are correct, except perhaps the strongly modified V11-V13.
+
+* V11 (Torvtak)
   + Obvious mistake
   + **Exclude**
-1. V12 (Grøftet åpne torvmark)
+ 
+* V12 (Grøftet åpne torvmark)
   + Obvious mistake
   + **Exclude**
-1. V13 (Ny våtmark)
+ 
+* V13 (Ny våtmark)
   + Obvious mistake
   + **Exclude**
-1. T4 (skog)
+ 
+* T4 (skog)
   +   some that should've been T2 and some other strange things
   + **Exclude**
-1. T30-T32
+ 
+* T30-T32
   + Someone switching the semi-natural and natural equivalents
   + **Exclude**
-1. L4 (Helofyttsump)
-  + Ok
+ 
+* L4 (Helofyttsump)
+    + Ok
 
 ```{r}
 #unique(dat$hovedøkosystem)
@@ -448,7 +466,7 @@ dat_red4 <- dat_red3[
 ```
 
 Let's make the plot again to see if it worked
-```{r, fig.cap="Number of localities for each combination of main ecosystem and NiN main type (after data set cleaning)", fig.width= 8}
+```{r, fig.cap="Number of localities for each combination of main ecosystem and NiN main type (after data set cleaning)"}
 dat_red_tally2 <- stats::aggregate(data = dat_red4,
                                  area~hovedøkosystem+ninkartleggingsenheter3, FUN = length)
 names(dat_red_tally2)[3] <- "count"
@@ -518,7 +536,7 @@ myData <- readRDS("/data/P-Prosjekter/41201785_okologisk_tilstand_2022_2023/data
 
 ## Overview of nature types
 
-```{r, fig.height=15, fig.width=8, fig.cap="An overview of the nature types in the data set"}
+```{r, fig.cap="An overview of the nature types in the data set", fig.height=15}
 temp <- tapply(exp$area, exp$naturtype, sum)
 temp <- data.frame(nat = row.names(temp),
                    area = temp)
