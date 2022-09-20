@@ -317,7 +317,9 @@ ggplot(dat_red_tally[dat_red_tally$hovedøkosystem %in% target,],
 
 Still some weird cases which I will look at in turn below.
 
-**Naturlig åpne områder under skoggrensa:**
+
+
+### Naturlig åpne områder under skoggrensa
 
 * V10 (semi-naturlig våteng)
     + One case of Åpen flomfastmark wrongly associated with V10 whan it should be T18.
@@ -369,8 +371,8 @@ dat_red2 <- dat_red[
     dat_red$ninkartleggingsenheter3 %!in% c("T30", "T32", "T33", "V10"),]
 ```
 
-**Semi-naturlig mark**
 
+### Semi-naturlig mark
 
 * V9 (Semi-naturlig myr)
    + Kystlynghei recorded as mire
@@ -424,7 +426,7 @@ dat_red3 <- dat_red2[
   dat_red2$hovedøkosystem=="Semi-naturlig mark" & dat_red2$ninkartleggingsenheter3 %!in% c("V9", "T4", "T35", "T3", "T12", "T1"),]
 ```
 
-**Våtmark**
+### Våtmark
 
 Våtmakr doesn't distinguish between semi-natural and natural, so all V-types are correct, except perhaps the strongly modified V11-V13.
 
@@ -491,6 +493,29 @@ ggplot(dat_red_tally2[dat_red_tally2$hovedøkosystem %in% target,],
              ncol = 3)
 ```
 
+### Areal 
+Same type of analysis as above, but focusing onthe accumalitive mapped rea.
+```{r, fig.cap="Total mapped are for each combination of main ecosystem and NiN main type (after data set cleaning)"}
+dat_red_tally_area <- stats::aggregate(data = dat_red4,
+                                 area~hovedøkosystem+ninkartleggingsenheter3, FUN = sum)
+names(dat_red_tally_area)[3] <- "area_m2"
+dat_red_tally_area$area_km2 <- drop_units(dat_red_tally_area$area_m2/10^6)
+ggplot(dat_red_tally_area[dat_red_tally_area$hovedøkosystem %in% target,],
+       aes(x = ninkartleggingsenheter3,
+               y = area_km2))+
+  geom_bar(
+           fill="grey",
+           colour="black",
+           stat="identity")+
+  coord_flip()+
+  theme_bw(base_size = 12)+
+  labs(y = "Total mapped area (km/2)",
+       x = "NiN main types")+
+    facet_wrap("hovedøkosystem",
+             scales = "free",
+             ncol = 3)
+```
+
 ## Export
 `dat_red4` now has one row per locality, and only localities with 1 NiN main type. `Hule eiker` and `Mosaic localities` are not included, but we will add these back in now. Depending on what the data set will be used for, these last two can be excluded again later. 
 ```{r}
@@ -522,7 +547,6 @@ This is simply because I cannot access that drive from RStudio Server at the mom
 
 ```{r, eval=F}
 exp$ninkartleggingsenheter3 <- unlist(exp$ninkartleggingsenheter3)
-#names(exp)[1] <- "ID" # Field name too long
 saveRDS(exp, "/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/data/Mdir_Naturtyper_cleanedALK.rds")
 
 ```
