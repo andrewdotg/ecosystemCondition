@@ -94,21 +94,184 @@ Especially T34 (kystlynghei) and T1 (nakent berg) commonly occur in mosaics with
 
 V5, V6 are V7 are not represented at all. V5 is *Varm kilde* which we don't have in mainland Norway. V6 and V7 might be linked to the alpine ecosystem.
 
-### V1 Åpen jordvassmyr
 
-The field recorders are allowed to themselves select the NiN types (sub units of the NiN main types) that thir locality supposedy belongs to. This may differ from what NEA (Norwegian Environmental Agency) uses to define the nature type. Therefore, in the data set, there are a lot of nature types that presumably cover, at least partly, V1 *Åpen jordvassmyr*:
+### Nature types in *Våtmark*
+
 ```{r}
-unique(wet$naturtype[wet$ninkartleggingsenheter3 =="V1"])
+ntyp <- unique(wet$naturtype)
 ```
-If we  look at the field protocol, we get a different picture.
 
-![alt text](images/V1.PNG)
+```{r}
+years <- NULL
+for(i in 1:length(ntyp)){
+years[i] <- paste(unique(wet$kartleggingsår[wet$naturtype == ntyp[i]]), collapse = ", ")
+}
+```
 
-Green areas means that the entire NiN space is included in the nature type (which is bold). So for V1, the highest KA level (level *i*) is covered by E10 (*Rik åpne jordvassmyr*) with three sub-classes. For the yellow areas, only parts of the NiN spaces is mapped, and the defining parameters are in bold followingthe nature type code. So for KA e-f for exmaple, this NiN space is covered by E10.1 (*Rik åpen sørlig jordvassmye*), but only in boreonemoral and south boreal sones (*BN/SB*). The red boxes indicate a third axis in this figure related to MF (myrflate). The two boxes on the right are partly covered, and the two to the right are not. Finally, there is one more NiN type (V1-C9) written at the bottom which is partly covered (yellow outline).
+```{r}
+ntypDF <- data.frame(
+  "Nature_type" = ntyp,
+  "Year"        = years
+)
+```
 
-So, NiN main type is actually, today, only mapped through one nature type, E10. Some of the nature types might be old refracted, types. The list of nature types linked to V1 is, however, not of much use to us.
+ 
 
 
+```{r, fig.cap="List of nature types associated with the ecosystem Våtmark, showing the year when that nature type was mapped." }
+DT::datatable(ntypDF)
+```
+
+The way to do this I think is to look at each of these in turn and map the NiN main types and sub-types that they cover. First, I'll go over them and exclude those that do not satisfy our working definition of the main ecosystem as *Åpen våtmark*. This mainly implies excluding forested types.
+
+```{r}
+exclude <- c("Kalkrik myr- og sumpskogsmark",
+             #"Flommyr, myrkant og myrskogsmark",  # Only V9 is relevant. This type also includes V2 and V8
+             "Gammel fattig sumpskog",
+             "Rik gransumpskog",
+             "Grankildeskog",
+             "Rik svartorsumpskog",
+             "Rik gråorsumpskog",
+             "Rik svartorstrandskog",
+             "Saltpåvirket svartorstrandskog",
+             "Kilde-edellauvskog",
+             "Saltpåvirket strand- og sumpskogsmark",
+             "Svak kilde og kildeskogsmark",
+             "Rik vierstrandskog",
+             "Varmekjær kildelauvskog"
+             )
+```
+
+
+```{r}
+`%!in%` <- Negate(`%in%`)
+#wet_1 <- wet[wet$naturtype == ntyp[1],]
+wet_1 <- wet[wet$naturtype %!in% exclude,]
+
+wet_1_long <- tidyr::separate_rows(wet_1, ninbeskrivelsesvariabler, sep=",")
+wet_1_long <- tidyr::separate(wet_1_long, 
+                              col = ninbeskrivelsesvariabler,
+                              into = c("NiN_variable_code", "NiN_variable_value"),
+                              sep = "_",
+                              remove=F
+                              )
+wet_1_long$NiN_variable_value <- as.numeric(wet_1_long$NiN_variable_value)
+
+```
+
+Converting NiN_variable_value to numeric introduced NA's. 
+```{r}
+unique(wet_1_long$ninbeskrivelsesvariabler[is.na(wet_1_long$NiN_variable_value)])
+```
+
+These variables include LKM's (lokal kompleks miljøvariabel) which are nonrelevant to us here.  
+
+4DL-SS-0 and 4DL-S-0 has to do with the total amount of coarse woody debris/logs. It was only recorded for one nature type in 2018, and then as a a biodiversity variable, and not a state variable. *X* therefore means *not relevant*. 
+
+```{r}
+temp <- wet_1_long[wet_1_long$ninbeskrivelsesvariabler == "4DL-SS-0_X" |
+                   wet_1_long$ninbeskrivelsesvariabler == "4DL-S-0_X" ,]
+table(temp$kartleggingsår, temp$naturtype)
+```
+
+7SD-NS and 7SD-0 was also only used for that same nature type, and then only for wooded localities. *X* means *not relevant*.
+
+```{r}
+temp <- wet_1_long[wet_1_long$ninbeskrivelsesvariabler == "7SD-NS_X" |
+                     wet_1_long$ninbeskrivelsesvariabler == "7SD-0_X",]
+table(temp$kartleggingsår, temp$naturtype)
+```
+
+7TK (kjørespor) and 7SE (slitasje) are not allowed the value X, but it happened three times in 2018 (for that same nature type again). It's fine to exclude these.
+
+```{r}
+temp <- wet_1_long[wet_1_long$ninbeskrivelsesvariabler == "7TK_X" |
+                    wet_1_long$ninbeskrivelsesvariabler == "7SE_X" ,]
+table(temp$kartleggingsår, temp$naturtype)
+```
+
+7GR-GI (grøftingsintensitet) should not have the value X either, so ok to exclude these.
+```{r}
+temp <- wet_1_long[wet_1_long$ninbeskrivelsesvariabler == "7GR-GI_X",]
+table(temp$kartleggingsår, temp$naturtype)
+```
+
+```{r}
+wet_1_long2 <- wet_1_long[!is.na(wet_1_long$NiN_variable_value),]
+```
+
+
+This leaves us with the following parameters.
+```{r}
+unique(wet_1_long2$NiN_variable_code)
+```
+We can probably exclude several of these as non-relevant.
+
+The PR- variables are the NEAs own variables (not NiN). We can exclude some of these:
+```{r}
+excl <- c("PRRL-DD",   "PRRL-VU",   "PRRL-NT",   "PRRL-EN",   "PRRL-CR",  # red list categories
+          "PRKA",   # Number of calcaroues species indicatrs 
+          #"PRSL",  # Slitasje/physical damage. This one we might actually keep
+          "PRHA",   # Number of habitat spesific species
+          #"PRTO",  # Torvuttak / peat extraction. This one we can keep also
+          #"PRTK",  # Spor av tunge kjøretøy / Heavy vehicles. Keep this.
+          "PRMY",   # Myrstruktur / mire structure. A biodiversity indicator
+          "PRSE-KA")
+```
+
+1AG-B is the total shrub cover
+7TK is *kjøreskade*
+1AG-A-G is *dekning gjenveksttrær*
+
+
+```{r}
+temp <- wet_1_long2[wet_1_long2$NiN_variable_code == "PRKA",]
+View(temp)
+table(temp$kartleggingsår, temp$naturtype)
+```
+
+
+
+```{r}
+ntyp <- unique(wet_1_long$naturtype)
+```
+
+```{r}
+
+temp <- wet_1_long[wet_1_long$naturtype == ntyp[1],]
+table(temp$naturtype)
+
+ggplot(temp)+
+  geom_histogram(aes(x = NiN_variable_value))+
+  facet_wrap(vars(NiN_variable_code))
+```
+
+
+
+### Kalkrik myr- og sumpskogsmark
+Only mapped in 2018. Back then, the defining NiN variables were not clearly stated, but the defining text clearly show that this is forested land, and so it should not be included in our assessment since our operational definition of Våtmark is *Åpen våtmark / open wetlands*.
+
+```{r}
+ntypDF$Eligible[ntypDF$Nature_type == "Kalkrik myr- og sumpskogsmark"] <- "No"
+```
+
+
+
+### Slåttemyr
+Mapped in all years and covers the entire NiN space in V9. 
+```{r}
+ntypDF$Eligible[ntypDF$Nature_type == "Slåttemyr"] <- "Yes"
+ntypDF$NiN_mainType[ntypDF$Nature_type == "Slåttemyr"] <- "V9"
+ntypDF$NiN_mainType_coverage[ntypDF$Nature_type == "Slåttemyr"] <- "Complete"
+
+ntypDF$'Busksjikt-dekning (1AG-B)'[ntypDF$Nature_type == "Slåttemyr"] <- "Recorded in all years."
+ntypDF$'Grøftings-intensitet (7GR-GI)'[ntypDF$Nature_type == "Slåttemyr"] <- "Recorded in all years."
+ntypDF$'Dekning av gjenvekst-trær (1AG-A-G)'[ntypDF$Nature_type == "Slåttemyr"] <- "Recorded in all years."
+ntypDF$'Andel av vedvekster i feltsjiktet (1AR-C-L)'[ntypDF$Nature_type == "Slåttemyr"] <- "Recorded in all years."
+
+
+ntypDF$Remarks[ntypDF$Nature_type == "Slåttemyr"] <- "The list of NiN condition variables has changed over the years, and possibly also the different threshold values."
+```
 
 
 ## Environmental space
