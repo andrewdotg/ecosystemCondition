@@ -22,15 +22,297 @@ Date: `r Sys.Date()`
 
 This chapter continues with the cleaned dataset exported at the end of the previous chapter:
 ```{r, eval=T}
-myData <- readRDS("/data/P-Prosjekter/41201785_okologisk_tilstand_2022_2023/data/Mdir_Naturtyper_cleanedALK.rds")
+dat <- readRDS("/data/P-Prosjekter/41201785_okologisk_tilstand_2022_2023/data/Mdir_Naturtyper_cleanedALK.rds")
 ```
 
-## Representativity in mapping units
-Only a subset of nature types are mapped. How well do the mapped units represent, or cover, the range of nature types that is included for each main ecosystem group? I will tsrt by looking at wetlands (våtmark).
+## Naturetypes, condition variables, and their linkage to NiN main types
+Only a subset of nature types are mapped. How well do these mapped units/areas represent the range of nature types that is included for each main ecosystem group? And what condition variables do we have available for each of these?
 
+### Nature types
+Lets extract the unique nature types, their associated main ecosystem, and the year when these nature types were mapped. 
+
+We will only include our target ecosystems, and we will exclude *Hule eiker*.
+```{r}
+target <- c("Semi-naturlig mark",
+            "Våtmark",
+            "Naturlig åpne områder under skoggrensa")
+dat <- dat[dat$hovedøkosystem %in% target,]
+dat <- dat[dat$naturtype != "Hule eiker",]
+```
+
+Get the unique nature types
+```{r}
+ntyp <- unique(dat$naturtype)
+```
+
+Extract the year when these were mapped
+```{r}
+years <- NULL
+for(i in 1:length(ntyp)){
+years[i] <- paste(unique(dat$kartleggingsår[dat$naturtype == ntyp[i]]), collapse = ", ")
+}
+```
+
+Extract the associated ecosystem
+```{r}
+eco <- NULL
+for(i in 1:length(ntyp)){
+eco[i] <- paste(unique(dat$hovedøkosystem[dat$naturtype == ntyp[i]]), collapse = ", ")
+}
+```
+
+Combine into one data frame
+```{r}
+ntypDF <- data.frame(
+  "Nature_type" = ntyp,
+  "Year"        = years,
+  "Ecosystem"   = eco
+)
+```
+
+We have 67 nature types to consider. Some of the wetland types can actually be excluded because of the way we limited this ecosystem to mean *Open Wetland*.
+
+```{r}
+excl <- c("Kalkrik myr- og sumpskogsmark",
+             #"Flommyr, myrkant og myrskogsmark",  # Only V9 is relevant. This type also includes V2 and V8
+             "Gammel fattig sumpskog",
+             "Rik gransumpskog",
+             "Grankildeskog",
+             "Rik svartorsumpskog",
+             "Rik gråorsumpskog",
+             "Rik svartorstrandskog",
+             "Saltpåvirket svartorstrandskog",
+             "Kilde-edellauvskog",
+             "Saltpåvirket strand- og sumpskogsmark",
+             "Svak kilde og kildeskogsmark",
+             "Rik vierstrandskog",
+             "Varmekjær kildelauvskog"
+             )
+`%!in%` <- Negate(`%in%`)
+ntypDF <- ntypDF[ntypDF$Nature_type %!in% excl,]
+```
+
+```{r, fig.cap="List of nature types associated with the ecosystem Våtmark, showing the year when that nature type was mapped." }
+DT::datatable(ntypDF)
+```
+
+The way to do this I think is to look at each nature type in turn and map the NiN main types and sub-types that they cover. At the same time I can extract the NiN variables and values to see.
+
+
+### NiN variables
+
+```{r}
+dat2 <- dat[dat$naturtype %!in% exclude,]
+
+dat2L <- tidyr::separate_rows(dat2, ninbeskrivelsesvariabler, sep=",")
+dat2L <- tidyr::separate(dat2L, 
+                              col = ninbeskrivelsesvariabler,
+                              into = c("NiN_variable_code", "NiN_variable_value"),
+                              sep = "_",
+                              remove=F
+                              )
+dat2L$NiN_variable_value <- as.numeric(dat2L$NiN_variable_value)
+
+```
+```{r}
+#View(dat2L[280973,])
+#View(dat2[dat2$identifikasjon_lokalid =="NINFP2110037887",])
+```
+
+Converting NiN_variable_value to numeric introduced NA's. 
+```{r}
+sort(unique(dat2L$ninbeskrivelsesvariabler[is.na(dat2L$NiN_variable_value)]))
+```
+#### 4DL
+4DL-SS-0 and 4DL-S-0 has to do with the total amount of coarse woody debris/logs. It was only recorded for one nature type in 2018, and then as a a biodiversity variable, and not a state variable. *X* therefore means *not relevant*. 
+
+#### 5AB and 5BY
+These area land use types (arealbruksklasser) and building types, respectively, and the values are not numeric, but categorical, and represents presence or absence of these land uses or objects. These are not suited for automatically determining ecosystem condition as this is done subjectively in the field.
+```{r}
+exclude <- c(exclude,
+             "5AB-0_DO",
+             "5AB-0_FO",
+             "5AB-0_KO",
+             "5AB-0_TO",
+             "5BY-0_BO",
+             "5BY-0_FB",
+             "5BY-0_IL",
+             "5BY-0_KB",
+             "5BY-0_SK",
+             "5BY-0_XB")
+```
+
+#### 7FA (fremmedartsinnslag)
+Should not have been allowed the value X, so Ok to exclude these.
+
+#### 7GR-GI
+7GR-GI (grøftingsintensitet) should not have the value X either, so ok to exclude these.
+```{r}
+exclude <- c(exclude, "7GR-GI_X")
+```
+
+#### 7JA jord-bruk
+
+* BA = Aktuell bruksintensitet
+* BT = Beitetrykk
+* GJ = Gjødsling
+* KU = Kystlyngheias utviklingsfaser
+    + BY = byggefase
+    + DE = degenereringsfase
+    + MO = moden fase
+    + PI = pionerfase
+    
+NiN defines the possible values for these as numeric between 0 and 4, but there are 544 cases where it has been given then value *X*.
+
+First, is seems like the value range is shifted from 0-4 to be 1-5.
+```{r, fig.cap=""}
+dotchart(dat2L$NiN_variable_value[dat2L$NiN_variable_code == "7JB-KU-BY"], xlab="value", pch=3)
+```
+
+```{r}
+
+temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7JB-KU-BY_X" |
+                     dat2L$ninbeskrivelsesvariabler == "7JB-KU-DE_X" |
+                dat2L$ninbeskrivelsesvariabler == "7JB-KU-MO_X" |
+                     dat2L$ninbeskrivelsesvariabler == "7JB-KU-PI_X",]
+table(temp$kartleggingsår, temp$naturtype)
+#View(dat2L[dat2L$identifikasjon_lokalid ==  "NINFP1810033954",])
+```
+
+The reason could be that this variable is used in the biodiversity assessment, which is not performed if the condition is *very poor*.
+```{r}
+table(temp$tilstand)
+```
+That is not the case. If the condition is scored as low, the variable does not even appear in the data set for that locality.
+We can also make a note that a big proportion of the total number of localities of *Kystlynghei* had very poor condition, and therefore this variable 7JB-KU was not recorded.
+```{r, fig.cap="The distribution of condition scores for Kystlynghei."}
+KU <- dat2[dat2$naturtype=="Kystlynghei",]
+#table(KU$tilstand)
+barplot(table(KU$tilstand))
+```
+
+If we look at some cases in more detail, to understand why any of these variables has been set as X (probably means they were left blank), for example like this:
+```{r}
+#View(dat2L[dat2L$NiN_variable_code == "7JB-KU-BY" & is.na(dat2L$NiN_variable_value),])
+#View(dat2L[dat2L$identifikasjon_lokalid =="NINFP1810002975",]) # None of the 7JB-KU variables have values
+#View(dat2L[dat2L$identifikasjon_lokalid =="NINFP2110057689",]) # Two of the 7JB-KU variables have values
+```
+ ... we can see that sometimes <4 but >0 of the variables/phases has been given a score, but sometimes none have. This makes it problematic to set these NA' to be zeros. When we also consider the fact that there is an obvious bias in that only localities with poor condition or better have these variables assessed in the first place, I will exclude all of these variables and treat them as *not suited*.
+ 
+```{r}
+exclude <- c(exclude, "7JB-KU-BY_X", "7JB-KU-DE_X", "7JB-KU-MO_X", "7JB-KU-PI_X")
+```
+
+#### 7RA-SJ
+*Rask gjenvekstsuksesjon i semi-naturlig og sterkt endret jordbruksmark inkludert våteng*
+There are some very few cases where this variable has the value X. It should be numeric 1-4, so the value X is a mistake here I think. We can exclude these.
+
+```{r}
+exclude <- c(exclude, "7RA-SJ_X")
+```
+
+
+#### 7SD
+7SD-NS and 7SD-0 was also only used for that same nature type, and then only for wooded localities of *Flommyr, myrkant og myrskogsmark*. *X* means *not relevant*.
+```{r}
+exclude <- c(exclude, "7SD-0_X",     "7SD-NS_X")
+```
+
+
+
+#### 7TK and /SE
+7TK (kjørespor) and 7SE (slitasje) are not allowed the value X, but it happened on some rare occasions (24) anyhow. It's fine to exclude these.
+```{r}
+exclude <- c(exclude, "7TK_X", "7SE_X")
+```
+
+```{r}
+temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7FA_X" ,]
+table(temp$kartleggingsår, temp$naturtype)
+```
+
+#### 7VR-RI
+*Reguleringsintensitet*
+This variable is defined as numeric between 1-5. There is, however, quite a few cases where it is X.
+```{r}
+temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7VR-RI_X",]
+table(temp$kartleggingsår, temp$naturtype)
+```
+
+I cannot explain these, but in any case, this variable is not a good indicator for condition as it rather represents a pressure/driver. So OK to exclude.
+
+
+
+#### LKMs and MdirPR-variables
+These variables include LKM's (lokal kompleks miljøvariabel) which are nonrelevant to us here. We can also exclude some of the PR- variables, which are the NEAs own variables (not NiN). 
+```{r}
+excl <- c("LKMKI",     
+          "LKMKI",     
+          "LKMKI",     
+          "LKMKI",     
+          "LKMKI",     
+          "LKMKI",     
+          "LKMSP", 
+          "PRRL-DD",   "PRRL-VU",   "PRRL-NT",   "PRRL-EN",   "PRRL-CR",  # red list categories
+          "PRKA",   # Number of calcaroues species indicators 
+          #"PRSL",  # Slitasje/physical damage. This one we might actually keep
+          "PRHA",   # Number of habitat spesific species
+          #"PRTO",  # Torvuttak / peat extraction. This one we can keep also
+          #"PRTK",  # Spor av tunge kjøretøy / Heavy vehicles. Keep this.
+          "PRMY",   # Myrstruktur / mire structure. A biodiversity indicator
+          "PRSE-KA",
+          "PRH", # no idea what this is
+          "PRVS_X" # should be numeric, but is X in 1 locality. It's 'Variasjon i vannsprutintensitet'.
+          )
+```
+
+-------------------------
+
+
+
+```{r}
+wet_1_long2 <- wet_1_long[!is.na(wet_1_long$NiN_variable_value),]
+```
+
+
+This leaves us with the following parameters.
+```{r}
+unique(wet_1_long2$NiN_variable_code)
+```
+We can probably exclude several of these as non-relevant.
+
+
+1AG-B is the total shrub cover
+7TK is *kjøreskade*
+1AG-A-G is *dekning gjenveksttrær*
+
+
+
+
+
+
+```{r}
+ntyp <- unique(wet_1_long$naturtype)
+```
+
+```{r}
+
+temp <- wet_1_long[wet_1_long$naturtype == ntyp[1],]
+table(temp$naturtype)
+
+ggplot(temp)+
+  geom_histogram(aes(x = NiN_variable_value))+
+  facet_wrap(vars(NiN_variable_code))
+```
+
+
+
+------------------------------------------
 
 
 ### Våtmark
+I will start by looking at wetlands (våtmark).
+
 ```{r}
 wet <- myData[myData$hovedøkosystem == "Våtmark",]
 any(wet[wet$naturtype == " Hule eiker",])
@@ -95,156 +377,7 @@ Especially T34 (kystlynghei) and T1 (nakent berg) commonly occur in mosaics with
 V5, V6 are V7 are not represented at all. V5 is *Varm kilde* which we don't have in mainland Norway. V6 and V7 might be linked to the alpine ecosystem.
 
 
-### Nature types in *Våtmark*
 
-```{r}
-ntyp <- unique(wet$naturtype)
-```
-
-```{r}
-years <- NULL
-for(i in 1:length(ntyp)){
-years[i] <- paste(unique(wet$kartleggingsår[wet$naturtype == ntyp[i]]), collapse = ", ")
-}
-```
-
-```{r}
-ntypDF <- data.frame(
-  "Nature_type" = ntyp,
-  "Year"        = years
-)
-```
-
- 
-
-
-```{r, fig.cap="List of nature types associated with the ecosystem Våtmark, showing the year when that nature type was mapped." }
-DT::datatable(ntypDF)
-```
-
-The way to do this I think is to look at each of these in turn and map the NiN main types and sub-types that they cover. First, I'll go over them and exclude those that do not satisfy our working definition of the main ecosystem as *Åpen våtmark*. This mainly implies excluding forested types.
-
-```{r}
-exclude <- c("Kalkrik myr- og sumpskogsmark",
-             #"Flommyr, myrkant og myrskogsmark",  # Only V9 is relevant. This type also includes V2 and V8
-             "Gammel fattig sumpskog",
-             "Rik gransumpskog",
-             "Grankildeskog",
-             "Rik svartorsumpskog",
-             "Rik gråorsumpskog",
-             "Rik svartorstrandskog",
-             "Saltpåvirket svartorstrandskog",
-             "Kilde-edellauvskog",
-             "Saltpåvirket strand- og sumpskogsmark",
-             "Svak kilde og kildeskogsmark",
-             "Rik vierstrandskog",
-             "Varmekjær kildelauvskog"
-             )
-```
-
-
-```{r}
-`%!in%` <- Negate(`%in%`)
-#wet_1 <- wet[wet$naturtype == ntyp[1],]
-wet_1 <- wet[wet$naturtype %!in% exclude,]
-
-wet_1_long <- tidyr::separate_rows(wet_1, ninbeskrivelsesvariabler, sep=",")
-wet_1_long <- tidyr::separate(wet_1_long, 
-                              col = ninbeskrivelsesvariabler,
-                              into = c("NiN_variable_code", "NiN_variable_value"),
-                              sep = "_",
-                              remove=F
-                              )
-wet_1_long$NiN_variable_value <- as.numeric(wet_1_long$NiN_variable_value)
-
-```
-
-Converting NiN_variable_value to numeric introduced NA's. 
-```{r}
-unique(wet_1_long$ninbeskrivelsesvariabler[is.na(wet_1_long$NiN_variable_value)])
-```
-
-These variables include LKM's (lokal kompleks miljøvariabel) which are nonrelevant to us here.  
-
-4DL-SS-0 and 4DL-S-0 has to do with the total amount of coarse woody debris/logs. It was only recorded for one nature type in 2018, and then as a a biodiversity variable, and not a state variable. *X* therefore means *not relevant*. 
-
-```{r}
-temp <- wet_1_long[wet_1_long$ninbeskrivelsesvariabler == "4DL-SS-0_X" |
-                   wet_1_long$ninbeskrivelsesvariabler == "4DL-S-0_X" ,]
-table(temp$kartleggingsår, temp$naturtype)
-```
-
-7SD-NS and 7SD-0 was also only used for that same nature type, and then only for wooded localities. *X* means *not relevant*.
-
-```{r}
-temp <- wet_1_long[wet_1_long$ninbeskrivelsesvariabler == "7SD-NS_X" |
-                     wet_1_long$ninbeskrivelsesvariabler == "7SD-0_X",]
-table(temp$kartleggingsår, temp$naturtype)
-```
-
-7TK (kjørespor) and 7SE (slitasje) are not allowed the value X, but it happened three times in 2018 (for that same nature type again). It's fine to exclude these.
-
-```{r}
-temp <- wet_1_long[wet_1_long$ninbeskrivelsesvariabler == "7TK_X" |
-                    wet_1_long$ninbeskrivelsesvariabler == "7SE_X" ,]
-table(temp$kartleggingsår, temp$naturtype)
-```
-
-7GR-GI (grøftingsintensitet) should not have the value X either, so ok to exclude these.
-```{r}
-temp <- wet_1_long[wet_1_long$ninbeskrivelsesvariabler == "7GR-GI_X",]
-table(temp$kartleggingsår, temp$naturtype)
-```
-
-```{r}
-wet_1_long2 <- wet_1_long[!is.na(wet_1_long$NiN_variable_value),]
-```
-
-
-This leaves us with the following parameters.
-```{r}
-unique(wet_1_long2$NiN_variable_code)
-```
-We can probably exclude several of these as non-relevant.
-
-The PR- variables are the NEAs own variables (not NiN). We can exclude some of these:
-```{r}
-excl <- c("PRRL-DD",   "PRRL-VU",   "PRRL-NT",   "PRRL-EN",   "PRRL-CR",  # red list categories
-          "PRKA",   # Number of calcaroues species indicatrs 
-          #"PRSL",  # Slitasje/physical damage. This one we might actually keep
-          "PRHA",   # Number of habitat spesific species
-          #"PRTO",  # Torvuttak / peat extraction. This one we can keep also
-          #"PRTK",  # Spor av tunge kjøretøy / Heavy vehicles. Keep this.
-          "PRMY",   # Myrstruktur / mire structure. A biodiversity indicator
-          "PRSE-KA")
-```
-
-1AG-B is the total shrub cover
-7TK is *kjøreskade*
-1AG-A-G is *dekning gjenveksttrær*
-
-
-```{r}
-temp <- wet_1_long2[wet_1_long2$NiN_variable_code == "PRKA",]
-View(temp)
-table(temp$kartleggingsår, temp$naturtype)
-```
-
-
-
-```{r}
-ntyp <- unique(wet_1_long$naturtype)
-```
-
-```{r}
-
-temp <- wet_1_long[wet_1_long$naturtype == ntyp[1],]
-table(temp$naturtype)
-
-ggplot(temp)+
-  geom_histogram(aes(x = NiN_variable_value))+
-  facet_wrap(vars(NiN_variable_code))
-```
 
 
 
