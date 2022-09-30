@@ -12,7 +12,8 @@ fig:unnamed-chunk-24
 fig:unnamed-chunk-26
 fig:unnamed-chunk-29
 fig:unnamed-chunk-33
-fig:unnamed-chunk-40
+fig:unnamed-chunk-34
+fig:unnamed-chunk-41
 areal-av-isbreer
 introduction
 about-the-underlying-data
@@ -50,6 +51,10 @@ temporal-trend
 condition
 mosaic-types
 nin-types-across-main-ecosystems
+naturlig-åpne-områder-under-skoggrensa
+semi-naturlig-mark
+våtmark
+areal
 export
 overview-of-nature-types
 naturtype2

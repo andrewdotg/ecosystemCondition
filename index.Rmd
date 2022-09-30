@@ -36,6 +36,7 @@ It is highly encouraged that the indicators are delivered as georeferenced maps,
 Indicator maps should have the highest possible spatial resolution possible but weighing this against the need for spatial representativity. For example, you may need to aggregate x number of data points to get an average which is stable and representative for a given region. There is no need to spatially aggregate indicator maps any further, for example to produce a national estimate.
 
 The indicator values, reference values ect should be mapped to the following columns (vector data) or bands (raster data):
+
 * `v_YYYY` for variable value (i.e. un-scaled or raw indicator values) for year YYYY. 
 * `sd_YYYY` for the standard deviation associated with v_YYYY. Other measures for uncertainty is currently not supported. 
 * `referance_high` for the reference value, i.e. the value of the variable *v* under reference conditions. This value cannot vary between years.
@@ -47,11 +48,11 @@ The rest of the workflow is as follows.
 
 * Obtain a _go ahead_ signal from the coordination group to make sure you are free to start your work
 * Read the [`template.Rmd`](template.Rmd) file. Make a copy of it and store it, in the same (root) folder as `DRAFT_myIndicator.Rmd`. (For an example, see `DRAFT_breareal.Rmd`). Finish your documentation and analyses there. 
-  + You can load data from internal NINA servers, from web hosts, of store smaller data set under `data`.
+    + You can load data from internal NINA servers, from web hosts, of store smaller data set under `data`.
   The `data` folder also contains some supporting data sets that you may want to use, such as a delineation of the five regions used in the ecosystem assessment (`data/regions.shp`), and an outline of Norway (`outlineOfNorway_EPSG25833.shp`).
-  + To preview you rmarkdown file as html in R, type `rmarkdown::render('DRAFT_myIndicator.Rmd', output_format = "html_document", output_dir = "temp")` in the console (the knitr shortcuts don't work as expected inside bookdown projects). 
-  + When filling out the template.Rmd file with your own work, try not to change the headers too much.
-  + Final result from the analyses should be written to the `indicators` folder. The preferred output is georeferenced data (rasters or shape files), and these should be placed under `indators/indicatorMaps`. Non-georeferenced data, like data tables, can be stored under `indicators`.
+    + To preview you rmarkdown file as html in R, type `rmarkdown::render('DRAFT_myIndicator.Rmd', output_format = "html_document", output_dir = "temp")` in the console (the knitr shortcuts don't work as expected inside bookdown projects). 
+    + When filling out the template.Rmd file with your own work, try not to change the headers too much.
+    + Final result from the analyses should be written to the `indicators` folder. The preferred output is georeferenced data (rasters or shape files), and these should be placed under `indators/indicatorMaps`. Non-georeferenced data, like data tables, can be stored under `indicators`.
 * Make a pull request to the main [*GitHub repository*](https://github.com/NINAnor/ecosystemCondition) to submit your file. If you are not comfortable using GitHub, contac Anders to rrange sending the files via email. 
 * Anders or someone else in the project wil conduct a rapid code review, making sure the code is reproducible, interpretable and that it renders locally on the R Studio server.
 * When approved, the reviewer will make a copy of the DRAFT_ file, removing the DRAFT_ part of the name, as well as the YML header, and as well as updating the rmd_files part of _bookdown.yml. (For an example of such a file, see `breareal.Rmd`.)
