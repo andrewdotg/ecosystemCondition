@@ -1,4 +1,4 @@
-# ecosystemCondition <img src='images/hexSticker.png' align="right" height="139" />
+# ecosystemCondition <img src='images/hexSticker_EC.png' align="right" height="139" />
 
 This repository is for documenting the design and calculation of indicators for ecosystem condition in Norway.
 
