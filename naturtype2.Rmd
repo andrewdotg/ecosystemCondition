@@ -22,7 +22,7 @@ Date: `r Sys.Date()`
 
 This chapter continues with the cleaned dataset exported at the end of the previous chapter:
 ```{r, eval=T}
-dat <- readRDS("/data/P-Prosjekter/41201785_okologisk_tilstand_2022_2023/data/Mdir_Naturtyper_cleanedALK.rds")
+dat <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Mdir_Naturtyper_cleanedALK.rds")
 ```
 
 ## Naturetypes, condition variables, and their linkage to NiN main types
@@ -70,7 +70,7 @@ ntypDF <- data.frame(
 )
 ```
 
-We have 67 nature types to consider. Some of the wetland types can actually be excluded because of the way we limited this ecosystem to mean *Open Wetland*.
+We have 66 nature types to consider. Some of the wetland types can actually be excluded because of the way we limited this ecosystem to mean *Open Wetland*.
 
 ```{r}
 excl_nt <- c("Kalkrik myr- og sumpskogsmark",
@@ -92,7 +92,7 @@ excl_nt <- c("Kalkrik myr- og sumpskogsmark",
 ntypDF <- ntypDF[ntypDF$Nature_type %!in% excl_nt,]
 ```
 
-```{r, fig.cap="List of nature types associated with the ecosystem Våtmark, showing the year when that nature type was mapped." }
+```{r, fig.cap="List of nature types showing the years when that nature type was mapped." }
 DT::datatable(ntypDF)
 ```
 
@@ -102,25 +102,25 @@ The way to do this I think is to look at each nature type in turn and map the Ni
 ### NiN variables
 
 ```{r}
-dat2 <- dat[dat$naturtype %!in% excl,]
+#Exclude non-relevant types
+dat2 <- dat[dat$naturtype %!in% excl_nt,]
 
+# Melt
 dat2L <- tidyr::separate_rows(dat2, ninbeskrivelsesvariabler, sep=",")
+
+# Split the code and teh value into seperate columns
 dat2L <- tidyr::separate(dat2L, 
                               col = ninbeskrivelsesvariabler,
                               into = c("NiN_variable_code", "NiN_variable_value"),
                               sep = "_",
                               remove=F
                               )
+# One NA produced here, but I check it, and it's fine.
+
+# Convert values to numeric. This causes some NA's which I will go though below
 dat2L$NiN_variable_value <- as.numeric(dat2L$NiN_variable_value)
 
 ```
-
-Checking some NA's produced
-```{r}
-#View(dat2L[280973,])
-#View(dat2[dat2$identifikasjon_lokalid =="NINFP2110037887",])
-```
-No problem.
 
 Here are all the Nin variable codes:
 ```{r}
@@ -131,39 +131,84 @@ Converting NiN_variable_value to numeric also introduced NA's for these categori
 ```{r}
 sort(unique(dat2L$NiN_variable_code[is.na(dat2L$NiN_variable_value)]))
 ```
-When I now go through the variable codes sperately I will also judge if these NA's are real, or if they for example should be coded as zeros or something.
+When I now go through the variable codes separately I will also judge if these NA's are real, or if they for example should be coded as zeros or something.
 
-#### 1AG-A
-"1AG-A-0"   "1AG-A-E"   "1AG-A-G"   "1AG-B"     "1AG-C"
+#### 1AG-A (sjiktdekningsvariabler)
+These are different variables describing the cover in different vegetation strata and/or species
 
-#### 1AR-C-L
+* 1AG-A-0 = Total tre canopy cover
+* 1AG-B = Total shrub cover
+* 1AG-C = Total field layer cover
+* 1AG-A-E = 'Overstandere'
+* 1AG-A-G = 'gjenveksttrær'
 
-#### 3TO
-"3TO-HA"    "3TO-HE"    "3TO-HK"    "3TO-HN"   "3TO-HP"    "3TO-PA"    "3TO-TE"
+
+#### 1AR-C-L (Andel vedvekster i fletsjiktet)
+A condition variable in some mire nature types
+
+#### 3TO (Torvmarksformer)
+These are defining variables, and not part of the condition assessment.
+```{r}
+exclude <- c("3TO-BØ",
+             "3TO-HA",
+             "3TO-HE",
+             "3TO-HK",
+             "3TO-HN",
+             "3TO-HP",
+             "3TO-PA",
+             "3TO-TE")
+```
 
 
-#### 4DL
-4DL-SS-0 and 4DL-S-0 has to do with the total amount of coarse woody debris/logs. It was only recorded for one nature type in 2018, and then as a a biodiversity variable, and not a state variable. *X* therefore means *not relevant*. 
+#### 4DL (Coarse dead wood)
+4DL-SS-0 and 4DL-S-0 has to do with the total amount of coarse woody debris/logs. It was only recorded for one nature type in 2018, and then as a a biodiversity variable, and not a state variable. Biodiversity variables were only recorded when condition was better than *very poor*. This bias means we cannot use these variables.
 
-#### 4TG
-"4TG-BL"    "4TG-EL"    "4TG-GF"
+```{r}
+exclude <- c(exclude,
+             "4DL-SS-0",
+             "4DL-S-0")
+```
 
-#### 4TL
-"4TL-BS"    "4TL-HE"    "4TL-HL" "4TL-RB"    "4TL-SB"
+
+#### 4TG (old trees)
+
+These three variables are used as biodiveristy variables in  2018 (exclude).
+```{r}
+exclude <- c(exclude,
+             "4TG-BL",
+             "4TG-EL",
+             "4TG-GF")
+```
+
+
+#### 4TL (trees with fire scars)
+These five variables are ised together with 4TG as biodiversity variables in 2018.
+```{r}
+exclude <- c(exclude,
+             "4TL-BS",
+             "4TL-HE",
+             "4TL-HL",
+             "4TL-RB",
+             "4TL-SB")
+```
 
 #### 5AB and 5BY
 These area land use types (arealbruksklasser) and building types, respectively, and the values are not numeric, but categorical, and represents presence or absence of these land uses or objects. These are not suited for automatically determining ecosystem condition as this is done subjectively in the field.
 ```{r}
-exclude <- c(
+exclude <- c(exclude,
              "5AB-0",
              "5AB-DO-TT",
              "5BY-0"
              )
 ```
 
-#### 6SE
-
-#### 6SO
+#### 6SE and 6SO (Bioclimatical sections and sones)
+Not relevant here as a condition variable.
+```{r}
+exclude <- c(exclude,
+             "6SE",
+             "6SO")
+```
 
 #### 7FA (fremmedartsinnslag)
 Should not have been allowed the value X, so Ok to exclude these.
@@ -171,14 +216,23 @@ Should not have been allowed the value X, so Ok to exclude these.
 #### 7GR-GI
 7GR-GI (grøftingsintensitet) should not have the value X either, so OK to exclude these.
 
-#### 7JB-KU
-* KU = Kystlyngheias utviklingsfaser
-    + BY = byggefase
-    + DE = degenereringsfase
-    + MO = moden fase
-    + PI = pionerfase
+#### 7JB-KU (Kystlyngheias utviklingsfaser)
 
-Let's look at 7JB-KU first.    
+* BY = byggefase
+* DE = degenereringsfase
+* MO = moden fase
+* PI = pionerfase
+
+This variable is used as in the biodiversity assessment, and can therefore not be used in the condition assessment because localities with *very poor* conditions have not been mapped/assessed.
+```{r}
+exclude <- c(exclude, 
+             "7JB-KU-BY", 
+             "7JB-KU-DE", 
+             "7JB-KU-MO", 
+             "7JB-KU-PI")
+```
+
+I will nonetheless explore this variable a bit more.
 NiN defines the possible values for these as numeric between 0 and 4 (shifted to become 1-5 in the dataset), but there are 544 cases where it has been given then value *X*.
 ```{r}
 temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7JB-KU-BY_X" |
@@ -186,7 +240,6 @@ temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7JB-KU-BY_X" |
                 dat2L$ninbeskrivelsesvariabler == "7JB-KU-MO_X" |
                      dat2L$ninbeskrivelsesvariabler == "7JB-KU-PI_X",]
 table(temp$kartleggingsår, temp$naturtype)
-#View(dat2L[dat2L$identifikasjon_lokalid ==  "NINFP1810033954",])
 ```
 
 The reason could be that this variable is used in the biodiversity assessment, which is not performed if the condition is *very poor*.
@@ -194,6 +247,7 @@ The reason could be that this variable is used in the biodiversity assessment, w
 table(temp$tilstand)
 ```
 That is not the case. If the condition is scored as low, the variable does not even appear in the data set for that locality.
+
 We can also make a note that a big proportion of the total number of localities of *Kystlynghei* had very poor condition, and therefore this variable 7JB-KU was not recorded.
 ```{r, fig.cap="The distribution of condition scores for Kystlynghei."}
 KU <- dat2[dat2$naturtype=="Kystlynghei",]
@@ -207,17 +261,11 @@ Each *kystlynghei* locality should have values for all four parameters (7BA-BY/D
 #View(dat2L[dat2L$identifikasjon_lokalid =="NINFP2110057689",]) # Two of the 7JB-KU variables have values
 ```
  ... we can see that sometimes <4 but >0 of the variables/phases has been given a score, but sometimes none have. This makes it problematic to set these NA's to be zeros. When we also consider the fact that there is an obvious bias in that only localities with poor condition or better have these variables assessed in the first place, I will exclude all of these variables and treat them as *not suited*.
- 
-```{r}
-exclude <- c(exclude, 
-             "7JB-KU-BY", 
-             "7JB-KU-DE", 
-             "7JB-KU-MO", 
-             "7JB-KU-PI")
-```
-
 
 #### 7JB-BA = Aktuell bruksintensitet
+A common condition variable in semi-natural nature types. It's a borderline pressure indicator, but I will keep it in the data set for now at least.
+
+Overview of cases where the value is set as *X*.
 ```{r}
 temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7JB-BA_X",]
 table(temp$kartleggingsår, temp$naturtype)
@@ -225,29 +273,38 @@ table(temp$kartleggingsår, temp$naturtype)
 These are just a few cases, mostly from 2018. OK to treat as NA.
 
 #### 7JB-BT = Beitetrykk
+Similar variable to the above.
 ```{r}
 temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7JB-BT_X",]
 table(temp$kartleggingsår, temp$naturtype)
 ```
-OK to treat as NA's.
+OK to treat X's as NA's.
 
 #### 7JB-GJ = Gjødsling
+Similar variable to the two above.
 ```{r}
 temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7JB-BT_X",]
 table(temp$kartleggingsår, temp$naturtype)
 ```
-OK to treat as NA's. This one, and some of the previous ones as well, are more like pressure indicators than condition indicators, but I wont worry too much about that at this stage.
+OK to treat as X's NA's.
 
-#### 7JB-HT
-"7JB-HT-SL" "7JB-HT-ST"
+#### 7JB-HT (Høsting av tresjiktet)
+Used for *Lauveng*in 2019 and 2020.
+```{r}
+temp <- dat2L[dat2L$NiN_variable_code == "7JB-HT-ST" | 
+               dat2L$NiN_variable_code == "7JB-HT-SL" ,]
+table(temp$kartleggingsår, temp$naturtype)
+```
+This is so marginal that I will exclude then already now.
+```{r}
+exclude <- c(exclude,
+             "7JB-HT-SL",
+             "7JB-HT-ST")
+```
 
-#### 7RA-BH
-"7RA-BH"
-
-#### 7RA-SJ
-*Rask gjenvekstsuksesjon i semi-naturlig og sterkt endret jordbruksmark inkludert våteng*
-There are some very few cases where this variable has the value X. It should be numeric 1-4, so the value X is a mistake here I think. We can exclude these (i.e. allow them to be NA's).
-
+#### 7RA-BH and 7RA-SJ (rask suksesjon i boreal hei og i i semi-naturlig og sterkt endret jordbruksmark inkludert våteng)
+Condition variables.
+There are some very few cases where 7RA-SJ has the value X. It should be numeric 1-4, so the value X is a mistake here I think. We can exclude these (i.e. allow them to be NA's).
 
 #### 7SD
 7SD-NS and 7SD-0 was also only used for one nature type, and then only for wooded localities of *Flommyr, myrkant og myrskogsmark*. *X* therefore means *not relevant*, and we can also exclude the parameters from the dataset all together.
@@ -258,10 +315,8 @@ exclude <- c(exclude,
              "7SD-NS")
 ```
 
-
-
 #### 7TK and /SE
-7TK (kjørespor) and 7SE (slitasje) are not allowed the value X, but it happened on some rare occasions (24) anyhow. It's fine to exclude these.
+7TK (kjørespor) and 7SE (slitasje) are not allowed the value X, but it happened on some rare occasions (24) anyhow. It's fine to treat these as NA's.
 
 #### 7VR-RI
 *Reguleringsintensitet*
@@ -270,8 +325,7 @@ This variable is defined as numeric between 1-5. There is, however, quite a few 
 temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7VR-RI_X",]
 table(temp$kartleggingsår, temp$naturtype)
 ```
-
-I cannot explain these, but in any case, this variable is not a good indicator for condition as it rather represents a pressure/driver. So OK to treat as NA's
+I cannot explain these, but in any case, this variable is not a good indicator for condition as it rather represents a pressure/driver. So OK to treat as NA's.
 
 #### LKMs and MdirPR-variables
 These variables include LKM's (lokal kompleks miljøvariabel) which are nonrelevant to us here. We can also exclude some of the PR- variables, which are the NEAs own variables (not NiN). 
