@@ -49,7 +49,7 @@ Extract the year when these were mapped
 ```{r}
 years <- NULL
 for(i in 1:length(ntyp)){
-years[i] <- paste(unique(dat$kartleggingsår[dat$naturtype == ntyp[i]]), collapse = ", ")
+years[i] <- paste(sort(unique(dat$kartleggingsår[dat$naturtype == ntyp[i]])), collapse = ", ")
 }
 ```
 
@@ -398,7 +398,8 @@ These variables include LKM's (lokal kompleks miljøvariabel) which are nonrelev
     + Exclude
 
 ```{r}
-exclude <- c("LKMKI",     
+exclude <- c(exclude,
+             "LKMKI",     
           "LKMSP",
           "PRAK",
           "PRAM",
@@ -420,19 +421,80 @@ exclude <- c("LKMKI",
 ```{r}
 dat2L2 <- dat2L[!is.na(dat2L$NiN_variable_value),]
 dat2L2 <- dat2L2[dat2L2$NiN_variable_code %!in% exclude,]
+length(unique(dat2L2$NiN_variable_code))
 ```
+Now we are down to 20 possible condition variables.
 
-
-
-Are the nature types or groups of nature types representative of the main NiN types?
-And, is the coverage of NiN main types representative of the Hovedøkosystem?
-If so then check for environmental bias.
-If OK to continue, then check for available NiN variables, especially reoccurring variables.
-
+I will also now exclude nature types that were only mapped in 2018 and/or and not after that. These nature types will not only not get more data in the future, but also they were mapped in a time when the methodology was quite unstable. 
 
 ```{r}
-ntypDF$hovedgruppe[ntypDF$Nature_type == "Slåttemark"] <- "T32"
+ntypDF2 <- ntypDF[ntypDF$Year != "2018" &
+                  ntypDF$Year != "2019" & 
+                  ntypDF$Year != "2018, 2019"# no types were mappen in 2018 & 2019 only
+                  ,]
 ```
+
+### Fill inn ntypDF2 
+Next I want to expand ntypDF2 to include the NiN main types covered by the different nature types. I cannot use the field data for this, because there are so many mistakes in the data. I need to look at the definition of each nature type and get the NiN code from there. I could also extract the NiN sub types (grunntyper), but it would become too messy. 
+
+(Split the value seperated by | into new column after and use to colour a stacked barplot)
+
+I will look at the definitions of the nature type in the first and last year when that type was mapped, but not for the years in between.
+```{r}
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Aktiv skredmark"                                    ] <- "T17 | all"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Åpen flomfastmark"                                  ] <- "T18 | all"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Åpen grunnlendt kalkrik mark i boreonemoral sone"   ] <- "T2  | calcareous"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Åpen grunnlendt kalkrik mark i sørboreal sone"      ] <- "T2  | calcareous"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Atlantisk høymyr"                                   ] <- "V3  | partial" # can also include smaller areas of V1
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Boreal hei"                                         ] <- "T31 | all"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Eksentrisk høymyr"                                  ] <- "V3  | partial" # can also include smaller areas of V1
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Eng-aktig sterkt endret fastmark"                   ] <- "T41 | all"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Fosse-eng"                                          ] <- "T15 | all"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Fosseberg"                                          ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Fossepåvirket berg"                                 ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Fuglefjell-eng og fugletopp"                        ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Hagemark"                                           ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Høgereligende og nordlig nedbørsmyr"                ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Isinnfrysingsmark"                                  ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Kalkrik helofyttsump"                               ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Kanthøymyr"                                         ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Konsentrisk høymyr"                                 ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Kystlynghei"                                        ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Lauveng"                                            ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Nakent tørkeutsatt kalkberg"                        ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Naturbeitemark"                                     ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Øvre sandstrand uten pionervegetasjon"              ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Øyblandingsmyr"                                     ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Palsmyr"                                            ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Platåhøymyr"                                        ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Rik åpen jordvannsmyr i mellomboreal sone"          ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Rik åpen jordvannsmyr i nordboreal og lavalpin sone"] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Rik åpen sørlig jordvannsmyr"                       ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Sanddynemark"                                       ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig eng"                                  ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig myr"                                  ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig strandeng"                            ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig våteng"                               ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Silt og leirskred"                                  ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Slåttemark"                                         ] <- "T32"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Slåttemyr"                                          ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Sørlig etablert sanddynemark"                       ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Sørlig kaldkilde"                                   ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Sørlig nedbørsmyr"                                  ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Sørlig slåttemyr"                                   ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Strandeng"                                          ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Svært tørkeutsatt sørlig kalkberg"                  ] <- ""
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Terrengdekkende myr"                                ] <- ""
+
+```
+
+Next, are the coverage of NiN main types representative of the Hovedøkosystem? Then I need to manually enter the NiN main types associated with each Hovedøkosystem and perhaps add them as blank rows in ntypDF2.
+
+After that, I will add 20 more columns, one for each nin variable, and indicate for each row/nature type which variables are recorded.
+
+Candidate nature types or groups of nature types that may be suitable to describe ecosystem condition for a NiN main type or Hovedøkosystem will be subject to further testing to look for environmental bias.
+
+
 
 ```{r}
 ntypDF$coverage[ntypDF$Nature_type == "Slåttemark"] <- "Partial"
