@@ -13,6 +13,8 @@ library(data.table)
 library(stringr)
 library(units)
 library(dplyr)
+library(RColorBrewer)
+library(forcats)
 library(tidyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -479,7 +481,7 @@ ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig myr"                  
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig strandeng"                            ] <- "T33 | all (-2018)" # could perhaps be used in 2018, but it's defined awkwardly
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig våteng"                               ] <- "V10 | all (-2018)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Silt og leirskred"                                  ] <- "T17 | all (if including sub-types)"
-ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Slåttemark"                                         ] <- "T32 | partial"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Slåttemark"                                         ] <- "T32 | special management"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Slåttemyr"                                          ] <- "V9  | all (if including sub-types)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Sørlig etablert sanddynemark"                       ] <- "T21 | all (if including sub-types)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Sørlig kaldkilde"                                   ] <- "V4  | southern"
@@ -545,18 +547,16 @@ ntyp_fill <- cbind(ntypDF2, ntyp_vars_wide[,-1][match(ntypDF2$Nature_type, ntyp_
 #### Add number of location and total area mapped
 ```{r}
 dat2$km2 <- units::drop_units(dat2$area/10^6)
-num <- aggregate(data = dat2,
-              km2~naturtype,
-              FUN = sum)
 
-num$numberOfLocalities <- aggregate(data = dat2,
-              km2~naturtype,
-              FUN = length)[,2]
-#num <- num[num$naturtype %in% ntypDF2$Nature_type,]
+num <- as.data.frame(dat2) %>%
+  group_by(naturtype)%>%
+  summarise(km2 = sum(km2),
+            numberOfLocalities = n())
 
 ntyp_fill <- cbind(ntyp_fill, num[,-1][match(ntyp_fill$Nature_type, num$naturtype),])
 ```
 
+## Plots
 
 ```{r, fig.cap="The total mapped area for nature types associated with three selected main ecosystems"}
 
@@ -599,23 +599,133 @@ egg::ggarrange(gg_area, gg_locs,
 
 ```
 
-```{r, fig.cap="The total number of mapped localities for nature types associated with three selected main ecosystems"}
-ntyp_fill %>%
-  arrange(numberOfLocalities) %>%
-  mutate(Nature_type=factor(Nature_type, levels=Nature_type)) %>%   # This trick update the factor levels
-  ggplot( aes(x = Nature_type,
-               y = numberOfLocalities)) +
-    geom_segment( aes(xend=Nature_type, yend=0)) +
-    geom_point( size=4, aes(group = Ecosystem,
-                            colour= Ecosystem)) +
-    coord_flip() +
-    theme_bw() +
-    xlab("")+
-    ylab("Number of localities")+
-  theme(legend.position = c(0.55, 0.25),
-        legend.background = element_rect(fill = "white", color = "black"))
+
+
+### Area per NiN main type conditioned on ecosystem and adding empty main types
+First I will add the NiN main types that are not covered by any nature types.
+
+```{r}
+open <- c(
+  "T1",
+  "T2",
+  "T6",
+  "T8",
+  "T11",
+  "T12",
+  "T13",
+  "T15",
+  "T16",
+  "T17",
+  "T18",
+  "T20",
+  "T21",
+  "T23",
+  "T24",
+  "T25",
+  "T26",
+  "T27",
+  "T29"
+)
+
+semi <- c(
+  "T31",
+  "T32",
+  "T33",
+  "T34",
+  "T40",  # are these included
+  "T41"   # are these included
+)
+
+wetland <- c(
+  "V1",
+  "V3",
+  "V4",
+  "V6",
+  "V9",
+  "V10",
+  "L4"    # this will probably not be part of the assessments
+  
+)
 
 ```
+
+Adding the non-mapped open types
+```{r}
+open[open %!in% ntyp_fill$NiN_mainType]
+```
+
+```{r}
+ntyp_fill2 <- ntyp_fill %>%
+  add_row(NiN_mainType = "T6", Ecosystem = "Naturlig åpne områder under skoggrensa", NiN_mainTypeCoverage = "Not mapped", km2 = 0) %>%
+  add_row(NiN_mainType = "T11", Ecosystem = "Naturlig åpne områder under skoggrensa", NiN_mainTypeCoverage = "Not mapped", km2 = 0) %>%
+  add_row(NiN_mainType = "T13", Ecosystem = "Naturlig åpne områder under skoggrensa", NiN_mainTypeCoverage = "Not mapped", km2 = 0) %>%
+  add_row(NiN_mainType = "T16", Ecosystem = "Naturlig åpne områder under skoggrensa", NiN_mainTypeCoverage = "Not mapped", km2 = 0) %>%
+  add_row(NiN_mainType = "T23", Ecosystem = "Naturlig åpne områder under skoggrensa", NiN_mainTypeCoverage = "Not mapped", km2 = 0) %>%
+  add_row(NiN_mainType = "T24", Ecosystem = "Naturlig åpne områder under skoggrensa", NiN_mainTypeCoverage = "Not mapped", km2 = 0) %>%
+  add_row(NiN_mainType = "T25", Ecosystem = "Naturlig åpne områder under skoggrensa", NiN_mainTypeCoverage = "Not mapped", km2 = 0) %>%
+  add_row(NiN_mainType = "T26", Ecosystem = "Naturlig åpne områder under skoggrensa", NiN_mainTypeCoverage = "Not mapped", km2 = 0) %>%
+  add_row(NiN_mainType = "T27", Ecosystem = "Naturlig åpne områder under skoggrensa", NiN_mainTypeCoverage = "Not mapped", km2 = 0) 
+
+```
+
+
+Adding the non-mapped semi-natural types
+```{r}
+semi[semi %!in% ntyp_fill$NiN_mainType]
+```
+```{r}
+ntyp_fill2 <- ntyp_fill %>%
+  add_row(NiN_mainType = "T40", Ecosystem = "Semi-naturlig mark", NiN_mainTypeCoverage = "Not mapped", km2 = 0)
+```
+
+Adding the non-mapped wetland types
+```{r}
+wetland[wetland %!in% ntyp_fill$NiN_mainType]
+```
+This is Våtsnøleie, and my guess is that it IS mapped, but grouped with the aloine ecosystem. I'll therefore not add it in here, but mention it in the figure caption below.
+
+
+```{r, fig.cap="The areas mapped for each NiN main type, and the degree of spatial representativity (or coverage) of the mapping units (nature types). V6 Våtsnøleie og snøleiekilde is not included."}
+mySize <- 10
+ntyp_fill2 %>%
+  # combining two classes to get a better colour palette
+  mutate(NiN_mainTypeCoverage = 
+           replace(NiN_mainTypeCoverage, NiN_mainTypeCoverage == "southern", "partial"),
+         NiN_mainTypeCoverage = 
+           replace(NiN_mainTypeCoverage, NiN_mainTypeCoverage == "calcareous and dry", "calcareous")) %>%
+  
+  group_by(NiN_mainType, NiN_mainTypeCoverage) %>%
+  mutate(km2 = sum(km2)) %>%
+  slice_head()%>%
+  select(Ecosystem,
+         NiN_mainType,
+         NiN_mainTypeCoverage,
+         km2)%>%
+  ungroup() %>%
+  mutate(NiN_mainType = fct_reorder(NiN_mainType, km2)) %>%
+  ggplot(aes(x = NiN_mainType,
+             y = km2,
+             fill = NiN_mainTypeCoverage))+
+    geom_bar(stat = "identity",
+             colour = "grey40",
+             position = "stack")+
+    theme_bw(base_size = mySize)+
+    coord_flip()+
+  labs(x = "NiN main type",
+       y = expression(km^2),
+       fill = "Spatial coverage")+
+  scale_fill_brewer(palette = "Set1")+
+  facet_wrap(vars(Ecosystem),
+             scales = "free",
+             labeller = label_wrap_gen(width=25))
+  
+```
+
+
+### For each NiN main type, the proportion mapped with each NiN variable
+
+
+### For each ecosystem, the proportion mapped with each NiN variable
 
 
 
