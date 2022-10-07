@@ -13,6 +13,7 @@ library(data.table)
 library(stringr)
 library(units)
 library(dplyr)
+library(tidyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -108,7 +109,7 @@ dat2 <- dat[dat$naturtype %!in% excl_nt,]
 # Melt
 dat2L <- tidyr::separate_rows(dat2, ninbeskrivelsesvariabler, sep=",")
 
-# Split the code and teh value into seperate columns
+# Split the code and the value into separate columns
 dat2L <- tidyr::separate(dat2L, 
                               col = ninbeskrivelsesvariabler,
                               into = c("NiN_variable_code", "NiN_variable_value"),
@@ -430,16 +431,16 @@ I will also now exclude nature types that were only mapped in 2018 and/or and no
 ```{r}
 ntypDF2 <- ntypDF[ntypDF$Year != "2018" &
                   ntypDF$Year != "2019" & 
-                  ntypDF$Year != "2018, 2019"# no types were mappen in 2018 & 2019 only
+                  ntypDF$Year != "2018, 2019"# no types were mappend in 2018 & 2019 only
                   ,]
 ```
 
 ### Fill inn ntypDF2 
 Next I want to expand ntypDF2 to include the NiN main types covered by the different nature types. I cannot use the field data for this, because there are so many mistakes in the data. I need to look at the definition of each nature type and get the NiN code from there. I could also extract the NiN sub types (grunntyper), but it would become too messy. 
 
-(Split the value seperated by | into new column after and use to colour a stacked barplot)
-
 I will look at the definitions of the nature type in the first and last year when that type was mapped, but not for the years in between.
+
+#### Add NiN main type and degree of representativity
 ```{r}
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Aktiv skredmark"                                    ] <- "T17 | all (if including sub-types)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Åpen flomfastmark"                                  ] <- "T18 | all"
@@ -490,12 +491,150 @@ ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Terrengdekkende myr"                
 
 ```
 
+Split this new column in two.
+```{r}
+ntypDF2 <- ntypDF2 %>%
+  tidyr::separate(col = hovedgruppe,
+                  into = c("NiN_mainType", "NiN_mainTypeCoverage"),
+                  #sep = "|",
+                  remove=T,
+                  extra = "merge"
+              )
+```
+
+#### Add NiN variables
+
+```{r}
+ntyp_vars <- as.data.frame(table(dat2L2$naturtype, dat2L2$NiN_variable_code))
+names(ntyp_vars) <- c("Nature_type", "NiN_variable_code", "NiN_variable_count")
+(ntyp_vars <- ntyp_vars[ntyp_vars$NiN_variable_count >0,])
+```
+
+Add a column for the total nmber of localities for each nature type and get the percentage of localities where each NiN has been recorded.
+```{r}
+#options(scipen=999) # suppress exp notation
+count <- as.data.frame(table(dat2$naturtype))
+names(count) <- c("Nature_type", "totalLocations")
+ntyp_vars$totalLocations <- count$totalLocations[match(ntyp_vars$Nature_type, count$Nature_type)]
+ntyp_vars$percentageUse <- round((ntyp_vars$NiN_variable_count/ntyp_vars$totalLocations)*100, 1)
+```
+
+Cast to get NiN codes as columns
+```{r}
+ntyp_vars_wide <- data.table::dcast(setDT(ntyp_vars),
+                                    Nature_type~NiN_variable_code,
+                                    value.var = "percentageUse")
+```
+
+This dat set contains the nature types that were only mappen in 2018 or 2019, and which we removed from ntypDF2. 
+```{r}
+ntyp_vars_wide$Nature_type[ntyp_vars_wide$Nature_type %!in% ntypDF2$Nature_type]
+```
+
+So we should remove them also here.
+```{r}
+ntyp_vars_wide <- ntyp_vars_wide[ntyp_vars_wide$Nature_type %in% ntypDF2$Nature_type]
+```
+
+Combine datasets
+```{r}
+ntyp_fill <- cbind(ntypDF2, ntyp_vars_wide[,-1][match(ntypDF2$Nature_type, ntyp_vars_wide$Nature_type)])
+```
+
+
+#### Add number of location and total area mapped
+```{r}
+dat2$km2 <- units::drop_units(dat2$area/10^6)
+num <- aggregate(data = dat2,
+              km2~naturtype,
+              FUN = sum)
+
+num$numberOfLocalities <- aggregate(data = dat2,
+              km2~naturtype,
+              FUN = length)[,2]
+#num <- num[num$naturtype %in% ntypDF2$Nature_type,]
+
+ntyp_fill <- cbind(ntyp_fill, num[,-1][match(ntyp_fill$Nature_type, num$naturtype),])
+```
+
+
+```{r, fig.cap="The total mapped area for nature types associated with three selected main ecosystems"}
+
+mySize <- 8
+gg_area <- ntyp_fill %>%
+  arrange(km2) %>%
+  mutate(Nature_type=factor(Nature_type, levels=Nature_type)) %>%   # This trick update the factor levels
+  ggplot( aes(x = Nature_type,
+                   y = km2)) +
+        geom_segment( aes(xend=Nature_type, yend=0)) +
+        geom_point( size=4, aes(group = Ecosystem,
+                                colour= Ecosystem)) +
+        coord_flip() +
+        theme_bw(base_size = mySize) +
+        xlab("")+
+        ylab(expression(km^2))+
+      theme(legend.position = "top",
+        legend.key.size =  unit(.05, 'cm'),
+            legend.background = element_rect(fill = "white", color = "black")
+            )
+
+gg_locs <- ntyp_fill %>%
+  arrange(km2) %>%
+  mutate(Nature_type=factor(Nature_type, levels=Nature_type)) %>%    # also sorted after km2
+  ggplot( aes(x = Nature_type,
+                   y = numberOfLocalities)) +
+        geom_segment( aes(xend=Nature_type, yend=0)) +
+        geom_point( size=4, aes(group = Ecosystem,
+                                colour= Ecosystem)) +
+        coord_flip() +
+        theme_bw(base_size = mySize) +
+        xlab("")+
+        ylab("Number of localities")+
+  theme(legend.position = "none",
+        axis.text.y = element_blank())
+
+
+egg::ggarrange(gg_area, gg_locs, 
+                        ncol = 2)
+
+```
+
+```{r, fig.cap="The total number of mapped localities for nature types associated with three selected main ecosystems"}
+ntyp_fill %>%
+  arrange(numberOfLocalities) %>%
+  mutate(Nature_type=factor(Nature_type, levels=Nature_type)) %>%   # This trick update the factor levels
+  ggplot( aes(x = Nature_type,
+               y = numberOfLocalities)) +
+    geom_segment( aes(xend=Nature_type, yend=0)) +
+    geom_point( size=4, aes(group = Ecosystem,
+                            colour= Ecosystem)) +
+    coord_flip() +
+    theme_bw() +
+    xlab("")+
+    ylab("Number of localities")+
+  theme(legend.position = c(0.55, 0.25),
+        legend.background = element_rect(fill = "white", color = "black"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Next, are the coverage of NiN main types representative of the Hovedøkosystem? Then I need to manually enter the NiN main types associated with each Hovedøkosystem and perhaps add them as blank rows in ntypDF2.
 
-After that, I will add 20 more columns, one for each nin variable, and indicate for each row/nature type which variables are recorded.
-
 Candidate nature types or groups of nature types that may be suitable to describe ecosystem condition for a NiN main type or Hovedøkosystem will be subject to further testing to look for environmental bias.
-
 
 
 ```{r}
