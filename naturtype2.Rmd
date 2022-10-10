@@ -1,8 +1,9 @@
-# On the application of the naturetype dataset - Part 2 - Representativity {#naturtype2}
+# Nature types - Part 2 
+
+On the application of the naturetype dataset - Part 2 - Representativity {#naturtype2}
 
 <br />
 
-*Work in progress*
 
 ```{r, include=FALSE}
 library(knitr)
@@ -318,7 +319,7 @@ exclude <- c(exclude,
              "7SD-NS")
 ```
 
-#### 7TK and /SE
+#### 7TK and 7SE (kjørespor & slitasje)
 7TK (kjørespor) and 7SE (slitasje) are not allowed the value X, but it happened on some rare occasions (24) anyhow. It's fine to treat these as NA's.
 
 #### 7VR-RI
@@ -741,24 +742,35 @@ areaSum <- ntyp_fill2 %>%
 
 ```
 
-```{r, fig.cap="Barplot showing the proportion area for which each NiN variable is recorded. The last letter of the NiN variable code refers to the ecosystem tye, and is not part of the variable name. The total mapped area for each main ecosystem (the facets) is shown as a dashed red line. "}
+```{r, fig.cap="Barplot showing the proportion area for which each NiN variable is recorded. The total mapped area for each main ecosystem (the facets) is shown as a dashed red line. The three most dominant Nin main types for each ecosystem is given a uniqe colour, and all the remaining are grouped as 'other'."}
 ntyp_fill2 %>%
   pivot_longer(cols = unique(ntyp_vars$NiN_variable_code)) %>%
   drop_na(value) %>%
   rename(NiN_code = name,
          useFrequency = value) %>%
   filter(useFrequency > 0) %>%
-  group_by(NiN_code, Ecosystem) %>%
+  group_by(NiN_code, Ecosystem, NiN_mainType) %>%  # NiN main type could be replaced with Nature_type
   summarise(km2 = sum(km2)) %>%
-  arrange(km2) %>%
-  mutate(lab = paste(NiN_code, substr(Ecosystem, start = 1, stop = 1)), sep = " ") %>%
+  
+  # create a truncated fill variable 
   group_by(Ecosystem) %>%
-  mutate(lab = forcats::fct_reorder(lab, km2)) %>%
-  ggplot(aes(x = lab,
-              y = km2))+
+  mutate(myFill = fct_lump(NiN_mainType, 3, w = km2)) %>%
+  
+  # qick fix to sort variable across facets (dont work after adding 'Nature_type' in the first group_by)
+  #mutate(lab = paste(NiN_code, substr(Ecosystem, start = 1, stop = 1), sep = " ")) %>%
+  #ungroup()%>%
+  #mutate(lab = forcats::fct_reorder(lab, km2)) %>%
+  
+  
+  # plot
+  ggplot(aes(x = NiN_code,
+              y = km2,
+             fill = myFill
+                ))+
   geom_bar(stat = "identity",
            colour = "grey40",
-           fill = "grey80")+
+           #fill = "grey80",
+           position = "stack")+
   geom_hline(data = areaSum,
              aes(yintercept = km2),
              colour = "red",
@@ -767,205 +779,19 @@ ntyp_fill2 %>%
              scales = "free",
              labeller = label_wrap_gen(width=25))+
   labs(x = "",
-       y = expression(km^2))+
+       y = expression(km^2),
+       fill = "")+
   coord_flip()+
+  scale_fill_brewer(palette = "Set1")+
   theme_bw(base_size = mySize)
 ```
 
 
-### For each ecosystem, the proportion mapped with each NiN variable
+This figure, in combination with the above, points to he most obvious NiN variable candidates. 
 
+7TK, /SE and 7FA are good candidates for *Naturlig åpne områder*. 7JA-BT is probably best classes as a pressures indikcator. Same with 7VR-RI with is recorded for all T18 localities. 
 
+The same three variables are the best candidates also for *Semi-natural areas*.
 
+For *Våtmark*, 7GR-Gi is the most common variables, but this is a pressure variable. But, perhaps it could be used as a surrogate indicator. /SE and 7TK+PRTK are other candidates. PRTO is only relevant for V3, but covers a relatively large area.
 
-
-
-
-
-
-
-
-
-
-
-
-
-Next, are the coverage of NiN main types representative of the Hovedøkosystem? Then I need to manually enter the NiN main types associated with each Hovedøkosystem and perhaps add them as blank rows in ntypDF2.
-
-Candidate nature types or groups of nature types that may be suitable to describe ecosystem condition for a NiN main type or Hovedøkosystem will be subject to further testing to look for environmental bias.
-
-
-```{r}
-ntypDF$coverage[ntypDF$Nature_type == "Slåttemark"] <- "Partial"
-```
-
-```{r}
-codes <- unique(dat2L2$NiN_variable_code)
-```
-
-Next, add 'codes' in seperate rows (wide) and cast to columns
-
--------------------------
-
-
-
-```{r}
-wet_1_long2 <- wet_1_long[!is.na(wet_1_long$NiN_variable_value),]
-```
-
-
-This leaves us with the following parameters.
-```{r}
-unique(wet_1_long2$NiN_variable_code)
-```
-We can probably exclude several of these as non-relevant.
-
-
-1AG-B is the total shrub cover
-7TK is *kjøreskade*
-1AG-A-G is *dekning gjenveksttrær*
-
-
-
-
-
-
-```{r}
-ntyp <- unique(wet_1_long$naturtype)
-```
-
-```{r}
-
-temp <- wet_1_long[wet_1_long$naturtype == ntyp[1],]
-table(temp$naturtype)
-
-ggplot(temp)+
-  geom_histogram(aes(x = NiN_variable_value))+
-  facet_wrap(vars(NiN_variable_code))
-```
-
-
-
-------------------------------------------
-
-
-### Våtmark
-I will start by looking at wetlands (våtmark).
-
-```{r}
-wet <- myData[myData$hovedøkosystem == "Våtmark",]
-any(wet[wet$naturtype == " Hule eiker",])
-```
-
-How many mosaic localities do we have?
-```{r}
-wet_Mos <- wet[wet$mosaikk == "Ja",]
-nrow(wet_Mos)
-```
-275, compared to 
-```{r}
-wet_noMos <- wet[wet$mosaikk != "Ja",]
-nrow(wet_noMos)
-```
-118550 *normal* localities.
-
-Let's plot the summed area of each NiN main type, excluding mosaic localities.
-```{r, fig.cap="Total mapped are for each NiN main type in the wetland ecosystem (excluding mosaics)"}
-temp <- stats::aggregate(data = wet_noMos,
-                                 area~ninkartleggingsenheter3, FUN = sum)
-
-names(temp)[2] <- "area_m2"
-temp$area_km2 <- drop_units(temp$area_m2/10^6)
-
-
-ggplot(temp,
-       aes(x = ninkartleggingsenheter3,
-               y = area_km2))+
-  geom_bar(
-           fill="grey",
-           colour="black",
-           stat="identity")+
-  coord_flip()+
-  theme_bw(base_size = 12)+
-  labs(y = "Total mapped area (km/2)",
-       x = "NiN main types")
-```
-
-If we include mosaic localities we get some other main types included as well
-```{r, fig.cap="Total mapped are for each NiN main type in the wetland ecosystem (including mosaics)"}
-wet_long <- tidyr::separate_rows(wet, ninkartleggingsenheter3)
-wet_long_agg <- stats::aggregate(data = wet_long,
-                                 area~ninkartleggingsenheter3, FUN = sum)
-names(wet_long_agg)[2] <- "area_m2"
-wet_long_agg$area_km2 <- drop_units(wet_long_agg$area_m2/10^6)
-ggplot(wet_long_agg,
-       aes(x = ninkartleggingsenheter3,
-               y = area_km2))+
-  geom_bar(
-           fill="grey",
-           colour="black",
-           stat="identity")+
-  coord_flip()+
-  theme_bw(base_size = 12)+
-  labs(y = "Total mapped area (km/2)",
-       x = "NiN main types")
-```
-
-Especially T34 (kystlynghei) and T1 (nakent berg) commonly occur in mosaics with wetlands.
-
-V5, V6 are V7 are not represented at all. V5 is *Varm kilde* which we don't have in mainland Norway. V6 and V7 might be linked to the alpine ecosystem.
-
-
-
-
-
-
-### Kalkrik myr- og sumpskogsmark
-Only mapped in 2018. Back then, the defining NiN variables were not clearly stated, but the defining text clearly show that this is forested land, and so it should not be included in our assessment since our operational definition of Våtmark is *Åpen våtmark / open wetlands*.
-
-```{r}
-ntypDF$Eligible[ntypDF$Nature_type == "Kalkrik myr- og sumpskogsmark"] <- "No"
-```
-
-
-
-### Slåttemyr
-Mapped in all years and covers the entire NiN space in V9. 
-```{r}
-ntypDF$Eligible[ntypDF$Nature_type == "Slåttemyr"] <- "Yes"
-ntypDF$NiN_mainType[ntypDF$Nature_type == "Slåttemyr"] <- "V9"
-ntypDF$NiN_mainType_coverage[ntypDF$Nature_type == "Slåttemyr"] <- "Complete"
-
-ntypDF$'Busksjikt-dekning (1AG-B)'[ntypDF$Nature_type == "Slåttemyr"] <- "Recorded in all years."
-ntypDF$'Grøftings-intensitet (7GR-GI)'[ntypDF$Nature_type == "Slåttemyr"] <- "Recorded in all years."
-ntypDF$'Dekning av gjenvekst-trær (1AG-A-G)'[ntypDF$Nature_type == "Slåttemyr"] <- "Recorded in all years."
-ntypDF$'Andel av vedvekster i feltsjiktet (1AR-C-L)'[ntypDF$Nature_type == "Slåttemyr"] <- "Recorded in all years."
-
-
-ntypDF$Remarks[ntypDF$Nature_type == "Slåttemyr"] <- "The list of NiN condition variables has changed over the years, and possibly also the different threshold values."
-```
-
-
-## Environmental space
-
--   Extract environmental data from the polygons and compare against reference data points.
--   Uni-variate (e.g. *boreal hei* plotted against elevation, oceanity, distance from roads, etc)
-
-
-## Conclution 1
-
-Conclude about which main ecosystem types that can reliably assess using the available mapping units?
-
-What about suitability for defining reference values?
-
-## Suitability
-
-In the subset of mapping units that can be said to represent an ecosystem group, which NiN or MdirPRAM variables should we use?
-
-## Concrete examples
-
-### Andel lynghei med minst to faser i kystlynghei
-
-### Areal uten skadet og/eller død røsslyng i kystlynghei
-
-### Aktuell bruksintensitet
