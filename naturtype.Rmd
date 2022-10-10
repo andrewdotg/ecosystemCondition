@@ -1,6 +1,8 @@
 # (PART\*) GENERAL TOPICS {.unnumbered}
 
-# On the application of the naturetype dataset - Part 1 - Data exploration and cleaning {#naturtype1}
+# Nature types - Part 1
+
+On the application of the naturetype dataset - Part 1 - Data exploration and cleaning {#naturtype1}
 
 <br />
 
@@ -16,7 +18,6 @@ library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-*Work in progress*
 
 Author: Anders L. Kolstad
 
