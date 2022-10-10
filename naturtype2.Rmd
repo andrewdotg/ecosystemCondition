@@ -456,16 +456,16 @@ ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Fosse-eng"                          
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Fosseberg"                                          ] <- "T1  | extra wet"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Fossepåvirket berg"                                 ] <- "T1  | extra wet"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Fuglefjell-eng og fugletopp"                        ] <- "T8  | all"
-ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Hagemark"                                           ] <- "T32 | special management"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Hagemark"                                           ] <- "T32 | all (if including sub-types)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Høgereligende og nordlig nedbørsmyr"                ] <- "V3  | all (if including sub-types)" # torvmarksformene are excluded
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Isinnfrysingsmark"                                  ] <- "T20 | all"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Kalkrik helofyttsump"                               ] <- "L4 | calcareous"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Kanthøymyr"                                         ] <- "V3  | all (if including sub-types)" # can also include smaller areas of V1
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Konsentrisk høymyr"                                 ] <- "V3  | all (if including sub-types)" # can also include smaller areas of V1
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Kystlynghei"                                        ] <- "T34 | all"
-ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Lauveng"                                            ] <- "T32 | special management"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Lauveng"                                            ] <- "T32 | all (if including sub-types)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Nakent tørkeutsatt kalkberg"                        ] <- "T1  | calcareous and dry"
-ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Naturbeitemark"                                     ] <- "T32 | special management"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Naturbeitemark"                                     ] <- "T32 | all (if including sub-types)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Øvre sandstrand uten pionervegetasjon"              ] <- "T29 | sandy and vegetated"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Øyblandingsmyr"                                     ] <- "V1  | partial" # also includes V3
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Palsmyr"                                            ] <- "V3  | all (if including sub-types)"
@@ -481,7 +481,7 @@ ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig myr"                  
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig strandeng"                            ] <- "T33 | all (-2018)" # could perhaps be used in 2018, but it's defined awkwardly
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Semi-naturlig våteng"                               ] <- "V10 | all (-2018)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Silt og leirskred"                                  ] <- "T17 | all (if including sub-types)"
-ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Slåttemark"                                         ] <- "T32 | special management"
+ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Slåttemark"                                         ] <- "T32 | all (if including sub-types)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Slåttemyr"                                          ] <- "V9  | all (if including sub-types)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Sørlig etablert sanddynemark"                       ] <- "T21 | all (if including sub-types)"
 ntypDF2$hovedgruppe[ntypDF2$Nature_type == "Sørlig kaldkilde"                                   ] <- "V4  | southern"
@@ -523,12 +523,13 @@ ntyp_vars$percentageUse <- round((ntyp_vars$NiN_variable_count/ntyp_vars$totalLo
 
 Cast to get NiN codes as columns
 ```{r}
+# should switch to pivot_wider
 ntyp_vars_wide <- data.table::dcast(setDT(ntyp_vars),
                                     Nature_type~NiN_variable_code,
                                     value.var = "percentageUse")
 ```
 
-This dat set contains the nature types that were only mappen in 2018 or 2019, and which we removed from ntypDF2. 
+This data set contains the nature types that were only mapped in 2018 or 2019, and which we removed from ntypDF2. 
 ```{r}
 ntyp_vars_wide$Nature_type[ntyp_vars_wide$Nature_type %!in% ntypDF2$Nature_type]
 ```
@@ -721,8 +722,55 @@ ntyp_fill2 %>%
   
 ```
 
+From the figure above I take that *Naturlig åpne områder* is very poorly represented in general, and that there are many NiN main types that are completely missing from the dataset. The three most common types, however, have complete thematic coverage (in excluding the year 2018 and including all sub-types). I will need to investigate if there are some NiN variables for the nature types mapping T18 Åpen flomfastmark, T12 Strandeng and T21 Sanddynemark which we can use.
+
+For *Semi-naturlig mark* we have quite good thematic coverage for the thre main types.The other three types probably makes up a considerably smaller area, but note that T33 has some coverage, and is classes as *all (-2018)*. Of the thre main ecosystems, semi-naturlig mark dominates clearly. I will need to look for NiN variabels associated with the maooing units for these main NiN types. I can also possibly explore the distribution of the mapped polygons in environmental space and compare it agains AR5 as a reference.
+
+For *Våtmark* we have good thematic coverage for V3 nedbørsmyr and V9 semi-naturlig myr, but for V1 åpen jordvassmyr only calcareous localities are mapped and assessed. A question is then whether, for a given NiN variable, that calcareous localities can be representative for all mires (ppor and rich) or if this will intrucude too much bias in one way or another. 
+
+I will give priority to *Naturlig åpne områder* because of the poor data availabiliy for this ecosystem in general.
 
 ### For each NiN main type, the proportion mapped with each NiN variable
+
+```{r}
+areaSum <- ntyp_fill2 %>%
+  group_by(Ecosystem) %>%
+  summarise(km2 = sum(km2)) %>%
+  tibble::add_column(.before=1,
+                     NiN_code = rep("Combined", 3))
+
+```
+
+```{r, fig.cap="Barplot showing the proportion area for which each NiN variable is recorded. The last letter of the NiN variable code refers to the ecosystem tye, and is not part of the variable name. The total mapped area for each main ecosystem (the facets) is shown as a dashed red line. "}
+ntyp_fill2 %>%
+  pivot_longer(cols = unique(ntyp_vars$NiN_variable_code)) %>%
+  drop_na(value) %>%
+  rename(NiN_code = name,
+         useFrequency = value) %>%
+  filter(useFrequency > 0) %>%
+  group_by(NiN_code, Ecosystem) %>%
+  summarise(km2 = sum(km2)) %>%
+  arrange(km2) %>%
+  mutate(lab = paste(NiN_code, substr(Ecosystem, start = 1, stop = 1)), sep = " ") %>%
+  group_by(Ecosystem) %>%
+  mutate(lab = forcats::fct_reorder(lab, km2)) %>%
+  ggplot(aes(x = lab,
+              y = km2))+
+  geom_bar(stat = "identity",
+           colour = "grey40",
+           fill = "grey80")+
+  geom_hline(data = areaSum,
+             aes(yintercept = km2),
+             colour = "red",
+             linetype = "dashed")+
+  facet_wrap(vars(Ecosystem),
+             scales = "free",
+             labeller = label_wrap_gen(width=25))+
+  labs(x = "",
+       y = expression(km^2))+
+  coord_flip()+
+  theme_bw(base_size = mySize)
+```
 
 
 ### For each ecosystem, the proportion mapped with each NiN variable
