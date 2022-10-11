@@ -4,7 +4,7 @@
 
 Author. Anders L. Kolstad
 
-Date: 2022-09-30
+Date: 2022-10-11
 
 
 Indicator for ecological condition may be scaled against a reference value to become normalised and hence comparable. In SEEA EA, un-scaled or raw indicators are not called indicators at all, but simply referred to as variables, and I will use this distinction here. Scaling variables against reference conditions can be done in many ways. Here are some examples, for inspiration.

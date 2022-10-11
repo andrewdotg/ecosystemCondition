@@ -4,17 +4,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 4 On the application of the naturetype dataset - Part 2 - Representativity | Indicators for Ecosystem Condition in Norway</title>
+<title>Chapter 4 Nature types - Part 2 | Indicators for Ecosystem Condition in Norway</title>
 <meta name="author" content="Anders L. Kolstad">
-<meta name="description" content="Work in progress Author: Anders L. Kolstad Date: 2022-09-30  4.1 Environmental space Extract environmental data from the polygons and compare against reference data points. Uni-variate...">
+<meta name="description" content="On the application of the naturetype dataset - Part 2 - Representativity  Author: Anders L. Kolstad Date: 2022-10-11 This chapter continues with the cleaned dataset exported at the end of the...">
 <meta name="generator" content="bookdown 0.27 with bs4_book()">
-<meta property="og:title" content="Chapter 4 On the application of the naturetype dataset - Part 2 - Representativity | Indicators for Ecosystem Condition in Norway">
+<meta property="og:title" content="Chapter 4 Nature types - Part 2 | Indicators for Ecosystem Condition in Norway">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ninanor.github.io/ecosystemCondition/index.html/naturtype2.html">
-<meta property="og:description" content="Work in progress Author: Anders L. Kolstad Date: 2022-09-30  4.1 Environmental space Extract environmental data from the polygons and compare against reference data points. Uni-variate...">
+<meta property="og:description" content="On the application of the naturetype dataset - Part 2 - Representativity  Author: Anders L. Kolstad Date: 2022-10-11 This chapter continues with the cleaned dataset exported at the end of the...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 4 On the application of the naturetype dataset - Part 2 - Representativity | Indicators for Ecosystem Condition in Norway">
-<meta name="twitter:description" content="Work in progress Author: Anders L. Kolstad Date: 2022-09-30  4.1 Environmental space Extract environmental data from the polygons and compare against reference data points. Uni-variate...">
+<meta name="twitter:title" content="Chapter 4 Nature types - Part 2 | Indicators for Ecosystem Condition in Norway">
+<meta name="twitter:description" content="On the application of the naturetype dataset - Part 2 - Representativity  Author: Anders L. Kolstad Date: 2022-10-11 This chapter continues with the cleaned dataset exported at the end of the...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -55,8 +55,8 @@
 <li class="book-part">INDICATORS FOR WETLANDS</li>
 <li><a class="" href="test1.html"><span class="header-section-number">2</span> This is an indicator</a></li>
 <li class="book-part">GENERAL TOPICS</li>
-<li><a class="" href="naturtype1.html"><span class="header-section-number">3</span> On the application of the naturetype dataset - Part 1 - Data exploration and cleaning</a></li>
-<li><a class="active" href="naturtype2.html"><span class="header-section-number">4</span> On the application of the naturetype dataset - Part 2 - Representativity</a></li>
+<li><a class="" href="naturtype1.html"><span class="header-section-number">3</span> Nature types - Part 1</a></li>
+<li><a class="active" href="naturtype2.html"><span class="header-section-number">4</span> Nature types - Part 2</a></li>
 <li><a class="" href="scaling-functions.html"><span class="header-section-number">5</span> Scaling functions</a></li>
 </ul>
 
@@ -67,80 +67,1016 @@
 </div>
   </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="naturtype2" class="section level1" number="4">
 <h1>
-<span class="header-section-number">4</span> On the application of the naturetype dataset - Part 2 - Representativity<a class="anchor" aria-label="anchor" href="#naturtype2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4</span> Nature types - Part 2<a class="anchor" aria-label="anchor" href="#naturtype2"><i class="fas fa-link"></i></a>
 </h1>
+<p><strong>On the application of the naturetype dataset - Part 2 - Representativity </strong></p>
 <p><br></p>
-<p><em>Work in progress</em></p>
 <p>Author: Anders L. Kolstad</p>
-<p>Date: 2022-09-30</p>
-<div id="environmental-space" class="section level2" number="4.1">
+<p>Date: 2022-10-11</p>
+<p><br></p>
+<p>This chapter continues with the cleaned dataset exported at the end of the previous chapter:</p>
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="st">"/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Mdir_Naturtyper_cleanedALK.rds"</span><span class="op">)</span></code></pre></div>
+<div id="naturetypes-condition-variables-and-their-linkage-to-nin-main-types" class="section level2" number="4.1">
 <h2>
-<span class="header-section-number">4.1</span> Environmental space<a class="anchor" aria-label="anchor" href="#environmental-space"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4.1</span> Naturetypes, condition variables, and their linkage to NiN main types<a class="anchor" aria-label="anchor" href="#naturetypes-condition-variables-and-their-linkage-to-nin-main-types"><i class="fas fa-link"></i></a>
 </h2>
+<p>Only a subset of nature types are mapped. How well do these mapped units/areas represent the range of nature types that is included for each main ecosystem group? And what condition variables do we have available for each of these?</p>
+<div id="nature-types" class="section level3" number="4.1.1">
+<h3>
+<span class="header-section-number">4.1.1</span> Nature types<a class="anchor" aria-label="anchor" href="#nature-types"><i class="fas fa-link"></i></a>
+</h3>
+<p>Lets extract the unique nature types, their associated main ecosystem, and the year when these nature types were mapped.</p>
+<p>We will only include our target ecosystems, and we will exclude <em>Hule eiker</em>.</p>
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">target</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Semi-naturlig mark"</span>,
+            <span class="st">"Våtmark"</span>,
+            <span class="st">"Naturlig åpne områder under skoggrensa"</span><span class="op">)</span>
+<span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">hovedøkosystem</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">target</span>,<span class="op">]</span>
+<span class="va">dat</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">naturtype</span> <span class="op">!=</span> <span class="st">"Hule eiker"</span>,<span class="op">]</span></code></pre></div>
+<p>Get the unique nature types</p>
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntyp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">naturtype</span><span class="op">)</span></code></pre></div>
+<p>Extract the year when these were mapped</p>
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">years</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
+<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">ntyp</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
+<span class="va">years</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">kartleggingsår</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">naturtype</span> <span class="op">==</span> <span class="va">ntyp</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>Extract the associated ecosystem</p>
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eco</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
+<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">ntyp</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
+<span class="va">eco</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">hovedøkosystem</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">naturtype</span> <span class="op">==</span> <span class="va">ntyp</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>Combine into one data frame</p>
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntypDF</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+  <span class="st">"Nature_type"</span> <span class="op">=</span> <span class="va">ntyp</span>,
+  <span class="st">"Year"</span>        <span class="op">=</span> <span class="va">years</span>,
+  <span class="st">"Ecosystem"</span>   <span class="op">=</span> <span class="va">eco</span>
+<span class="op">)</span></code></pre></div>
+<p>We have 66 nature types to consider. Some of the wetland types can actually be excluded because of the way we limited this ecosystem to mean <em>open</em> wetland.</p>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">excl_nt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Kalkrik myr- og sumpskogsmark"</span>,
+             <span class="co">#"Flommyr, myrkant og myrskogsmark",  # Only V9 is relevant. This type also includes V2 and V8</span>
+             <span class="st">"Gammel fattig sumpskog"</span>,
+             <span class="st">"Rik gransumpskog"</span>,
+             <span class="st">"Grankildeskog"</span>,
+             <span class="st">"Rik svartorsumpskog"</span>,
+             <span class="st">"Rik gråorsumpskog"</span>,
+             <span class="st">"Rik svartorstrandskog"</span>,
+             <span class="st">"Saltpåvirket svartorstrandskog"</span>,
+             <span class="st">"Kilde-edellauvskog"</span>,
+             <span class="st">"Saltpåvirket strand- og sumpskogsmark"</span>,
+             <span class="st">"Svak kilde og kildeskogsmark"</span>,
+             <span class="st">"Rik vierstrandskog"</span>,
+             <span class="st">"Varmekjær kildelauvskog"</span>
+             <span class="op">)</span>
+<span class="va">`%!in%`</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Negate</a></span><span class="op">(</span><span class="va">`%in%`</span><span class="op">)</span>
+<span class="va">ntypDF</span> <span class="op">&lt;-</span> <span class="va">ntypDF</span><span class="op">[</span><span class="va">ntypDF</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">%!in%</span> <span class="va">excl_nt</span>,<span class="op">]</span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span><span class="va">ntypDF</span><span class="op">)</span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-9"></span>
+<div id="htmlwidget-386d6d0ca283958ce5c0" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-386d6d0ca283958ce5c0">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","5","6","7","8","9","10","11","12","13","14","15","16","18","20","21","23","24","25","27","28","29","30","31","34","35","36","37","38","39","40","41","42","43","44","46","47","48","49","50","51","54","56","57","58","60","61","62","64","65","66"],["Slåttemark","Naturbeitemark","Kystlynghei","Slåttemyr","Boreal hei","Semi-naturlig eng","Strandeng","Hagemark","Semi-naturlig våteng","Sørlig slåttemyr","Semi-naturlig myr","Åpen flomfastmark","Svært tørkeutsatt sørlig kalkberg","Flommyr, myrkant og myrskogsmark","Isinnfrysingsmark","Eng-aktig sterkt endret fastmark","Høgereligende og nordlig nedbørsmyr","Åpen myrflate i boreonemoral til nordboreal sone","Semi-naturlig strandeng","Lauveng","Kalkrik helofyttsump","Kalkrik åpen jordvannsmyr i boreonemoral til nordboreal sone","Sørlig nedbørsmyr","Rik åpen sørlig jordvannsmyr","Rik åpen jordvannsmyr i mellomboreal sone","Fossepåvirket berg","Aktiv skredmark","Silt og leirskred","Nakent tørkeutsatt kalkberg","Terrengdekkende myr","Sørlig kaldkilde","Kystnedbørsmyr","Åpen grunnlendt kalkrik mark i boreonemoral sone","Kaldkilde under skoggrensa","Øyblandingsmyr","Atlantisk høymyr","Rik åpen jordvannsmyr i nordboreal og lavalpin sone","Sanddynemark","Fuglefjell-eng og fugletopp","Platåhøymyr","Fosseberg","Eksentrisk høymyr","Åpen grunnlendt kalkrik mark i sørboreal sone","Sørlig etablert sanddynemark","Sentrisk høgmyr","Tørt kalkrikt berg i kontinentale områder","Fosse-eng","Sørlig strandeng","Øvre sandstrand uten pionervegetasjon","Kanthøymyr","Palsmyr","Konsentrisk høymyr","Åpen myrflate i lavalpin sone"],["2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2018","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2018","2018, 2019, 2020, 2021","2019, 2020","2019, 2020, 2021","2018","2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2018","2018, 2019, 2020, 2021","2018","2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2021","2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2018","2019","2019, 2020","2018","2019, 2020, 2021","2019, 2020, 2021","2021","2019, 2020","2018"],["Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Semi-naturlig mark","Semi-naturlig mark","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Våtmark","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Våtmark","Våtmark","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Våtmark","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Våtmark","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Våtmark","Naturlig åpne områder under skoggrensa","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Våtmark","Våtmark","Våtmark","Våtmark"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Nature_type<\/th>\n      <th>Year<\/th>\n      <th>Ecosystem<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script><p class="caption">
+Figure 3.1: List of nature types showing the years when that nature type was mapped.
+</p>
+</div>
+<p>The way to do this I think is to look at each nature type in turn and map the NiN main types and sub-types that they cover. At the same time I can extract the NiN variables and values to see how they distribute over the NiN main types.</p>
+</div>
+<div id="nin-variables" class="section level3" number="4.1.2">
+<h3>
+<span class="header-section-number">4.1.2</span> NiN variables<a class="anchor" aria-label="anchor" href="#nin-variables"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#Exclude non-relevant types</span>
+<span class="va">dat2</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="va">dat</span><span class="op">$</span><span class="va">naturtype</span> <span class="op">%!in%</span> <span class="va">excl_nt</span>,<span class="op">]</span>
+
+<span class="co"># Melt</span>
+<span class="va">dat2L</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate_rows.html">separate_rows</a></span><span class="op">(</span><span class="va">dat2</span>, <span class="va">ninbeskrivelsesvariabler</span>, sep<span class="op">=</span><span class="st">","</span><span class="op">)</span>
+
+<span class="co"># Split the code and the value into separate columns</span>
+<span class="va">dat2L</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">dat2L</span>, 
+                              col <span class="op">=</span> <span class="va">ninbeskrivelsesvariabler</span>,
+                              into <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"NiN_variable_code"</span>, <span class="st">"NiN_variable_value"</span><span class="op">)</span>,
+                              sep <span class="op">=</span> <span class="st">"_"</span>,
+                              remove<span class="op">=</span><span class="cn">F</span>
+                              <span class="op">)</span>
+<span class="co">#&gt; Warning: Expected 2 pieces. Missing pieces filled with `NA`</span>
+<span class="co">#&gt; in 1 rows [280973].</span>
+<span class="co"># One NA produced here, but I check it, and it's fine.</span>
+
+<span class="co"># Convert values to numeric. This causes some NA's which I will go through below</span>
+<span class="va">dat2L</span><span class="op">$</span><span class="va">NiN_variable_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">dat2L</span><span class="op">$</span><span class="va">NiN_variable_value</span><span class="op">)</span>
+<span class="co">#&gt; Warning: NAs introduced by coercion</span></code></pre></div>
+<p>Here are all the Nin variable codes:</p>
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">dat2L</span><span class="op">$</span><span class="va">NiN_variable_code</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "1AG-A-0"   "1AG-A-E"   "1AG-A-G"   "1AG-B"    </span>
+<span class="co">#&gt;  [5] "1AG-C"     "1AR-C-L"   "3TO-BØ"    "3TO-HA"   </span>
+<span class="co">#&gt;  [9] "3TO-HE"    "3TO-HK"    "3TO-HN"    "3TO-HP"   </span>
+<span class="co">#&gt; [13] "3TO-PA"    "3TO-TE"    "4DL-S-0"   "4DL-SS-0" </span>
+<span class="co">#&gt; [17] "4TG-BL"    "4TG-EL"    "4TG-GF"    "4TL-BS"   </span>
+<span class="co">#&gt; [21] "4TL-HE"    "4TL-HL"    "4TL-RB"    "4TL-SB"   </span>
+<span class="co">#&gt; [25] "5AB-0"     "5AB-DO-TT" "5BY-0"     "6SE"      </span>
+<span class="co">#&gt; [29] "6SO"       "7FA"       "7GR-GI"    "7JB-BA"   </span>
+<span class="co">#&gt; [33] "7JB-BT"    "7JB-GJ"    "7JB-HT-SL" "7JB-HT-ST"</span>
+<span class="co">#&gt; [37] "7JB-KU-BY" "7JB-KU-DE" "7JB-KU-MO" "7JB-KU-PI"</span>
+<span class="co">#&gt; [41] "7RA-BH"    "7RA-SJ"    "7SD-0"     "7SD-NS"   </span>
+<span class="co">#&gt; [45] "7SE"       "7TK"       "7VR-RI"    "LKMKI"    </span>
+<span class="co">#&gt; [49] "LKMSP"     "PRAK"      "PRAM"      "PRH"      </span>
+<span class="co">#&gt; [53] "PRHA"      "PRHT"      "PRKA"      "PRKU"     </span>
+<span class="co">#&gt; [57] "PRMY"      "PRRL-CR"   "PRRL-DD"   "PRRL-EN"  </span>
+<span class="co">#&gt; [61] "PRRL-NT"   "PRRL-VU"   "PRSE-KA"   "PRSE-PA"  </span>
+<span class="co">#&gt; [65] "PRSE-SH"   "PRSL"      "PRTK"      "PRTO"     </span>
+<span class="co">#&gt; [69] "PRVS"</span></code></pre></div>
+<p>Converting NiN_variable_value to numeric also introduced NA’s for these categories:</p>
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">dat2L</span><span class="op">$</span><span class="va">NiN_variable_code</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">dat2L</span><span class="op">$</span><span class="va">NiN_variable_value</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "4DL-S-0"   "4DL-SS-0"  "5AB-0"     "5BY-0"    </span>
+<span class="co">#&gt;  [5] "7FA"       "7GR-GI"    "7JB-BA"    "7JB-BT"   </span>
+<span class="co">#&gt;  [9] "7JB-GJ"    "7JB-KU-BY" "7JB-KU-DE" "7JB-KU-MO"</span>
+<span class="co">#&gt; [13] "7JB-KU-PI" "7RA-SJ"    "7SD-0"     "7SD-NS"   </span>
+<span class="co">#&gt; [17] "7SE"       "7TK"       "7VR-RI"    "LKMKI"    </span>
+<span class="co">#&gt; [21] "LKMSP"     "PRH"       "PRVS"</span></code></pre></div>
+<p>When I now go through the variable codes separately I will also judge if these NA’s are real, or if they for example should be coded as zeros or something.</p>
+<div id="ag-a-sjiktdekningsvariabler" class="section level4" number="4.1.2.1">
+<h4>
+<span class="header-section-number">4.1.2.1</span> 1AG-A (sjiktdekningsvariabler)<a class="anchor" aria-label="anchor" href="#ag-a-sjiktdekningsvariabler"><i class="fas fa-link"></i></a>
+</h4>
+<p>These are different variables describing the cover in different vegetation strata and/or species</p>
 <ul>
-<li>Extract environmental data from the polygons and compare against reference data points.</li>
-<li>Uni-variate (e.g. <em>boreal hei</em> plotted against elevation, oceanity, distance from roads, etc)</li>
+<li>1AG-A-0 = Total tre canopy cover</li>
+<li>1AG-B = Total shrub cover</li>
+<li>1AG-C = Total field layer cover</li>
+<li>1AG-A-E = ‘Overstandere’</li>
+<li>1AG-A-G = ‘gjenveksttrær’</li>
 </ul>
 </div>
-<div id="represntaivity-in-mapping-units" class="section level2" number="4.2">
-<h2>
-<span class="header-section-number">4.2</span> Represntaivity in mapping units<a class="anchor" aria-label="anchor" href="#represntaivity-in-mapping-units"><i class="fas fa-link"></i></a>
-</h2>
-<p>Only a subset of nature types are mapped. How well do the mapped units represent, or cover, the range of nature types that is included for each main ecosystem group?</p>
+<div id="ar-c-l-andel-vedvekster-i-fletsjiktet" class="section level4" number="4.1.2.2">
+<h4>
+<span class="header-section-number">4.1.2.2</span> 1AR-C-L (Andel vedvekster i fletsjiktet)<a class="anchor" aria-label="anchor" href="#ar-c-l-andel-vedvekster-i-fletsjiktet"><i class="fas fa-link"></i></a>
+</h4>
+<p>A condition variable in some mire nature types</p>
 </div>
-<div id="conclution-1" class="section level2" number="4.3">
-<h2>
-<span class="header-section-number">4.3</span> Conclution 1<a class="anchor" aria-label="anchor" href="#conclution-1"><i class="fas fa-link"></i></a>
-</h2>
-<p>Conclude about which main ecosystem types that can reliably assess using the available mapping units?</p>
-<p>What about suitability for defining reference values?</p>
+<div id="to-torvmarksformer" class="section level4" number="4.1.2.3">
+<h4>
+<span class="header-section-number">4.1.2.3</span> 3TO (Torvmarksformer)<a class="anchor" aria-label="anchor" href="#to-torvmarksformer"><i class="fas fa-link"></i></a>
+</h4>
+<p>These are defining variables, and not part of the condition assessment.</p>
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"3TO-BØ"</span>,
+             <span class="st">"3TO-HA"</span>,
+             <span class="st">"3TO-HE"</span>,
+             <span class="st">"3TO-HK"</span>,
+             <span class="st">"3TO-HN"</span>,
+             <span class="st">"3TO-HP"</span>,
+             <span class="st">"3TO-PA"</span>,
+             <span class="st">"3TO-TE"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="suitability" class="section level2" number="4.4">
-<h2>
-<span class="header-section-number">4.4</span> Suitability<a class="anchor" aria-label="anchor" href="#suitability"><i class="fas fa-link"></i></a>
-</h2>
-<p>In the subset of mapping units that can be said to represent an ecosystem group, which NiN or MdirPRAM variables should we use?</p>
+<div id="dl-coarse-dead-wood" class="section level4" number="4.1.2.4">
+<h4>
+<span class="header-section-number">4.1.2.4</span> 4DL (Coarse dead wood)<a class="anchor" aria-label="anchor" href="#dl-coarse-dead-wood"><i class="fas fa-link"></i></a>
+</h4>
+<p>4DL-SS-0 and 4DL-S-0 has to do with the total amount of coarse woody debris/logs. It was only recorded for one nature type in 2018, and then as a a biodiversity variable, and not a state variable. Biodiversity variables were only recorded when condition was better than <em>very poor</em>. This bias means we cannot use these variables.</p>
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">exclude</span>,
+             <span class="st">"4DL-SS-0"</span>,
+             <span class="st">"4DL-S-0"</span><span class="op">)</span></code></pre></div>
+<blockquote>
+<p>Biodiversity variables were only recorded when condition was better than <em>very poor</em>. This bias means we cannot use these variables.</p>
+</blockquote>
 </div>
-<div id="concrete-examples" class="section level2" number="4.5">
-<h2>
-<span class="header-section-number">4.5</span> Concrete examples<a class="anchor" aria-label="anchor" href="#concrete-examples"><i class="fas fa-link"></i></a>
-</h2>
-<div id="andel-lynghei-med-minst-to-faser-i-kystlynghei" class="section level3" number="4.5.1">
+<div id="tg-old-trees" class="section level4" number="4.1.2.5">
+<h4>
+<span class="header-section-number">4.1.2.5</span> 4TG (old trees)<a class="anchor" aria-label="anchor" href="#tg-old-trees"><i class="fas fa-link"></i></a>
+</h4>
+<p>These three variables are used as biodiveristy variables in 2018 (exclude).</p>
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">exclude</span>,
+             <span class="st">"4TG-BL"</span>,
+             <span class="st">"4TG-EL"</span>,
+             <span class="st">"4TG-GF"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="tl-trees-with-fire-scars" class="section level4" number="4.1.2.6">
+<h4>
+<span class="header-section-number">4.1.2.6</span> 4TL (trees with fire scars)<a class="anchor" aria-label="anchor" href="#tl-trees-with-fire-scars"><i class="fas fa-link"></i></a>
+</h4>
+<p>These five variables are used together with 4TG as biodiversity variables in 2018.</p>
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">exclude</span>,
+             <span class="st">"4TL-BS"</span>,
+             <span class="st">"4TL-HE"</span>,
+             <span class="st">"4TL-HL"</span>,
+             <span class="st">"4TL-RB"</span>,
+             <span class="st">"4TL-SB"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="ab-and-5by-arealbruksklasser-og-byggningstyper" class="section level4" number="4.1.2.7">
+<h4>
+<span class="header-section-number">4.1.2.7</span> 5AB and 5BY (arealbruksklasser og byggningstyper)<a class="anchor" aria-label="anchor" href="#ab-and-5by-arealbruksklasser-og-byggningstyper"><i class="fas fa-link"></i></a>
+</h4>
+<p>These area land use types and building types, respectively, and the values are not numeric, but categorical, and represents presence or absence of these land uses or objects. These are not suited for automatically determining ecosystem condition as this is done subjectively in the field.</p>
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">exclude</span>,
+             <span class="st">"5AB-0"</span>,
+             <span class="st">"5AB-DO-TT"</span>,
+             <span class="st">"5BY-0"</span>
+             <span class="op">)</span></code></pre></div>
+</div>
+<div id="se-and-6so-bioclimatical-sections-and-sones" class="section level4" number="4.1.2.8">
+<h4>
+<span class="header-section-number">4.1.2.8</span> 6SE and 6SO (Bioclimatical sections and sones)<a class="anchor" aria-label="anchor" href="#se-and-6so-bioclimatical-sections-and-sones"><i class="fas fa-link"></i></a>
+</h4>
+<p>Not relevant here as condition variables.</p>
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">exclude</span>,
+             <span class="st">"6SE"</span>,
+             <span class="st">"6SO"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="fa-fremmedartsinnslag" class="section level4" number="4.1.2.9">
+<h4>
+<span class="header-section-number">4.1.2.9</span> 7FA (fremmedartsinnslag)<a class="anchor" aria-label="anchor" href="#fa-fremmedartsinnslag"><i class="fas fa-link"></i></a>
+</h4>
+<p>Should not have been allowed the value X, so Ok to exclude these.
+7FA also has potentially an issue related to how the NiN-app as build which doesn’t allow for registering alien species that are not on the <em>fremmedartsliste</em>.</p>
+</div>
+<div id="gr-gi" class="section level4" number="4.1.2.10">
+<h4>
+<span class="header-section-number">4.1.2.10</span> 7GR-GI<a class="anchor" aria-label="anchor" href="#gr-gi"><i class="fas fa-link"></i></a>
+</h4>
+<p>7GR-GI (grøftingsintensitet) should not have the value X either, so OK to exclude these NA’s. But we keep the variable, even though its clearly a pressure indikator, we might want to use it as a surrogate for mire hydrology.</p>
+</div>
+<div id="jb-ku-kystlyngheias-utviklingsfaser" class="section level4" number="4.1.2.11">
+<h4>
+<span class="header-section-number">4.1.2.11</span> 7JB-KU (Kystlyngheias utviklingsfaser)<a class="anchor" aria-label="anchor" href="#jb-ku-kystlyngheias-utviklingsfaser"><i class="fas fa-link"></i></a>
+</h4>
+<ul>
+<li>BY = byggefase</li>
+<li>DE = degenereringsfase</li>
+<li>MO = moden fase</li>
+<li>PI = pionerfase</li>
+</ul>
+<p>This variable is used as in the biodiversity assessment, and can therefore not be used in the condition assessment because localities with <em>very poor</em> conditions have not been mapped/assessed.</p>
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">exclude</span>, 
+             <span class="st">"7JB-KU-BY"</span>, 
+             <span class="st">"7JB-KU-DE"</span>, 
+             <span class="st">"7JB-KU-MO"</span>, 
+             <span class="st">"7JB-KU-PI"</span><span class="op">)</span></code></pre></div>
+<p>I will nonetheless explore this variable a bit more.
+NiN defines the possible values for these as numeric between 0 and 4 (shifted to become 1-5 in the dataset), but there are 544 cases where it has been given then value <em>X</em>.</p>
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">temp</span> <span class="op">&lt;-</span> <span class="va">dat2L</span><span class="op">[</span><span class="va">dat2L</span><span class="op">$</span><span class="va">ninbeskrivelsesvariabler</span> <span class="op">==</span> <span class="st">"7JB-KU-BY_X"</span> <span class="op">|</span>
+                     <span class="va">dat2L</span><span class="op">$</span><span class="va">ninbeskrivelsesvariabler</span> <span class="op">==</span> <span class="st">"7JB-KU-DE_X"</span> <span class="op">|</span>
+                <span class="va">dat2L</span><span class="op">$</span><span class="va">ninbeskrivelsesvariabler</span> <span class="op">==</span> <span class="st">"7JB-KU-MO_X"</span> <span class="op">|</span>
+                     <span class="va">dat2L</span><span class="op">$</span><span class="va">ninbeskrivelsesvariabler</span> <span class="op">==</span> <span class="st">"7JB-KU-PI_X"</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">kartleggingsår</span>, <span class="va">temp</span><span class="op">$</span><span class="va">naturtype</span><span class="op">)</span>
+<span class="co">#&gt;       </span>
+<span class="co">#&gt;        Kystlynghei</span>
+<span class="co">#&gt;   2018         437</span>
+<span class="co">#&gt;   2019          27</span>
+<span class="co">#&gt;   2020           9</span>
+<span class="co">#&gt;   2021          64</span></code></pre></div>
+<p>The reason could be that this variable is used in the biodiversity assessment, which is not performed if the condition is <em>very poor</em>.</p>
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">tilstand</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Dårlig     God Moderat </span>
+<span class="co">#&gt;      96      57     384</span></code></pre></div>
+<p>That is not the case: If the condition is scored as low, the variable does not even appear in the data set for that locality.</p>
+<p>We can also make a note that a big proportion of the total number of localities of <em>Kystlynghei</em> had very poor condition, and therefore this variable 7JB-KU was not recorded in a large proportion of the localities.</p>
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">KU</span> <span class="op">&lt;-</span> <span class="va">dat2</span><span class="op">[</span><span class="va">dat2</span><span class="op">$</span><span class="va">naturtype</span><span class="op">==</span><span class="st">"Kystlynghei"</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">KU</span><span class="op">$</span><span class="va">tilstand</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-22"></span>
+<img src="naturtype2_files/figure-html/unnamed-chunk-22-1.png" alt="The distribution of condition scores for Kystlynghei." width="672"><p class="caption">
+Figure 4.1: The distribution of condition scores for Kystlynghei.
+</p>
+</div>
+<p>Each <em>kystlynghei</em> locality should have values for all four parameters (7BA-BY/DE/MO/PI), but if we look at some cases in more detail, to understand why some of these values have been set as X (probably means they were left blank), for example like this:</p>
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#View(dat2L[dat2L$NiN_variable_code == "7JB-KU-BY" &amp; is.na(dat2L$NiN_variable_value),])</span>
+<span class="co">#View(dat2L[dat2L$identifikasjon_lokalid =="NINFP1810002975",]) # None of the 7JB-KU variables have values</span>
+<span class="co">#View(dat2L[dat2L$identifikasjon_lokalid =="NINFP2110057689",]) # Two of the 7JB-KU variables have values</span></code></pre></div>
+<p>… we can see that sometimes &lt;4 but &gt;0 of the variables/phases has been given a score, but sometimes none have. This makes it problematic to set these NA’s to be zeros. When we also consider the fact that there is an obvious bias in that only localities with poor condition or better have these variables assessed in the first place, I will exclude all of these variables and treat them as <em>not suited</em>.</p>
+</div>
+<div id="jb-ba-aktuell-bruksintensitet" class="section level4" number="4.1.2.12">
+<h4>
+<span class="header-section-number">4.1.2.12</span> 7JB-BA (Aktuell bruksintensitet)<a class="anchor" aria-label="anchor" href="#jb-ba-aktuell-bruksintensitet"><i class="fas fa-link"></i></a>
+</h4>
+<p>A common condition variable in semi-natural nature types. It’s a borderline pressure indicator, but I will keep it in the data set for now at least.</p>
+<p>Overview of cases where the value is set as <em>X</em>.</p>
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">temp</span> <span class="op">&lt;-</span> <span class="va">dat2L</span><span class="op">[</span><span class="va">dat2L</span><span class="op">$</span><span class="va">ninbeskrivelsesvariabler</span> <span class="op">==</span> <span class="st">"7JB-BA_X"</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">kartleggingsår</span>, <span class="va">temp</span><span class="op">$</span><span class="va">naturtype</span><span class="op">)</span>
+<span class="co">#&gt;       </span>
+<span class="co">#&gt;        Hagemark Semi-naturlig eng Semi-naturlig strandeng</span>
+<span class="co">#&gt;   2018        0                 0                       0</span>
+<span class="co">#&gt;   2021        1                 1                       1</span>
+<span class="co">#&gt;       </span>
+<span class="co">#&gt;        Strandeng</span>
+<span class="co">#&gt;   2018        27</span>
+<span class="co">#&gt;   2021         0</span></code></pre></div>
+<p>These are just a few cases, mostly from 2018. OK to treat as NA.</p>
+</div>
+<div id="jb-bt-beitetrykk" class="section level4" number="4.1.2.13">
+<h4>
+<span class="header-section-number">4.1.2.13</span> 7JB-BT (Beitetrykk)<a class="anchor" aria-label="anchor" href="#jb-bt-beitetrykk"><i class="fas fa-link"></i></a>
+</h4>
+<p>Similar variable to the above.</p>
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">temp</span> <span class="op">&lt;-</span> <span class="va">dat2L</span><span class="op">[</span><span class="va">dat2L</span><span class="op">$</span><span class="va">ninbeskrivelsesvariabler</span> <span class="op">==</span> <span class="st">"7JB-BT_X"</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">kartleggingsår</span>, <span class="va">temp</span><span class="op">$</span><span class="va">naturtype</span><span class="op">)</span>
+<span class="co">#&gt;       </span>
+<span class="co">#&gt;        Åpen flomfastmark Kystlynghei Sanddynemark</span>
+<span class="co">#&gt;   2019                 3           0            0</span>
+<span class="co">#&gt;   2020                 1           1            2</span>
+<span class="co">#&gt;   2021                 3           0            0</span></code></pre></div>
+<p>OK to treat X’s as NA’s.</p>
+</div>
+<div id="jb-gj-gjødsling" class="section level4" number="4.1.2.14">
+<h4>
+<span class="header-section-number">4.1.2.14</span> 7JB-GJ (Gjødsling)<a class="anchor" aria-label="anchor" href="#jb-gj-gj%C3%B8dsling"><i class="fas fa-link"></i></a>
+</h4>
+<p>Similar variable to the two above.</p>
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">temp</span> <span class="op">&lt;-</span> <span class="va">dat2L</span><span class="op">[</span><span class="va">dat2L</span><span class="op">$</span><span class="va">ninbeskrivelsesvariabler</span> <span class="op">==</span> <span class="st">"7JB-BT_X"</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">kartleggingsår</span>, <span class="va">temp</span><span class="op">$</span><span class="va">naturtype</span><span class="op">)</span>
+<span class="co">#&gt;       </span>
+<span class="co">#&gt;        Åpen flomfastmark Kystlynghei Sanddynemark</span>
+<span class="co">#&gt;   2019                 3           0            0</span>
+<span class="co">#&gt;   2020                 1           1            2</span>
+<span class="co">#&gt;   2021                 3           0            0</span></code></pre></div>
+<p>OK to treat as X’s NA’s.</p>
+<p>This variable is used as a condition indicator, but this could be questioned. Firstly, it is a pressure indicator. Secondly, many semi-natural areas where fertilized, also in the reference condition. The people that made the meadows would probably not agree that a productive field/meadow has poor condition. This condition variable is therefor more directly tuned towards the maintenance of biodiversity.</p>
+</div>
+<div id="jb-ht-høsting-av-tresjiktet" class="section level4" number="4.1.2.15">
+<h4>
+<span class="header-section-number">4.1.2.15</span> 7JB-HT (Høsting av tresjiktet)<a class="anchor" aria-label="anchor" href="#jb-ht-h%C3%B8sting-av-tresjiktet"><i class="fas fa-link"></i></a>
+</h4>
+<p>Used for <em>Lauveng</em> in 2019 and 2020.</p>
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">temp</span> <span class="op">&lt;-</span> <span class="va">dat2L</span><span class="op">[</span><span class="va">dat2L</span><span class="op">$</span><span class="va">NiN_variable_code</span> <span class="op">==</span> <span class="st">"7JB-HT-ST"</span> <span class="op">|</span> 
+               <span class="va">dat2L</span><span class="op">$</span><span class="va">NiN_variable_code</span> <span class="op">==</span> <span class="st">"7JB-HT-SL"</span> ,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">kartleggingsår</span>, <span class="va">temp</span><span class="op">$</span><span class="va">naturtype</span><span class="op">)</span>
+<span class="co">#&gt;       </span>
+<span class="co">#&gt;        Lauveng</span>
+<span class="co">#&gt;   2019      14</span>
+<span class="co">#&gt;   2020       6</span></code></pre></div>
+<p>This is so marginal that I will exclude these already now.</p>
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">exclude</span>,
+             <span class="st">"7JB-HT-SL"</span>,
+             <span class="st">"7JB-HT-ST"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="ra-bh-and-7ra-sj-rask-suksesjon-i-boreal-hei-og-i-i-semi-naturlig-og-sterkt-endret-jordbruksmark-inkludert-våteng" class="section level4" number="4.1.2.16">
+<h4>
+<span class="header-section-number">4.1.2.16</span> 7RA-BH and 7RA-SJ (rask suksesjon i boreal hei og i i semi-naturlig og sterkt endret jordbruksmark inkludert våteng)<a class="anchor" aria-label="anchor" href="#ra-bh-and-7ra-sj-rask-suksesjon-i-boreal-hei-og-i-i-semi-naturlig-og-sterkt-endret-jordbruksmark-inkludert-v%C3%A5teng"><i class="fas fa-link"></i></a>
+</h4>
+<p>Condition variables.
+There are some very few cases where 7RA-SJ has the value X. It should be numeric 1-4, so the value X is a mistake here I think. We can exclude these (i.e. allow them to be NA’s).</p>
+</div>
+<div id="sd-0-and-7sd--ns-natur--og-normalskogsdynamikk" class="section level4" number="4.1.2.17">
+<h4>
+<span class="header-section-number">4.1.2.17</span> 7SD-0 and 7SD- NS (Natur- og normalskogsdynamikk)<a class="anchor" aria-label="anchor" href="#sd-0-and-7sd--ns-natur--og-normalskogsdynamikk"><i class="fas fa-link"></i></a>
+</h4>
+<p>7SD-NS and 7SD-0 was also only used for only one nature type (which is not forest), and then only for wooded localities of <em>Flommyr, myrkant og myrskogsmark</em>. <em>X</em> therefore means <em>not relevant</em>, and we can also exclude the parameters from the dataset all together.</p>
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">exclude</span>, 
+             <span class="st">"7SD-0"</span>,     
+             <span class="st">"7SD-NS"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="tk-and-7se-kjørespor-slitasje" class="section level4" number="4.1.2.18">
+<h4>
+<span class="header-section-number">4.1.2.18</span> 7TK and 7SE (kjørespor &amp; slitasje)<a class="anchor" aria-label="anchor" href="#tk-and-7se-kj%C3%B8respor-slitasje"><i class="fas fa-link"></i></a>
+</h4>
+<p>7TK (kjørespor) and 7SE (slitasje) are not allowed the value X, but it happened on some rare occasions (24) anyhow. It’s fine to treat these as NA’s.</p>
+</div>
+<div id="vr-ri-reguleringsintensitet" class="section level4" number="4.1.2.19">
+<h4>
+<span class="header-section-number">4.1.2.19</span> 7VR-RI (Reguleringsintensitet)<a class="anchor" aria-label="anchor" href="#vr-ri-reguleringsintensitet"><i class="fas fa-link"></i></a>
+</h4>
+<p>This variable is defined as numeric between 1-5. There is, however, quite a few cases where it is X.</p>
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">temp</span> <span class="op">&lt;-</span> <span class="va">dat2L</span><span class="op">[</span><span class="va">dat2L</span><span class="op">$</span><span class="va">ninbeskrivelsesvariabler</span> <span class="op">==</span> <span class="st">"7VR-RI_X"</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">temp</span><span class="op">$</span><span class="va">kartleggingsår</span>, <span class="va">temp</span><span class="op">$</span><span class="va">naturtype</span><span class="op">)</span>
+<span class="co">#&gt;       </span>
+<span class="co">#&gt;        Åpen flomfastmark</span>
+<span class="co">#&gt;   2019                96</span>
+<span class="co">#&gt;   2021                11</span></code></pre></div>
+<p>I cannot explain these, but in any case, this variable is not a good indicator for condition as it rather represents a pressure/driver. So OK to treat as NA’s.</p>
+</div>
+<div id="lkms-and-mdirpr-variables" class="section level4" number="4.1.2.20">
+<h4>
+<span class="header-section-number">4.1.2.20</span> LKMs and MdirPR-variables<a class="anchor" aria-label="anchor" href="#lkms-and-mdirpr-variables"><i class="fas fa-link"></i></a>
+</h4>
+<p>These variables include LKM’s (lokal kompleks miljøvariabel) which are nonrelevant to us here. We can also exclude some of the PR- variables, which are the NEAs own variables (not NiN).</p>
+<ul>
+<li>LKMKI
+<ul>
+<li>Kalk (lime)</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>LKMSP
+<ul>
+<li>Slåttemarkspreg</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>PRAK
+<ul>
+<li>Antall NiN-kartleggingsenheter</li>
+<li>Used in the biodiversity assessment</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>PRAM
+<ul>
+<li>Menneskeskapte objekter</li>
+<li>Related to 5BY and 5AB</li>
+<li>Exclude (see 5BY and 5AB)</li>
+</ul>
+</li>
+<li>PRH
+<ul>
+<li>This is perhaps a mistake and should be PRHA or PRHT</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>PRHA
+<ul>
+<li>Habitat spesifikke arter</li>
+<li>Used in the biodiversity assessment</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>PRHT
+<ul>
+<li>Høsting av tresjiktet</li>
+<li>Include</li>
+</ul>
+</li>
+<li>PRKA
+<ul>
+<li>Kalkindikatorer</li>
+<li>Used in the biodiversity assessment</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>PRKU
+<ul>
+<li>Kystlyngheias utviklingsfaser</li>
+<li>Related to 7JB-KU</li>
+<li>Used in the biodiversity assessment</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>PRMY
+<ul>
+<li>Myrstruktur</li>
+<li>Used in the biodiversity assessment</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>PRRL-CR/DD/EN/NT/VU
+<ul>
+<li>Red list categories</li>
+<li>Used in the biodiversity assessment</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>PRSE-KA
+<ul>
+<li>Strukturer, elementer og torvmarksformer (in 2018)</li>
+<li>See PRSE-PA</li>
+</ul>
+</li>
+<li>PRSE-PA
+<ul>
+<li>Strukturer, elementer og torvmarksformer</li>
+<li>Used in the biodiversity assessment</li>
+<li>Exclude</li>
+</ul>
+</li>
+<li>PRSE-SH
+<ul>
+<li>Strukturer, elementer og torvmarksformer (in 2018)</li>
+<li>See PRSE-PA</li>
+</ul>
+</li>
+<li>PRSL
+<ul>
+<li>Slitasje</li>
+<li>Rlated to 7SE</li>
+<li>Include</li>
+</ul>
+</li>
+<li>PRTK
+<ul>
+<li>Spor av tunge kjøretøyer</li>
+<li>Related to 7TK</li>
+<li>Include</li>
+</ul>
+</li>
+<li>PRTO
+<ul>
+<li>Torvuttak</li>
+<li>Include</li>
+</ul>
+</li>
+<li>PRVS
+<ul>
+<li>Variasjon i vannsprutintensitet</li>
+<li>Used in the biodiversity assessment</li>
+<li>Exclude</li>
+</ul>
+</li>
+</ul>
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">exclude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">exclude</span>,
+             <span class="st">"LKMKI"</span>,     
+          <span class="st">"LKMSP"</span>,
+          <span class="st">"PRAK"</span>,
+          <span class="st">"PRAM"</span>,
+          <span class="st">"PRH"</span>,
+          <span class="st">"PRHA"</span>,
+          <span class="st">"PRKA"</span>,
+          <span class="st">"PRKU"</span>,
+          <span class="st">"PRMY"</span>,
+          <span class="st">"PRRL-DD"</span>,   <span class="st">"PRRL-VU"</span>,   <span class="st">"PRRL-NT"</span>,   <span class="st">"PRRL-EN"</span>,   <span class="st">"PRRL-CR"</span>,  
+          <span class="st">"PRSE-KA"</span>,
+          <span class="st">"PRSE-PA"</span>,
+          <span class="st">"PRSE-SH"</span>,
+          <span class="st">"PRVS"</span>
+          <span class="op">)</span></code></pre></div>
+</div>
+</div>
+<div id="subset" class="section level3" number="4.1.3">
 <h3>
-<span class="header-section-number">4.5.1</span> Andel lynghei med minst to faser i kystlynghei<a class="anchor" aria-label="anchor" href="#andel-lynghei-med-minst-to-faser-i-kystlynghei"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4.1.3</span> Subset<a class="anchor" aria-label="anchor" href="#subset"><i class="fas fa-link"></i></a>
 </h3>
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dat2L2</span> <span class="op">&lt;-</span> <span class="va">dat2L</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">dat2L</span><span class="op">$</span><span class="va">NiN_variable_value</span><span class="op">)</span>,<span class="op">]</span>
+<span class="va">dat2L2</span> <span class="op">&lt;-</span> <span class="va">dat2L2</span><span class="op">[</span><span class="va">dat2L2</span><span class="op">$</span><span class="va">NiN_variable_code</span> <span class="op">%!in%</span> <span class="va">exclude</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">dat2L2</span><span class="op">$</span><span class="va">NiN_variable_code</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 20</span></code></pre></div>
+<p>Now we are down to 20 possible condition variables.</p>
+<p>I will also now exclude nature types that were only mapped in 2018 and/or 2019 and not after that. These nature types will not only not get more data in the future, but also they were mapped in a time when the methodology was quite unstable.</p>
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntypDF2</span> <span class="op">&lt;-</span> <span class="va">ntypDF</span><span class="op">[</span><span class="va">ntypDF</span><span class="op">$</span><span class="va">Year</span> <span class="op">!=</span> <span class="st">"2018"</span> <span class="op">&amp;</span>
+                  <span class="va">ntypDF</span><span class="op">$</span><span class="va">Year</span> <span class="op">!=</span> <span class="st">"2019"</span> <span class="op">&amp;</span> 
+                  <span class="va">ntypDF</span><span class="op">$</span><span class="va">Year</span> <span class="op">!=</span> <span class="st">"2018, 2019"</span><span class="co"># no types were mappend in 2018 &amp; 2019 only</span>
+                  ,<span class="op">]</span></code></pre></div>
 </div>
-<div id="areal-uten-skadet-ogeller-død-røsslyng-i-kystlynghei" class="section level3" number="4.5.2">
+<div id="fill-inn-ntypdf2" class="section level3" number="4.1.4">
 <h3>
-<span class="header-section-number">4.5.2</span> Areal uten skadet og/eller død røsslyng i kystlynghei<a class="anchor" aria-label="anchor" href="#areal-uten-skadet-ogeller-d%C3%B8d-r%C3%B8sslyng-i-kystlynghei"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4.1.4</span> Fill inn ntypDF2<a class="anchor" aria-label="anchor" href="#fill-inn-ntypdf2"><i class="fas fa-link"></i></a>
 </h3>
+<p>Next I want to expand ntypDF2 to include the NiN main types covered by the different nature types. I cannot use the field data for this, because there are so many mistakes in the data. I need to look at the definition of each nature type and get the NiN code from there. I could also extract the NiN sub types (grunntyper), but it would become too messy. Therefor I will create a second column with a textual/categorical description of the degree of themaic coverage.</p>
+<p>I will look at the definitions of the nature type in the first and last year when that type was mapped, but not for the years in between.</p>
+<div id="add-nin-main-type-and-degree-of-representativity" class="section level4" number="4.1.4.1">
+<h4>
+<span class="header-section-number">4.1.4.1</span> Add NiN main type and degree of representativity<a class="anchor" aria-label="anchor" href="#add-nin-main-type-and-degree-of-representativity"><i class="fas fa-link"></i></a>
+</h4>
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Aktiv skredmark"</span>                                    <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T17 | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Åpen flomfastmark"</span>                                  <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T18 | all"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Åpen grunnlendt kalkrik mark i boreonemoral sone"</span>   <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T2  | calcareous"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Åpen grunnlendt kalkrik mark i sørboreal sone"</span>      <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T2  | calcareous"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Atlantisk høymyr"</span>                                   <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V3  | all (if including sub-types)"</span> <span class="co"># can also include smaller areas of V1</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Boreal hei"</span>                                         <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T31 | all"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Eksentrisk høymyr"</span>                                  <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V3  | all (if including sub-types)"</span> <span class="co"># can also include smaller areas of V1</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Eng-aktig sterkt endret fastmark"</span>                   <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T41 | all"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Fosse-eng"</span>                                          <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T15 | all"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Fosseberg"</span>                                          <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T1  | extra wet"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Fossepåvirket berg"</span>                                 <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T1  | extra wet"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Fuglefjell-eng og fugletopp"</span>                        <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T8  | all"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Hagemark"</span>                                           <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T32 | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Høgereligende og nordlig nedbørsmyr"</span>                <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V3  | all (if including sub-types)"</span> <span class="co"># torvmarksformene are excluded</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Isinnfrysingsmark"</span>                                  <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T20 | all"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Kalkrik helofyttsump"</span>                               <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"L4 | calcareous"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Kanthøymyr"</span>                                         <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V3  | all (if including sub-types)"</span> <span class="co"># can also include smaller areas of V1</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Konsentrisk høymyr"</span>                                 <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V3  | all (if including sub-types)"</span> <span class="co"># can also include smaller areas of V1</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Kystlynghei"</span>                                        <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T34 | all"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Lauveng"</span>                                            <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T32 | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Nakent tørkeutsatt kalkberg"</span>                        <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T1  | calcareous and dry"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Naturbeitemark"</span>                                     <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T32 | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Øvre sandstrand uten pionervegetasjon"</span>              <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T29 | sandy and vegetated"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Øyblandingsmyr"</span>                                     <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V1  | partial"</span> <span class="co"># also includes V3</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Palsmyr"</span>                                            <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V3  | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Platåhøymyr"</span>                                        <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V3  | all (if including sub-types)"</span> <span class="co"># can also include smaller areas of V1</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Rik åpen jordvannsmyr i mellomboreal sone"</span>          <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V1  | calcareous"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Rik åpen jordvannsmyr i nordboreal og lavalpin sone"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V1  | calcareous"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Rik åpen sørlig jordvannsmyr"</span>                       <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V1  | calcareous"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Sanddynemark"</span>                                       <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T21 | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Semi-naturlig eng"</span>                                  <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T32 | all (if including sub-types)"</span>
+<span class="co"># This might be called Kulturmarkseng in the 2018 protocol, but Semi-naturlig eng in the data set. </span>
+<span class="co"># Kulturmarkseng also includes V10</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Semi-naturlig myr"</span>                                  <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V9  | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Semi-naturlig strandeng"</span>                            <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T33 | all (-2018)"</span> <span class="co"># could perhaps be used in 2018, but it's defined awkwardly</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Semi-naturlig våteng"</span>                               <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V10 | all (-2018)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Silt og leirskred"</span>                                  <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T17 | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Slåttemark"</span>                                         <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T32 | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Slåttemyr"</span>                                          <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V9  | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Sørlig etablert sanddynemark"</span>                       <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T21 | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Sørlig kaldkilde"</span>                                   <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V4  | southern"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Sørlig nedbørsmyr"</span>                                  <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V3  | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Sørlig slåttemyr"</span>                                   <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V9  | all (if including sub-types)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Strandeng"</span>                                          <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T12 | all (-2018)"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Svært tørkeutsatt sørlig kalkberg"</span>                  <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T1  | calcareous and dry"</span>
+<span class="va">ntypDF2</span><span class="op">$</span><span class="va">hovedgruppe</span><span class="op">[</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">==</span> <span class="st">"Terrengdekkende myr"</span>                                <span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"V3  | all (if including sub-types)"</span></code></pre></div>
+<p>Split this new column in two.</p>
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntypDF2</span> <span class="op">&lt;-</span> <span class="va">ntypDF2</span> <span class="op">%&gt;%</span>
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">hovedgruppe</span>,
+                  into <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"NiN_mainType"</span>, <span class="st">"NiN_mainTypeCoverage"</span><span class="op">)</span>,
+                  <span class="co">#sep = "|",</span>
+                  remove<span class="op">=</span><span class="cn">T</span>,
+                  extra <span class="op">=</span> <span class="st">"merge"</span>
+              <span class="op">)</span></code></pre></div>
 </div>
-<div id="aktuell-bruksintensitet" class="section level3" number="4.5.3">
+<div id="add-nin-variables" class="section level4" number="4.1.4.2">
+<h4>
+<span class="header-section-number">4.1.4.2</span> Add NiN variables<a class="anchor" aria-label="anchor" href="#add-nin-variables"><i class="fas fa-link"></i></a>
+</h4>
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntyp_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">dat2L2</span><span class="op">$</span><span class="va">naturtype</span>, <span class="va">dat2L2</span><span class="op">$</span><span class="va">NiN_variable_code</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ntyp_vars</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Nature_type"</span>, <span class="st">"NiN_variable_code"</span>, <span class="st">"NiN_variable_count"</span><span class="op">)</span>
+<span class="va">ntyp_vars</span> <span class="op">&lt;-</span> <span class="va">ntyp_vars</span><span class="op">[</span><span class="va">ntyp_vars</span><span class="op">$</span><span class="va">NiN_variable_count</span> <span class="op">&gt;</span><span class="fl">0</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ntyp_vars</span><span class="op">)</span>
+<span class="co">#&gt;                                          Nature_type</span>
+<span class="co">#&gt; 3   Åpen grunnlendt kalkrik mark i boreonemoral sone</span>
+<span class="co">#&gt; 16                                          Hagemark</span>
+<span class="co">#&gt; 28                                    Naturbeitemark</span>
+<span class="co">#&gt; 69                                          Hagemark</span>
+<span class="co">#&gt; 79                                           Lauveng</span>
+<span class="co">#&gt; 144                                Semi-naturlig myr</span>
+<span class="co">#&gt;     NiN_variable_code NiN_variable_count</span>
+<span class="co">#&gt; 3             1AG-A-0                 34</span>
+<span class="co">#&gt; 16            1AG-A-0                314</span>
+<span class="co">#&gt; 28            1AG-A-0                  1</span>
+<span class="co">#&gt; 69            1AG-A-E               1383</span>
+<span class="co">#&gt; 79            1AG-A-E                 10</span>
+<span class="co">#&gt; 144           1AG-A-G                690</span></code></pre></div>
+<p>Add a column for the total number of localities for each nature type and get the percentage of localities where each NiN has been recorded.</p>
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#options(scipen=999) # suppress exp notation</span>
+<span class="va">count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">$</span><span class="va">naturtype</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">count</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Nature_type"</span>, <span class="st">"totalLocations"</span><span class="op">)</span>
+<span class="va">ntyp_vars</span><span class="op">$</span><span class="va">totalLocations</span> <span class="op">&lt;-</span> <span class="va">count</span><span class="op">$</span><span class="va">totalLocations</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="va">ntyp_vars</span><span class="op">$</span><span class="va">Nature_type</span>, <span class="va">count</span><span class="op">$</span><span class="va">Nature_type</span><span class="op">)</span><span class="op">]</span>
+<span class="va">ntyp_vars</span><span class="op">$</span><span class="va">percentageUse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">ntyp_vars</span><span class="op">$</span><span class="va">NiN_variable_count</span><span class="op">/</span><span class="va">ntyp_vars</span><span class="op">$</span><span class="va">totalLocations</span><span class="op">)</span><span class="op">*</span><span class="fl">100</span>, <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<p>Cast to get NiN codes as columns</p>
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># should switch to pivot_wider</span>
+<span class="va">ntyp_vars_wide</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/dcast.data.table.html">dcast</a></span><span class="op">(</span><span class="fu">setDT</span><span class="op">(</span><span class="va">ntyp_vars</span><span class="op">)</span>,
+                                    <span class="va">Nature_type</span><span class="op">~</span><span class="va">NiN_variable_code</span>,
+                                    value.var <span class="op">=</span> <span class="st">"percentageUse"</span><span class="op">)</span></code></pre></div>
+<p>This data set contains the nature types that were only mapped in 2018 or 2019, and which we removed from ntypDF2:</p>
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntyp_vars_wide</span><span class="op">$</span><span class="va">Nature_type</span><span class="op">[</span><span class="va">ntyp_vars_wide</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op">%!in%</span> <span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span><span class="op">]</span>
+<span class="co">#&gt; [1] Åpen myrflate i boreonemoral til nordboreal sone            </span>
+<span class="co">#&gt; [2] Åpen myrflate i lavalpin sone                               </span>
+<span class="co">#&gt; [3] Flommyr, myrkant og myrskogsmark                            </span>
+<span class="co">#&gt; [4] Kaldkilde under skoggrensa                                  </span>
+<span class="co">#&gt; [5] Kalkrik åpen jordvannsmyr i boreonemoral til nordboreal sone</span>
+<span class="co">#&gt; [6] Kystnedbørsmyr                                              </span>
+<span class="co">#&gt; [7] Sentrisk høgmyr                                             </span>
+<span class="co">#&gt; [8] Sørlig strandeng                                            </span>
+<span class="co">#&gt; [9] Tørt kalkrikt berg i kontinentale områder                   </span>
+<span class="co">#&gt; 53 Levels: Aktiv skredmark ... Tørt kalkrikt berg i kontinentale områder</span></code></pre></div>
+<p>So we should remove them also here.</p>
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntyp_vars_wide</span> <span class="op">&lt;-</span> <span class="va">ntyp_vars_wide</span><span class="op">[</span><span class="va">ntyp_vars_wide</span><span class="op">$</span><span class="va">Nature_type</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span><span class="op">]</span></code></pre></div>
+<p>Combine datasets</p>
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntyp_fill</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">ntypDF2</span>, <span class="va">ntyp_vars_wide</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="va">ntypDF2</span><span class="op">$</span><span class="va">Nature_type</span>, <span class="va">ntyp_vars_wide</span><span class="op">$</span><span class="va">Nature_type</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="add-number-of-location-and-total-area-mapped" class="section level4" number="4.1.4.3">
+<h4>
+<span class="header-section-number">4.1.4.3</span> Add number of location and total area mapped<a class="anchor" aria-label="anchor" href="#add-number-of-location-and-total-area-mapped"><i class="fas fa-link"></i></a>
+</h4>
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dat2</span><span class="op">$</span><span class="va">km2</span> <span class="op">&lt;-</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/drop_units.html">drop_units</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">$</span><span class="va">area</span><span class="op">/</span><span class="fl">10</span><span class="op">^</span><span class="fl">6</span><span class="op">)</span>
+
+<span class="va">num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">naturtype</span><span class="op">)</span><span class="op">%&gt;%</span>
+  <span class="fu">summarise</span><span class="op">(</span>km2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">km2</span><span class="op">)</span>,
+            numberOfLocalities <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">ntyp_fill</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">ntyp_fill</span>, <span class="va">num</span><span class="op">[</span>,<span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="va">ntyp_fill</span><span class="op">$</span><span class="va">Nature_type</span>, <span class="va">num</span><span class="op">$</span><span class="va">naturtype</span><span class="op">)</span>,<span class="op">]</span><span class="op">)</span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="plots" class="section level2" number="4.2">
+<h2>
+<span class="header-section-number">4.2</span> Plots<a class="anchor" aria-label="anchor" href="#plots"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fl">8</span>
+<span class="va">gg_area</span> <span class="op">&lt;-</span> <span class="va">ntyp_fill</span> <span class="op">%&gt;%</span>
+  <span class="fu">arrange</span><span class="op">(</span><span class="va">km2</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>Nature_type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Nature_type</span>, levels<span class="op">=</span><span class="va">Nature_type</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>   <span class="co"># This trick update the factor levels</span>
+  <span class="fu">ggplot</span><span class="op">(</span> <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Nature_type</span>,
+                   y <span class="op">=</span> <span class="va">km2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">geom_segment</span><span class="op">(</span> <span class="fu">aes</span><span class="op">(</span>xend<span class="op">=</span><span class="va">Nature_type</span>, yend<span class="op">=</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">geom_point</span><span class="op">(</span> size<span class="op">=</span><span class="fl">4</span>, <span class="fu">aes</span><span class="op">(</span>group <span class="op">=</span> <span class="va">Ecosystem</span>,
+                                colour<span class="op">=</span> <span class="va">Ecosystem</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">theme_bw</span><span class="op">(</span>base_size <span class="op">=</span> <span class="va">mySize</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">xlab</span><span class="op">(</span><span class="st">""</span><span class="op">)</span><span class="op">+</span>
+        <span class="fu">ylab</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">km</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+      <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span>,
+        legend.key.size <span class="op">=</span>  <span class="fu">unit</span><span class="op">(</span><span class="fl">.05</span>, <span class="st">'cm'</span><span class="op">)</span>,
+            legend.background <span class="op">=</span> <span class="fu">element_rect</span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"white"</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>
+            <span class="op">)</span>
+
+<span class="va">gg_locs</span> <span class="op">&lt;-</span> <span class="va">ntyp_fill</span> <span class="op">%&gt;%</span>
+  <span class="fu">arrange</span><span class="op">(</span><span class="va">km2</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>Nature_type<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Nature_type</span>, levels<span class="op">=</span><span class="va">Nature_type</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>    <span class="co"># also sorted after km2</span>
+  <span class="fu">ggplot</span><span class="op">(</span> <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Nature_type</span>,
+                   y <span class="op">=</span> <span class="va">numberOfLocalities</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">geom_segment</span><span class="op">(</span> <span class="fu">aes</span><span class="op">(</span>xend<span class="op">=</span><span class="va">Nature_type</span>, yend<span class="op">=</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">geom_point</span><span class="op">(</span> size<span class="op">=</span><span class="fl">4</span>, <span class="fu">aes</span><span class="op">(</span>group <span class="op">=</span> <span class="va">Ecosystem</span>,
+                                colour<span class="op">=</span> <span class="va">Ecosystem</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">theme_bw</span><span class="op">(</span>base_size <span class="op">=</span> <span class="va">mySize</span><span class="op">)</span> <span class="op">+</span>
+        <span class="fu">xlab</span><span class="op">(</span><span class="st">""</span><span class="op">)</span><span class="op">+</span>
+        <span class="fu">ylab</span><span class="op">(</span><span class="st">"Number of localities"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span>,
+        axis.text.y <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+
+
+<span class="fu">egg</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/egg/man/ggarrange.html">ggarrange</a></span><span class="op">(</span><span class="va">gg_area</span>, <span class="va">gg_locs</span>, 
+                        ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-43"></span>
+<img src="naturtype2_files/figure-html/unnamed-chunk-43-1.png" alt="The total mapped area for nature types associated with three selected main ecosystems" width="672"><p class="caption">
+Figure 4.2: The total mapped area for nature types associated with three selected main ecosystems
+</p>
+</div>
+<div id="area-per-nin-main-type-conditioned-on-ecosystem-and-adding-empty-main-types" class="section level3" number="4.2.1">
 <h3>
-<span class="header-section-number">4.5.3</span> Aktuell bruksintensitet<a class="anchor" aria-label="anchor" href="#aktuell-bruksintensitet"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4.2.1</span> Area per NiN main type conditioned on ecosystem and adding empty main types<a class="anchor" aria-label="anchor" href="#area-per-nin-main-type-conditioned-on-ecosystem-and-adding-empty-main-types"><i class="fas fa-link"></i></a>
 </h3>
+<p>First I will add the NiN main types that are not covered by any nature types.</p>
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">open</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+  <span class="st">"T1"</span>,
+  <span class="st">"T2"</span>,
+  <span class="st">"T6"</span>,
+  <span class="st">"T8"</span>,
+  <span class="st">"T11"</span>,
+  <span class="st">"T12"</span>,
+  <span class="st">"T13"</span>,
+  <span class="st">"T15"</span>,
+  <span class="st">"T16"</span>,
+  <span class="st">"T17"</span>,
+  <span class="st">"T18"</span>,
+  <span class="st">"T20"</span>,
+  <span class="st">"T21"</span>,
+  <span class="st">"T23"</span>,
+  <span class="st">"T24"</span>,
+  <span class="st">"T25"</span>,
+  <span class="st">"T26"</span>,
+  <span class="st">"T27"</span>,
+  <span class="st">"T29"</span>
+<span class="op">)</span>
+
+<span class="va">semi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+  <span class="st">"T31"</span>,
+  <span class="st">"T32"</span>,
+  <span class="st">"T33"</span>,
+  <span class="st">"T34"</span>,
+  <span class="st">"T40"</span>,  <span class="co"># are these included</span>
+  <span class="st">"T41"</span>   <span class="co"># are these included</span>
+<span class="op">)</span>
+
+<span class="va">wetland</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+  <span class="st">"V1"</span>,
+  <span class="st">"V3"</span>,
+  <span class="st">"V4"</span>,
+  <span class="st">"V6"</span>,
+  <span class="st">"V9"</span>,
+  <span class="st">"V10"</span>,
+  <span class="st">"L4"</span>    <span class="co"># this will probably not be part of the assessments</span>
+  
+<span class="op">)</span></code></pre></div>
+<p>Adding the non-mapped open types</p>
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">open</span><span class="op">[</span><span class="va">open</span> <span class="op">%!in%</span> <span class="va">ntyp_fill</span><span class="op">$</span><span class="va">NiN_mainType</span><span class="op">]</span>
+<span class="co">#&gt; [1] "T6"  "T11" "T13" "T16" "T23" "T24" "T25" "T26" "T27"</span></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntyp_fill2</span> <span class="op">&lt;-</span> <span class="va">ntyp_fill</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T6"</span>, Ecosystem <span class="op">=</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T11"</span>, Ecosystem <span class="op">=</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T13"</span>, Ecosystem <span class="op">=</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T16"</span>, Ecosystem <span class="op">=</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T23"</span>, Ecosystem <span class="op">=</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T24"</span>, Ecosystem <span class="op">=</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T25"</span>, Ecosystem <span class="op">=</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T26"</span>, Ecosystem <span class="op">=</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T27"</span>, Ecosystem <span class="op">=</span> <span class="st">"Naturlig åpne områder under skoggrensa"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> </code></pre></div>
+<p>Adding the non-mapped semi-natural types</p>
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">semi</span><span class="op">[</span><span class="va">semi</span> <span class="op">%!in%</span> <span class="va">ntyp_fill</span><span class="op">$</span><span class="va">NiN_mainType</span><span class="op">]</span>
+<span class="co">#&gt; [1] "T40"</span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntyp_fill2</span> <span class="op">&lt;-</span> <span class="va">ntyp_fill</span> <span class="op">%&gt;%</span>
+  <span class="fu">add_row</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="st">"T40"</span>, Ecosystem <span class="op">=</span> <span class="st">"Semi-naturlig mark"</span>, NiN_mainTypeCoverage <span class="op">=</span> <span class="st">"Not mapped"</span>, km2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
+<p>Adding the non-mapped wetland types</p>
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">wetland</span><span class="op">[</span><span class="va">wetland</span> <span class="op">%!in%</span> <span class="va">ntyp_fill</span><span class="op">$</span><span class="va">NiN_mainType</span><span class="op">]</span>
+<span class="co">#&gt; [1] "V6"</span></code></pre></div>
+<p>V6 is <em>Våtsnøleie</em>, and my guess is that it <em>is</em> mapped, but grouped with the alpine ecosystem. I’ll therefore not add it in here, but mention it in the figure caption below.</p>
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mySize</span> <span class="op">&lt;-</span> <span class="fl">10</span>
+<span class="va">ntyp_fill2</span> <span class="op">%&gt;%</span>
+  <span class="co"># combining two classes to get a better colour palette</span>
+  <span class="fu">mutate</span><span class="op">(</span>NiN_mainTypeCoverage <span class="op">=</span> 
+           <span class="fu"><a href="https://rdrr.io/r/base/replace.html">replace</a></span><span class="op">(</span><span class="va">NiN_mainTypeCoverage</span>, <span class="va">NiN_mainTypeCoverage</span> <span class="op">==</span> <span class="st">"southern"</span>, <span class="st">"partial"</span><span class="op">)</span>,
+         NiN_mainTypeCoverage <span class="op">=</span> 
+           <span class="fu"><a href="https://rdrr.io/r/base/replace.html">replace</a></span><span class="op">(</span><span class="va">NiN_mainTypeCoverage</span>, <span class="va">NiN_mainTypeCoverage</span> <span class="op">==</span> <span class="st">"calcareous and dry"</span>, <span class="st">"calcareous"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">NiN_mainType</span>, <span class="va">NiN_mainTypeCoverage</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>km2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">km2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">slice_head</span><span class="op">(</span><span class="op">)</span><span class="op">%&gt;%</span>
+  <span class="fu">select</span><span class="op">(</span><span class="va">Ecosystem</span>,
+         <span class="va">NiN_mainType</span>,
+         <span class="va">NiN_mainTypeCoverage</span>,
+         <span class="va">km2</span><span class="op">)</span><span class="op">%&gt;%</span>
+  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>NiN_mainType <span class="op">=</span> <span class="fu">fct_reorder</span><span class="op">(</span><span class="va">NiN_mainType</span>, <span class="va">km2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">NiN_mainType</span>,
+             y <span class="op">=</span> <span class="va">km2</span>,
+             fill <span class="op">=</span> <span class="va">NiN_mainTypeCoverage</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+    <span class="fu">geom_bar</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span>,
+             colour <span class="op">=</span> <span class="st">"grey40"</span>,
+             position <span class="op">=</span> <span class="st">"stack"</span><span class="op">)</span><span class="op">+</span>
+    <span class="fu">theme_bw</span><span class="op">(</span>base_size <span class="op">=</span> <span class="va">mySize</span><span class="op">)</span><span class="op">+</span>
+    <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"NiN main type"</span>,
+       y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">km</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,
+       fill <span class="op">=</span> <span class="st">"Spatial coverage"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">scale_fill_brewer</span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Set1"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">facet_wrap</span><span class="op">(</span><span class="fu">vars</span><span class="op">(</span><span class="va">Ecosystem</span><span class="op">)</span>,
+             scales <span class="op">=</span> <span class="st">"free"</span>,
+             labeller <span class="op">=</span> <span class="fu">label_wrap_gen</span><span class="op">(</span>width<span class="op">=</span><span class="fl">25</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-50"></span>
+<img src="naturtype2_files/figure-html/unnamed-chunk-50-1.png" alt="The areas mapped for each NiN main type, and the degree of spatial representativity (or coverage) of the mapping units (nature types). V6 Våtsnøleie og snøleiekilde is not included." width="672"><p class="caption">
+Figure 4.3: The areas mapped for each NiN main type, and the degree of spatial representativity (or coverage) of the mapping units (nature types). V6 Våtsnøleie og snøleiekilde is not included.
+</p>
+</div>
+<p>From the figure above I take that <em>Naturlig åpne områder</em> is very poorly represented in general, and that there are many NiN main types that are completely missing from the dataset. The three most common types, however, have complete thematic coverage (if excluding the year 2018 and including all sub-types). I will need to investigate if there are some NiN variables for the nature types mapping T18 Åpen flomfastmark, T12 Strandeng and T21 Sanddynemark which we can use.</p>
+<p>For <em>Semi-naturlig mark</em> we have quite good thematic coverage for the three main types. The other three types probably makes up a considerably smaller area, but note that T33 has some coverage, and is classes as <em>all (-2018)</em>. Of the three main ecosystems, semi-naturlig mark dominates clearly. I will need to look for NiN variables associated with the mapping units for these main NiN types. I can also possibly explore the distribution of the mapped polygons in environmental space and compare it against AR5 as a reference, but I’m not sure how good AR5 is for anything whihc is not cropland.</p>
+<p>For <em>Våtmark</em> we have good thematic coverage for V3 nedbørsmyr and V9 semi-naturlig myr, but for V1 åpen jordvassmyr only calcareous localities are mapped and assessed. A question is then whether, for a given NiN variable, that calcareous localities can be representative for all mires (poor and rich) or if this will intruduce too much bias in one way or another.</p>
+</div>
+<div id="for-each-nin-main-type-the-proportion-mapped-with-each-nin-variable" class="section level3" number="4.2.2">
+<h3>
+<span class="header-section-number">4.2.2</span> For each NiN main type, the proportion mapped with each NiN variable<a class="anchor" aria-label="anchor" href="#for-each-nin-main-type-the-proportion-mapped-with-each-nin-variable"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">areaSum</span> <span class="op">&lt;-</span> <span class="va">ntyp_fill2</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">Ecosystem</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">summarise</span><span class="op">(</span>km2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">km2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html">add_column</a></span><span class="op">(</span>.before<span class="op">=</span><span class="fl">1</span>,
+                     NiN_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Combined"</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ntyp_fill2</span> <span class="op">%&gt;%</span>
+  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">ntyp_vars</span><span class="op">$</span><span class="va">NiN_variable_code</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">drop_na</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">rename</span><span class="op">(</span>NiN_code <span class="op">=</span> <span class="va">name</span>,
+         useFrequency <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">useFrequency</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">NiN_code</span>, <span class="va">Ecosystem</span>, <span class="va">NiN_mainType</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co"># NiN main type could be replaced with Nature_type</span>
+  <span class="fu">summarise</span><span class="op">(</span>km2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">km2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  
+  <span class="co"># create a truncated fill variable </span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">Ecosystem</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>myFill <span class="op">=</span> <span class="fu">fct_lump</span><span class="op">(</span><span class="va">NiN_mainType</span>, <span class="fl">3</span>, w <span class="op">=</span> <span class="va">km2</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  
+  <span class="co"># qick fix to sort variable across facets (dont work after adding 'Nature_type' in the first group_by)</span>
+  <span class="co">#mutate(lab = paste(NiN_code, substr(Ecosystem, start = 1, stop = 1), sep = " ")) %&gt;%</span>
+  <span class="co">#ungroup()%&gt;%</span>
+  <span class="co">#mutate(lab = forcats::fct_reorder(lab, km2)) %&gt;%</span>
+  
+  
+  <span class="co"># plot</span>
+  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">NiN_code</span>,
+              y <span class="op">=</span> <span class="va">km2</span>,
+             fill <span class="op">=</span> <span class="va">myFill</span>
+                <span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_bar</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span>,
+           colour <span class="op">=</span> <span class="st">"grey40"</span>,
+           <span class="co">#fill = "grey80",</span>
+           position <span class="op">=</span> <span class="st">"stack"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">geom_hline</span><span class="op">(</span>data <span class="op">=</span> <span class="va">areaSum</span>,
+             <span class="fu">aes</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="va">km2</span><span class="op">)</span>,
+             colour <span class="op">=</span> <span class="st">"red"</span>,
+             linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">facet_wrap</span><span class="op">(</span><span class="fu">vars</span><span class="op">(</span><span class="va">Ecosystem</span><span class="op">)</span>,
+             scales <span class="op">=</span> <span class="st">"free"</span>,
+             labeller <span class="op">=</span> <span class="fu">label_wrap_gen</span><span class="op">(</span>width<span class="op">=</span><span class="fl">25</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">""</span>,
+       y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="va">km</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,
+       fill <span class="op">=</span> <span class="st">""</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">scale_fill_brewer</span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Set1"</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu">theme_bw</span><span class="op">(</span>base_size <span class="op">=</span> <span class="va">mySize</span><span class="op">)</span>
+<span class="co">#&gt; `summarise()` has grouped output by 'NiN_code', 'Ecosystem'. You can override using the `.groups` argument.</span>
+<span class="co">#&gt; Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette Set1 is 9</span>
+<span class="co">#&gt; Returning the palette you asked for with that many colors</span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-52"></span>
+<img src="naturtype2_files/figure-html/unnamed-chunk-52-1.png" alt="Barplot showing the proportion area for which each NiN variable is recorded. The total mapped area for each main ecosystem (the facets) is shown as a dashed red line. The three most dominant NiN main types for each ecosystem is given a uniqe colour, and all the remaining are grouped as 'other'." width="672"><p class="caption">
+Figure 4.4: Barplot showing the proportion area for which each NiN variable is recorded. The total mapped area for each main ecosystem (the facets) is shown as a dashed red line. The three most dominant NiN main types for each ecosystem is given a uniqe colour, and all the remaining are grouped as ‘other.’
+</p>
+</div>
+</div>
+</div>
+<div id="tentative-conclusions-and-the-way-forward" class="section level2" number="4.3">
+<h2>
+<span class="header-section-number">4.3</span> Tentative conclusions and the way forward<a class="anchor" aria-label="anchor" href="#tentative-conclusions-and-the-way-forward"><i class="fas fa-link"></i></a>
+</h2>
+<p>This figure, in combination with the above, points to he most obvious NiN variable candidates.</p>
+<p>7SE and 7TK are good candidates for <em>Naturlig åpne områder</em>. 7JA-BT is probably more appropriately classed as a pressure indicator. Same with 7VR-RI with is recorded for all T18 localities.
+7FA has potentially an issue related to how the NiN-app as build which doesn’t allow for registering alien species that are not on the <em>fremmedartsliste</em>.</p>
+<p>The same two variables (7SE and 7TK) are the best candidates also for <em>Semi-natural areas</em>. 7JB-BT is a pressure variable (<em>beitetrykk</em>). 7RA-SJ/BH are related to <em>gjengoing</em> which will be covered by another indicator informed from remote sensing (LiDAR), and we therefor don’t need to describe this with a field-based indicator as well.</p>
+<p>For <em>Våtmark</em>, 7GR-Gi is the most common variables, but this is a pressure variable (<em>grøfting</em>). But, perhaps it could be used as a surrogate indicator. I think this is justifiable, especially since the relationship between the pressure (grøfting) and the condition (hydrology) is so well known. 7SE and 7TK+PRTK are other candidates. PRTO is only relevant for V3, but covers a relatively large area.</p>
+<p>Next, I will focus in <em>Våtmark</em>-variables, since here we can use a new ecosystem delineation map as a reference to evaluate the environamlental and spatial bias in the dataset. This is not currently possible for the other two ecosystems.</p>
+</div>
+<div id="tables" class="section level2" number="4.4">
+<h2>
+<span class="header-section-number">4.4</span> Tables<a class="anchor" aria-label="anchor" href="#tables"><i class="fas fa-link"></i></a>
+</h2>
+<p>Here are some output tables with numbers the numbers underlying the above figures.</p>
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span><span class="va">ntyp_fill2</span>,
+              <span class="co">#extensions = "FixedColumns",</span>
+  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    scrollX <span class="op">=</span> <span class="cn">T</span>,
+    scrollY<span class="op">=</span><span class="cn">T</span>,
+    pageLength <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-53"></span>
+<div id="htmlwidget-09f8d99b6545f28b8ddb" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-09f8d99b6545f28b8ddb">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45"],["Slåttemark","Naturbeitemark","Kystlynghei","Slåttemyr","Boreal hei","Semi-naturlig eng","Strandeng","Hagemark","Semi-naturlig våteng","Sørlig slåttemyr","Semi-naturlig myr","Åpen flomfastmark","Svært tørkeutsatt sørlig kalkberg","Isinnfrysingsmark","Eng-aktig sterkt endret fastmark","Høgereligende og nordlig nedbørsmyr","Semi-naturlig strandeng","Lauveng","Kalkrik helofyttsump","Sørlig nedbørsmyr","Rik åpen sørlig jordvannsmyr","Rik åpen jordvannsmyr i mellomboreal sone","Fossepåvirket berg","Aktiv skredmark","Silt og leirskred","Nakent tørkeutsatt kalkberg","Terrengdekkende myr","Sørlig kaldkilde","Åpen grunnlendt kalkrik mark i boreonemoral sone","Øyblandingsmyr","Atlantisk høymyr","Rik åpen jordvannsmyr i nordboreal og lavalpin sone","Sanddynemark","Fuglefjell-eng og fugletopp","Platåhøymyr","Fosseberg","Eksentrisk høymyr","Åpen grunnlendt kalkrik mark i sørboreal sone","Sørlig etablert sanddynemark","Fosse-eng","Øvre sandstrand uten pionervegetasjon","Kanthøymyr","Palsmyr","Konsentrisk høymyr",null],["2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020","2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020, 2021","2019, 2020, 2021","2021","2019, 2020, 2021","2019, 2020, 2021","2018, 2019, 2020, 2021","2019, 2020","2019, 2020, 2021","2019, 2020, 2021","2021","2019, 2020",null],["Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Semi-naturlig mark","Semi-naturlig mark","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Våtmark","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Våtmark","Naturlig åpne områder under skoggrensa","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Våtmark","Våtmark","Våtmark","Semi-naturlig mark"],["T32","T32","T34","V9","T31","T32","T12","T32","V10","V9","V9","T18","T1","T20","T41","V3","T33","T32","L4","V3","V1","V1","T1","T17","T17","T1","V3","V4","T2","V1","V3","V1","T21","T8","V3","T1","V3","T2","T21","T15","T29","V3","V3","V3","T40"],["all (if including sub-types)","all (if including sub-types)","all","all (if including sub-types)","all","all (if including sub-types)","all (-2018)","all (if including sub-types)","all (-2018)","all (if including sub-types)","all (if including sub-types)","all","calcareous and dry","all","all","all (if including sub-types)","all (-2018)","all (if including sub-types)","calcareous","all (if including sub-types)","calcareous","calcareous","extra wet","all (if including sub-types)","all (if including sub-types)","calcareous and dry","all (if including sub-types)","southern","calcareous","partial","all (if including sub-types)","calcareous","all (if including sub-types)","all","all (if including sub-types)","extra wet","all (if including sub-types)","calcareous","all (if including sub-types)","all","sandy and vegetated","all (if including sub-types)","all (if including sub-types)","all (if including sub-types)","Not mapped"],[null,0,null,null,null,null,null,18.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,8.5,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,81.4,null,null,null,null,null,null,null,null,null,100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,100,null,null,null,null,null,100,100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,100,null,null,null,null,null,100,100,null,null,null,null,null,null,null,100,null,null,null,null,null,null,null,null,null,99.7,null,null,null,null,null,null,null,null,100,null,null,null,null,null,null,null],[null,0,null,null,null,null,null,18.4,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,42.9,null,null,null,null,null,39.1,36.4,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[99.8,99.9,99.9,7,100,99.9,99.9,99.9,99.8,null,null,65.9,100,null,100,null,98.8,100,100,null,100,100,null,null,null,100,null,null,99.7,null,null,5.6,100,null,null,null,null,100,100,null,100,null,null,null,null],[null,null,null,99.8,null,null,null,null,null,100,100,null,null,null,null,99.7,null,null,100,100,98.9,100,null,null,null,null,100,98.4,null,100,100,94.4,null,null,100,null,100,null,null,null,null,100,100,100,null],[99.9,100,null,null,null,99.9,2.5,100,100,null,null,null,null,null,100,null,98.6,100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,100,null,100,null,null,null,null,null,null,88.1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,98.9,100,null,null,null,null,100,100,100,null,null,null,null],[98.5,99.7,null,null,null,99.2,null,99.8,99.7,null,null,null,null,null,99.3,null,null,100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,98.9,null,null,null,null,null,100,null,100,null,null,null,null],[null,null,0,null,100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[99.9,100,100,null,null,99.9,1.8,99.9,100,null,null,null,null,null,99.3,null,98.5,100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,46.8,7,32.2,null,99.8,null,null,null,null,88.3,100,88.9,99.6,99.7,16.8,null,null,100,100,100,100,null,null,100,100,9.6,99.5,100,100,100,100,100,100,null,100,100,100,100,100,100,100,100,null],[null,null,52.7,100,67.7,null,99.9,null,null,100,100,88.2,null,88.9,null,null,null,null,100,null,17.2,null,null,100,100,14.4,null,null,99.5,null,null,5.6,100,null,null,null,null,100,100,100,100,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,92.7,null,null,null,null,null,null,null,null,null,null,100,null,null,null,null,null,null,null,null,null,null,null,null,100,null,null,null,100,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,93,null,null,null,null,null,100,100,null,null,null,null,null,82.2,null,100,null,null,null,null,null,null,null,null,90.4,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,99.7,null,null,null,100,82.8,100,null,null,null,null,100,null,null,100,100,94.4,null,null,100,null,100,null,null,null,null,100,100,100,null],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,99.7,null,null,null,100,null,null,null,null,null,null,100,null,null,null,100,null,null,null,100,null,100,null,null,null,null,100,null,100,null],[6.51584984635486,101.157651296768,292.557561273423,8.27830107117764,246.548913168032,24.1378829753629,3.91436662946879,12.7470244867466,4.78652942499085,0.849630753543558,6.96108525449375,9.36280193293499,0.071410719661491,0.0172138593255082,1.08675716726274,10.207169261258,2.96586845672123,0.0261538296666823,1.80578507215338,10.1804888804028,3.98667212063541,6.35196862448222,0.0239538364559004,0.403836633998744,0.0206596222076445,1.15246880725175,8.05259984558393,0.0513355806964453,0.586466434293955,0.634348890980364,1.83310286127818,0.211277539917457,1.86117337890082,0.248655085415105,1.94164206032561,0.00792215845906082,3.38289475080095,0.131233493150285,0.235053981613827,0.00237313203080123,0.0165918400637099,0.0634907575625052,0.0493092192310363,0.148078327467059,0],[1531,9208,6058,546,4610,3230,1302,1700,961,133,690,1483,59,9,546,299,865,10,241,701,746,782,19,153,34,291,254,125,399,54,80,54,263,20,46,11,75,100,51,3,19,13,6,4,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Nature_type<\/th>\n      <th>Year<\/th>\n      <th>Ecosystem<\/th>\n      <th>NiN_mainType<\/th>\n      <th>NiN_mainTypeCoverage<\/th>\n      <th>1AG-A-0<\/th>\n      <th>1AG-A-E<\/th>\n      <th>1AG-A-G<\/th>\n      <th>1AG-B<\/th>\n      <th>1AG-C<\/th>\n      <th>1AR-C-L<\/th>\n      <th>7FA<\/th>\n      <th>7GR-GI<\/th>\n      <th>7JB-BA<\/th>\n      <th>7JB-BT<\/th>\n      <th>7JB-GJ<\/th>\n      <th>7RA-BH<\/th>\n      <th>7RA-SJ<\/th>\n      <th>7SE<\/th>\n      <th>7TK<\/th>\n      <th>7VR-RI<\/th>\n      <th>PRHT<\/th>\n      <th>PRSL<\/th>\n      <th>PRTK<\/th>\n      <th>PRTO<\/th>\n      <th>km2<\/th>\n      <th>numberOfLocalities<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"scrollY":true,"pageLength":10,"columnDefs":[{"className":"dt-right","targets":[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p class="caption">
+Figure 4.5: List of 45 nature types additionam data, including the proportion of localities for which there is data for each of the NiN variables.
+</p>
+</div>
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span>
+  <span class="va">ntyp_fill2</span> <span class="op">%&gt;%</span>
+  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">ntyp_vars</span><span class="op">$</span><span class="va">NiN_variable_code</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">drop_na</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">rename</span><span class="op">(</span>NiN_code <span class="op">=</span> <span class="va">name</span>,
+         useFrequency <span class="op">=</span> <span class="va">value</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">useFrequency</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">NiN_code</span>, <span class="va">Ecosystem</span>, <span class="va">NiN_mainType</span><span class="op">)</span> <span class="op">%&gt;%</span>  <span class="co"># NiN main type could be replaced with Nature_type</span>
+  <span class="fu">summarise</span><span class="op">(</span>km2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">km2</span><span class="op">)</span><span class="op">)</span>,
+  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    scrollX <span class="op">=</span> <span class="cn">T</span>,
+    scrollY<span class="op">=</span><span class="cn">T</span>,
+    pageLength <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; `summarise()` has grouped output by 'NiN_code', 'Ecosystem'. You can override using the `.groups` argument.</span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-54"></span>
+<div id="htmlwidget-a52785cc86204aa430c3" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a52785cc86204aa430c3">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95"],["1AG-A-0","1AG-A-0","1AG-A-E","1AG-A-G","1AG-B","1AG-B","1AG-B","1AG-C","1AR-C-L","7FA","7FA","7FA","7FA","7FA","7FA","7FA","7FA","7FA","7FA","7FA","7FA","7FA","7FA","7FA","7GR-GI","7GR-GI","7GR-GI","7GR-GI","7GR-GI","7JB-BA","7JB-BA","7JB-BA","7JB-BA","7JB-BA","7JB-BT","7JB-BT","7JB-BT","7JB-BT","7JB-BT","7JB-BT","7JB-BT","7JB-GJ","7JB-GJ","7JB-GJ","7JB-GJ","7JB-GJ","7RA-BH","7RA-SJ","7RA-SJ","7RA-SJ","7RA-SJ","7RA-SJ","7RA-SJ","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7SE","7TK","7TK","7TK","7TK","7TK","7TK","7TK","7TK","7TK","7TK","7TK","7TK","7TK","7TK","7VR-RI","7VR-RI","7VR-RI","PRHT","PRSL","PRSL","PRSL","PRSL","PRTK","PRTK","PRTO"],["Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Naturlig åpne områder under skoggrensa","Våtmark","Våtmark","Semi-naturlig mark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Våtmark","Våtmark","Våtmark","Våtmark","Våtmark","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Semi-naturlig mark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Semi-naturlig mark","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Våtmark","Våtmark","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Naturlig åpne områder under skoggrensa","Semi-naturlig mark","Semi-naturlig mark","Våtmark","Våtmark","Våtmark","Våtmark","Våtmark","Våtmark"],["T2","T32","T32","V9","T2","L4","V9","T32","V9","T1","T12","T18","T2","T21","T29","T31","T32","T33","T34","T41","L4","V1","V10","V9","L4","V1","V3","V4","V9","T12","T32","T33","T41","V10","T15","T18","T21","T29","T8","T31","T34","T21","T29","T32","T41","V10","T31","T12","T32","T33","T34","T41","V10","T1","T12","T15","T18","T2","T20","T21","T29","T8","T31","T33","T34","T41","V1","V3","V4","V9","T1","T12","T15","T17","T18","T2","T20","T21","T29","T31","T34","L4","V1","V9","T1","T15","T18","T32","T33","L4","V4","V9","V1","V3","V3"],[0.586466434293955,12.7470244867466,12.7731783164133,16.089017079215,0.71769992744424,1.80578507215338,16.089017079215,12.7470244867466,16.089017079215,1.22387952691324,3.91436662946879,9.36280193293499,0.71769992744424,2.09622736051465,0.0165918400637099,246.548913168032,144.584562434899,2.96586845672123,292.557561273423,1.08675716726274,1.80578507215338,10.5499182850351,4.78652942499085,8.27830107117764,1.80578507215338,11.1842671760155,35.8587759639101,0.0513355806964453,16.089017079215,3.91436662946879,144.584562434899,2.96586845672123,1.08675716726274,4.78652942499085,0.00237313203080123,9.36280193293499,2.09622736051465,0.0165918400637099,0.248655085415105,246.548913168032,292.557561273423,2.09622736051465,0.0165918400637099,144.584562434899,1.08675716726274,4.78652942499085,246.548913168032,3.91436662946879,144.584562434899,2.96586845672123,292.557561273423,1.08675716726274,4.78652942499085,1.24783336336914,3.91436662946879,0.00237313203080123,9.36280193293499,0.71769992744424,0.0172138593255082,2.09622736051465,0.0165918400637099,0.248655085415105,246.548913168032,2.96586845672123,292.557561273423,1.08675716726274,11.1842671760155,35.8587759639101,0.0513355806964453,8.27830107117764,1.15246880725175,3.91436662946879,0.00237313203080123,0.424496256206389,9.36280193293499,0.71769992744424,0.0172138593255082,2.09622736051465,0.0165918400637099,246.548913168032,292.557561273423,1.80578507215338,4.19794966055287,16.089017079215,0.0318759949149613,0.00237313203080123,9.36280193293499,0.0261538296666823,2.96586845672123,1.80578507215338,0.0513355806964453,16.089017079215,11.1842671760155,35.8587759639101,35.809466744679]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>NiN_code<\/th>\n      <th>Ecosystem<\/th>\n      <th>NiN_mainType<\/th>\n      <th>km2<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"scrollY":true,"pageLength":10,"columnDefs":[{"className":"dt-right","targets":4},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p class="caption">
+Figure 4.6: List of unique combinatios of NiN variable codes and naturetypes with the summed area for which we have this data.
+</p>
+</div>
 
 </div>
 </div>
-</div>
   <div class="chapter-nav">
-<div class="prev"><a href="naturtype1.html"><span class="header-section-number">3</span> On the application of the naturetype dataset - Part 1 - Data exploration and cleaning</a></div>
+<div class="prev"><a href="naturtype1.html"><span class="header-section-number">3</span> Nature types - Part 1</a></div>
 <div class="next"><a href="scaling-functions.html"><span class="header-section-number">5</span> Scaling functions</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#naturtype2"><span class="header-section-number">4</span> On the application of the naturetype dataset - Part 2 - Representativity</a></li>
-<li><a class="nav-link" href="#environmental-space"><span class="header-section-number">4.1</span> Environmental space</a></li>
-<li><a class="nav-link" href="#represntaivity-in-mapping-units"><span class="header-section-number">4.2</span> Represntaivity in mapping units</a></li>
-<li><a class="nav-link" href="#conclution-1"><span class="header-section-number">4.3</span> Conclution 1</a></li>
-<li><a class="nav-link" href="#suitability"><span class="header-section-number">4.4</span> Suitability</a></li>
+<li><a class="nav-link" href="#naturtype2"><span class="header-section-number">4</span> Nature types - Part 2</a></li>
 <li>
-<a class="nav-link" href="#concrete-examples"><span class="header-section-number">4.5</span> Concrete examples</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#andel-lynghei-med-minst-to-faser-i-kystlynghei"><span class="header-section-number">4.5.1</span> Andel lynghei med minst to faser i kystlynghei</a></li>
-<li><a class="nav-link" href="#areal-uten-skadet-ogeller-d%C3%B8d-r%C3%B8sslyng-i-kystlynghei"><span class="header-section-number">4.5.2</span> Areal uten skadet og/eller død røsslyng i kystlynghei</a></li>
-<li><a class="nav-link" href="#aktuell-bruksintensitet"><span class="header-section-number">4.5.3</span> Aktuell bruksintensitet</a></li>
+<a class="nav-link" href="#naturetypes-condition-variables-and-their-linkage-to-nin-main-types"><span class="header-section-number">4.1</span> Naturetypes, condition variables, and their linkage to NiN main types</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#nature-types"><span class="header-section-number">4.1.1</span> Nature types</a></li>
+<li><a class="nav-link" href="#nin-variables"><span class="header-section-number">4.1.2</span> NiN variables</a></li>
+<li><a class="nav-link" href="#subset"><span class="header-section-number">4.1.3</span> Subset</a></li>
+<li><a class="nav-link" href="#fill-inn-ntypdf2"><span class="header-section-number">4.1.4</span> Fill inn ntypDF2</a></li>
 </ul>
 </li>
+<li>
+<a class="nav-link" href="#plots"><span class="header-section-number">4.2</span> Plots</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#area-per-nin-main-type-conditioned-on-ecosystem-and-adding-empty-main-types"><span class="header-section-number">4.2.1</span> Area per NiN main type conditioned on ecosystem and adding empty main types</a></li>
+<li><a class="nav-link" href="#for-each-nin-main-type-the-proportion-mapped-with-each-nin-variable"><span class="header-section-number">4.2.2</span> For each NiN main type, the proportion mapped with each NiN variable</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#tentative-conclusions-and-the-way-forward"><span class="header-section-number">4.3</span> Tentative conclusions and the way forward</a></li>
+<li><a class="nav-link" href="#tables"><span class="header-section-number">4.4</span> Tables</a></li>
 </ul>
 
       <div class="book-extra">
@@ -158,7 +1094,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2022-09-30.</p>
+    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2022-10-11.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
