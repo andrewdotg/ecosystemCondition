@@ -1,6 +1,6 @@
-# Nature types - Part 2 
+# Nature types - Part 2 {#naturtype2}
 
-On the application of the naturetype dataset - Part 2 - Representativity {#naturtype2}
+**On the application of the naturetype dataset - Part 2 - Representativity **
 
 <br />
 
@@ -23,6 +23,9 @@ knitr::opts_chunk$set(echo = TRUE)
 Author: Anders L. Kolstad
 
 Date: `r Sys.Date()`
+
+<br />
+
 
 This chapter continues with the cleaned dataset exported at the end of the previous chapter:
 ```{r, eval=T}
@@ -74,7 +77,7 @@ ntypDF <- data.frame(
 )
 ```
 
-We have 66 nature types to consider. Some of the wetland types can actually be excluded because of the way we limited this ecosystem to mean *Open Wetland*.
+We have 66 nature types to consider. Some of the wetland types can actually be excluded because of the way we limited this ecosystem to mean *open* wetland.
 
 ```{r}
 excl_nt <- c("Kalkrik myr- og sumpskogsmark",
@@ -100,7 +103,7 @@ ntypDF <- ntypDF[ntypDF$Nature_type %!in% excl_nt,]
 DT::datatable(ntypDF)
 ```
 
-The way to do this I think is to look at each nature type in turn and map the NiN main types and sub-types that they cover. At the same time I can extract the NiN variables and values to see.
+The way to do this I think is to look at each nature type in turn and map the NiN main types and sub-types that they cover. At the same time I can extract the NiN variables and values to see how they distribute over the NiN main types.
 
 
 ### NiN variables
@@ -121,7 +124,7 @@ dat2L <- tidyr::separate(dat2L,
                               )
 # One NA produced here, but I check it, and it's fine.
 
-# Convert values to numeric. This causes some NA's which I will go though below
+# Convert values to numeric. This causes some NA's which I will go through below
 dat2L$NiN_variable_value <- as.numeric(dat2L$NiN_variable_value)
 
 ```
@@ -173,6 +176,8 @@ exclude <- c(exclude,
              "4DL-S-0")
 ```
 
+> Biodiversity variables were only recorded when condition was better than *very poor*. This bias means we cannot use these variables.
+
 
 #### 4TG (old trees)
 
@@ -186,7 +191,7 @@ exclude <- c(exclude,
 
 
 #### 4TL (trees with fire scars)
-These five variables are ised together with 4TG as biodiversity variables in 2018.
+These five variables are used together with 4TG as biodiversity variables in 2018.
 ```{r}
 exclude <- c(exclude,
              "4TL-BS",
@@ -196,8 +201,8 @@ exclude <- c(exclude,
              "4TL-SB")
 ```
 
-#### 5AB and 5BY
-These area land use types (arealbruksklasser) and building types, respectively, and the values are not numeric, but categorical, and represents presence or absence of these land uses or objects. These are not suited for automatically determining ecosystem condition as this is done subjectively in the field.
+#### 5AB and 5BY (arealbruksklasser og byggningstyper)
+These area land use types and building types, respectively, and the values are not numeric, but categorical, and represents presence or absence of these land uses or objects. These are not suited for automatically determining ecosystem condition as this is done subjectively in the field.
 ```{r}
 exclude <- c(exclude,
              "5AB-0",
@@ -207,7 +212,7 @@ exclude <- c(exclude,
 ```
 
 #### 6SE and 6SO (Bioclimatical sections and sones)
-Not relevant here as a condition variable.
+Not relevant here as condition variables.
 ```{r}
 exclude <- c(exclude,
              "6SE",
@@ -216,9 +221,10 @@ exclude <- c(exclude,
 
 #### 7FA (fremmedartsinnslag)
 Should not have been allowed the value X, so Ok to exclude these.
+7FA also has potentially an issue related to how the NiN-app as build which doesn't allow for registering alien species that are not on the *fremmedartsliste*.  
 
 #### 7GR-GI
-7GR-GI (grøftingsintensitet) should not have the value X either, so OK to exclude these.
+7GR-GI (grøftingsintensitet) should not have the value X either, so OK to exclude these NA's. But we keep the variable, even though its clearly a pressure indikator, we might want to use it as a surrogate for mire hydrology.
 
 #### 7JB-KU (Kystlyngheias utviklingsfaser)
 
@@ -250,9 +256,9 @@ The reason could be that this variable is used in the biodiversity assessment, w
 ```{r}
 table(temp$tilstand)
 ```
-That is not the case. If the condition is scored as low, the variable does not even appear in the data set for that locality.
+That is not the case: If the condition is scored as low, the variable does not even appear in the data set for that locality.
 
-We can also make a note that a big proportion of the total number of localities of *Kystlynghei* had very poor condition, and therefore this variable 7JB-KU was not recorded.
+We can also make a note that a big proportion of the total number of localities of *Kystlynghei* had very poor condition, and therefore this variable 7JB-KU was not recorded in a large proportion of the localities.
 ```{r, fig.cap="The distribution of condition scores for Kystlynghei."}
 KU <- dat2[dat2$naturtype=="Kystlynghei",]
 barplot(table(KU$tilstand))
@@ -266,7 +272,7 @@ Each *kystlynghei* locality should have values for all four parameters (7BA-BY/D
 ```
  ... we can see that sometimes <4 but >0 of the variables/phases has been given a score, but sometimes none have. This makes it problematic to set these NA's to be zeros. When we also consider the fact that there is an obvious bias in that only localities with poor condition or better have these variables assessed in the first place, I will exclude all of these variables and treat them as *not suited*.
 
-#### 7JB-BA = Aktuell bruksintensitet
+#### 7JB-BA (Aktuell bruksintensitet)
 A common condition variable in semi-natural nature types. It's a borderline pressure indicator, but I will keep it in the data set for now at least.
 
 Overview of cases where the value is set as *X*.
@@ -276,7 +282,7 @@ table(temp$kartleggingsår, temp$naturtype)
 ```
 These are just a few cases, mostly from 2018. OK to treat as NA.
 
-#### 7JB-BT = Beitetrykk
+#### 7JB-BT (Beitetrykk)
 Similar variable to the above.
 ```{r}
 temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7JB-BT_X",]
@@ -284,7 +290,7 @@ table(temp$kartleggingsår, temp$naturtype)
 ```
 OK to treat X's as NA's.
 
-#### 7JB-GJ = Gjødsling
+#### 7JB-GJ (Gjødsling)
 Similar variable to the two above.
 ```{r}
 temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7JB-BT_X",]
@@ -292,14 +298,17 @@ table(temp$kartleggingsår, temp$naturtype)
 ```
 OK to treat as X's NA's.
 
+This variable is used as a condition indicator, but this could be questioned. Firstly, it is a pressure indicator. Secondly, many semi-natural areas where fertilized, also in the reference condition. The people that made the meadows would probably not agree that a productive field/meadow has poor condition. This condition variable is therefor more directly tuned towards the maintenance of biodiversity.
+
+
 #### 7JB-HT (Høsting av tresjiktet)
-Used for *Lauveng*in 2019 and 2020.
+Used for *Lauveng* in 2019 and 2020.
 ```{r}
 temp <- dat2L[dat2L$NiN_variable_code == "7JB-HT-ST" | 
                dat2L$NiN_variable_code == "7JB-HT-SL" ,]
 table(temp$kartleggingsår, temp$naturtype)
 ```
-This is so marginal that I will exclude then already now.
+This is so marginal that I will exclude these already now.
 ```{r}
 exclude <- c(exclude,
              "7JB-HT-SL",
@@ -310,8 +319,8 @@ exclude <- c(exclude,
 Condition variables.
 There are some very few cases where 7RA-SJ has the value X. It should be numeric 1-4, so the value X is a mistake here I think. We can exclude these (i.e. allow them to be NA's).
 
-#### 7SD
-7SD-NS and 7SD-0 was also only used for one nature type, and then only for wooded localities of *Flommyr, myrkant og myrskogsmark*. *X* therefore means *not relevant*, and we can also exclude the parameters from the dataset all together.
+#### 7SD-0 and 7SD- NS (Natur- og normalskogsdynamikk)
+7SD-NS and 7SD-0 was also only used for only one nature type (which is not forest), and then only for wooded localities of *Flommyr, myrkant og myrskogsmark*. *X* therefore means *not relevant*, and we can also exclude the parameters from the dataset all together.
 
 ```{r}
 exclude <- c(exclude, 
@@ -322,8 +331,7 @@ exclude <- c(exclude,
 #### 7TK and 7SE (kjørespor & slitasje)
 7TK (kjørespor) and 7SE (slitasje) are not allowed the value X, but it happened on some rare occasions (24) anyhow. It's fine to treat these as NA's.
 
-#### 7VR-RI
-*Reguleringsintensitet*
+#### 7VR-RI (Reguleringsintensitet)
 This variable is defined as numeric between 1-5. There is, however, quite a few cases where it is X.
 ```{r}
 temp <- dat2L[dat2L$ninbeskrivelsesvariabler == "7VR-RI_X",]
@@ -347,7 +355,7 @@ These variables include LKM's (lokal kompleks miljøvariabel) which are nonrelev
 * PRAM
     + Menneskeskapte objekter
     + Related to 5BY and 5AB
-    + Exclude (se 5BY and 5AB)
+    + Exclude (see 5BY and 5AB)
 * PRH
     + This is perhaps a mistake and should be PRHA or PRHT
     + Exclude
@@ -429,7 +437,7 @@ length(unique(dat2L2$NiN_variable_code))
 ```
 Now we are down to 20 possible condition variables.
 
-I will also now exclude nature types that were only mapped in 2018 and/or and not after that. These nature types will not only not get more data in the future, but also they were mapped in a time when the methodology was quite unstable. 
+I will also now exclude nature types that were only mapped in 2018 and/or 2019 and not after that. These nature types will not only not get more data in the future, but also they were mapped in a time when the methodology was quite unstable. 
 
 ```{r}
 ntypDF2 <- ntypDF[ntypDF$Year != "2018" &
@@ -439,7 +447,7 @@ ntypDF2 <- ntypDF[ntypDF$Year != "2018" &
 ```
 
 ### Fill inn ntypDF2 
-Next I want to expand ntypDF2 to include the NiN main types covered by the different nature types. I cannot use the field data for this, because there are so many mistakes in the data. I need to look at the definition of each nature type and get the NiN code from there. I could also extract the NiN sub types (grunntyper), but it would become too messy. 
+Next I want to expand ntypDF2 to include the NiN main types covered by the different nature types. I cannot use the field data for this, because there are so many mistakes in the data. I need to look at the definition of each nature type and get the NiN code from there. I could also extract the NiN sub types (grunntyper), but it would become too messy. Therefor I will create a second column with a textual/categorical description of the degree of themaic coverage.
 
 I will look at the definitions of the nature type in the first and last year when that type was mapped, but not for the years in between.
 
@@ -510,10 +518,11 @@ ntypDF2 <- ntypDF2 %>%
 ```{r}
 ntyp_vars <- as.data.frame(table(dat2L2$naturtype, dat2L2$NiN_variable_code))
 names(ntyp_vars) <- c("Nature_type", "NiN_variable_code", "NiN_variable_count")
-(ntyp_vars <- ntyp_vars[ntyp_vars$NiN_variable_count >0,])
+ntyp_vars <- ntyp_vars[ntyp_vars$NiN_variable_count >0,]
+head(ntyp_vars)
 ```
 
-Add a column for the total nmber of localities for each nature type and get the percentage of localities where each NiN has been recorded.
+Add a column for the total number of localities for each nature type and get the percentage of localities where each NiN has been recorded.
 ```{r}
 #options(scipen=999) # suppress exp notation
 count <- as.data.frame(table(dat2$naturtype))
@@ -530,7 +539,7 @@ ntyp_vars_wide <- data.table::dcast(setDT(ntyp_vars),
                                     value.var = "percentageUse")
 ```
 
-This data set contains the nature types that were only mapped in 2018 or 2019, and which we removed from ntypDF2. 
+This data set contains the nature types that were only mapped in 2018 or 2019, and which we removed from ntypDF2:
 ```{r}
 ntyp_vars_wide$Nature_type[ntyp_vars_wide$Nature_type %!in% ntypDF2$Nature_type]
 ```
@@ -557,6 +566,8 @@ num <- as.data.frame(dat2) %>%
 
 ntyp_fill <- cbind(ntyp_fill, num[,-1][match(ntyp_fill$Nature_type, num$naturtype),])
 ```
+
+
 
 ## Plots
 
@@ -680,11 +691,12 @@ ntyp_fill2 <- ntyp_fill %>%
   add_row(NiN_mainType = "T40", Ecosystem = "Semi-naturlig mark", NiN_mainTypeCoverage = "Not mapped", km2 = 0)
 ```
 
+
 Adding the non-mapped wetland types
 ```{r}
 wetland[wetland %!in% ntyp_fill$NiN_mainType]
 ```
-This is Våtsnøleie, and my guess is that it IS mapped, but grouped with the aloine ecosystem. I'll therefore not add it in here, but mention it in the figure caption below.
+V6 is *Våtsnøleie*, and my guess is that it *is* mapped, but grouped with the alpine ecosystem. I'll therefore not add it in here, but mention it in the figure caption below.
 
 
 ```{r, fig.cap="The areas mapped for each NiN main type, and the degree of spatial representativity (or coverage) of the mapping units (nature types). V6 Våtsnøleie og snøleiekilde is not included."}
@@ -723,13 +735,12 @@ ntyp_fill2 %>%
   
 ```
 
-From the figure above I take that *Naturlig åpne områder* is very poorly represented in general, and that there are many NiN main types that are completely missing from the dataset. The three most common types, however, have complete thematic coverage (in excluding the year 2018 and including all sub-types). I will need to investigate if there are some NiN variables for the nature types mapping T18 Åpen flomfastmark, T12 Strandeng and T21 Sanddynemark which we can use.
+From the figure above I take that *Naturlig åpne områder* is very poorly represented in general, and that there are many NiN main types that are completely missing from the dataset. The three most common types, however, have complete thematic coverage (if excluding the year 2018 and including all sub-types). I will need to investigate if there are some NiN variables for the nature types mapping T18 Åpen flomfastmark, T12 Strandeng and T21 Sanddynemark which we can use.
 
-For *Semi-naturlig mark* we have quite good thematic coverage for the thre main types.The other three types probably makes up a considerably smaller area, but note that T33 has some coverage, and is classes as *all (-2018)*. Of the thre main ecosystems, semi-naturlig mark dominates clearly. I will need to look for NiN variabels associated with the maooing units for these main NiN types. I can also possibly explore the distribution of the mapped polygons in environmental space and compare it agains AR5 as a reference.
+For *Semi-naturlig mark* we have quite good thematic coverage for the three main types. The other three types probably makes up a considerably smaller area, but note that T33 has some coverage, and is classes as *all (-2018)*. Of the three main ecosystems, semi-naturlig mark dominates clearly. I will need to look for NiN variables associated with the mapping units for these main NiN types. I can also possibly explore the distribution of the mapped polygons in environmental space and compare it against AR5 as a reference, but I'm not sure how good AR5 is for anything whihc is not cropland.
 
-For *Våtmark* we have good thematic coverage for V3 nedbørsmyr and V9 semi-naturlig myr, but for V1 åpen jordvassmyr only calcareous localities are mapped and assessed. A question is then whether, for a given NiN variable, that calcareous localities can be representative for all mires (ppor and rich) or if this will intrucude too much bias in one way or another. 
+For *Våtmark* we have good thematic coverage for V3 nedbørsmyr and V9 semi-naturlig myr, but for V1 åpen jordvassmyr only calcareous localities are mapped and assessed. A question is then whether, for a given NiN variable, that calcareous localities can be representative for all mires (poor and rich) or if this will intruduce too much bias in one way or another. 
 
-I will give priority to *Naturlig åpne områder* because of the poor data availabiliy for this ecosystem in general.
 
 ### For each NiN main type, the proportion mapped with each NiN variable
 
@@ -742,7 +753,7 @@ areaSum <- ntyp_fill2 %>%
 
 ```
 
-```{r, fig.cap="Barplot showing the proportion area for which each NiN variable is recorded. The total mapped area for each main ecosystem (the facets) is shown as a dashed red line. The three most dominant Nin main types for each ecosystem is given a uniqe colour, and all the remaining are grouped as 'other'."}
+```{r, fig.cap="Barplot showing the proportion area for which each NiN variable is recorded. The total mapped area for each main ecosystem (the facets) is shown as a dashed red line. The three most dominant NiN main types for each ecosystem is given a uniqe colour, and all the remaining are grouped as 'other'."}
 ntyp_fill2 %>%
   pivot_longer(cols = unique(ntyp_vars$NiN_variable_code)) %>%
   drop_na(value) %>%
@@ -786,12 +797,42 @@ ntyp_fill2 %>%
   theme_bw(base_size = mySize)
 ```
 
-
+## Tentative conclusions and the way forward
 This figure, in combination with the above, points to he most obvious NiN variable candidates. 
 
-7TK, /SE and 7FA are good candidates for *Naturlig åpne områder*. 7JA-BT is probably best classes as a pressures indikcator. Same with 7VR-RI with is recorded for all T18 localities. 
+7SE and 7TK are good candidates for *Naturlig åpne områder*. 7JA-BT is probably more appropriately classed as a pressure indicator. Same with 7VR-RI with is recorded for all T18 localities. 
+7FA has potentially an issue related to how the NiN-app as build which doesn't allow for registering alien species that are not on the *fremmedartsliste*.  
 
-The same three variables are the best candidates also for *Semi-natural areas*.
+The same two variables (7SE and 7TK) are the best candidates also for *Semi-natural areas*. 7JB-BT is a pressure variable (*beitetrykk*). 7RA-SJ/BH are related to *gjengoing* which will be covered by another indicator informed from remote sensing (LiDAR), and we therefor don't need to describe this with a field-based indicator as well.
 
-For *Våtmark*, 7GR-Gi is the most common variables, but this is a pressure variable. But, perhaps it could be used as a surrogate indicator. /SE and 7TK+PRTK are other candidates. PRTO is only relevant for V3, but covers a relatively large area.
+For *Våtmark*, 7GR-Gi is the most common variables, but this is a pressure variable (*grøfting*). But, perhaps it could be used as a surrogate indicator. I think this is justifiable, especially since the relationship between the pressure (grøfting) and the condition (hydrology) is so well known. 7SE and 7TK+PRTK are other candidates. PRTO is only relevant for V3, but covers a relatively large area.
 
+Next, I will focus in *Våtmark*-variables, since here we can use a new ecosystem delineation map as a reference to evaluate the environamlental and spatial bias in the dataset. This is not currently possible for the other two ecosystems.  
+
+## Tables
+Here are some output tables with numbers the numbers underlying the above figures. 
+
+```{r, fig.cap= "List of 45 nature types additionam data, including the proportion of localities for which there is data for each of the NiN variables."}
+DT::datatable(ntyp_fill2,
+              #extensions = "FixedColumns",
+  options = list(
+    scrollX = T,
+    scrollY=T,
+    pageLength = 10))
+```
+
+```{r, fig.cap= "List of unique combinatios of NiN variable codes and naturetypes with the summed area for which we have this data."}
+DT::datatable(
+  ntyp_fill2 %>%
+  pivot_longer(cols = unique(ntyp_vars$NiN_variable_code)) %>%
+  drop_na(value) %>%
+  rename(NiN_code = name,
+         useFrequency = value) %>%
+  filter(useFrequency > 0) %>%
+  group_by(NiN_code, Ecosystem, NiN_mainType) %>%  # NiN main type could be replaced with Nature_type
+  summarise(km2 = sum(km2)),
+  options = list(
+    scrollX = T,
+    scrollY=T,
+    pageLength = 10))
+```

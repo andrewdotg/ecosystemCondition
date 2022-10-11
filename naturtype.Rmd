@@ -1,8 +1,8 @@
 # (PART\*) GENERAL TOPICS {.unnumbered}
 
-# Nature types - Part 1
+# Nature types - Part 1 {#naturtype1}
 
-On the application of the naturetype dataset - Part 1 - Data exploration and cleaning {#naturtype1}
+**On the application of the naturetype dataset - Part 1 - Data exploration and cleaning**
 
 <br />
 
@@ -22,6 +22,8 @@ knitr::opts_chunk$set(echo = TRUE)
 Author: Anders L. Kolstad
 
 Date: `r Sys.Date()`
+
+<br />
 
 Here I will investigate a specific data set, [Naturtyper - Miljødirektoratets instruks](https://kartkatalog.geonorge.no/metadata/naturtyper-miljoedirektoratets-instruks/eb48dd19-03da-41e1-afd9-7ebc3079265c) and try to evaluate its usability for designing indicators for ecosystem condition. This involves assessing both the spatial and temporal representation, as well as conseptual alignment with the [Norwegian system for ecosystem condition assessments](https://www.regjeringen.no/no/dokumenter/fagsystem-for-fastsetting-av-god-okologisk-tilstand/id2558481/).
 
