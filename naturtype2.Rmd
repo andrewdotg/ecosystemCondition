@@ -42,7 +42,7 @@ We will only include our target ecosystems, and we will exclude *Hule eiker*.
 ```{r}
 target <- c("Semi-naturlig mark",
             "Våtmark",
-            "Naturlig åpne områder under skoggrensa")
+            "Naturlig åpne områder under skoggresa")
 dat <- dat[dat$hovedøkosystem %in% target,]
 dat <- dat[dat$naturtype != "Hule eiker",]
 ```
