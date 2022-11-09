@@ -25,6 +25,8 @@ Sys.Date()
 ```{r setup, include=FALSE}
 library(knitr)
 library(sf)
+library(tmap)
+library(ggplot2)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -112,15 +114,65 @@ The dataset has already been [cleaned](#naturtype1) and [initial analyses on the
 dat <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Mdir_Naturtyper_cleanedALK.rds")
 ```
 
+We also have a separate summary file where the nature types are manually mapped to the correct NiN-main types. We can use this to find the nature types associated with the NiN main types that we are interested in.
+```{r}
+nt <- readRDS("data/naturetypes/natureType_summary.rds")
+```
+
+We are only interested in a few NiN main types and their mapping units
+```{r}
+main <- c("T12",
+          "T18",
+          "T21",
+          "T31",
+          "T33",
+          "T34",
+          "V1",
+          "V3")
+```
+
+```{r}
+nt2 <- nt[nt$NiN_mainType %in% main,]
+```
+
+Sub-setting the main data file:
+```{r}
+dat2 <- dat[dat$naturtype %in% nt2$Nature_type,]
+```
+
+```{r, fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation."}
+ggplot(data = dat2, aes(x = naturtype, fill = hovedøkosystem))+
+  geom_bar()+
+  coord_flip()+
+  theme_bw(base_size = 12)+
+  guides(fill = "none")+
+  xlab("")+
+  ylab("Number of localities")
+```
 
 #### Vegetation zones (bioregions)
+I want to look at if the indicator values can be averages over smaller and more meaningfu areas (ecological homogeneous areas) than the regions.
+```{r}
+path <- "/data/R/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp"
+```
+
+```{r}
+soner <- sf::read_sf(path)
+```
+
+```{r}
+tm_shape(soner)+
+  tm_polygons(col = "NAVN")
+```
+
+It could make sense to combine some sones, but I will later split the sones by region, and then merge sones that are very uncommon in a spesific region.
+
 
 
 #### Regions
-<!-- In case you need to map the indicator value to regions, you can do that here. Remove this chapter if not relevant. -->
 Importing a shape file with the regional delineation. 
 ```{r}
-#reg <- sf::st_read("data/regions.shp")
+reg <- sf::st_read("data/regions.shp")
 #st_crs(reg)
 ```
 
