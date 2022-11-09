@@ -32,17 +32,22 @@ This chapter continues with the cleaned dataset exported at the end of the previ
 dat <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Mdir_Naturtyper_cleanedALK.rds")
 ```
 
-## Naturetypes, condition variables, and their linkage to NiN main types
+## Resarch question
 Only a subset of nature types are mapped. How well do these mapped units/areas represent the range of nature types that is included for each main ecosystem group? And what condition variables do we have available for each of these?
 
 ### Nature types
 Lets extract the unique nature types, their associated main ecosystem, and the year when these nature types were mapped. 
 
 We will only include our target ecosystems, and we will exclude *Hule eiker*.
+
+```{r}
+unique(dat$hovedøkosystem)
+```
+
 ```{r}
 target <- c("Semi-naturlig mark",
             "Våtmark",
-            "Naturlig åpne områder under skoggresa")
+            "Naturlig åpne områder under skoggrensa")
 dat <- dat[dat$hovedøkosystem %in% target,]
 dat <- dat[dat$naturtype != "Hule eiker",]
 ```
@@ -687,7 +692,7 @@ Adding the non-mapped semi-natural types
 semi[semi %!in% ntyp_fill$NiN_mainType]
 ```
 ```{r}
-ntyp_fill2 <- ntyp_fill %>%
+ntyp_fill2 <- ntyp_fill2 %>%
   add_row(NiN_mainType = "T40", Ecosystem = "Semi-naturlig mark", NiN_mainTypeCoverage = "Not mapped", km2 = 0)
 ```
 
@@ -697,6 +702,11 @@ Adding the non-mapped wetland types
 wetland[wetland %!in% ntyp_fill$NiN_mainType]
 ```
 V6 is *Våtsnøleie*, and my guess is that it *is* mapped, but grouped with the alpine ecosystem. I'll therefore not add it in here, but mention it in the figure caption below.
+
+### Export summary dataset
+```{r, eval = F}
+saveRDS(ntyp_fill2, "data/naturetypes/natureType_summary.rds")
+```
 
 
 ```{r, fig.cap="The areas mapped for each NiN main type, and the degree of spatial representativity (or coverage) of the mapping units (nature types). V6 Våtsnøleie og snøleiekilde is not included."}
@@ -737,7 +747,7 @@ ntyp_fill2 %>%
 
 From the figure above I take that *Naturlig åpne områder* is very poorly represented in general, and that there are many NiN main types that are completely missing from the dataset. The three most common types, however, have complete thematic coverage (if excluding the year 2018 and including all sub-types). I will need to investigate if there are some NiN variables for the nature types mapping T18 Åpen flomfastmark, T12 Strandeng and T21 Sanddynemark which we can use.
 
-For *Semi-naturlig mark* we have quite good thematic coverage for the three main types. The other three types probably makes up a considerably smaller area, but note that T33 has some coverage, and is classes as *all (-2018)*. Of the three main ecosystems, semi-naturlig mark dominates clearly. I will need to look for NiN variables associated with the mapping units for these main NiN types. I can also possibly explore the distribution of the mapped polygons in environmental space and compare it against AR5 as a reference, but I'm not sure how good AR5 is for anything whihc is not cropland.
+For *Semi-naturlig mark* we have quite good thematic coverage for the three main types. The other three types probably makes up a considerably smaller area, but note that T33 has some coverage, and is classes as *all (-2018)*. Of the three main ecosystems, semi-naturlig mark dominates clearly. I will need to look for NiN variables associated with the mapping units for these main NiN types. I can also possibly explore the distribution of the mapped polygons in environmental space and compare it against AR5 as a reference, but I'm not sure how good AR5 is for anything which is not cropland.
 
 For *Våtmark* we have good thematic coverage for V3 nedbørsmyr and V9 semi-naturlig myr, but for V1 åpen jordvassmyr only calcareous localities are mapped and assessed. A question is then whether, for a given NiN variable, that calcareous localities can be representative for all mires (poor and rich) or if this will intruduce too much bias in one way or another. 
 
