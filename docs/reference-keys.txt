@@ -1,4 +1,5 @@
 tab:unnamed-chunk-1
+fig:unnamed-chunk-6
 fig:unnamed-chunk-11
 fig:unnamed-chunk-12
 fig:unnamed-chunk-14
@@ -48,6 +49,11 @@ scaled-indicator-values
 uncertainty
 prepare-export
 eksport-shape-file-final-product
+deprecated-areal-uten-død-eller-skadet-røsslyng-i-kystlynghei
+introduction-1
+analyses-1
+ano-data
+conclusion
 test1
 naturtype
 import-data-and-general-summary-statistics
