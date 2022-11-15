@@ -1,8 +1,10 @@
 # (PART\*) GENERAL TOPICS {.unnumbered}
 
-# Nature types - Part 1 {#naturtype1}
+# Nature types {#naturtype}
 
-**On the application of the naturetype dataset - Part 1 - Data exploration and cleaning**
+**On the application of the nature type dataset**
+
+*Data exploration and an analyses of thematic coverage*
 
 <br />
 
@@ -10,10 +12,14 @@
 library(knitr)
 library(sf)
 library(tmap)
+library(tidyr)
 library(ggplot2)
 library(data.table)
 library(stringr)
+library(forcats)
+library(RColorBrewer)
 library(units)
+library(egg)
 library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -289,6 +295,7 @@ The NiN main types need to be added manually to the nature types, as the field r
 
 I will start by excluding all but the three target ecosystems.
 ```{r}
+target <- c("Semi-naturlig mark","Våtmark","Naturlig åpne områder under skoggrensa")
 dat <- dat[dat$hovedøkosystem %in% target,]
 ```
 
@@ -980,7 +987,7 @@ ntyp_fill2 %>%
          NiN_mainTypeCoverage,
          km2)%>%
   ungroup() %>%
-  mutate(NiN_mainType = fct_reorder(NiN_mainType, km2)) %>%
+  mutate(NiN_mainType = forcats::fct_reorder(NiN_mainType, km2)) %>%
   ggplot(aes(x = NiN_mainType,
              y = km2,
              fill = NiN_mainTypeCoverage))+
@@ -1154,7 +1161,7 @@ The main data set also includes mosaic localities, that are less suitable to use
 
 
 
-# Appendix 1
+## Appendix 1
 Here is a deeper look into the causes for why some localities are recorded with seemingly erroneous NiN mapping units (and hence NiN main types)
 
 Lets have a look at how the NiN main types (recorded in the field) cover the different *hovedøkosystem* when we exclude *Hule eiker* and all localities that have more than one NiN main type.
