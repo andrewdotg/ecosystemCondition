@@ -106,12 +106,20 @@ knitr::kable(metaData)
 ## Analyses
 ### Data sets
 
+
 #### Nature type mapping
 This indicator uses the dataset `Naturtyper etter Miljødirektoratets Instruks`, which can be found [here](https://kartkatalog.geonorge.no/metadata/naturtyper-miljoedirektoratets-instruks/eb48dd19-03da-41e1-afd9-7ebc3079265c).
-The dataset has already been [cleaned](#naturtype1) and [initial analyses on thematic representativity](#naturtype2) has been done.
+See [here](#naturtype) for a detailed description of tha dataset.
 
 ```{r, eval=T}
-dat <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Mdir_Naturtyper_cleanedALK.rds")
+
+dir <- substr(getwd(), 1,2)
+
+path <- ifelse(dir == "C:", 
+               "P:/41201785_okologisk_tilstand_2022_2023/data/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
+               "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
+
+dat <- sf::st_read(dsn = path)
 ```
 
 We also have a separate summary file where the nature types are manually mapped to the correct NiN-main types. We can use this to find the nature types associated with the NiN main types that we are interested in.
@@ -119,7 +127,7 @@ We also have a separate summary file where the nature types are manually mapped 
 nt <- readRDS("data/naturetypes/natureType_summary.rds")
 ```
 
-We are only interested in a few NiN main types and their mapping units
+We are only interested in a few NiN main types and their mapping units (see [here](https://ninanor.github.io/ecosystemCondition/naturtype.html) for justification)
 ```{r}
 main <- c("T12",
           "T18",
@@ -131,6 +139,8 @@ main <- c("T12",
           "V3")
 ```
 
+
+
 ```{r}
 nt2 <- nt[nt$NiN_mainType %in% main,]
 ```
@@ -139,6 +149,12 @@ Sub-setting the main data file:
 ```{r}
 dat2 <- dat[dat$naturtype %in% nt2$Nature_type,]
 ```
+
+Fix duplicated name for an ecosystem
+```{r}
+dat2$hovedøkosystem[dat2$hovedøkosystem=="Naturlig åpne områder i lavlandet"] <- "Naturlig åpne områder under skoggrensa"
+```
+
 
 ```{r, fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation."}
 ggplot(data = dat2, aes(x = naturtype, fill = hovedøkosystem))+
@@ -150,10 +166,17 @@ ggplot(data = dat2, aes(x = naturtype, fill = hovedøkosystem))+
   ylab("Number of localities")
 ```
 
+# GRUK
+
+This variable is also recorded in GRUK
+
 #### Vegetation zones (bioregions)
 I want to look at if the indicator values can be averages over smaller and more meaningfu areas (ecological homogeneous areas) than the regions.
 ```{r}
-path <- "/data/R/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp"
+
+path <- ifelse(dir == "C:", 
+               "R:/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp",
+               "/data/R/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp")
 ```
 
 ```{r}
@@ -165,7 +188,7 @@ tm_shape(soner)+
   tm_polygons(col = "NAVN")
 ```
 
-It could make sense to combine some sones, but I will later split the sones by region, and then merge sones that are very uncommon in a spesific region.
+It could make sense to combine some zones, but I will later split the sones by region, and then merge sones that are very uncommon in a spesific region.
 
 
 
