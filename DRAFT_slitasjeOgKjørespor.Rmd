@@ -168,7 +168,9 @@ ggplot(data = dat2, aes(x = naturtype, fill = hovedøkosystem))+
 
 # GRUK
 
-This variable is also recorded in GRUK
+This variable is also recorded in GRUK. The nature type dataset I'm working on here includes this data already (presently only 2021 included). GRUK also records a related variable: % cover in 5m radii circles. This data is not published.In any case it is better to use the harmonized dataset.
+
+
 
 #### Vegetation zones (bioregions)
 I want to look at if the indicator values can be averages over smaller and more meaningfu areas (ecological homogeneous areas) than the regions.
@@ -185,10 +187,11 @@ soner <- sf::read_sf(path)
 
 ```{r}
 tm_shape(soner)+
-  tm_polygons(col = "NAVN")
+  tm_polygons(col = "NAVN",
+              title = "Vegetation zone")
 ```
 
-It could make sense to combine some zones, but I will later split the sones by region, and then merge sones that are very uncommon in a spesific region.
+It could make sense to combine some zones, but I will later split the zones by region, and then merge sones that are very uncommon in a spesific region.
 
 
 
