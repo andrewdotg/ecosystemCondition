@@ -27,6 +27,7 @@ library(knitr)
 library(sf)
 library(tmap)
 library(ggplot2)
+library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -119,17 +120,17 @@ path <- ifelse(dir == "C:",
                "P:/41201785_okologisk_tilstand_2022_2023/data/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
                "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
 
-dat <- sf::st_read(dsn = path)
+naturetypes <- sf::st_read(dsn = path)
 ```
 
 We also have a separate summary file where the nature types are manually mapped to the correct NiN-main types. We can use this to find the nature types associated with the NiN main types that we are interested in.
 ```{r}
-nt <- readRDS("data/naturetypes/natureType_summary.rds")
+naturetypes_summary <- readRDS("data/naturetypes/natureType_summary.rds")
 ```
 
 We are only interested in a few NiN main types and their mapping units (see [here](https://ninanor.github.io/ecosystemCondition/naturtype.html) for justification)
 ```{r}
-main <- c("T12",
+main_NiN_types <- c("T12",
           "T18",
           "T21",
           "T31",
@@ -142,22 +143,22 @@ main <- c("T12",
 
 
 ```{r}
-nt2 <- nt[nt$NiN_mainType %in% main,]
+naturetypes_summary <- naturetypes_summary[naturetypes_summary$NiN_mainType %in% main_NiN_types,]
 ```
 
 Sub-setting the main data file:
 ```{r}
-dat2 <- dat[dat$naturtype %in% nt2$Nature_type,]
+naturetypes <- naturetypes[naturetypes$naturtype %in% naturetypes_summary$Nature_type,]
 ```
 
 Fix duplicated name for an ecosystem
 ```{r}
-dat2$hovedøkosystem[dat2$hovedøkosystem=="Naturlig åpne områder i lavlandet"] <- "Naturlig åpne områder under skoggrensa"
+naturetypes$hovedøkosystem[naturetypes$hovedøkosystem=="Naturlig åpne områder i lavlandet"] <- "Naturlig åpne områder under skoggrensa"
 ```
 
 
 ```{r, fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation."}
-ggplot(data = dat2, aes(x = naturtype, fill = hovedøkosystem))+
+ggplot(data = naturetypes, aes(x = naturtype, fill = hovedøkosystem))+
   geom_bar()+
   coord_flip()+
   theme_bw(base_size = 12)+
@@ -166,9 +167,283 @@ ggplot(data = dat2, aes(x = naturtype, fill = hovedøkosystem))+
   ylab("Number of localities")
 ```
 
-# GRUK
+Calculate area
+```{r}
+naturetypes$area <- sf::st_area(naturetypes)
+```
+
+
+The nin variables are combined into a single field which we need to spit apart.
+```{r}
+naturetypes <- tidyr::separate_rows(naturetypes,
+                                    ninbeskrivelsesvariabler,
+                                    sep=",") %>%
+  separate(col = ninbeskrivelsesvariabler,
+           into = c("NiN_variable_code", "NiN_variable_value"),
+           sep = "_",
+           remove=F
+           )
+```
+
+Convert to numeric. Ignore NA's
+```{r}
+naturetypes$NiN_variable_value <- as.numeric(naturetypes$NiN_variable_value)
+```
+
+Keep only the relevant variables
+```{r}
+myVars <- c(
+  #"7FA",     #treated separately in a different indicator
+  "7SE", "7TK", "PRTK", "PRSL")
+naturetypes <- filter(naturetypes,
+                      NiN_variable_code %in% myVars)
+```
+
+Columnames starting with a number is problematic, so adding a prefix
+```{r}
+naturetypes$NiN_variable_code <- paste0("var_", naturetypes$NiN_variable_code)
+```
+
+
+Now I need to create a single row per locality with a new variable which is a product of the four variables "7SE", "7TK", "PRTK" and "PRSL". I will create a new data table where I calculate the new variable which I then paste back into the sf object.
+```{r}
+naturetypes_wide <- pivot_wider(naturetypes,
+                                names_from = NiN_variable_code,
+                                values_from = NiN_variable_value,
+                                id_cols = identifikasjon_lokalid)
+```
+
+The variables use slightly different scales.
+PRSL and PRTK use this 8 step scale:
+![](images/mdirPRscale.PNG)
+
+7TK and 7SE use a 4 step scale
+![](images/ninAR4b.PNG)
+
+I want to base this indicatr on whichever of the variables have the highest value (worst condition). This table shows that a loclity may have been assessed with both a PR variable and a NiN variable
+```{r}
+table(naturetypes_wide$var_7SE, naturetypes_wide$var_PRTK)
+```
+Therefore I need to reconcile these scales. The only way I can think of is to decrease the resolution of the PR variables to the ar4b scale. This is of course a shame to loose this detail.
+
+A locality will never have values for both 7SE and PRSL
+```{r}
+table(naturetypes_wide$var_7SE, naturetypes_wide$var_PRSL)
+```
+nor 7TK and PRTK
+```{r}
+table(naturetypes_wide$var_7TK, naturetypes_wide$var_PRTK)
+```
+
+```{r}
+naturetypes_wide$var_7TK <-  ifelse(is.na(naturetypes_wide$var_7TK),
+                              ifelse(naturetypes_wide$var_PRTK == 0, 0,
+                                ifelse(naturetypes_wide$var_PRTK < 3, 1,
+                                  ifelse(naturetypes_wide$var_PRTK < 6, 2, 3))),
+                            naturetypes_wide$var_7TK)
+```
+
+Checking that I successfully combined classes 1+2, 3+4+5 and 6+7.
+```{r}
+table(naturetypes_wide$var_7TK, naturetypes_wide$var_PRTK,
+      deparse.level = 2)
+```
+That looks fine. Doing the same for the other variable:
+```{r}
+naturetypes_wide$var_7SE <-  ifelse(is.na(naturetypes_wide$var_7SE),
+                              ifelse(naturetypes_wide$var_PRSL == 0, 0,
+                                ifelse(naturetypes_wide$var_PRSL < 3, 1,
+                                  ifelse(naturetypes_wide$var_PRSL < 6, 2, 3))),
+                            naturetypes_wide$var_7SE)
+```
+
+Remove the old PR variables
+```{r}
+naturetypes_wide <- select(naturetypes_wide,
+                           -var_PRTK,
+                           -var_PRSL)
+```
+
+There are some cells with X's. These are NA's.
+```{r}
+naturetypes_wide$var_7SE[naturetypes_wide$var_7SE == "X"] <- NA
+naturetypes_wide$var_7TK[naturetypes_wide$var_7TK == "X"] <- NA
+
+naturetypes_wide$var_7SE <- as.numeric(naturetypes_wide$var_7SE)
+naturetypes_wide$var_7TK <- as.numeric(naturetypes_wide$var_7TK)
+```
+
+7SE has `r nrow(naturetypes_wide[is.na(naturetypes_wide$var_7SE),])` NA's, and 7TK has `r nrow(naturetypes_wide[is.na(naturetypes_wide$var_7TK),])`.
+ 
+```{r, fig.cap="7SE scores in the naturetype dataset"}
+temp <- naturetypes_wide %>%
+  group_by(var_7SE) %>%
+  summarise(sum = n())
+
+ggplot(temp, aes(x = factor(var_7SE),
+                 y = sum))+
+  geom_bar(stat="identity",
+           fill="grey",
+           colour = "black")+
+  theme_bw(base_size = 12)+
+  labs(x = "7SE score",
+       y = "Number of localities")
+```
+```{r, fig.cap="7TK scores in the nature type dataset"}
+temp <- naturetypes_wide %>%
+  group_by(var_7TK) %>%
+  summarise(sum = n())
+
+ggplot(temp, aes(x = factor(var_7TK),
+                 y = sum))+
+  geom_bar(stat="identity",
+           fill="grey",
+           colour = "black")+
+  theme_bw(base_size = 12)+
+  labs(x = "7TK score",
+       y = "Number of localities")
+```
+
+```{r}
+naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
+```
+
+When both variables are NA, we get -Inf. Removing these
+```{r}
+naturetypes_wide <- naturetypes_wide[naturetypes_wide$slitasje>=0,]
+```
+
+```{r, fig.cap="Slitasje scores."}
+temp <- naturetypes_wide %>%
+  group_by(slitasje) %>%
+  summarise(sum = n())
+
+ggplot(temp, aes(x = factor(slitasje),
+                 y = sum))+
+  geom_bar(stat="identity",
+           fill="grey",
+           colour = "black")+
+  theme_bw(base_size = 12)+
+  labs(x = "slitasje score",
+       y = "Number of localities")
+```
+
+I would also like to know how often 7TK was defining of the slitasje-indicator, and how often it was 7SE. I can do this by taking the difference
+
+```{r, fig.cap="Counting the number of cases where 7TK or 7SE ws defining of the slitasje indicator score."}
+diff <- naturetypes_wide$var_7SE - 
+        naturetypes_wide$var_7TK
+
+diff <- ifelse(diff == 0, "7TK and 7SE",
+               ifelse(diff <0, "7TK", "7SE"))
+
+diff_tbl <- as.data.frame(table(diff))
+
+ggplot(diff_tbl, aes(x = diff, y = Freq))+
+  geom_bar(stat = "identity",
+           colour = "black",
+           fill = "grey")+
+  theme_bw(base_size = 12)+
+  labs(x = "Defining variable",
+       y = "Number of localities")
+```
+
+Looks like 7SE is more likely to be in a detrimental state.
+
+Now I will copy these slitasje-values into the sf object.
+```{r}
+naturetypes$slitasje <- naturetypes_wide$slitasje[match(naturetypes$identifikasjon_lokalid, naturetypes_wide$identifikasjon_lokalid)]
+#nrow(naturetypes[is.na(naturetypes$slitasje),])  # 13 cases
+naturetypes <- naturetypes[!is.na(naturetypes$slitasje),]
+```
+
+#### GRUK
 
 This variable is also recorded in GRUK. The nature type dataset I'm working on here includes this data already (presently only 2021 included). GRUK also records a related variable: % cover in 5m radii circles. This data is not published.In any case it is better to use the harmonized dataset.
+
+
+#### ANO
+
+Arealrepresentativ Naturovervåking (ANO) consist of 1000 systematically placed locations each with 18 sample poins. In each sample point a circle of 250 m2 is visualised, and the main ecosystem is recorded. Depnding oon the main ecosystem, certain NiN variables are also recorded. 7SE is recorded for våtmark, but not semi-natural areas or naturally open areas. 7TK is recorded in våtmark and naturally open areas only. 
+
+Variable    | Våtmark | Naturlig åpne | Semi-nat.
+7SE         | X       |               |
+7TK         | X       | X             | 
+
+It would be very nice to have 7SE recorded for naturally open areas. This variable is very relevant here. 
+
+I think I will only use våtmark here since my approach will be to the 'worst value' of the variable 7SE and 7TK (se below). I think not having 7SE for naturally open areas will underestimate the degree of degredation in these areas.
+
+```{r}
+path <- ifelse(dir == "C:", 
+               "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
+               "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
+
+ano <- sf::st_read(path,
+                   layer = "ANO_SurveyPoint") %>%
+  dplyr::filter(hovedoekosystem_punkt == "vaatmark")
+```
+
+Each point here is 250 square meters, but the data also contains information about how big a proportion of thi area is made up of the dominant main ecosystem. However, there are `r (NAS <- length(ano$andel_hovedoekosystem_punkt[is.na(ano$andel_hovedoekosystem_punkt)]))` NA's here, which is `r round(NAS/nrow(ano), 2)*100`% of the data.
+```{r}
+ano <- ano[!is.na(ano$andel_hovedoekosystem_punkt),]
+```
+
+```{r}
+summary(ano$andel_hovedoekosystem_punkt)
+```
+
+Where we have data, this is the distribution of values:
+```{r, warning=F}
+ggplot(ano, aes(x = andel_hovedoekosystem_punkt))+
+         geom_histogram(fill = "grey",
+                        colour="black",
+                        binwidth = 1)+
+  theme_bw(base_size = 12)+
+  xlab("Percentage cover of the Våtmark main ecosystem\n in the 250m2 circle")+
+  scale_x_continuous(limits = c(0,101),
+                     breaks = seq(0,100,10))
+```
+
+We can see that people tend to record the variable in steps of 5, and that most sample points are 100% belonging to the same main ecosystem.
+
+We want to use area weighting in this indicator, so we can use this percentage cover data to calculate the area.
+```{r}
+ano$area_of_våtmark <- (ano$andel_hovedoekosystem_punkt/100)*250
+```
+
+Let's now look at the distribution of the variables. First I need to slip the cell values to make them numeric.
+
+```{r}
+ano$'7SE' <- as.numeric(sub(pattern = "7SE_",
+                 replacement = "",
+                 x = ano$bv_7se))
+```
+
+The NA's is the case of blank cells. The field app should not allow users leaving this field blank. I will need to remove these rows.
+```{r}
+ano <- ano[!is.na(ano$`7SE`),]
+```
+
+```{r}
+ano$'7TK' <- as.numeric(sub(pattern = "7TK_",
+                 replacement = "",
+                 x = ano$bv_7tk))
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+barplot(table(ano$`7TK`), xlab="7TK scores")
+barplot(table(ano$`7SE`), xlab="7SE scores")
+```
+
+### Combine datasets
+We need to combine the nature type dataset with th ano dataset
+
+```{r}
+naturetypes
+```
 
 
 
