@@ -27,6 +27,7 @@ library(knitr)
 library(sf)
 library(tmap)
 library(ggplot2)
+library(units)
 library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -394,7 +395,7 @@ summary(ano$andel_hovedoekosystem_punkt)
 ```
 
 Where we have data, this is the distribution of values:
-```{r, warning=F}
+```{r, warning=F, fig.cap="Percentage cover of the Våtmark main ecosystem in the 250m2 circle"}
 ggplot(ano, aes(x = andel_hovedoekosystem_punkt))+
          geom_histogram(fill = "grey",
                         colour="black",
@@ -405,52 +406,110 @@ ggplot(ano, aes(x = andel_hovedoekosystem_punkt))+
                      breaks = seq(0,100,10))
 ```
 
-We can see that people tend to record the variable in steps of 5, and that most sample points are 100% belonging to the same main ecosystem.
+We can see that people tend to record the variable in steps of 5%, and that most sample points are 100% belonging to the same main ecosystem.
 
 We want to use area weighting in this indicator, so we can use this percentage cover data to calculate the area.
+Note that both datasets use m2 as area units.
 ```{r}
-ano$area_of_våtmark <- (ano$andel_hovedoekosystem_punkt/100)*250
+ano$area <- (ano$andel_hovedoekosystem_punkt/100)*250
 ```
 
 Let's now look at the distribution of the variables. First I need to slip the cell values to make them numeric.
-
 ```{r}
-ano$'7SE' <- as.numeric(sub(pattern = "7SE_",
+ano$var_7SE <- as.numeric(sub(pattern = "7SE_",
                  replacement = "",
                  x = ano$bv_7se))
 ```
 
 The NA's is the case of blank cells. The field app should not allow users leaving this field blank. I will need to remove these rows.
 ```{r}
-ano <- ano[!is.na(ano$`7SE`),]
+ano <- ano[!is.na(ano$var_7SE),]
 ```
 
 ```{r}
-ano$'7TK' <- as.numeric(sub(pattern = "7TK_",
+ano$var_7TK <- as.numeric(sub(pattern = "7TK_",
                  replacement = "",
                  x = ano$bv_7tk))
 ```
 
 
-```{r}
+```{r, fig.cap="Distribution of 7TK and 7SE scores in the ANO data"}
 par(mfrow=c(1,2))
-barplot(table(ano$`7TK`), xlab="7TK scores")
-barplot(table(ano$`7SE`), xlab="7SE scores")
+barplot(table(ano$var_7TK), xlab="7TK scores")
+barplot(table(ano$var_7SE), xlab="7SE scores")
 ```
+
+Combining these two variables into the indicator, same as for the nature type data.
+```{r}
+temp <- as.data.frame(ano)
+class(temp)
+temp$slitasje <- apply(temp[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
+ano$slitasje <- temp$slitasje
+```
+
 
 ### Combine datasets
 We need to combine the nature type dataset with th ano dataset
-
+I will tag the ano rows in the nature type column, and add data abot the main ecosystem
 ```{r}
-naturetypes
+ano$naturtype <- "ANO"
+ano$hovedøkosystem <- "Våtmark"
+ano$kartleggingsår <- ano$aar
 ```
 
+I will loose the sf class and the crs when joining the datasets, so I will save the crs
+```{r}
+sf::st_crs(ano) == sf::st_crs(naturetypes) # TRUE
+myCRS <- st_crs(ano)
+```
 
+Fix class
+```{r}
+naturetypes$kartleggingsår <- as.numeric(naturetypes$kartleggingsår)
+naturetypes$area <- units::drop_units(naturetypes$area)
+```
+
+I can reduce the number of column to keep things a bit more tidy
+```{r}
+temp <- as.data.frame(ano)
+temp2 <- as.data.frame(naturetypes)
+slitasje_data <- full_join(select(temp,
+                                  GlobalID,
+                                  kartleggingsår,
+                                  hovedøkosystem,
+                                  area,
+                                  slitasje,
+                                  SHAPE), 
+                           select(temp2,
+                                  identifikasjon_lokalid,
+                                  hovedøkosystem,
+                                  kartleggingsår,
+                                  area,
+                                  slitasje,
+                                  SHAPE))
+# convert back to sf object
+slitasje_data <- st_as_sf(slitasje_data)
+st_crs(slitasje_data) <- myCRS
+```
+
+```{r, fig.cap="Slitasje scores."}
+temp <- slitasje_data %>%
+  group_by(slitasje) %>%
+  summarise(sum = n())
+
+ggplot(temp, aes(x = factor(slitasje),
+                 y = sum))+
+  geom_bar(stat="identity",
+           fill="grey",
+           colour = "black")+
+  theme_bw(base_size = 12)+
+  labs(x = "slitasje score",
+       y = "Number of localities")
+```
 
 #### Vegetation zones (bioregions)
-I want to look at if the indicator values can be averages over smaller and more meaningfu areas (ecological homogeneous areas) than the regions.
+I want to look at if the indicator values can be averages over smaller and more meaningful areas (ecological homogeneous areas) than the 5 default regions.
 ```{r}
-
 path <- ifelse(dir == "C:", 
                "R:/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp",
                "/data/R/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp")
