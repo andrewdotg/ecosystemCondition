@@ -532,12 +532,23 @@ It could make sense to combine some zones, but I will later split the zones by r
 #### Regions
 Importing a shape file with the regional delineation. 
 ```{r}
-reg <- sf::st_read("data/regions.shp")
+#reg <- sf::st_read("data/regions.shp")
 #st_crs(reg)
 ```
 
 ### Scaled indicator values
 <!-- Text and analyses here -->
+I can scale the indicator for each polygon, or I can chose to aggregate them first. If the scaled value is representative and precise at the polygon level, then I could scale at that level. However, the combined surveyed area is still so little of the total area of Norway, so that only producing indicator values for these leaves the indicator without much value for regional assessments. Later when we produce assessments and indicator values at the regional level, we cannot simply do an area weighting of the polygons in each region. This is because we don't want to assume that the polygons are representative outside of the mapped area.
+
+An option is to export one map with just the raw un-scaled slitasje variable at the polygon level, and another, scaled indicator map aggregated to either
+
+* each *dekningskart* (map of surveyed area) 
+* each vegetation zone (e.g. boreonemal zone in Østlandet; excluding zone with too little data points)
+* each vegetation region (aka bioregion, e.g. boreonemal zone and continental section in Østlandet)
+* each pixel of a give size, say 1 x 1 km
+
+The last option is problematic because we often will have too few points to be able to estimate  credible mean. 
+I can try the second option first, and see how many data points we get for each zone.
 
 ### Uncertainty
 <!-- Text here -->
