@@ -111,8 +111,10 @@ knitr::kable(metaData)
 
 #### Nature type mapping
 This indicator uses the dataset `Naturtyper etter Miljødirektoratets Instruks`, which can be found [here](https://kartkatalog.geonorge.no/metadata/naturtyper-miljoedirektoratets-instruks/eb48dd19-03da-41e1-afd9-7ebc3079265c).
-See [here](#naturtype) for a detailed description of tha dataset.
+See [here](#naturtype) for a detailed description of the dataset.
 
+
+Importing the full dataset can be done like this 
 ```{r, eval=T}
 
 dir <- substr(getwd(), 1,2)
@@ -155,6 +157,11 @@ naturetypes <- naturetypes[naturetypes$naturtype %in% naturetypes_summary$Nature
 Fix duplicated name for an ecosystem
 ```{r}
 naturetypes$hovedøkosystem[naturetypes$hovedøkosystem=="Naturlig åpne områder i lavlandet"] <- "Naturlig åpne områder under skoggrensa"
+```
+
+Export subsetted data set
+```{r}
+saveRDS(naturetypes, "P:/41201785_okologisk_tilstand_2022_2023/data/rds/naturtyper.rds")
 ```
 
 
