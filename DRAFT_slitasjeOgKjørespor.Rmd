@@ -683,31 +683,33 @@ barplot(table(slitasje_data$origin),
 So the ANO data is not very important here, bu it can become more
 important in the future.
 
+#### Infrastructure index
+
 #### Vegetation zones (bioregions)
 
-I want to look at if the indicator values can be averages over smaller
-and more meaningful areas (ecological homogeneous areas) than the 5
-default regions.
+I want to look at wheter the indicator values can be averages over
+smaller and more meaningful areas (ecological homogeneous areas) than
+the 5 default regions. One option is this data set with vegetation zone.
 
-```{r}
+```{r, eval=F}
 path <- ifelse(dir == "C:", 
                "R:/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp",
                "/data/R/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp")
 ```
 
-```{r}
+```{r, eval=F}
 soner <- sf::read_sf(path)
 ```
 
-```{r}
+```{r, eval=F}
 tm_shape(soner)+
   tm_polygons(col = "NAVN",
               title = "Vegetation zone")
 ```
 
 It could make sense to combine some zones, but I will later split the
-zones by region, and then merge sones that are very uncommon in a
-spesific region.
+zones by region, and then merge zones that are very uncommon in a
+specific region.
 
 #### Regions
 
@@ -730,23 +732,31 @@ only producing indicator values for these leaves the indicator without
 much value for regional assessments. Later when we produce assessments
 and indicator values at the regional level, we cannot simply do an area
 weighting of the polygons in each region. This is because we don't want
-to assume that the polygons are representative outside of the mapped
-area.
+to assume that the polygons are representative far outside of the mapped
+area. But perhaps we can assume them to be representative inside
+*homogenous ecological areas*.
 
 An option is to export one map with just the raw un-scaled slitasje
 variable at the polygon level, and another, scaled indicator map
 aggregated to either
 
--   each *dekningskart* (map of surveyed area)
--   each vegetation zone (e.g. boreonemal zone in Østlandet; excluding
-    zone with too little data points)
--   each vegetation region (aka bioregion, e.g. boreonemal zone and
-    continental section in Østlandet)
--   each pixel of a give size, say 1 x 1 km
+1.  each *dekningskart* (map of surveyed area)
 
-The last option is problematic because we often will have too few points
-to be able to estimate credible mean. I can try the second option first,
-and see how many data points we get for each zone.
+2.  each vegetation zone (e.g. boreonemal zone in Østlandet; excluding
+    zones with too little data points)
+
+3.  each vegetation region (aka bioregion, e.g. boreonemal zone and
+    continental section in Østlandet)
+
+4.  each region cross tabulated agains infrastructure index classes
+
+5.  each pixel of a give size, say 1 x 1 km
+
+Option 5 is problematic because we often will have too few points to be
+able to estimate credible mean. The second and third option can be good
+for certin biotic variables that depends on local species pools ect.
+However, slitasje is perhaps best explained by human presence, and
+option 4 therefore sounds reasonable.
 
 ### Uncertainty
 
