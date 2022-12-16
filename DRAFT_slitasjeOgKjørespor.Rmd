@@ -683,7 +683,123 @@ barplot(table(slitasje_data$origin),
 So the ANO data is not very important here, bu it can become more
 important in the future.
 
+#### Outline of Norway and regions
+
+```{r}
+outline <- sf::read_sf("data/outlineOfNorway_EPSG25833.shp")
+```
+
+```{r}
+regions <- sf::read_sf("data/regions.shp")
+```
+
+
+
+
+
 #### Infrastructure index
+The infrastructure index is explained [here](https://brage.nina.no/nina-xmlui/handle/11250/2983607).
+I use it as a kind of pressure or human influence index. It is likely to be a good predictor for *slitasje*.
+
+```{r}
+# The original data is here, on the R server, but it is not always working, so I also include a copy on the P server.
+
+#path <- ifelse(dir == "C:", 
+#        "R:/GeoSpatialData/Utility_governmentalServices/Norway_Infrastructure_Index/Original",
+#        "/data/R/GeoSpatialData/Utility_governmentalServices/Norway_Infrastructure_Index/Original")
+#
+
+path <- ifelse(dir == "C:", 
+        "P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks",
+        "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks")
+
+
+```
+
+```{r, eval=F}
+infra <- stars::read_stars(paste0(path, "/NY_INFRA_IND.tif"))
+```
+
+
+It's easuer to see what's happeing if we zoom in a bit. 
+Lets get a boundary box around Trondheim.
+```{r}
+myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
+                ymin = 7032142.5, ymax = 7045245.27),
+                crs = st_crs(infra))
+```
+
+Cropping the raster to speed up processing.
+```{r}
+infra_trd <- sf::st_crop(infra, myBB)
+```
+
+Transform to lat long dye to osm requirements
+```{r, warning=F}
+infra_trd_ll <- sf::st_transform(infra_trd, 4326)
+```
+
+Get the boundary box of the cropped raster
+```{r}
+myBB_ll <- sf::st_bbox(infra_trd_ll)
+```
+
+Download highways using the above bbox.
+```{r, warning=FALSE, message=F, eval=F}
+hw <- 
+  osmplotr::extract_osm_objects(
+    bbox = myBB_ll,
+    key = "highway",
+    sf = T)
+```
+
+Transforming highway data back into utm, although not strictly necessary.
+```{r, eval=F}
+hw_utm <- sf::st_transform(hw, sf::st_crs(infra_trd)) 
+```
+
+This object contains too many roads. I'll take out the unnamed roads. 
+```{r, eval=F}
+hw_utm <- hw_utm[!is.na(hw_utm$name),]
+```
+
+Caching the sf object
+```{r, eval=F}
+saveRDS(hw_utm, "data/cache/highways_trondheim.rds")
+```
+
+Load object
+```{r}
+hw_utm <- readRDS("data/cache/highways_trondheim.rds")
+```
+
+
+```{r, fig.cap="Infrastrcture indeks over Trondheim. Major roads are in white."}
+tm_shape(infra_trd)+
+  tm_raster(title="Infrastructure Index",
+            style="cont",
+            palette = "viridis")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="white")
+```
+
+The infrastructure index is in EPSG32633. I will need to transform it. It takes a couple of minutes, so I will store the result in P and load it back in afterwards.
+```{r, eval=F}
+
+path <- ifelse(dir == "C:", 
+        "P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks",
+        "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks")
+
+infra <- sf::st_transform(infra, 25833)
+stars::write_stars(infra, paste0(path, "/infrastrukturindeksEPSG_EPSG35833.tif"))
+```
+
+```{r}
+infra2 <- stars::read_stars(paste0(path, "/infrastrukturindeksEPSG_EPSG35833.tif"))
+```
+
+
 
 #### Vegetation zones (bioregions)
 
