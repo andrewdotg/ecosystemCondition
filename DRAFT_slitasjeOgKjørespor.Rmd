@@ -716,12 +716,13 @@ path <- ifelse(dir == "C:",
 
 ```
 
+Import a stars proxy (no data imported yet)
 ```{r, eval=F}
 infra <- stars::read_stars(paste0(path, "/NY_INFRA_IND.tif"))
 ```
 
 
-It's easuer to see what's happeing if we zoom in a bit. 
+It's easier to see what's happening if we zoom in a bit. 
 Lets get a boundary box around Trondheim.
 ```{r}
 myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
@@ -775,13 +776,14 @@ hw_utm <- readRDS("data/cache/highways_trondheim.rds")
 
 
 ```{r, fig.cap="Infrastrcture indeks over Trondheim. Major roads are in white."}
-tm_shape(infra_trd)+
+map_trd <- tm_shape(infra_trd)+
   tm_raster(title="Infrastructure Index",
             style="cont",
             palette = "viridis")+
   tm_layout(legend.outside = T)+
   tm_shape(hw_utm)+
   tm_lines(col="white")
+map_trd
 ```
 
 The infrastructure index is in EPSG32633. I will need to transform it. It takes a couple of minutes, so I will store the result in P and load it back in afterwards.
@@ -799,42 +801,40 @@ stars::write_stars(infra, paste0(path, "/infrastrukturindeksEPSG_EPSG35833.tif")
 infra2 <- stars::read_stars(paste0(path, "/infrastrukturindeksEPSG_EPSG35833.tif"))
 ```
 
-
-
-#### Vegetation zones (bioregions)
-
-I want to look at wheter the indicator values can be averages over
-smaller and more meaningful areas (ecological homogeneous areas) than
-the 5 default regions. One option is this data set with vegetation zone.
-
-```{r, eval=F}
-path <- ifelse(dir == "C:", 
-               "R:/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp",
-               "/data/R/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp")
+```{r}
+names(infra_trd) <- "infrastructureIndex"
+infra_trd_reclassed <-  infra_trd %>%
+  mutate(infrastructureIndex = case_when(
+    infrastructureIndex < 1 ~ 0,
+    infrastructureIndex < 6 ~ 1,
+    infrastructureIndex < 9 ~ 2,
+    infrastructureIndex >= 9 ~ 3
+  ))
 ```
-
-```{r, eval=F}
-soner <- sf::read_sf(path)
-```
-
-```{r, eval=F}
-tm_shape(soner)+
-  tm_polygons(col = "NAVN",
-              title = "Vegetation zone")
-```
-
-It could make sense to combine some zones, but I will later split the
-zones by region, and then merge zones that are very uncommon in a
-specific region.
-
-#### Regions
-
-Importing a shape file with the regional delineation.
 
 ```{r}
-#reg <- sf::st_read("data/regions.shp")
-#st_crs(reg)
+map_trd_reclassed <- tm_shape(infra_trd_reclassed)+
+  tm_raster(title="Infrastructure Index",
+            #palette = "viridis",
+            style="cat")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="white")
+
 ```
+
+
+```{r, fig.cap="Infrastrcture indeks over Trondheim, comparing the continous scale with the ordinal four-step scale. Major roads are in white."}
+tmap_arrange(map_trd,
+             map_trd_reclassed,
+             ncol=1)
+```
+
+I tweaked the thresholds so that most of the forest next to Trondheim was i the second lowest class.
+
+
+
+
 
 ### Scaled indicator values
 
@@ -850,33 +850,14 @@ and indicator values at the regional level, we cannot simply do an area
 weighting of the polygons in each region. This is because we don't want
 to assume that the polygons are representative far outside of the mapped
 area. But perhaps we can assume them to be representative inside
-*homogenous ecological areas*.
+*homogenous ecological areas*. That's where the infrastructure index comes in. I will scale the indicators at the polygon level. I then take the simplified infrastructure index and, one class at the time, extract the indicator value that intersect with those cells, and extrapolate the mean of those values to all similar cell within a given region.
 
-An option is to export one map with just the raw un-scaled slitasje
-variable at the polygon level, and another, scaled indicator map
-aggregated to either
 
-1.  each *dekningskart* (map of surveyed area)
-
-2.  each vegetation zone (e.g. boreonemal zone in Østlandet; excluding
-    zones with too little data points)
-
-3.  each vegetation region (aka bioregion, e.g. boreonemal zone and
-    continental section in Østlandet)
-
-4.  each region cross tabulated agains infrastructure index classes
-
-5.  each pixel of a give size, say 1 x 1 km
-
-Option 5 is problematic because we often will have too few points to be
-able to estimate credible mean. The second and third option can be good
-for certin biotic variables that depends on local species pools ect.
-However, slitasje is perhaps best explained by human presence, and
-option 4 therefore sounds reasonable.
 
 ### Uncertainty
 
 <!-- Text here -->
+Bootstrapping of nin-polygons per infrastructure class and region?
 
 ## Prepare export
 
