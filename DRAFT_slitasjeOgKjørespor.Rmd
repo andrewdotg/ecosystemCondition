@@ -693,13 +693,12 @@ outline <- sf::read_sf("data/outlineOfNorway_EPSG25833.shp")
 regions <- sf::read_sf("data/regions.shp")
 ```
 
-
-
-
-
 #### Infrastructure index
-The infrastructure index is explained [here](https://brage.nina.no/nina-xmlui/handle/11250/2983607).
-I use it as a kind of pressure or human influence index. It is likely to be a good predictor for *slitasje*.
+
+The infrastructure index is explained
+[here](https://brage.nina.no/nina-xmlui/handle/11250/2983607). I use it
+as a kind of pressure or human influence index. It is likely to be a
+good predictor for *slitasje*.
 
 ```{r}
 # The original data is here, on the R server, but it is not always working, so I also include a copy on the P server.
@@ -717,13 +716,14 @@ path <- ifelse(dir == "C:",
 ```
 
 Import a stars proxy (no data imported yet)
+
 ```{r, eval=F}
 infra <- stars::read_stars(paste0(path, "/NY_INFRA_IND.tif"))
 ```
 
+It's easier to see what's happening if we zoom in a bit. Lets get a
+boundary box around Trondheim.
 
-It's easier to see what's happening if we zoom in a bit. 
-Lets get a boundary box around Trondheim.
 ```{r}
 myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
                 ymin = 7032142.5, ymax = 7045245.27),
@@ -731,21 +731,25 @@ myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
 ```
 
 Cropping the raster to speed up processing.
+
 ```{r}
 infra_trd <- sf::st_crop(infra, myBB)
 ```
 
 Transform to lat long dye to osm requirements
+
 ```{r, warning=F}
 infra_trd_ll <- sf::st_transform(infra_trd, 4326)
 ```
 
 Get the boundary box of the cropped raster
+
 ```{r}
 myBB_ll <- sf::st_bbox(infra_trd_ll)
 ```
 
 Download highways using the above bbox.
+
 ```{r, warning=FALSE, message=F, eval=F}
 hw <- 
   osmplotr::extract_osm_objects(
@@ -754,26 +758,30 @@ hw <-
     sf = T)
 ```
 
-Transforming highway data back into utm, although not strictly necessary.
+Transforming highway data back into utm, although not strictly
+necessary.
+
 ```{r, eval=F}
 hw_utm <- sf::st_transform(hw, sf::st_crs(infra_trd)) 
 ```
 
-This object contains too many roads. I'll take out the unnamed roads. 
+This object contains too many roads. I'll take out the unnamed roads.
+
 ```{r, eval=F}
 hw_utm <- hw_utm[!is.na(hw_utm$name),]
 ```
 
 Caching the sf object
+
 ```{r, eval=F}
 saveRDS(hw_utm, "data/cache/highways_trondheim.rds")
 ```
 
 Load object
+
 ```{r}
 hw_utm <- readRDS("data/cache/highways_trondheim.rds")
 ```
-
 
 ```{r, fig.cap="Infrastrcture indeks over Trondheim. Major roads are in white."}
 map_trd <- tm_shape(infra_trd)+
@@ -786,7 +794,10 @@ map_trd <- tm_shape(infra_trd)+
 map_trd
 ```
 
-The infrastructure index is in EPSG32633. I will need to transform it. It takes a couple of minutes, so I will store the result in P and load it back in afterwards.
+The infrastructure index is in EPSG32633. I will need to transform it.
+It takes a couple of minutes, so I will store the result in P and load
+it back in afterwards.
+
 ```{r, eval=F}
 
 path <- ifelse(dir == "C:", 
@@ -823,22 +834,16 @@ map_trd_reclassed <- tm_shape(infra_trd_reclassed)+
 
 ```
 
-
 ```{r, fig.cap="Infrastrcture indeks over Trondheim, comparing the continous scale with the ordinal four-step scale. Major roads are in white."}
 tmap_arrange(map_trd,
              map_trd_reclassed,
              ncol=1)
 ```
 
-I tweaked the thresholds so that most of the forest next to Trondheim was i the second lowest class.
-
-
-
-
+I tweaked the thresholds so that most of the forest next to Trondheim
+was i the second lowest class.
 
 ### Scaled indicator values
-
-<!-- Text and analyses here -->
 
 I can scale the indicator for each polygon, or I can chose to aggregate
 them first. If the scaled value is representative and precise at the
@@ -850,13 +855,23 @@ and indicator values at the regional level, we cannot simply do an area
 weighting of the polygons in each region. This is because we don't want
 to assume that the polygons are representative far outside of the mapped
 area. But perhaps we can assume them to be representative inside
-*homogenous ecological areas*. That's where the infrastructure index comes in. I will scale the indicators at the polygon level. I then take the simplified infrastructure index and, one class at the time, extract the indicator value that intersect with those cells, and extrapolate the mean of those values to all similar cell within a given region.
+*homogenous ecological areas*. That's where the infrastructure index
+comes in. Here's the plan:
 
+1.  scale the indicators at the polygon level.
 
+2.  take the simplified infrastructure index and, one class at the time,
+    extract the indicator value that intersect with those cells, and
+    extrapolate the mean of those values to all similar cell within a
+    given region.
+
+3.  calculate an indicator value for a region by doing a weighted
+    averega based o the relative area of each infrastructure class.
 
 ### Uncertainty
 
 <!-- Text here -->
+
 Bootstrapping of nin-polygons per infrastructure class and region?
 
 ## Prepare export
