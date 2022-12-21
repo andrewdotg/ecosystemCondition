@@ -1,6 +1,9 @@
 library(sf)
 library(tidyr)
+library(dplyr)
+library(plyr)
 library(stringr)
+library(tidyverse)
 
 
 # url <- "https://nedlasting.miljodirektoratet.no/naturovervaking/naturovervaking_eksport.gdb.zip"
@@ -25,73 +28,93 @@ head(ind.Grime)
 load("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators//reference from NiN/Eco_State.RData")
 str(Eco_State)
 
-
-
-
-
-
 # trimming away sub-species & co, and descriptor info
-csr.dat[,'species'] <- word(csr.dat[,'species'], 1,2)
-ell.dat[,'species'] <- word(ell.dat[,'species'], 1,2)
-names(Dahl)[3] <- 'Dahls_R'
-Dahl$species <- as.factor(Dahl$species)
-Dahl <- Dahl[Dahl$species!="",]
-Dahl[,'species'] <- word(Dahl[,'species'], 1,2)
-#names(Gottfried)[2] <- 'species'
-#Gottfried$species <- as.factor(Gottfried$species)
-#summary(Gottfried$species)
-#Gottfried[,'species'] <- word(Gottfried[,'species'], 1,2)
-names(ind_swe)[1] <- 'species'
-ind_swe$species <- as.factor(ind_swe$species)
-summary(ind_swe$species)
-ind_swe <- ind_swe[!is.na(ind_swe$species),]
-ind_swe[,'species'] <- word(ind_swe[,'species'], 1,2)
+ind.Grime[,'species.orig'] <- ind.Grime[,'species']
+ind.Grime[,'species'] <- word(ind.Grime[,'species'], 1,2)
+names(ind.Tyler)[1] <- 'species'
+ind.Tyler$species <- as.factor(ind.Tyler$species)
+summary(ind.Tyler$species)
+ind.Tyler <- ind.Tyler[!is.na(ind.Tyler$species),]
+ind.Tyler[,'species.orig'] <- ind.Tyler[,'species']
+ind.Tyler[,'species'] <- word(ind.Tyler[,'species'], 1,2)
 
 # dealing with 'duplicates'
-csr.dat[duplicated(csr.dat[,'species']),"species"]
-csr.dup <- csr.dat[duplicated(csr.dat[,'species']),"species"]
-csr.dat[csr.dat$species %in% csr.dup,]
-csr.dat <- csr.dat[!duplicated(csr.dat[,'species']),]
-csr.dat[csr.dat$species %in% csr.dup,]
-csr.dat[duplicated(csr.dat[,'species']),"species"]
+ind.Grime[duplicated(ind.Grime[,'species']),"species"]
+ind.Grime.dup <- ind.Grime[duplicated(ind.Grime[,'species']),c("species")]
+ind.Grime[ind.Grime$species %in% ind.Grime.dup,]
+# getting rid of the duplicates
+ind.Grime <- ind.Grime %>% filter( !(species.orig %in% list("Carex viridula brachyrrhyncha",
+                                                            "Dactylorhiza fuchsii praetermissa",
+                                                            "Medicago sativa varia",
+                                                            "Montia fontana chondrosperma",
+                                                            "Papaver dubium lecoqii",
+                                                            "Sanguisorba minor muricata")
+                                   ) )
+ind.Grime[duplicated(ind.Grime[,'species']),"species"]
 
-ell.dat[duplicated(ell.dat[,'species']),"species"]
-ell.dup <- ell.dat[duplicated(ell.dat[,'species']),"species"]
-ell.dat[ell.dat$species %in% ell.dup,]
-ell.dat <- ell.dat[!duplicated(ell.dat[,'species']),]
-ell.dat[ell.dat$species %in% ell.dup,]
-ell.dat[duplicated(ell.dat[,'species']),"species"]
+#ind.Tyler2 <- ind.Tyler
+ind.Tyler <- ind.Tyler2
+ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+ind.Tyler <- ind.Tyler %>% filter( !(species.orig %in% list("Ammophila arenaria x Calamagrostis epigejos",
+                                                            "Anemone nemorosa x ranunculoides",
+                                                            "Armeria maritima ssp. elongata",
+                                                            "Asplenium trichomanes ssp. quadrivalens",
+                                                            "Calystegia sepium ssp. spectabilis",
+                                                            "Campanula glomerata 'Superba'",
+                                                            "Dactylorhiza maculata ssp. fuchsii",
+                                                            "Erigeron acris ssp. droebachensis",
+                                                            "Erigeron acris ssp. politus",
+                                                            "Erysimum cheiranthoides L. ssp. alatum",
+                                                            "Euphrasia nemorosa x stricta var. brevipila",
+                                                            "Galium mollugo x verum",
+                                                            "Geum rivale x urbanum",
+                                                            "Hylotelephium telephium (ssp. maximum)",
+                                                            "Juncus alpinoarticulatus ssp. rariflorus",
+                                                            "Lamiastrum galeobdolon ssp. argentatum",
+                                                            "Lathyrus latifolius ssp. heterophyllus",
+                                                            "Medicago sativa ssp. falcata",
+                                                            "Medicago sativa ssp. x varia",
+                                                            "Monotropa hypopitys ssp. hypophegea",
+                                                            "Ononis spinosa ssp. hircina",
+                                                            "Ononis spinosa ssp. procurrens",
+                                                            "Pilosella aurantiaca ssp. decolorans",
+                                                            "Pilosella aurantiaca ssp. dimorpha",
+                                                            "Pilosella cymosa ssp. gotlandica",
+                                                            "Pilosella cymosa ssp. praealta",
+                                                            "Pilosella officinarum ssp. peleteranum",
+                                                            "Poa x jemtlandica (Almq.) K. Richt.",
+                                                            "Poa x herjedalica Harry Sm.",
+                                                            "Ranunculus peltatus ssp. baudotii",
+                                                            "Sagittaria natans x sagittifolia",
+                                                            "Salix repens ssp. rosmarinifolia",
+                                                            "Stellaria nemorum L. ssp. montana",
+                                                            "Trichophorum cespitosum ssp. germanicum")
+) )
+ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+# getting rid of sect. for Hieracium
+ind.Tyler <- ind.Tyler %>% mutate(species=gsub("sect. ","",species.orig))
+ind.Tyler[,'species'] <- word(ind.Tyler[,'species'], 1,2)
 
-Dahl[duplicated(Dahl[,'species']),"species"]
-Dahl.dup <- Dahl[duplicated(Dahl[,'species']),"species"]
-Dahl[Dahl$species %in% Dahl.dup,]
-Dahl <- Dahl[!duplicated(Dahl[,'species']),]
-Dahl[Dahl$species %in% Dahl.dup,]
-Dahl$species <- as.factor(Dahl$species)
-Dahl <- Dahl[!is.na(Dahl$species),]
-Dahl[duplicated(Dahl[,'species']),"species"]
+ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+# only hybrids left -> get rid of these
+ind.Tyler <- ind.Tyler[!duplicated(ind.Tyler[,'species']),]
+ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
 
-ind_swe[duplicated(ind_swe[,'species']),"species"]
-ind_swe.dup <- ind_swe[duplicated(ind_swe[,'species']),"species"]
-ind_swe[ind_swe$species %in% ind_swe.dup,]
-ind_swe <- ind_swe[!duplicated(ind_swe[,'species']),]
-ind_swe[ind_swe$species %in% ind_swe.dup,]
-ind_swe$species <- as.factor(ind_swe$species)
-ind_swe[duplicated(ind_swe[,'species']),"species"]
-summary(ind_swe$species)
-#ind_swe <- ind_swe[!is.na(ind_swe$species),]
+ind.Tyler$species <- as.factor(ind.Tyler$species)
+summary(ind.Tyler$species)
+# no duplicates left
 
-ind.dat <- merge(ell.dat,csr.dat, by="species", all=T)
+# merge indicator data
+ind.dat <- merge(ind.Grime,ind.Tyler, by="species", all=T)
 summary(ind.dat)
 ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat <- merge(ind.dat,Dahl, by="species", all=T)
-summary(ind.dat)
-ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat$Dahls_R_max <- ind.dat$Dahls_R
-summary(ind.dat)
-#ind.dat <- merge(ind.dat,Gottfried, by="species", all=T)
-#summary(ind.dat)
-#ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat <- merge(ind.dat,ind_swe, by="species", all=T)
-summary(ind.dat)
-ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat$species <- as.factor(ind.dat$species)
+summary(ind.dat$species)
+head(ind.dat)
+
