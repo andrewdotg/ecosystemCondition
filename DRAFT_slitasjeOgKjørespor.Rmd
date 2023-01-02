@@ -21,6 +21,7 @@ library(sf)
 library(tmap)
 library(ggplot2)
 library(units)
+library(eaTools)
 library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -247,9 +248,12 @@ head(naturetypes_wide)
 The variables use slightly different scales. PRSL and PRTK use this 8
 step scale:
 
-![](images/mdirPRscale.PNG){width="400"}
+```{r eight-step, fig.cap="Eight step condition scale"}
+knitr::include_graphics("images/mdirPRscale.PNG")
+```
 
-7TK and 7SE use a 4 step scale ![](images/ninAR4b.PNG)
+7TK and 7SE use a 4 step scale ![Four step condition
+scale](images/ninAR4b.PNG)
 
 I want to base this indicator on whichever of the variables have the
 highest value (worst condition). This table shows that a locality may
@@ -603,14 +607,6 @@ ano$hovedøkosystem <- "Våtmark"
 ano$kartleggingsår <- ano$aar
 ```
 
-I will loose the sf class and the crs when joining the datasets, so I
-will save the crs
-
-```{r}
-sf::st_crs(ano) == sf::st_crs(naturetypes) # TRUE
-myCRS <- st_crs(ano)
-```
-
 Fix class
 
 ```{r}
@@ -618,14 +614,11 @@ naturetypes$kartleggingsår <- as.numeric(naturetypes$kartleggingsår)
 naturetypes$area <- units::drop_units(naturetypes$area)
 ```
 
-I can reduce the number of columns to keep things a bit more tidy.
+I use `dplyr::select` to can reduce the number of columns to keep things
+a bit more tidy.
 
-<!--# this join doesnt work! -->
-
-```{r, eval=F}
-temp <- as.data.frame(ano)
-temp2 <- as.data.frame(naturetypes)
-slitasje_data <- full_join(select(temp,
+```{r}
+slitasje_data <- dplyr::bind_rows(select(ano,
                                   GlobalID,
                                   origin,
                                   kartleggingsår,
@@ -633,7 +626,7 @@ slitasje_data <- full_join(select(temp,
                                   area,
                                   slitasje,
                                   SHAPE), 
-                           select(temp2,
+                           select(naturetypes,
                                   identifikasjon_lokalid,
                                   origin,
                                   hovedøkosystem,
@@ -641,18 +634,21 @@ slitasje_data <- full_join(select(temp,
                                   area,
                                   slitasje,
                                   SHAPE))
-# convert back to sf object
-slitasje_data <- st_as_sf(slitasje_data)
-st_crs(slitasje_data) <- myCRS
+
+unique(st_geometry_type(slitasje_data))
+```
+
+The ANO data is point data, and the nature type data is multipolygon.
+
+Grouping and tallying the data for plotting
+
+```{r}
+temp <- as.data.frame(table(slitasje_data$slitasje))
 ```
 
 ```{r, fig.cap="Slitasje scores."}
-temp <- slitasje_data %>%
-  group_by(slitasje) %>%
-  summarise(sum = n())
-
-ggplot(temp, aes(x = factor(slitasje),
-                 y = sum))+
+ggplot(temp, aes(x = Var1,
+                 y = Freq))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
@@ -661,15 +657,23 @@ ggplot(temp, aes(x = factor(slitasje),
        y = "Number of localities")
 ```
 
-Let's see the propotion of datapoints (not area) origination from each
+Let's see the proportion of data points (not area) origination from each
 data set
 
 ```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the slitasje indicator."}
-barplot(table(slitasje_data$origin),
-        ylab="Number of localities")
+temp <- as.data.frame(table(slitasje_data$origin))
+
+ggplot(temp, aes(x = Var1,
+                 y = Freq))+
+  geom_bar(stat="identity",
+           fill="grey",
+           colour = "black")+
+  theme_bw(base_size = 12)+
+  labs(x = "Data origin",
+       y = "Number of localities")
 ```
 
-So the ANO data is not very important here, bu it can become more
+So the ANO data is not very important here, but it can become more
 important in the future.
 
 #### Outline of Norway and regions
@@ -855,7 +859,69 @@ comes in. Here's the plan:
     given region.
 
 3.  calculate an indicator value for a region by doing a weighted
-    averega based o the relative area of each infrastructure class.
+    average based o the relative area of each infrastructure class.
+
+#### Scaled variable
+
+The variable is ordinal, not continuous. See fig. \@ref(fig:eight-step).
+I could create another variable which was more like original range
+scale. Although not perfect, I will use the median value for each category.
+
+```{r}
+slitasje_data$slitasje_percentage <- slitasje_data$slitasje
+
+slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 1] <- ((1/16)/2)*100
+slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 2] <- (((1/2)/2)+(1/16))*100
+slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 3] <- (3/4)*100
+table(slitasje_data$slitasje_percentage)
+```
+
+```{r continuous-scale, fig.cap="Showing the conversion from ordinal to (pseudo)continous cale for the slitasje variable"}
+ggplot(slitasje_data, aes(x = slitasje,
+                          y = slitasje_percentage))+
+  geom_point(size=6)+
+  geom_line()+
+  theme_bw(base_size = 16)
+```
+
+I will use the same reference levels/values for all of Norway:
+```{r}
+upper <- 0
+lower <- 100
+threshold <- 10
+```
+
+
+This implies that it is impossible to detect or measure a state when it is in its most degraded form (100% disturbed). This is a problem with the original data resolution. But I will compensate somewhat for this by using a non-linear transformation.
+
+I need to do a little trick and reverse the upper and lower reference values for the normalisation to work. This is a bug which can be fixed inside eaTools.
+```{r slitasje-normalise, fig.cap="Performing a non-linear break-point type normalisation of the slitasje variable."}
+eaTools::ea_normalise(data = slitasje_data,
+                      vector = "slitasje_percentage",
+                      upper_reference_level = lower,
+                      lower_reference_level = upper,
+                      break_point = threshold,
+                      plot=T,
+                      reverse = T
+                      )
+```
+
+This normalisation seems reasonable to me. I can save it as indicator values. I will assign the indicator value to the avergae year of the data.
+```{r}
+mean(slitasje_data$kartleggingsår)
+```
+
+```{r}
+slitasje_data$i_2020 <- eaTools::ea_normalise(data = slitasje_data,
+                      vector = "slitasje_percentage",
+                      upper_reference_level = lower,
+                      lower_reference_level = upper,
+                      break_point = threshold,
+                      reverse = T
+                      )
+```
+
+
 
 ### Uncertainty
 
