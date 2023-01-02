@@ -608,7 +608,6 @@ ano$kartleggingsår <- ano$aar
 ```
 
 Fix class
-
 ```{r}
 naturetypes$kartleggingsår <- as.numeric(naturetypes$kartleggingsår)
 naturetypes$area <- units::drop_units(naturetypes$area)
@@ -638,10 +637,39 @@ slitasje_data <- dplyr::bind_rows(select(ano,
 unique(st_geometry_type(slitasje_data))
 ```
 
-The ANO data is point data, and the nature type data is multipolygon.
+The ANO data is point data, and the nature type data is multipolygon. Because later we want to save this as a shape file, we cannot have a mixed class type. I will therefore convert the points to polygons. I use the area column to calculate a radii that gives that area.
+```{r}
+slitasje_data_points <- slitasje_data %>%
+  mutate(g_type = st_geometry_type(.)) %>%
+  filter(g_type =="POINT") %>%
+  st_buffer(sqrt(slitasje_data$area/pi))
+```
+
+Checking no that the new polygons have the area corresponding to the proportion of the point that was part of the same main ecosystem:
+```{r new-area, fig.cap="Checking that the area of the new polygons fall in line with the proportion of each point which is part of the main ecosystem."}
+slitasje_data_points$area2 <- st_area(slitasje_data_points)
+plot(slitasje_data_points$area, slitasje_data_points$area2,
+     xlab = "Target area",
+     ylab = "Area of the new polygons")
+```
+
+The area calculation seems to have worked fine. 
+
+
+```{r}
+slitasje_data_polygons <- slitasje_data %>%
+  mutate(g_type = st_geometry_type(.)) %>%
+  filter(g_type !="POINT")
+
+slitasje_data <- bind_rows(slitasje_data_points, slitasje_data_polygons)
+
+unique(st_geometry_type(slitasje_data))
+```
+
+The new dataset only contains polygons.
+
 
 Grouping and tallying the data for plotting
-
 ```{r}
 temp <- as.data.frame(table(slitasje_data$slitasje))
 ```
@@ -930,9 +958,26 @@ slitasje_data$i_2020 <- eaTools::ea_normalise(data = slitasje_data,
 Bootstrapping of nin-polygons per infrastructure class and region?
 
 ## Prepare export
+According to the workflow spesifications, I will export the indicator map at its highest resolution, but I also need to export a map of the *homogeneous areas* over which I will aggregate the indicator values. For the finest resolution indicator map I will not include columns for uncertainty (because this will only be estimated at the aggregated level), or reference levels (because there is no spatial variation).
 
-<!-- Text here -->
+```{r}
+exp_wetland <- select(slitasje_data[slitasje_data$hovedøkosystem == "Våtmark",],
+              origin,
+              area,
+              i_2020,
+              SHAPE
+              )
+
+
+```
+
+```{r, eval=F}
+st_write(exp_wetland, "indicators/indicatorMaps/wetland_slitasje.shp",
+         append = F)
+```
+
+
 
 ### Eksport file (final product)
 
-<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
+<!-- Export final file. Ideally a georeferenced shape or raster with indicators values (raw and normalised), reference values and errors. -->
