@@ -478,6 +478,7 @@ table(ano$aar)
 This dataset only contains data from year 2019 and 2021. We need to
 update this dataset later.
 
+
 Each point/row here is 250 square meters. The data also contains
 information about how big a proportion of this area is made up of the
 dominant main ecosystem. However, there are
@@ -594,7 +595,9 @@ ano$slitasje <- temp$slitasje
 barplot(table(ano$slitasje), xlab="Sliatsje scores")
 ```
 
-### Combine datasets
+
+
+##### Combine Naturtype data and ANO
 
 We need to combine the nature type dataset with the ANO dataset. I will
 add a column `origin` to show where the data comes from. I will also and
@@ -608,6 +611,7 @@ ano$kartleggingsår <- ano$aar
 ```
 
 Fix class
+
 ```{r}
 naturetypes$kartleggingsår <- as.numeric(naturetypes$kartleggingsår)
 naturetypes$area <- units::drop_units(naturetypes$area)
@@ -637,7 +641,12 @@ slitasje_data <- dplyr::bind_rows(select(ano,
 unique(st_geometry_type(slitasje_data))
 ```
 
-The ANO data is point data, and the nature type data is multipolygon. Because later we want to save this as a shape file, we cannot have a mixed class type. I will therefore convert the points to polygons. I use the area column to calculate a radii that gives that area.
+###### Points to polygons
+The ANO data is point data, and the nature type data is multipolygon.
+Because later we want to save this as a shape file, we cannot have a
+mixed class type. I will therefore convert the points to polygons. I use
+the area column to calculate a radii that gives that area.
+
 ```{r}
 slitasje_data_points <- slitasje_data %>%
   mutate(g_type = st_geometry_type(.)) %>%
@@ -645,7 +654,9 @@ slitasje_data_points <- slitasje_data %>%
   st_buffer(sqrt(slitasje_data$area/pi))
 ```
 
-Checking no that the new polygons have the area corresponding to the proportion of the point that was part of the same main ecosystem:
+Checking no that the new polygons have the area corresponding to the
+proportion of the point that was part of the same main ecosystem:
+
 ```{r new-area, fig.cap="Checking that the area of the new polygons fall in line with the proportion of each point which is part of the main ecosystem."}
 slitasje_data_points$area2 <- st_area(slitasje_data_points)
 plot(slitasje_data_points$area, slitasje_data_points$area2,
@@ -653,8 +664,7 @@ plot(slitasje_data_points$area, slitasje_data_points$area2,
      ylab = "Area of the new polygons")
 ```
 
-The area calculation seems to have worked fine. 
-
+The area calculation seems to have worked fine.
 
 ```{r}
 slitasje_data_polygons <- slitasje_data %>%
@@ -668,8 +678,8 @@ unique(st_geometry_type(slitasje_data))
 
 The new dataset only contains polygons.
 
-
 Grouping and tallying the data for plotting
+
 ```{r}
 temp <- as.data.frame(table(slitasje_data$slitasje))
 ```
@@ -719,7 +729,8 @@ regions <- sf::read_sf("data/regions.shp")
 The infrastructure index is explained
 [here](https://brage.nina.no/nina-xmlui/handle/11250/2983607). I use it
 as a kind of pressure or human influence index. It is likely to be a
-good predictor for *slitasje*.
+good predictor for *slitasje*, and I think to use it to define local reference area,
+or homogeneous (impact) areas.
 
 ```{r}
 # The original data is here, on the R server, but it is not always working, so I also include a copy on the P server.
@@ -758,16 +769,19 @@ infra_trd <- sf::st_crop(infra, myBB)
 ```
 
 Transform to lat long due to osm requirements
+
 ```{r, warning=F}
 infra_trd_ll <- sf::st_transform(infra_trd, 4326)
 ```
 
 Get the boundary box of the cropped raster
+
 ```{r}
 myBB_ll <- sf::st_bbox(infra_trd_ll)
 ```
 
 Download highways using the above bbox.
+
 ```{r, warning=FALSE, message=F, eval=F}
 hw <- 
   osmplotr::extract_osm_objects(
@@ -829,7 +843,9 @@ stars::write_stars(infra, paste0(path, "/infrastrukturindeksEPSG_EPSG35833.tif")
 infra2 <- stars::read_stars(paste0(path, "/infrastrukturindeksEPSG_EPSG35833.tif"))
 ```
 
-Here I define a simplified categorical typology for the infrastructure index using four classes. 
+Here I define a simplified categorical typology for the infrastructure
+index using four classes.
+
 ```{r}
 names(infra_trd) <- "infrastructureIndex"
 infra_trd_reclassed <-  infra_trd %>%
@@ -858,7 +874,8 @@ tmap_arrange(map_trd,
              ncol=1)
 ```
 
-I tweaked the thresholds so that most of the forest next to Trondheim was in the second lowest class. This looks pretty good to me. 
+I tweaked the thresholds so that most of the forest next to Trondheim
+was in the second lowest class. This looks pretty good to me.
 
 ### Scaled indicator values
 
@@ -889,7 +906,8 @@ comes in. Here's the plan:
 
 The variable is ordinal, not continuous. See fig. \@ref(fig:eight-step).
 I could create another variable which was more like original range
-scale. Although not perfect, I will use the median value for each category.
+scale. Although not perfect, I will use the median value for each
+category.
 
 ```{r}
 slitasje_data$slitasje_percentage <- slitasje_data$slitasje
@@ -909,16 +927,22 @@ ggplot(slitasje_data, aes(x = slitasje,
 ```
 
 I will use the same reference levels/values for all of Norway:
+
 ```{r}
 upper <- 0
 lower <- 100
 threshold <- 10
 ```
 
+This implies that it is impossible to detect or measure a state when it
+is in its most degraded form (100% disturbed). This is a problem with
+the original data resolution. But I will compensate somewhat for this by
+using a non-linear transformation.
 
-This implies that it is impossible to detect or measure a state when it is in its most degraded form (100% disturbed). This is a problem with the original data resolution. But I will compensate somewhat for this by using a non-linear transformation.
+I need to do a little trick and reverse the upper and lower reference
+values for the normalisation to work. This is a bug which can be fixed
+inside eaTools.
 
-I need to do a little trick and reverse the upper and lower reference values for the normalisation to work. This is a bug which can be fixed inside eaTools.
 ```{r slitasje-normalise, fig.cap="Performing a non-linear break-point type normalisation of the slitasje variable."}
 eaTools::ea_normalise(data = slitasje_data,
                       vector = "slitasje_percentage",
@@ -930,7 +954,10 @@ eaTools::ea_normalise(data = slitasje_data,
                       )
 ```
 
-This normalisation seems reasonable to me. I can save it as indicator values. I will assign the indicator value to the avergae year of the data.
+This normalisation seems reasonable to me. I can save it as indicator
+values. I will assign the indicator value to the average year of the
+data.
+
 ```{r}
 mean(slitasje_data$kartleggingsår)
 ```
@@ -945,6 +972,11 @@ slitasje_data$i_2020 <- eaTools::ea_normalise(data = slitasje_data,
                       )
 ```
 
+### Homogeneous impact areas
+
+```{r, eval=F}
+eaTools::ea_homogeneous_area(infra2)
+```
 
 
 ### Uncertainty
@@ -953,9 +985,37 @@ slitasje_data$i_2020 <- eaTools::ea_normalise(data = slitasje_data,
 
 Bootstrapping of nin-polygons per infrastructure class and region?
 
-## Prepare export
-According to the workflow spesifications, I will export the indicator map at its highest resolution, but I also need to export a map of the *homogeneous areas* over which I will aggregate the indicator values. For the finest resolution indicator map I will not include columns for uncertainty (because this will only be estimated at the aggregated level), or reference levels (because there is no spatial variation).
+## Eksport files (final product)
 
+According to the workflow specifications, I will export the indicator
+map at its highest resolution, for use in various web interfaces etc.
+
+But I also need to export a map of the indicator where we extrapolate the indicator values
+to the homogeneous areas. This map should be interpreted with caution, since they seem
+to provide explicit indicator values for areas where there is no data. This map is mainly for
+aggregation purposes. I will mark this map with the prefix _homogeneous-areas_.
+
+I will also export a map of the *homogeneous areas*, over which I will aggregate the indicator values.
+This map might be useful in later indicator work.
+
+For the finest resolution indicator map I will not include columns for
+uncertainty (because this will only be estimated at the aggregated
+level), or reference levels (because there is no spatial variation).
+
+
+
+
+### Homogeneous areas
+Export a map of the homogeneous areas that we aggregate the indicator
+over:
+
+```{r}
+stars::write_stars(infra_trd_reclassed,
+                   "data/homogeneous_areas/infrastructureIndex_fourClasses.tif")
+```
+
+### Sliatsje in wetlands
+Prepare export
 ```{r}
 exp_wetland <- select(slitasje_data[slitasje_data$hovedøkosystem == "Våtmark",],
               origin,
@@ -963,22 +1023,12 @@ exp_wetland <- select(slitasje_data[slitasje_data$hovedøkosystem == "Våtmark",
               i_2020,
               SHAPE
               )
-
-
 ```
 
-
-### Eksport file (final product)
-
+Write to file
 ```{r, eval=F}
 st_write(exp_wetland, "indicators/indicatorMaps/slitasje/wetland_slitasje.shp",
          append = F)
 ```
 
-
-Export a map of the homogeneous areas that we aggregate the indicator over:
-```{r}
-stars::write_stars(infra_trd_reclassed,
-                   "data/homogeneous_areas/infrastructureIndex_fourClasses.tif")
-```
-
+### Sliatsje in wetlands, extrapolated to homegeneous impact areas.
