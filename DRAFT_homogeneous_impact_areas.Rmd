@@ -24,6 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(sf)
 library(tmap)
 library(dplyr)
+library(stars)
 #library(osmplotr)
 ```
 
@@ -178,11 +179,31 @@ I tweaked the thresholds for the bins so that most of the forest next to Trondhe
 This looks pretty good to me. It depicts a gradient in human presence from high within the build zone, to _no to very low_ in the forests and mountains 
 to the west. Note that there is still considerable human activity also there in the form of outdoor recreation and even forestry.
 
-## Discretize the entire map
-```{r}
-names(infra) <- "infrastructureIndex"
+### Aggregate
+The resolution in this map is more than we need, and the size of the data implies that the next step, the vectorization, would take too long.
+We therefore aggregate, ar reduce the resolution.
 
-infra_discrete <- infra %>%
+```{r}
+dim <- st_dimensions(infra)
+paste("Resolution is", dim$x$delta, "by", dim$x$delta, "meters")
+```
+
+```{r}
+infra_trd_reclassed_agg <- st_warp(infra_trd_reclassed, cellsize = c(1000, 1000), 
+                                   crs = st_crs(infra_trd_reclassed), 
+                                   use_gdal = TRUE,
+                                   method = "average")
+```
+
+```{r}
+dim <- st_dimensions(infra_trd_reclassed_agg)
+paste("Resolution is", dim$x$delta, "by", dim$x$delta, "meters")
+```
+
+Each cell is no the average of the aggregated cells, and hence the value is continous again. Let's make it discrete.
+```{r}
+names(infra_trd_reclassed_agg) <- "infrastructureIndex"
+infra_trd_reclassed_agg <-  infra_trd_reclassed_agg %>%
   mutate(infrastructureIndex = case_when(
     infrastructureIndex < 1 ~ 0,
     infrastructureIndex < 6 ~ 1,
@@ -191,10 +212,61 @@ infra_discrete <- infra %>%
   ))
 ```
 
+```{r, fig.cap="Infrastrcture indeks over Trondheim on a four-step discrete scale, aggregated to 1x1 km resolution using the mean function."}
+tm_shape(infra_trd_reclassed_agg)+
+  tm_raster(title="Infrastructure Index",
+            style="cat")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="white")
+```
 
-## Aggregate
-The resolution in this map is more than we need, and the size of the data implies that the next step, the vectorization, would take too long.
-We therefore aggregate, ar reduce the resolution.
+This resolution is more that good enough for our purpose here.
+
+
+## Aggregate the entire map to 1x1 km
+```{r}
+# runtime about 30 sec
+infra_agg <- st_warp(infra, cellsize = c(1000, 1000), 
+                                   crs = st_crs(infra), 
+                                   use_gdal = TRUE,
+                                   method = "average")
+```
+
+## Discretize the entire map
+```{r}
+names(infra_agg) <- "infrastructureIndex"
+
+infra_agg_discrete <- infra_agg %>%
+  mutate(infrastructureIndex = case_when(
+    infrastructureIndex < 1 ~ 0,
+    infrastructureIndex < 6 ~ 1,
+    infrastructureIndex < 9 ~ 2,
+    infrastructureIndex >= 9 ~ 3
+  ))
+```
+
+## Vectorize
+This step might seem rather stupid. We want to vectorize a rather large raster. This makes it a quite big data object.
+The reason is that there is no really good way to burn polygon data on to raster grid cells after the disuse of the
+`{raster}` package. It was not straight forward then either. But calculating intersections between polygons is very fast and easy.
+
+```{r}
+infra_agg_discrete_vect <- eaTools::ea_homogeneous_area(infra_agg_discrete)
+```
+
+Let's plot this now.
+First. lets crop it to reduce computation time.
+```{r}
+infra_agg_discrete_vect_trd <- st_crop(infra_agg_discrete_vect, myBB)
+```
+
+
+```{r}
+tmap_mode("view")
+tm_shape(infra_agg_discrete_vect_trd)+
+  tm_polygons(col="infrastructureIndex")
+```
 
 
 ## Prepare export
