@@ -973,9 +973,16 @@ slitasje_data$i_2020 <- eaTools::ea_normalise(data = slitasje_data,
 ```
 
 ### Homogeneous impact areas
+I want to use the [homogeneous impact areas]() to define smaller regions into which I can extrapolate the indicator values.
 
-```{r, eval=F}
-eaTools::ea_homogeneous_area(infra2)
+```{r}
+HIA <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds")
+```
+
+```{r}
+tmap_mode("view")
+tm_shape(HIA)+
+  tm_polygons()
 ```
 
 
