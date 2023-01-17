@@ -11,7 +11,9 @@ editor_options:
 
 <br />
 
-*Author and date:* Anders Kolstad
+*Author and date:* 
+
+Anders Kolstad
 
 ```{r, echo=FALSE}
 Sys.Date()
@@ -48,11 +50,9 @@ Each pixel is given a value along a continuous gradient from 0 to around 15.4, r
 The infrastructure index is calculated with data that have slightly different dates, but can be said to represent the current status, the period 2010-2020.
 The data covers all of mainland Norway.
 
-## References
+### References
 
-Bakkestuen, V., Dervo, B.K., Bærum, K.M.
-og Erikstad, L.
-2022.
+Bakkestuen, V., Dervo, B.K., Bærum, K.M. og Erikstad, L. 2022. 
 Prediksjonsmodellering av naturtyper i ferskvann.
 NINA Rapport 2079.
 Norsk institutt for naturforskning.
@@ -61,7 +61,7 @@ Norsk institutt for naturforskning.
 
 ### Import data
 
-The path must be conditional
+The path must be conditional:
 
 ```{r}
 dir <- substr(getwd(), 1,2)
@@ -79,6 +79,7 @@ Import a stars proxy (no data imported yet)
 infra <- stars::read_stars(path)
 ```
 
+Print the coordinate reference system:
 ```{r}
 st_crs(infra)$input
 ```
@@ -100,21 +101,22 @@ Cropping the raster to the bbox
 infra_trd <- sf::st_crop(infra, myBB)
 ```
 
+
+#### Get OSM highways
+
+Lets download some base maps to help validate and contextualize the infrastructure index.
+
 Transform to lat long due to osm requirements
 
-```{r, warning=F}
+```{r, warning=F, eval=F}
 infra_trd_ll <- sf::st_transform(infra_trd, 4326)
 ```
 
 Get the boundary box of the cropped raster
 
-```{r}
+```{r, eval=F}
 myBB_ll <- sf::st_bbox(infra_trd_ll)
 ```
-
-### Get OSM highways
-
-Lets download some base maps to help validate and contextualize the infrastructure index.
 
 Download highways using the above bbox.
 
@@ -149,7 +151,7 @@ saveRDS(hw_utm, "data/cache/highways_trondheim.rds")
 hw_utm <- readRDS("data/cache/highways_trondheim.rds")
 ```
 
-### Discretize
+#### Discretize
 
 Here I define a simplified categorical typology for the infrastructure index using four classes.
 
@@ -186,7 +188,7 @@ map_trd <- tm_shape(infra_trd)+
   tm_lines(col="white")
 ```
 
-```{r, fig.cap="Infrastrcture indeks over Trondheim, comparing the continous scale with the ordinal four-step scale. Major roads are in white."}
+```{r, fig.cap="Infrastructure indeks over Trondheim, comparing the continous scale with the ordinal four-step scale. Major roads are in white."}
 tmap_arrange(map_trd,
              map_trd_reclassed,
              ncol=1)
@@ -194,10 +196,10 @@ tmap_arrange(map_trd,
 
 I tweaked the thresholds for the bins so that most of the forest next to Trondheim (to the left in the map) was in the second lowest class.
 This looks pretty good to me.
-It depicts a gradient in human presence from high within the build zone, to *no to very low* in the forests and mountains to the west.
+It depicts a gradient in human presence from high within the buildt zone, to *no to very low* in the forests and mountains to the west.
 Note that there is still considerable human activity also there in the form of outdoor recreation and even forestry.
 
-### Aggregate
+#### Aggregate
 
 The resolution in this map is more than we need, and the size of the data implies that the next step, the vectorization, would take too long.
 We therefore aggregate, ar reduce the resolution.
@@ -207,7 +209,7 @@ dim <- st_dimensions(infra)
 paste("Resolution is", dim$x$delta, "by", dim$x$delta, "meters")
 ```
 
-```{r}
+```{r, warning=F, message=F}
 infra_trd_reclassed_agg <- st_warp(infra_trd_reclassed, cellsize = c(1000, 1000), 
                                    crs = st_crs(infra_trd_reclassed), 
                                    use_gdal = TRUE,
@@ -219,7 +221,7 @@ dim <- st_dimensions(infra_trd_reclassed_agg)
 paste("Resolution is", dim$x$delta, "by", dim$x$delta, "meters")
 ```
 
-Each cell is no the average of the aggregated cells, and hence the value is continous again.
+Each cell is now the average of the aggregated cells, and hence the value is continuous again.
 Let's make it discrete.
 
 ```{r}
@@ -233,6 +235,7 @@ infra_trd_reclassed_agg <-  infra_trd_reclassed_agg %>%
   ))
 ```
 
+
 ```{r, fig.cap="Infrastrcture indeks over Trondheim on a four-step discrete scale, aggregated to 1x1 km resolution using the mean function."}
 tm_shape(infra_trd_reclassed_agg)+
   tm_raster(title="Infrastructure Index",
@@ -244,17 +247,23 @@ tm_shape(infra_trd_reclassed_agg)+
 
 This resolution is more that good enough for our purpose here.
 
-## Aggregate the entire map to 1x1 km
+### Aggregate the entire map to 1x1 km
 
-```{r}
+```{r, eval=F}
 # runtime about 30 sec
 infra_agg <- st_warp(infra, cellsize = c(1000, 1000), 
                                    crs = st_crs(infra), 
                                    use_gdal = TRUE,
                                    method = "average")
+saveRDS(infra_agg, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds")
 ```
 
-## Discretize the entire map
+```{r, echo=F}
+infra_agg <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds")
+```
+
+
+### Discretize the entire map
 
 ```{r}
 names(infra_agg) <- "infrastructureIndex"
@@ -268,7 +277,7 @@ infra_agg_discrete <- infra_agg %>%
   ))
 ```
 
-## Vectorize
+### Vectorize
 
 This step might seem rather stupid.
 We want to vectorize a rather large raster.
@@ -277,13 +286,12 @@ The reason is that there is no really good way to burn polygon data on to raster
 It was not straight forward then either.
 But calculating intersections between polygons is very fast and easy.
 
-```{r}
+```{r, warning=F}
 infra_agg_discrete_vect <- eaTools::ea_homogeneous_area(infra_agg_discrete)
 ```
 
 Let's plot this now.
-First.
-lets crop it to reduce computation time.
+First, lets crop it to reduce computation time.
 
 ```{r}
 infra_agg_discrete_vect_trd <- st_crop(infra_agg_discrete_vect, myBB)
@@ -298,12 +306,11 @@ tm_shape(infra_agg_discrete_vect_trd)+
   tm_lines(col="white")
 ```
 
-
 As can be seen in the figure above, `st_warp` merges grid cells atht have the same value, and the vectorized raster doen's not end up being that big in the end.
 
 ## Export
 I will write this data to the NINA P server.
 
 ```{r, eval=F}
-saveRDS(infra_agg_discrete_vect_trd, "P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks/homogeneous_impact_areas.rds")
+saveRDS(infra_agg_discrete_vect, "P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks/homogeneous_impact_areas.rds")
 ```
