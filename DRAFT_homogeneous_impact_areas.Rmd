@@ -1,0 +1,196 @@
+---
+title: "-"
+output:
+  html_document
+---
+
+
+# Homogeneous Impact Areas
+
+<br />
+
+_Author and date:_
+Anders Kolstad
+```{r, echo=FALSE}
+Sys.Date()
+```
+
+<br />
+
+<!-- Load all you dependencies here -->
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+library(sf)
+library(tmap)
+library(dplyr)
+#library(osmplotr)
+```
+
+
+
+## Introduction
+This chapter documents the creation of a wall-to-wall map of homogeneous impact areas in Norway.
+The map is produces by binning values in the infrastructure index into four discrete categories. 
+It is likely to be a good predictor for some indicators, such as  *slitasje* and the presence of
+*alien species*.
+
+## About the underlying data
+The infrastructure index is explained [here](https://brage.nina.no/nina-xmlui/handle/11250/2983607). 
+It is a wall-to-wall raster over Norway with 100 m resolution. Each pixel is given a value along a continuous gradient 
+from 0 to around 15.4, representing the frequency or surrounding cells within 500 m with human infrastructure (houses, roads, ect).
+
+### Representativity in time and space
+The infrastructure index is calculated with data that have slightly different dates, but can be said to represent the current status, the period 2010-2020.
+The data covers all of mainland Norway.
+
+
+## References
+Bakkestuen, V., Dervo, B.K., Bærum, K.M. og Erikstad, L. 2022. Prediksjonsmodellering av naturtyper i ferskvann. NINA Rapport 2079. Norsk institutt for naturforskning.
+
+
+## Analyses
+### Import data
+
+The path must be conditional
+```{r}
+dir <- substr(getwd(), 1,2)
+```
+
+
+
+```{r}
+path <- ifelse(dir == "C:", 
+        "R:/GeoSpatialData/Utility_governmentalServices/Norway_Infrastructure_Index/Original/Infrastrukturindeks_UTM33/infra_tiff.tif",
+        "/data/R/GeoSpatialData/Utility_governmentalServices/Norway_Infrastructure_Index/Original/Infrastrukturindeks_UTM33/infra_tiff.tif")
+```
+
+Import a stars proxy (no data imported yet)
+```{r}
+infra <- stars::read_stars(path)
+```
+
+```{r}
+st_crs(infra)$input
+```
+
+
+### Trondheim example
+It's easier to see what's happening if we zoom in a bit. Lets get a
+boundary box around Trondheim.
+```{r}
+myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
+                ymin = 7032142.5, ymax = 7045245.27),
+                crs = st_crs(infra))
+```
+
+Cropping the raster to the bbox
+```{r}
+infra_trd <- sf::st_crop(infra, myBB)
+```
+
+Transform to lat long due to osm requirements
+```{r, warning=F}
+infra_trd_ll <- sf::st_transform(infra_trd, 4326)
+```
+
+Get the boundary box of the cropped raster
+```{r}
+myBB_ll <- sf::st_bbox(infra_trd_ll)
+```
+
+### Get OSM highways
+Lets download some base maps to help validate and contextualize the infrastructure index.
+
+Download highways using the above bbox.
+```{r, warning=FALSE, message=F, eval=F}
+hw <- 
+  osmplotr::extract_osm_objects(
+    bbox = myBB_ll,
+    key = "highway",
+    sf = T)
+```
+
+Transforming highway data back into utm, although not strictly
+necessary.
+```{r, eval=F}
+hw_utm <- sf::st_transform(hw, sf::st_crs(infra_trd)) 
+```
+
+This object contains too many roads (about 30k). I'll take out the unnamed roads.
+```{r, eval=F}
+hw_utm <- hw_utm[!is.na(hw_utm$name),]
+```
+
+```{r, eval=F, echo=F}
+# Caching the sf object
+saveRDS(hw_utm, "data/cache/highways_trondheim.rds")
+```
+
+```{r, echo=F}
+#Load object
+hw_utm <- readRDS("data/cache/highways_trondheim.rds")
+```
+
+
+### Discretize
+Here I define a simplified categorical typology for the infrastructure index using four classes. 
+
+```{r}
+names(infra_trd) <- "infrastructureIndex"
+infra_trd_reclassed <-  infra_trd %>%
+  mutate(infrastructureIndex = case_when(
+    infrastructureIndex < 1 ~ 0,
+    infrastructureIndex < 6 ~ 1,
+    infrastructureIndex < 9 ~ 2,
+    infrastructureIndex >= 9 ~ 3
+  ))
+```
+
+Lets plot these two maps side by side
+```{r}
+map_trd_reclassed <- tm_shape(infra_trd_reclassed)+
+  tm_raster(title="Infrastructure Index",
+            #palette = "viridis",
+            style="cat")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="white")
+```
+
+```{r}
+map_trd <- tm_shape(infra_trd)+
+  tm_raster(title="Infrastructure Index",
+            style="cont",
+            palette = "viridis")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="white")
+```
+
+```{r, fig.cap="Infrastrcture indeks over Trondheim, comparing the continous scale with the ordinal four-step scale. Major roads are in white."}
+tmap_arrange(map_trd,
+             map_trd_reclassed,
+             ncol=1)
+```
+
+I tweaked the thresholds for the bins so that most of the forest next to Trondheim (to the left in the map) was in the second lowest class. 
+This looks pretty good to me. It depicts a gradient in human presence from high within the build zone, to _no to very low_ in the forests and mountains 
+to the west. Note that there is still considerable human activity also there in the form of outdoor recreation and even forestry.
+
+## Discretize the entire map
+
+
+## 
+
+
+## Prepare export
+<!-- Text here -->
+
+
+### Eksport file (final product)
+<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
+
+
+
+
