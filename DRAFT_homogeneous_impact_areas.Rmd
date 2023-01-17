@@ -179,9 +179,22 @@ This looks pretty good to me. It depicts a gradient in human presence from high 
 to the west. Note that there is still considerable human activity also there in the form of outdoor recreation and even forestry.
 
 ## Discretize the entire map
+```{r}
+names(infra) <- "infrastructureIndex"
+
+infra_discrete <- infra %>%
+  mutate(infrastructureIndex = case_when(
+    infrastructureIndex < 1 ~ 0,
+    infrastructureIndex < 6 ~ 1,
+    infrastructureIndex < 9 ~ 2,
+    infrastructureIndex >= 9 ~ 3
+  ))
+```
 
 
-## 
+## Aggregate
+The resolution in this map is more than we need, and the size of the data implies that the next step, the vectorization, would take too long.
+We therefore aggregate, ar reduce the resolution.
 
 
 ## Prepare export
