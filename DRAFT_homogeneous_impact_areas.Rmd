@@ -2,15 +2,17 @@
 title: "-"
 output:
   html_document
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
-
 
 # Homogeneous Impact Areas
 
 <br />
 
-_Author and date:_
-Anders Kolstad
+*Author and date:* Anders Kolstad
+
 ```{r, echo=FALSE}
 Sys.Date()
 ```
@@ -18,6 +20,7 @@ Sys.Date()
 <br />
 
 <!-- Load all you dependencies here -->
+
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
@@ -28,37 +31,41 @@ library(stars)
 #library(osmplotr)
 ```
 
-
-
 ## Introduction
+
 This chapter documents the creation of a wall-to-wall map of homogeneous impact areas in Norway.
-The map is produces by binning values in the infrastructure index into four discrete categories. 
-It is likely to be a good predictor for some indicators, such as  *slitasje* and the presence of
-*alien species*.
+The map is produces by binning values in the infrastructure index into four discrete categories.
+It is likely to be a good predictor for some indicators, such as *slitasje* and the presence of *alien species*.
 
 ## About the underlying data
-The infrastructure index is explained [here](https://brage.nina.no/nina-xmlui/handle/11250/2983607). 
-It is a wall-to-wall raster over Norway with 100 m resolution. Each pixel is given a value along a continuous gradient 
-from 0 to around 15.4, representing the frequency or surrounding cells within 500 m with human infrastructure (houses, roads, ect).
+
+The infrastructure index is explained [here](https://brage.nina.no/nina-xmlui/handle/11250/2983607).
+It is a wall-to-wall raster over Norway with 100 m resolution.
+Each pixel is given a value along a continuous gradient from 0 to around 15.4, representing the frequency or surrounding cells within 500 m with human infrastructure (houses, roads, ect).
 
 ### Representativity in time and space
+
 The infrastructure index is calculated with data that have slightly different dates, but can be said to represent the current status, the period 2010-2020.
 The data covers all of mainland Norway.
 
-
 ## References
-Bakkestuen, V., Dervo, B.K., Bærum, K.M. og Erikstad, L. 2022. Prediksjonsmodellering av naturtyper i ferskvann. NINA Rapport 2079. Norsk institutt for naturforskning.
 
+Bakkestuen, V., Dervo, B.K., Bærum, K.M.
+og Erikstad, L.
+2022.
+Prediksjonsmodellering av naturtyper i ferskvann.
+NINA Rapport 2079.
+Norsk institutt for naturforskning.
 
 ## Analyses
+
 ### Import data
 
 The path must be conditional
+
 ```{r}
 dir <- substr(getwd(), 1,2)
 ```
-
-
 
 ```{r}
 path <- ifelse(dir == "C:", 
@@ -67,6 +74,7 @@ path <- ifelse(dir == "C:",
 ```
 
 Import a stars proxy (no data imported yet)
+
 ```{r}
 infra <- stars::read_stars(path)
 ```
@@ -75,10 +83,11 @@ infra <- stars::read_stars(path)
 st_crs(infra)$input
 ```
 
-
 ### Trondheim example
-It's easier to see what's happening if we zoom in a bit. Lets get a
-boundary box around Trondheim.
+
+It's easier to see what's happening if we zoom in a bit.
+Lets get a boundary box around Trondheim.
+
 ```{r}
 myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
                 ymin = 7032142.5, ymax = 7045245.27),
@@ -86,24 +95,29 @@ myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
 ```
 
 Cropping the raster to the bbox
+
 ```{r}
 infra_trd <- sf::st_crop(infra, myBB)
 ```
 
 Transform to lat long due to osm requirements
+
 ```{r, warning=F}
 infra_trd_ll <- sf::st_transform(infra_trd, 4326)
 ```
 
 Get the boundary box of the cropped raster
+
 ```{r}
 myBB_ll <- sf::st_bbox(infra_trd_ll)
 ```
 
 ### Get OSM highways
+
 Lets download some base maps to help validate and contextualize the infrastructure index.
 
 Download highways using the above bbox.
+
 ```{r, warning=FALSE, message=F, eval=F}
 hw <- 
   osmplotr::extract_osm_objects(
@@ -112,13 +126,15 @@ hw <-
     sf = T)
 ```
 
-Transforming highway data back into utm, although not strictly
-necessary.
+Transforming highway data back into utm, although not strictly necessary.
+
 ```{r, eval=F}
 hw_utm <- sf::st_transform(hw, sf::st_crs(infra_trd)) 
 ```
 
-This object contains too many roads (about 30k). I'll take out the unnamed roads.
+This object contains too many roads (about 30k).
+I'll take out the unnamed roads.
+
 ```{r, eval=F}
 hw_utm <- hw_utm[!is.na(hw_utm$name),]
 ```
@@ -133,9 +149,9 @@ saveRDS(hw_utm, "data/cache/highways_trondheim.rds")
 hw_utm <- readRDS("data/cache/highways_trondheim.rds")
 ```
 
-
 ### Discretize
-Here I define a simplified categorical typology for the infrastructure index using four classes. 
+
+Here I define a simplified categorical typology for the infrastructure index using four classes.
 
 ```{r}
 names(infra_trd) <- "infrastructureIndex"
@@ -149,6 +165,7 @@ infra_trd_reclassed <-  infra_trd %>%
 ```
 
 Lets plot these two maps side by side
+
 ```{r}
 map_trd_reclassed <- tm_shape(infra_trd_reclassed)+
   tm_raster(title="Infrastructure Index",
@@ -175,11 +192,13 @@ tmap_arrange(map_trd,
              ncol=1)
 ```
 
-I tweaked the thresholds for the bins so that most of the forest next to Trondheim (to the left in the map) was in the second lowest class. 
-This looks pretty good to me. It depicts a gradient in human presence from high within the build zone, to _no to very low_ in the forests and mountains 
-to the west. Note that there is still considerable human activity also there in the form of outdoor recreation and even forestry.
+I tweaked the thresholds for the bins so that most of the forest next to Trondheim (to the left in the map) was in the second lowest class.
+This looks pretty good to me.
+It depicts a gradient in human presence from high within the build zone, to *no to very low* in the forests and mountains to the west.
+Note that there is still considerable human activity also there in the form of outdoor recreation and even forestry.
 
 ### Aggregate
+
 The resolution in this map is more than we need, and the size of the data implies that the next step, the vectorization, would take too long.
 We therefore aggregate, ar reduce the resolution.
 
@@ -200,7 +219,9 @@ dim <- st_dimensions(infra_trd_reclassed_agg)
 paste("Resolution is", dim$x$delta, "by", dim$x$delta, "meters")
 ```
 
-Each cell is no the average of the aggregated cells, and hence the value is continous again. Let's make it discrete.
+Each cell is no the average of the aggregated cells, and hence the value is continous again.
+Let's make it discrete.
+
 ```{r}
 names(infra_trd_reclassed_agg) <- "infrastructureIndex"
 infra_trd_reclassed_agg <-  infra_trd_reclassed_agg %>%
@@ -223,8 +244,8 @@ tm_shape(infra_trd_reclassed_agg)+
 
 This resolution is more that good enough for our purpose here.
 
-
 ## Aggregate the entire map to 1x1 km
+
 ```{r}
 # runtime about 30 sec
 infra_agg <- st_warp(infra, cellsize = c(1000, 1000), 
@@ -234,6 +255,7 @@ infra_agg <- st_warp(infra, cellsize = c(1000, 1000),
 ```
 
 ## Discretize the entire map
+
 ```{r}
 names(infra_agg) <- "infrastructureIndex"
 
@@ -247,35 +269,41 @@ infra_agg_discrete <- infra_agg %>%
 ```
 
 ## Vectorize
-This step might seem rather stupid. We want to vectorize a rather large raster. This makes it a quite big data object.
-The reason is that there is no really good way to burn polygon data on to raster grid cells after the disuse of the
-`{raster}` package. It was not straight forward then either. But calculating intersections between polygons is very fast and easy.
+
+This step might seem rather stupid.
+We want to vectorize a rather large raster.
+This makes it a quite big data object.
+The reason is that there is no really good way to burn polygon data on to raster grid cells after the disuse of the `{raster}` package.
+It was not straight forward then either.
+But calculating intersections between polygons is very fast and easy.
 
 ```{r}
 infra_agg_discrete_vect <- eaTools::ea_homogeneous_area(infra_agg_discrete)
 ```
 
 Let's plot this now.
-First. lets crop it to reduce computation time.
+First.
+lets crop it to reduce computation time.
+
 ```{r}
 infra_agg_discrete_vect_trd <- st_crop(infra_agg_discrete_vect, myBB)
 ```
 
-
-```{r}
-tmap_mode("view")
+```{r test-2, fig.cap="A vectorized version of the Infrastructure indeks over Trondheim on a four-step discrete scale."}
 tm_shape(infra_agg_discrete_vect_trd)+
-  tm_polygons(col="infrastructureIndex")
+  tm_polygons(col="infrastructureIndex",
+              style = "cat")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="white")
 ```
 
 
-## Prepare export
-<!-- Text here -->
+As can be seen in the figure above, `st_warp` merges grid cells atht have the same value, and the vectorized raster doen's not end up being that big in the end.
 
+## Export
+I will write this data to the NINA P server.
 
-### Eksport file (final product)
-<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
-
-
-
-
+```{r, eval=F}
+saveRDS(infra_agg_discrete_vect_trd, "P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks/homogeneous_impact_areas.rds")
+```
