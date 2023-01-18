@@ -880,19 +880,55 @@ temp <- as.data.frame(HIA_regions) %>%
   summarise(area = mean(area))
 
 ggplot(temp, aes(x = region, y = area, fill = factor(infrastructureIndex)))+
-  geom_bar(position = "stack", stat = "identity")
+  geom_bar(position = "stack", stat = "identity")+
+  guides(fill = guide_legend("HIF"))
 ```
 
-The figure above shows that Nord-Norge for example, has a lot of relatovely untouched areas, and that Østlandet has the highets proportion of impacted areas.
-This is expected.
+The figure above shows that Nord-Norge for example, has a lot of relatively untouched areas, and that Østlandet has the highest proportion of impacted areas.
+This is expected. 
+<!-- It also shows that the second HIF class is perhaps to narrowly defined. This is suggested as a change in another PR: -->
 
 
 ### Aggregate and spread (extrapolate)
 I now want to find the mean indicator value for each HIA (i.e. to aggregate) and to spread these out
 spatialy to the entire HIA within each region (i.e. to extrapolate).
 
+```{r, eval=F}
+slitasje_data_extrapolated <- ea_spread(indicator_data = slitasje_data,
+                         indicator = i_2020,
+                         regions = HIA_regions,
+                         groups = region_HIF,
+                         threshold = 20)
+saveRDS(slitasje_data_extrapolated, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated.rds")
+```
+
+```{r, echo=F}
+# silently read cached file
+slitasje_data_extrapolated <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated.rds")
+```
+
 ```{r}
-eaTools::ea_spread()
+unique(slitasje_data_extrapolated$meanIndicatorValue)
+```
+<!-- slitasje_data_extrapolated contains 32402 rows, but I expected 5. -->
+
+<!-- Like this: -->
+```{r, eval=F}
+slitasje_data_extrapolated2 <- ea_spread(indicator_data = slitasje_data_extrapolated,
+                         indicator = meanIndicatorValue,
+                         regions = regions,
+                         groups = region,
+                         threshold = 20)
+saveRDS(slitasje_data_extrapolated2, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated2.rds")
+```
+```{r, echo=F}
+# silently read cached file
+slitasje_data_extrapolated2 <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated2.rds")
+```
+
+```{r}
+plot(factor(slitasje_data_extrapolated2$ID), slitasje_data_extrapolated2$meanIndicatorValue,
+     ylab="indicator value", xlab="", ylim=c(0,1))
 ```
 
 
