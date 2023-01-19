@@ -30,6 +30,10 @@ library(sf)
 library(tmap)
 library(dplyr)
 library(stars)
+library(ggplot2)
+library(units)
+library(ggpubr)
+library(DT)
 #library(osmplotr)
 ```
 
@@ -306,7 +310,72 @@ tm_shape(infra_agg_discrete_vect_trd)+
   tm_lines(col="white")
 ```
 
-As can be seen in the figure above, `st_warp` merges grid cells atht have the same value, and the vectorized raster doen's not end up being that big in the end.
+As can be seen in the figure above, `st_warp` merges grid cells that have the same value, and the vectorized raster doesn't not end up being that big in the end.
+
+## Chech national distribution
+
+```{r}
+regions <- sf::read_sf("data/regions.shp", options = "ENCODING=UTF8")
+unique(regions$region)
+```
+
+```{r}
+st_crs(infra_agg_discrete_vect) == st_crs(regions)
+```
+
+```{r}
+infra_agg_discrete_vect <- st_transform(infra_agg_discrete_vect, 25833)
+```
+
+```{r}
+st_crs(infra_agg_discrete_vect) == st_crs(regions)
+```
+
+Since the two layers are completely overlapping, we can get the intersections
+```{r, eval=F}
+infra_stats <- eaTools::ea_homogeneous_area(infra_agg_discrete_vect,
+                             regions,
+                             keep1 = "infrastructureIndex",
+                             keep2 = "region")
+saveRDS(infra_stats, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_stats.rds")
+```
+
+```{r, echo=F}
+# silently read cached file
+infra_stats <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_stats.rds")
+```
+
+Let's calculate the areas of these polygons and compare the HIF in the five regions. 
+```{r HIF-region, fig.cap="Stacked barplot showing the distribution of human impact factor across five regions in Norway."}
+infra_stats$area <- sf::st_area(infra_stats)
+
+temp <- as.data.frame(infra_stats) %>%
+  group_by(region, infrastructureIndex) %>%
+  summarise(area = mean(area))
+
+ggarrange(
+  ggplot(temp, aes(x = region, y = area, fill = factor(infrastructureIndex)))+
+    geom_bar(position = "stack", stat = "identity")+
+    guides(fill = "none")+
+    coord_flip()+
+    xlab("")
+  ,
+  ggplot(temp, aes(x = region, y = area, fill = factor(infrastructureIndex)))+
+    geom_bar(position = "fill", stat = "identity")+
+    guides(fill = guide_legend("HIF"))+
+    coord_flip()+
+    xlab("")
+)
+```
+
+This distribution looks reasonable. The relative propotions are similar in the fivre regions, but _Østlandet_ and _Sørlandet_ have more infrastructure in general.
+
+Here are the numbers behind the figure above.
+```{r}
+temp$area <- round(temp$area,0)
+DT::datatable(temp)
+```
+
 
 ## Export
 I will write this data to the NINA P server.
