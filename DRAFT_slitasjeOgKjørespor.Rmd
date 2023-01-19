@@ -23,6 +23,7 @@ library(ggplot2)
 library(units)
 library(eaTools)
 library(tidyverse)
+library(tidyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -882,7 +883,6 @@ ggplot(temp, aes(x = region, y = area, fill = factor(infrastructureIndex)))+
 
 The figure above shows that Nord-Norge for example, has a lot of relatively untouched areas, and that Østlandet has the highest proportion of impacted areas.
 This is expected. 
-<!-- It also shows that the second HIF class is perhaps to narrowly defined. This is suggested as a change in another PR: -->
 
 
 ### Aggregate and spread (extrapolate)
@@ -895,20 +895,33 @@ slitasje_data_extrapolated <- ea_spread(indicator_data = slitasje_data,
                          regions = HIA_regions,
                          groups = region_HIF,
                          threshold = 20)
-saveRDS(slitasje_data_extrapolated, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated.rds")
+#saveRDS(slitasje_data_extrapolated, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated.rds")
 ```
 
-```{r, echo=F}
-# silently read cached file
-slitasje_data_extrapolated <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated.rds")
+Let's split the ID column to get the HIF
+```{r}
+slitasje_data_extrapolated <- slitasje_data_extrapolated %>%
+  tidyr::separate(ID, into = c("region", "HIF"),
+                  sep = " ")
+slitasje_data_extrapolated$HIF <- as.numeric(slitasje_data_extrapolated$HIF)
+```
+
+Now let's check the correlation between the HIF and the indicator values. 
+```{rslitasje-box, fig.cap="The relationship between human impact factor (a categorical version of the Norwegian Infrastructure Index) and the indicator avleus for slitasje."}
+ggplot(slitasje_data_extrapolated, aes(x = factor(HIF), y = meanIndicatorValue))+
+  geom_boxplot(fill = "grey",
+               size=1.5)+
+  theme_bw(base_size = 12)+
+  labs(x = "Human Impact Factor", y = "Slitasje indicator value")
 ```
 
 ```{r}
-unique(slitasje_data_extrapolated$meanIndicatorValue)
+cor(slitasje_data_extrapolated$HIF, slitasje_data_extrapolated$meanIndicatorValue)
 ```
-<!-- slitasje_data_extrapolated contains 32402 rows, but I expected 5. -->
 
-<!-- Like this: -->
+This relationship is quite good, and I think it justified using HIF as homogeneous areas to extrapolate indicator values onto. 
+
+Split one more time, into regions:
 ```{r, eval=F}
 slitasje_data_extrapolated2 <- ea_spread(indicator_data = slitasje_data_extrapolated,
                          indicator = meanIndicatorValue,
@@ -917,6 +930,7 @@ slitasje_data_extrapolated2 <- ea_spread(indicator_data = slitasje_data_extrapol
                          threshold = 20)
 saveRDS(slitasje_data_extrapolated2, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated2.rds")
 ```
+
 ```{r, echo=F}
 # silently read cached file
 slitasje_data_extrapolated2 <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated2.rds")
