@@ -161,8 +161,8 @@ infra_trd_reclassed <-  infra_trd %>%
   mutate(infrastructureIndex = case_when(
     infrastructureIndex < 1 ~ 0,
     infrastructureIndex < 6 ~ 1,
-    infrastructureIndex < 9 ~ 2,
-    infrastructureIndex >= 9 ~ 3
+    infrastructureIndex < 12 ~ 2,
+    infrastructureIndex >= 12 ~ 3
   ))
 ```
 
@@ -194,7 +194,7 @@ tmap_arrange(map_trd,
              ncol=1)
 ```
 
-I tweaked the thresholds for the bins so that most of the forest next to Trondheim (to the left in the map) was in the second lowest class.
+I tweaked the thresholds for the bins so that the categories match my knowledge about the land use intensity in Trondheim, for example that most of the forest next to Trondheim (to the left in the map) was in the second lowest class.
 This looks pretty good to me.
 It depicts a gradient in human presence from high within the buildt zone, to *no to very low* in the forests and mountains to the west.
 Note that there is still considerable human activity also there in the form of outdoor recreation and even forestry.
@@ -230,8 +230,8 @@ infra_trd_reclassed_agg <-  infra_trd_reclassed_agg %>%
   mutate(infrastructureIndex = case_when(
     infrastructureIndex < 1 ~ 0,
     infrastructureIndex < 6 ~ 1,
-    infrastructureIndex < 9 ~ 2,
-    infrastructureIndex >= 9 ~ 3
+    infrastructureIndex < 12 ~ 2,
+    infrastructureIndex >= 12 ~ 3
   ))
 ```
 
@@ -272,8 +272,8 @@ infra_agg_discrete <- infra_agg %>%
   mutate(infrastructureIndex = case_when(
     infrastructureIndex < 1 ~ 0,
     infrastructureIndex < 6 ~ 1,
-    infrastructureIndex < 9 ~ 2,
-    infrastructureIndex >= 9 ~ 3
+    infrastructureIndex < 12 ~ 2,
+    infrastructureIndex >= 1 ~ 3
   ))
 ```
 
