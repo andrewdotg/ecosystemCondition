@@ -277,7 +277,7 @@ infra_agg_discrete <- infra_agg %>%
     infrastructureIndex < 1 ~ 0,
     infrastructureIndex < 6 ~ 1,
     infrastructureIndex < 12 ~ 2,
-    infrastructureIndex >= 1 ~ 3
+    infrastructureIndex >= 12 ~ 3
   ))
 ```
 
@@ -382,4 +382,8 @@ I will write this data to the NINA P server.
 
 ```{r, eval=F}
 saveRDS(infra_agg_discrete_vect, "P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks/homogeneous_impact_areas.rds")
+```
+
+```{r, eval=F}
+HIA_returned <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks/homogeneous_impact_areas.rds")
 ```
