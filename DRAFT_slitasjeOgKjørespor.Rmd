@@ -869,6 +869,13 @@ length(unique(HIA_regions$region_HIF))
 ```
 
 Let's calculate the areas of these polygons and compare the HIF in the five regions. 
+First we need to remove some marine areas.
+```{r}
+HIA_regions2 <- HIA_regions %>%
+  st_intersection(outline)
+```
+
+
 ```{r HIF-region, fig.cap="Stacked barplot showing the distribution of human impact factor across five regions in Norway."}
 HIA_regions$area <- sf::st_area(HIA_regions)
 
@@ -885,6 +892,8 @@ The figure above shows that Nord-Norge for example, has a lot of relatively unto
 This is expected. 
 
 
+
+
 ### Aggregate and spread (extrapolate)
 I now want to find the mean indicator value for each HIA (i.e. to aggregate) and to spread these out
 spatialy to the entire HIA within each region (i.e. to extrapolate).
@@ -898,6 +907,39 @@ slitasje_data_extrapolated <- ea_spread(indicator_data = slitasje_data,
 #saveRDS(slitasje_data_extrapolated, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated.rds")
 ```
 
+It's easier to see what's happening if we zoom in a bit.
+Lets get a boundary box around Trondheim.
+
+```{r}
+myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
+                ymin = 7032142.5, ymax = 7045245.27),
+                crs = st_crs(slitasje_data_extrapolated))
+```
+
+Cropping the raster to the bbox
+
+```{r}
+slitasje_data_extrapolated_trd <- sf::st_crop(slitasje_data_extrapolated, myBB)
+```
+
+Get map of major roads, for context
+```{r}
+hw_utm <- readRDS("data/cache/highways_trondheim.rds")
+```
+
+```{r}
+tm_shape(slitasje_data_extrapolated_trd)+
+  tm_polygons(col = "meanIndicatorValue",
+    title="Slitasje indicator",
+    palette = "viridis",
+    style="cat")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="blue")
+```
+
+
+
 Let's split the ID column to get the HIF
 ```{r}
 slitasje_data_extrapolated <- slitasje_data_extrapolated %>%
@@ -906,8 +948,10 @@ slitasje_data_extrapolated <- slitasje_data_extrapolated %>%
 slitasje_data_extrapolated$HIF <- as.numeric(slitasje_data_extrapolated$HIF)
 ```
 
-Now let's check the correlation between the HIF and the indicator values. 
-```{rslitasje-box, fig.cap="The relationship between human impact factor (a categorical version of the Norwegian Infrastructure Index) and the indicator avleus for slitasje."}
+Now let's check the correlation between the HIF and the indicator values.
+<!-- This is not correct. This count the polygins that have very different sizes -->
+
+```{r slitasje-box, fig.cap="The relationship between human impact factor (a categorical version of the Norwegian Infrastructure Index) and the indicator avleus for slitasje."}
 ggplot(slitasje_data_extrapolated, aes(x = factor(HIF), y = meanIndicatorValue))+
   geom_boxplot(fill = "grey",
                size=1.5)+
