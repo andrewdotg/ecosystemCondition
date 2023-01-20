@@ -1,3 +1,4 @@
+library(downloader)
 library(sf)
 library(tidyr)
 library(dplyr)
@@ -5,11 +6,19 @@ library(plyr)
 library(stringr)
 library(tidyverse)
 
-
+#### download from kartkatalogen to P-drive ####
 # url <- "https://nedlasting.miljodirektoratet.no/naturovervaking/naturovervaking_eksport.gdb.zip"
+download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", mode="w") 
+unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", 
+       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
 
-#### download data from P-drive ####
+st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
 
+# SOMETHING NOT WORKING YET
+
+
+
+#### upload data from P-drive ####
 # ANO
 st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
 ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
