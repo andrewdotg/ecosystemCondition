@@ -250,6 +250,35 @@ tm_shape(infra_trd_reclassed_agg)+
 ```
 
 This resolution is more that good enough for our purpose here.
+I see that the map extends a bit into the fjord. We want to cut away these areas. We can use a map of the outline of Norway to do this.
+
+```{r}
+outline <- st_read("data/outlineOfNorway_EPSG25833.shp")
+```
+
+The CRS needs to be identical 
+```{r}
+infra_trd_reclassed_agg <- st_transform(infra_trd_reclassed_agg, 25833)
+```
+
+
+```{r}
+infra_trd_reclassed_agg_terrestrial <- st_crop(infra_trd_reclassed_agg, outline)
+```
+
+```{r, fig.cap="Infrastrcture indeks over Trondheim on a four-step discrete scale, aggregated to 1x1 km resolution using the mean function."}
+tm_shape(infra_trd_reclassed_agg_terrestrial)+
+  tm_raster(title="Infrastructure Index",
+            style="cat")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="white")+
+  tm_shape(outline)+
+  tm_borders(lwd =2,
+             col = "black")
+```
+
+I have treated the raster cells as points when cropping, so that cells where the center or the cell is outside he terrestrial delineation are removed. I think this makes the most sense for unbiased area statistics, but some coastal indicator data could also be excluded because of this. The errors would be smaller with a finer resolution raster, but computation time is a problem.
 
 ### Aggregate the entire map to 1x1 km
 
@@ -266,13 +295,26 @@ saveRDS(infra_agg, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_ag
 infra_agg <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds")
 ```
 
+### Cut out marine areas
+I see that the map extends a bit into the fjord. We want to cut away these areas. We can use a map of the outline of Norway to do this.
+
+The CRS needs to be identical 
+```{r}
+infra_agg <- st_transform(infra_agg, 25833)
+```
+
+
+```{r}
+infra_agg_terrestrial <- st_crop(infra_agg, outline)
+```
+
 
 ### Discretize the entire map
 
 ```{r}
-names(infra_agg) <- "infrastructureIndex"
+names(infra_agg_terrestrial) <- "infrastructureIndex"
 
-infra_agg_discrete <- infra_agg %>%
+infra_agg_discrete <- infra_agg_terrestrial %>%
   mutate(infrastructureIndex = case_when(
     infrastructureIndex < 1 ~ 0,
     infrastructureIndex < 6 ~ 1,
@@ -290,6 +332,7 @@ The reason is that there is no really good way to burn polygon data on to raster
 It was not straight forward then either.
 But calculating intersections between polygons is very fast and easy.
 
+<!-- Continue from here after fixing ea_spread -->
 ```{r, warning=F}
 infra_agg_discrete_vect <- eaTools::ea_homogeneous_area(infra_agg_discrete)
 ```
@@ -368,7 +411,7 @@ ggarrange(
 )
 ```
 
-This distribution looks reasonable. The relative propotions are similar in the fivre regions, but _Østlandet_ and _Sørlandet_ have more infrastructure in general.
+This distribution looks reasonable. The relative proportions are similar in the five regions, but _Østlandet_ and _Sørlandet_ have more infrastructure in general.
 
 Here are the numbers behind the figure above.
 ```{r}
