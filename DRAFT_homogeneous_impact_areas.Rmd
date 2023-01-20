@@ -332,15 +332,19 @@ The reason is that there is no really good way to burn polygon data on to raster
 It was not straight forward then either.
 But calculating intersections between polygons is very fast and easy.
 
-<!-- Continue from here after fixing ea_spread -->
+<!-- Continue from here after fixing  ea_homogeneous_area -->
 ```{r, warning=F}
-infra_agg_discrete_vect <- eaTools::ea_homogeneous_area(infra_agg_discrete)
+infra_agg_discrete_vect <- eaTools::ea_homogeneous_area(infra_agg_discrete, groups = infrastructureIndex)
 ```
 
 Let's plot this now.
 First, lets crop it to reduce computation time.
 
 ```{r}
+myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
+                ymin = 7032142.5, ymax = 7045245.27),
+                crs = st_crs(infra_agg_discrete_vect))
+
 infra_agg_discrete_vect_trd <- st_crop(infra_agg_discrete_vect, myBB)
 ```
 
