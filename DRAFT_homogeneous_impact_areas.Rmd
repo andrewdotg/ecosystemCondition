@@ -288,26 +288,24 @@ infra_agg <- st_warp(infra, cellsize = c(1000, 1000),
                                    crs = st_crs(infra), 
                                    use_gdal = TRUE,
                                    method = "average")
-saveRDS(infra_agg, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds")
-```
-
-```{r, echo=F}
-infra_agg <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds")
-```
-
-### Cut out marine areas
-I see that the map extends a bit into the fjord. We want to cut away these areas. We can use a map of the outline of Norway to do this.
-
-The CRS needs to be identical 
-```{r}
+# The CRS needs to be identical for st_crop
 infra_agg <- st_transform(infra_agg, 25833)
 ```
 
 
-```{r}
+### Cut out marine areas
+I see that the map extends a bit into the fjord. We want to cut away these areas. We can use a map of the outline of Norway to do this.
+
+
+```{r, eval=F}
 infra_agg_terrestrial <- st_crop(infra_agg, outline)
+saveRDS(infra_agg_terrestrial, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg_terrestrial.rds")
 ```
 
+```{r, include=F}
+# silently load cached file
+infra_agg_terrestrial <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds")
+```
 
 ### Discretize the entire map
 
@@ -332,7 +330,6 @@ The reason is that there is no really good way to burn polygon data on to raster
 It was not straight forward then either.
 But calculating intersections between polygons is very fast and easy.
 
-<!-- Continue from here after fixing  ea_homogeneous_area -->
 ```{r, warning=F}
 infra_agg_discrete_vect <- eaTools::ea_homogeneous_area(infra_agg_discrete, groups = infrastructureIndex)
 ```
@@ -370,13 +367,6 @@ unique(regions$region)
 st_crs(infra_agg_discrete_vect) == st_crs(regions)
 ```
 
-```{r}
-infra_agg_discrete_vect <- st_transform(infra_agg_discrete_vect, 25833)
-```
-
-```{r}
-st_crs(infra_agg_discrete_vect) == st_crs(regions)
-```
 
 Since the two layers are completely overlapping, we can get the intersections
 ```{r, eval=F}
