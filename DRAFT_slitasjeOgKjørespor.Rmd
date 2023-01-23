@@ -950,13 +950,14 @@ I now want to find the mean indicator value for each HIA (i.e. to
 aggregate) and to spread these out spatialy to the entire HIA within
 each region (i.e. to extrapolate).
 
-<!-- ERROR with summarise = T -->
+<!-- Check with updated ea_spread -->
 ```{r}
-summary_temp <- ea_spread(indicator_data = slitasje_data,
+mySummary <- ea_spread(indicator_data = slitasje_data,
                          indicator = i_2020,
                          regions = HIA_regions,
                          groups = region_HIF,
                          summarise = TRUE)
+
 ```
 
 
