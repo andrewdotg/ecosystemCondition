@@ -858,41 +858,6 @@ refer to the ordinal values of the four impact area classes as their
 HIA <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks/homogeneous_impact_areas.rds")
 ```
 
-Here is a view of the data zooming in on Trondheim
-
-```{r}
-myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
-                ymin = 7032142.5, ymax = 7045245.27),
-                crs = st_crs(HIA))
-```
-
-Cropping the raster to the bbox
-
-```{r}
-HIA <- sf::st_crop(HIA, myBB)
-```
-
-Get map of major roads, for context
-
-```{r}
-hw_utm <- readRDS("data/cache/highways_trondheim.rds")
-```
-
-
-<!-- ERROR  marine areas still here -->
-```{r}
-tm_shape(HIA)+
-  tm_polygons(col = "infrastructureIndex",
-    title="Infrastructure index\n(modified 4-step scale)",
-    palette = "viridis",
-    style="cat")+
-  tm_layout(legend.outside = T)+
-  tm_shape(hw_utm)+
-  tm_lines(col="blue")
-```
-
-
-
 I also want to split these four HIA classes based on their region. To do
 this I need the two layers to have the same CRS.
 
@@ -925,17 +890,47 @@ HIA_regions <- HIA_regions %>%
 length(unique(HIA_regions$region_HIF))
 ```
 
-Let's calculate the areas of these polygons and compare the HIF in the
-five regions. First we need to remove some marine areas.
+
+Here is a view of the data zooming in on Trondheim
 
 ```{r}
-HIA_regions2 <- HIA_regions %>%
-  st_intersection(outline)
+myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
+                ymin = 7032142.5, ymax = 7045245.27),
+                crs = st_crs(HIA_regions))
 ```
 
-```{r HIF-region, fig.cap="Stacked barplot showing the distribution of human impact factor across five regions in Norway."}
-HIA_regions$area <- sf::st_area(HIA_regions)
+Cropping the raster to the bbox
 
+```{r}
+HIA_trd <- sf::st_crop(HIA_regions, myBB)
+```
+
+Get map of major roads, for context
+
+```{r}
+hw_utm <- readRDS("data/cache/highways_trondheim.rds")
+```
+
+
+```{r}
+tm_shape(HIA_trd)+
+  tm_polygons(col = "infrastructureIndex",
+    title="Infrastructure index\n(modified 4-step scale)",
+    palette = "viridis",
+    style="cat")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="blue")
+```
+
+Let's calculate the areas of these polygons and compare the HIF in the
+five regions. 
+```{r}
+HIA_regions$area <- sf::st_area(HIA_regions)
+```
+
+
+```{r HIF-region, fig.cap="Stacked barplot showing the distribution of human impact factor across five regions in Norway."}
 temp <- as.data.frame(HIA_regions) %>%
   group_by(region, infrastructureIndex) %>%
   summarise(area = mean(area))
@@ -954,6 +949,16 @@ proportion of impacted areas. This is expected.
 I now want to find the mean indicator value for each HIA (i.e. to
 aggregate) and to spread these out spatialy to the entire HIA within
 each region (i.e. to extrapolate).
+
+<!-- ERROR with summarise = T -->
+```{r}
+summary_temp <- ea_spread(indicator_data = slitasje_data,
+                         indicator = i_2020,
+                         regions = HIA_regions,
+                         groups = region_HIF,
+                         summarise = TRUE)
+```
+
 
 ```{r, eval=F}
 slitasje_data_extrapolated <- ea_spread(indicator_data = slitasje_data,
@@ -979,11 +984,6 @@ Cropping the raster to the bbox
 slitasje_data_extrapolated_trd <- sf::st_crop(slitasje_data_extrapolated, myBB)
 ```
 
-Get map of major roads, for context
-
-```{r}
-hw_utm <- readRDS("data/cache/highways_trondheim.rds")
-```
 
 ```{r}
 tm_shape(slitasje_data_extrapolated_trd)+
