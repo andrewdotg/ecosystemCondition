@@ -20,6 +20,7 @@ library(knitr)
 library(sf)
 library(tmap)
 library(ggplot2)
+library(DT)
 library(units)
 library(eaTools)
 library(tidyverse)
@@ -858,6 +859,8 @@ refer to the ordinal values of the four impact area classes as their
 HIA <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks/homogeneous_impact_areas.rds")
 ```
 
+I want to check that HIF is in fact a good predictor for _slitasje_.
+
 I also want to split these four HIA classes based on their region. To do
 this I need the two layers to have the same CRS.
 
@@ -881,16 +884,54 @@ saveRDS(HIA_regions, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/HIA_re
 HIA_regions <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/HIA_regions.rds")
 ```
 
-I now have 20 unique areas that I will, given there is data, extrapolate
-indicator values over:
-
 ```{r}
 HIA_regions <- HIA_regions %>%
   mutate(region_HIF = paste(region, infrastructureIndex))
-length(unique(HIA_regions$region_HIF))
 ```
 
 
+#### Validate
+I now have 20 unique areas that I will, given there is data, extrapolate
+indicator values over:
+<!-- NEEDS CACHING -->
+
+```{r, eval=F}
+corrCheck <- st_intersection(slitasje_data, HIA_regions)
+
+corrCheck <- as.data.frame(corrCheck) %>%
+  group_by(hovedøkosystem, region) %>%
+  summarise(cor = cor(i_2020, infrastructureIndex))
+```
+
+```{r, fog.cap="Pearson correaltions between the indicator values at the polygons level and the HIF."}
+
+ggplot(corrCheck, aes(x = hovedøkosystem, 
+                      y = cor))+
+  geom_bar(stat = "identity")+
+  facet_wrap(.~region)+
+  coord_flip()
+```
+
+```{r}
+ggarrange(
+ggplot(corrCheck, aes(x = hovedøkosystem, 
+                      y = cor))+
+  geom_bar(stat = "identity")+
+  coord_flip(),
+ggplot(corrCheck, aes(x = region, 
+                      y = cor))+
+  geom_bar(stat = "identity")+
+  coord_flip(),
+ncol=1
+)
+```
+
+
+From the figures above it appears that the relationship is quite week in general. But the sheer number of data points suggest that all group differences will be very reliable.
+_Naturlig åpne områder_ has the lowest correlation between the indicator and the homogeneous area classes, and of the five regions, _Nord-Norge_ has the lowest correlation.
+
+
+#### Looking at the HIA
 Here is a view of the data zooming in on Trondheim
 
 ```{r}
@@ -911,8 +952,7 @@ Get map of major roads, for context
 hw_utm <- readRDS("data/cache/highways_trondheim.rds")
 ```
 
-
-```{r}
+```{r, fig.cap="A closer look at the HIA designation over Trondheim"}
 tm_shape(HIA_trd)+
   tm_polygons(col = "infrastructureIndex",
     title="Infrastructure index\n(modified 4-step scale)",
@@ -924,11 +964,11 @@ tm_shape(HIA_trd)+
 ```
 
 Let's calculate the areas of these polygons and compare the HIF in the
-five regions. 
+five regions.
+
 ```{r}
 HIA_regions$area <- sf::st_area(HIA_regions)
 ```
-
 
 ```{r HIF-region, fig.cap="Stacked barplot showing the distribution of human impact factor across five regions in Norway."}
 temp <- as.data.frame(HIA_regions) %>%
@@ -944,31 +984,84 @@ The figure above shows that Nord-Norge for example, has a lot of
 relatively untouched areas, and that Østlandet has the highest
 proportion of impacted areas. This is expected.
 
+
 ### Aggregate and spread (extrapolate) {#spread-slitasje}
 
 I now want to find the mean indicator value for each HIA (i.e. to
 aggregate) and to spread these out spatialy to the entire HIA within
 each region (i.e. to extrapolate).
 
-<!-- Check with updated ea_spread -->
+I will focus on wetland from here on out. Only for open wetlands do we have good exosystem delineation maps to base a spatial averaging on.
+
 ```{r}
-mySummary <- ea_spread(indicator_data = slitasje_data,
+wetlands <- slitasje_data[slitasje_data$hovedøkosystem == "Våtmark",]
+```
+
+I want to add a threshold so that we don't end up over extrapolating
+based on too few data points. I think we need a minimum of 100 data point to base an estimate on.
+
+<!-- NEEDS CACHING -->
+```{r}
+mySummary <- ea_spread(indicator_data = wetlands,
                          indicator = i_2020,
                          regions = HIA_regions,
                          groups = region_HIF,
-                         summarise = TRUE)
-
+                         summarise = TRUE,
+                       threshold = 100)
 ```
+
+<!-- Do we need another aggregation step here, to get regional estimates= -->
+
+Let's split the regions column
+
+```{r}
+mySummary <- mySummary %>%
+  tidyr::separate(region_HIF, into = c("region", "HIF"),
+                  sep = " ")
+mySummary$HIF <- as.numeric(mySummary$HIF)
+```
+
+```{r, fig.cap="Indicator values (area weighted averages) for each region and homogeneous area class, as well as the number of data points per groups."}
+ggarrange(
+ggplot(mySummary, aes(x = HIF, y = area_weighted_mean_indicator_value,
+                      fill = area_weighted_mean_indicator_value))+
+  geom_bar(stat = "identity")+
+  theme_bw(base_size = 12)+
+  facet_wrap(.~region, ncol=1)+
+  guides(fill = "none"),
+ggplot(mySummary, aes(x = HIF, y = data_points,
+                      fill = region))+
+  geom_bar(stat = "identity")+
+  theme_bw(base_size = 12)+
+  facet_wrap(.~region, ncol=1)+
+  guides(fill = "none")
+)
+```
+
+The figure above shows that there are much more data on the two middle
+classes (class 1 and 2). We do not have enough data to extrapolate to the 
+highest impacted areas in any of the regions. These are not the areas prioritised for nature type mapping.
+
+We also see that, even though there are small differences, high HIF is assiciated with lower indicator values.
+
+```{r}
+DT::datatable(mySummary)
+```
+
 
 
 ```{r, eval=F}
-slitasje_data_extrapolated <- ea_spread(indicator_data = slitasje_data,
+wetlands_slitasje_extr <- ea_spread(indicator_data = wetlands,
                          indicator = i_2020,
                          regions = HIA_regions,
                          groups = region_HIF,
-                         threshold = 20)
-#saveRDS(slitasje_data_extrapolated, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated.rds")
+                         threshold = 100)
+#saveRDS(wetlands_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
 ```
+```{r, include=F}
+wetlands_slitasje_extr <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
+```
+
 
 It's easier to see what's happening if we zoom in a bit. Lets get a
 boundary box around Trondheim.
@@ -976,73 +1069,65 @@ boundary box around Trondheim.
 ```{r}
 myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
                 ymin = 7032142.5, ymax = 7045245.27),
-                crs = st_crs(slitasje_data_extrapolated))
+                crs = st_crs(wetlands_slitasje_extr))
 ```
 
 Cropping the raster to the bbox
 
 ```{r}
-slitasje_data_extrapolated_trd <- sf::st_crop(slitasje_data_extrapolated, myBB)
+wetlands_slitasje_extr_trd <- sf::st_crop(wetlands_slitasje_extr, myBB)
 ```
 
-
-```{r}
-tm_shape(slitasje_data_extrapolated_trd)+
-  tm_polygons(col = "meanIndicatorValue",
+```{r, fig.cap="Sliatsje (wetland) indicator extrapolated over Trondheim"}
+tm_shape(wetlands_slitasje_extr_trd)+
+  tm_polygons(col = "area_weighted_mean_indicator_value",
     title="Slitasje indicator",
     palette = "viridis",
-    style="cat")+
+    style="cont",
+    breaks = c(0,1))+
   tm_layout(legend.outside = T)+
   tm_shape(hw_utm)+
   tm_lines(col="blue")
 ```
 
-Let's split the ID column to get the HIF
+Let's split the ID column to get the HIF and plot agains indicator values
 
 ```{r}
-slitasje_data_extrapolated <- slitasje_data_extrapolated %>%
+wetlands_slitasje_extr <- wetlands_slitasje_extr %>%
   tidyr::separate(ID, into = c("region", "HIF"),
                   sep = " ")
-slitasje_data_extrapolated$HIF <- as.numeric(slitasje_data_extrapolated$HIF)
-```
-
-Now let's check the correlation between the HIF and the indicator
-values.
-<!-- This is not correct. This count the polygins that have very different sizes -->
-
-```{r slitasje-box, fig.cap="The relationship between human impact factor (a categorical version of the Norwegian Infrastructure Index) and the indicator avleus for slitasje."}
-ggplot(slitasje_data_extrapolated, aes(x = factor(HIF), y = meanIndicatorValue))+
-  geom_boxplot(fill = "grey",
-               size=1.5)+
-  theme_bw(base_size = 12)+
-  labs(x = "Human Impact Factor", y = "Slitasje indicator value")
+wetlands_slitasje_extr$HIF <- as.numeric(wetlands_slitasje_extr$HIF)
 ```
 
 ```{r}
-cor(slitasje_data_extrapolated$HIF, slitasje_data_extrapolated$meanIndicatorValue)
+summary(wetlands_slitasje_extr)
+ggplot(wetlands_slitasje_extr, aes(x = factor(HIF), y = area_weighted_mean_indicator_value))+
+         geom_boxplot(fill = "grey")+
+  theme_bw(base_size = 12)
 ```
 
 This relationship is quite good, and I think it justified using HIF as
 homogeneous areas to extrapolate indicator values onto.
 
+
 Split one more time, into regions:
 
 ```{r, eval=F}
-slitasje_data_extrapolated2 <- ea_spread(indicator_data = slitasje_data_extrapolated,
-                         indicator = meanIndicatorValue,
+wetlands_slitasje_extr2 <- ea_spread_dev(indicator_data = wetlands_slitasje_extr,
+                         indicator = area_weighted_mean_indicator_value,
                          regions = regions,
                          groups = region,
-                         threshold = 20)
-saveRDS(slitasje_data_extrapolated2, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated2.rds")
+                         summarise = F)
+saveRDS(wetlands_slitasje_extr2, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr2.rds")
 ```
 
-```{r, echo=F}
+```{r, include=F}
 # silently read cached file
-slitasje_data_extrapolated2 <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/slitasje_data_extrapolated2.rds")
+wetlands_slitasje_extr2 <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr2.rds")
 ```
 
 ```{r}
-plot(factor(slitasje_data_extrapolated2$ID), slitasje_data_extrapolated2$meanIndicatorValue,
+plot(factor(wetlands_slitasje_extr2$ID), wetlands_slitasje_extr2$area_weighted_mean_indicator_value,
      ylab="indicator value", xlab="", ylim=c(0,1))
 ```
 
