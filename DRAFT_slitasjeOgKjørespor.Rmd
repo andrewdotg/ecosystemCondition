@@ -20,6 +20,7 @@ library(knitr)
 library(sf)
 library(tmap)
 library(ggplot2)
+library(ggpubr)
 library(DT)
 library(units)
 library(eaTools)
@@ -891,34 +892,143 @@ HIA_regions <- HIA_regions %>%
 
 
 #### Validate
-I now have 20 unique areas that I will, given there is data, extrapolate
-indicator values over:
-<!-- NEEDS CACHING -->
+I now have 20 unique areas (for each main ecosystem) that I will, given there is data, extrapolate
+indicator values over
+
+###### Subset ETs
+I will subset the `sliatsje_data` in the three ecosystems. 
+Note that only for open wetlands do we have good ecosystem delineation maps to base a spatial averaging on.
+
+```{r}
+wetlands <- slitasje_data[slitasje_data$hovedøkosystem == "Våtmark",]
+seminat <- slitasje_data[slitasje_data$hovedøkosystem == "Semi-naturlig mark",]
+natOpen <- slitasje_data[slitasje_data$hovedøkosystem == "Naturlig åpne områder under skoggrensa",]
+```
+
+```{r, eval=F}
+wetland_stats <- ea_spread(indicator_data = wetlands,
+          indicator = i_2020,
+          regions = HIA_regions,
+          groups = region_HIF,
+          summarise = TRUE)
+
+seminat_stats <- ea_spread(indicator_data = seminat,
+          indicator = i_2020,
+          regions = HIA_regions,
+          groups = region_HIF,
+          summarise = TRUE)
+
+natOpen_stats <- ea_spread(indicator_data = natOpen,
+          indicator = i_2020,
+          regions = HIA_regions,
+          groups = region_HIF,
+          summarise = TRUE)
+
+wetland_stats <- wetland_stats %>%
+  add_column(eco = "wetland")
+
+seminat_stats <- seminat_stats %>%
+  add_column(eco = "semi-natural")
+
+natOpen_stats <- natOpen_stats %>%
+  add_column(eco = "Naturally-open")
+
+all_stats <- rbind(wetland_stats,
+                   seminat_stats,
+                   natOpen_stats)
+all_stats <- all_stats %>%
+  separate(region_HIF,
+           into = c("region", "HIF"),
+           sep = " ")
+saveRDS(all_stats, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/all_stats.rds")
+```
+
+```{r, include=F}
+#silently read cached file
+all_stats <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/all_stats.rds")
+```
+
+
+```{r dense-stats, fig.height=20, fig.width=12}
+ggarrange(
+ggplot(all_stats, aes(x = region, y = n, group = HIF, fill = HIF))+
+  geom_bar(position = "dodge", stat = "identity")+
+  theme_bw(base_size = 30)+
+  coord_flip()+
+  facet_wrap(.~eco),
+ggplot(all_stats, aes(x = region, y = w_mean, group = HIF, fill = HIF))+
+  geom_bar(position = "dodge", stat = "identity")+
+  theme_bw(base_size = 30)+
+  coord_flip()+
+  facet_wrap(.~eco),
+ggplot(all_stats, aes(x = region, y = sd, group = HIF, fill = HIF))+
+  geom_bar(position = "dodge", stat = "identity")+
+  theme_bw(base_size = 30)+
+  coord_flip()+
+  facet_wrap(.~eco),
+ncol = 1)
+
+```
+
+This rather dense figure needs to be looked at carefully. 
+In the top row we see that the sample size (number of polygons) varies between ecosystems. For naturally open ecosystems many polygons are from high infrastructure areas, not surprisingly, and there are few points for the lowest impact class (zero such polygins in _Sørlandet_ for example). We there may not be able to extrapolate indicator values in areas in _Sørlandet_ with low levels of infrastructure. We can also from the middle row see the association between the indicator values (area weighted means) and the modified infrastructure index (HIF). We should then not put too much weight on data were there is little data (low n) and/or high standard error (sd, bottom row). For example, with Naturally open ecosystems, Midt-Norge has the overall lowest errors, and there we also see the kind of relationship between the indicator and the pressure that we want to se (middle row). The pattern is repeated for all regions except Østlandet, but there we also see that HIF class 3 has very little data, and a high sd, and this could explain the discrepancy (but it doesn't support the general relationship either). 
+
+In semi-natural areas and wetlands, we have very little data from HIF class 3, and the sd's are very big. The indicator-pressure relationship (middle row) looks the most messy for wetlands, but if ignoring HIF=3, the relationship looks much better.
+
+In addition to looking at the area weighted means and its relationship with the pressure indicator (HIF), we can do the same at the polygon level. Because the indicator is pseudo-continuous, boxplots for example become useless, so I will present a relative frequency plot.
 
 ```{r, eval=F}
 corrCheck <- st_intersection(slitasje_data, HIA_regions)
+saveRDS(corrCheck, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck.rds")
+```
+```{r, include=F}
+#Silently read cached data
+corrCheck <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck.rds")
+```
 
-corrCheck <- as.data.frame(corrCheck) %>%
+```{r slitasje-precentageplot, fig.height=12, fig.width=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
+ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(i_2020)))+
+  geom_bar(position="fill")+
+  theme_bw(base_size = 12)+
+  guides(fill = guide_legend("Sliatsje indicator"))+
+  ylab("Fraction of data points")+
+  xlab("HIF")+
+  facet_grid(hovedøkosystem~region)
+```
+
+When down weighting the importance of those groups/categories that have very little The figure above I think supports the indicator-pressure relationship and justifies using the HIA+region intersections as local reference areas (i.e. homogeneous impact areas). 
+
+We can also calculate Pearsons correlation coefficients.
+
+```{r}
+corrCheck_grouped <- as.data.frame(corrCheck) %>%
   group_by(hovedøkosystem, region) %>%
   summarise(cor = cor(i_2020, infrastructureIndex))
 ```
 
-```{r, fog.cap="Pearson correaltions between the indicator values at the polygons level and the HIF."}
 
-ggplot(corrCheck, aes(x = hovedøkosystem, 
+```{r, fig.cap="Pearson correlations between the indicator values at the polygons level and the HIF."}
+ggplot(corrCheck_grouped, aes(x = hovedøkosystem, 
                       y = cor))+
   geom_bar(stat = "identity")+
   facet_wrap(.~region)+
   coord_flip()
 ```
 
-```{r}
+```{r, fig.cap="Pearson correlations between indicator values and the HIF."}
+corrCheck_eco <- corrCheck_grouped %>%
+  group_by(hovedøkosystem) %>%
+  summarise(cor = mean(cor))
+corrCheck_reg <- corrCheck_grouped %>%
+  group_by(region) %>%
+  summarise(cor = mean(cor))
+
 ggarrange(
-ggplot(corrCheck, aes(x = hovedøkosystem, 
+ggplot(corrCheck_eco, aes(x = hovedøkosystem, 
                       y = cor))+
   geom_bar(stat = "identity")+
   coord_flip(),
-ggplot(corrCheck, aes(x = region, 
+ggplot(corrCheck_reg, aes(x = region, 
                       y = cor))+
   geom_bar(stat = "identity")+
   coord_flip(),
@@ -926,8 +1036,7 @@ ncol=1
 )
 ```
 
-
-From the figures above it appears that the relationship is quite week in general. But the sheer number of data points suggest that all group differences will be very reliable.
+From the figures above it appears that the relationship is quite week in general. However, the sheer number of data points suggest that group differences will be very reliable.
 _Naturlig åpne områder_ has the lowest correlation between the indicator and the homogeneous area classes, and of the five regions, _Nord-Norge_ has the lowest correlation.
 
 
@@ -988,14 +1097,8 @@ proportion of impacted areas. This is expected.
 ### Aggregate and spread (extrapolate) {#spread-slitasje}
 
 I now want to find the mean indicator value for each HIA (i.e. to
-aggregate) and to spread these out spatialy to the entire HIA within
+aggregate) and to spread these out spatially to the entire HIA within
 each region (i.e. to extrapolate).
-
-I will focus on wetland from here on out. Only for open wetlands do we have good exosystem delineation maps to base a spatial averaging on.
-
-```{r}
-wetlands <- slitasje_data[slitasje_data$hovedøkosystem == "Våtmark",]
-```
 
 I want to add a threshold so that we don't end up over extrapolating
 based on too few data points. I think we need a minimum of 100 data point to base an estimate on.
