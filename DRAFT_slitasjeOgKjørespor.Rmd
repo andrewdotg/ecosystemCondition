@@ -971,9 +971,14 @@ ncol = 1)
 ```
 
 This rather dense figure needs to be looked at carefully. 
-In the top row we see that the sample size (number of polygons) varies between ecosystems. For naturally open ecosystems many polygons are from high infrastructure areas, not surprisingly, and there are few points for the lowest impact class (zero such polygins in _Sørlandet_ for example). We there may not be able to extrapolate indicator values in areas in _Sørlandet_ with low levels of infrastructure. We can also from the middle row see the association between the indicator values (area weighted means) and the modified infrastructure index (HIF). We should then not put too much weight on data were there is little data (low n) and/or high standard error (sd, bottom row). For example, with Naturally open ecosystems, Midt-Norge has the overall lowest errors, and there we also see the kind of relationship between the indicator and the pressure that we want to se (middle row). The pattern is repeated for all regions except Østlandet, but there we also see that HIF class 3 has very little data, and a high sd, and this could explain the discrepancy (but it doesn't support the general relationship either). 
+In the top row we see that the sample size (number of polygons) varies between ecosystems. For naturally open ecosystems many polygons are from high infrastructure areas, not surprisingly, and there are few points for the lowest impact class (zero such polygins in _Sørlandet_ for example). We there may not be able to extrapolate indicator values in areas in _Sørlandet_ with low levels of infrastructure. We can also from the middle row see the association between the indicator values (area weighted means) and the modified infrastructure index (HIF). We should then not put too much weight on data were there is little data (low n) and/or high standard error (sd, bottom row). For example, with Naturally open ecosystems, Midt-Norge has the overall lowest errors, and there we also see the kind of relationship between the indicator and the pressure that we want to see (middle row). The pattern is repeated for all regions except Østlandet, but there we also see that HIF class 3 has very little data, and a high sd, and this could explain the discrepancy (but it doesn't support the general relationship either). 
 
 In semi-natural areas and wetlands, we have very little data from HIF class 3, and the sd's are very big. The indicator-pressure relationship (middle row) looks the most messy for wetlands, but if ignoring HIF=3, the relationship looks much better.
+
+```{r, fig.cap="Summary statistics for the slitasje indicator."}
+DT::datatable(all_stats)
+```
+
 
 In addition to looking at the area weighted means and its relationship with the pressure indicator (HIF), we can do the same at the polygon level. Because the indicator is pseudo-continuous, boxplots for example become useless, so I will present a relative frequency plot.
 
@@ -998,12 +1003,12 @@ ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(i_2020)))+
 
 When down weighting the importance of those groups/categories that have very little The figure above I think supports the indicator-pressure relationship and justifies using the HIA+region intersections as local reference areas (i.e. homogeneous impact areas). 
 
-We can also calculate Pearsons correlation coefficients.
+We can also calculate Kendall tau b coefficients, although I'm not complete sure this is valid when we have ordinal data with only four levels, since there will be a lot of ties. 
 
 ```{r}
 corrCheck_grouped <- as.data.frame(corrCheck) %>%
   group_by(hovedøkosystem, region) %>%
-  summarise(cor = cor(i_2020, infrastructureIndex))
+  summarise(cor = cor(i_2020, infrastructureIndex, method = "kendall"))
 ```
 
 
@@ -1062,14 +1067,16 @@ hw_utm <- readRDS("data/cache/highways_trondheim.rds")
 ```
 
 ```{r, fig.cap="A closer look at the HIA designation over Trondheim"}
-tm_shape(HIA_trd)+
+(HIA_trd <- tm_shape(HIA_trd)+
   tm_polygons(col = "infrastructureIndex",
     title="Infrastructure index\n(modified 4-step scale)",
-    palette = "viridis",
+    palette = "-viridis",
     style="cat")+
   tm_layout(legend.outside = T)+
   tm_shape(hw_utm)+
-  tm_lines(col="blue")
+  tm_lines(col="red")+
+  tm_shape(outline)+
+  tm_borders(col = "black", lwd=2))
 ```
 
 Let's calculate the areas of these polygons and compare the HIF in the
@@ -1101,57 +1108,7 @@ aggregate) and to spread these out spatially to the entire HIA within
 each region (i.e. to extrapolate).
 
 I want to add a threshold so that we don't end up over extrapolating
-based on too few data points. I think we need a minimum of 100 data point to base an estimate on.
-
-<!-- NEEDS CACHING -->
-```{r}
-mySummary <- ea_spread(indicator_data = wetlands,
-                         indicator = i_2020,
-                         regions = HIA_regions,
-                         groups = region_HIF,
-                         summarise = TRUE,
-                       threshold = 100)
-```
-
-<!-- Do we need another aggregation step here, to get regional estimates= -->
-
-Let's split the regions column
-
-```{r}
-mySummary <- mySummary %>%
-  tidyr::separate(region_HIF, into = c("region", "HIF"),
-                  sep = " ")
-mySummary$HIF <- as.numeric(mySummary$HIF)
-```
-
-```{r, fig.cap="Indicator values (area weighted averages) for each region and homogeneous area class, as well as the number of data points per groups."}
-ggarrange(
-ggplot(mySummary, aes(x = HIF, y = area_weighted_mean_indicator_value,
-                      fill = area_weighted_mean_indicator_value))+
-  geom_bar(stat = "identity")+
-  theme_bw(base_size = 12)+
-  facet_wrap(.~region, ncol=1)+
-  guides(fill = "none"),
-ggplot(mySummary, aes(x = HIF, y = data_points,
-                      fill = region))+
-  geom_bar(stat = "identity")+
-  theme_bw(base_size = 12)+
-  facet_wrap(.~region, ncol=1)+
-  guides(fill = "none")
-)
-```
-
-The figure above shows that there are much more data on the two middle
-classes (class 1 and 2). We do not have enough data to extrapolate to the 
-highest impacted areas in any of the regions. These are not the areas prioritised for nature type mapping.
-
-We also see that, even though there are small differences, high HIF is assiciated with lower indicator values.
-
-```{r}
-DT::datatable(mySummary)
-```
-
-
+based on too few data points. From Fig. \@ref(fig:dense-stats) I conclude that we need at least 70 data points for the sd to stabilize. I will conservatively round this up to 100 data points. 
 
 ```{r, eval=F}
 wetlands_slitasje_extr <- ea_spread(indicator_data = wetlands,
@@ -1159,10 +1116,26 @@ wetlands_slitasje_extr <- ea_spread(indicator_data = wetlands,
                          regions = HIA_regions,
                          groups = region_HIF,
                          threshold = 100)
+
+seminat_slitasje_extr <- ea_spread(indicator_data = seminat,
+                         indicator = i_2020,
+                         regions = HIA_regions,
+                         groups = region_HIF,
+                         threshold = 100)
+
+natOpen_slitasje_extr <- ea_spread(indicator_data = natOpen,
+                         indicator = i_2020,
+                         regions = HIA_regions,
+                         groups = region_HIF,
+                         threshold = 100)
 #saveRDS(wetlands_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
+#saveRDS(seminat_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_slitasje_extr.rds")
+#saveRDS(natOpen_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_slitasje_extr.rds")
 ```
 ```{r, include=F}
 wetlands_slitasje_extr <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
+seminat_slitasje_extr <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_slitasje_extr.rds")
+natOpen_slitasje_extr <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_slitasje_extr.rds")
 ```
 
 
@@ -1179,60 +1152,56 @@ Cropping the raster to the bbox
 
 ```{r}
 wetlands_slitasje_extr_trd <- sf::st_crop(wetlands_slitasje_extr, myBB)
+seminat_slitasje_extr_trd <- sf::st_crop(seminat_slitasje_extr, myBB)
+natOpen_slitasje_extr_trd <- sf::st_crop(natOpen_slitasje_extr, myBB)
 ```
 
-```{r, fig.cap="Sliatsje (wetland) indicator extrapolated over Trondheim"}
+```{r, fig.cap="Slitasje indicator extrapolated over Trondheim"}
+tmap_arrange(
 tm_shape(wetlands_slitasje_extr_trd)+
-  tm_polygons(col = "area_weighted_mean_indicator_value",
+  tm_polygons(col = "w_mean",
     title="Slitasje indicator",
     palette = "viridis",
     style="cont",
     breaks = c(0,1))+
   tm_layout(legend.outside = T)+
   tm_shape(hw_utm)+
-  tm_lines(col="blue")
+  tm_lines(col="blue")+
+  tm_layout(title = "Wetland"),
+
+tm_shape(seminat_slitasje_extr_trd)+
+  tm_polygons(col = "w_mean",
+    title="Slitasje indicator",
+    palette = "viridis",
+    style="cont",
+    breaks = c(0,1))+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="blue")+
+  tm_layout(title = "Semi-natural areas"),
+
+tm_shape(natOpen_slitasje_extr_trd)+
+  tm_polygons(col = "w_mean",
+    title="Slitasje indicator",
+    palette = "viridis",
+    style="cont",
+    breaks = c(0,1))+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="blue")+
+  tm_layout(title = "Naturally open areas"),
+HIA_trd)
 ```
 
-Let's split the ID column to get the HIF and plot agains indicator values
+There is very little variation both between the ecosystems and the four classes in the modified infrastructure index. Note however, that for wetland and semi-natural areas we did not extrapolate values for the most urban areas, and that for naturally open areas we did not extrapolate to the least affected areas.
 
-```{r}
-wetlands_slitasje_extr <- wetlands_slitasje_extr %>%
-  tidyr::separate(ID, into = c("region", "HIF"),
-                  sep = " ")
-wetlands_slitasje_extr$HIF <- as.numeric(wetlands_slitasje_extr$HIF)
-```
+The next steps now are to 
 
-```{r}
-summary(wetlands_slitasje_extr)
-ggplot(wetlands_slitasje_extr, aes(x = factor(HIF), y = area_weighted_mean_indicator_value))+
-         geom_boxplot(fill = "grey")+
-  theme_bw(base_size = 12)
-```
+1. crop the extrapolated indicator maps to ecosystem delineation maps, and then;
 
-This relationship is quite good, and I think it justified using HIF as
-homogeneous areas to extrapolate indicator values onto.
+2. aggregate these for each region or accounting area.
 
 
-Split one more time, into regions:
-
-```{r, eval=F}
-wetlands_slitasje_extr2 <- ea_spread_dev(indicator_data = wetlands_slitasje_extr,
-                         indicator = area_weighted_mean_indicator_value,
-                         regions = regions,
-                         groups = region,
-                         summarise = F)
-saveRDS(wetlands_slitasje_extr2, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr2.rds")
-```
-
-```{r, include=F}
-# silently read cached file
-wetlands_slitasje_extr2 <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr2.rds")
-```
-
-```{r}
-plot(factor(wetlands_slitasje_extr2$ID), wetlands_slitasje_extr2$area_weighted_mean_indicator_value,
-     ylab="indicator value", xlab="", ylim=c(0,1))
-```
 
 ### Uncertainty
 
