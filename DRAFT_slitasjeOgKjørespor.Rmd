@@ -1201,13 +1201,33 @@ The next steps now are to
 
 2. aggregate these for each region or accounting area.
 
+Alternatively I can rasterize the indicator map, and mask it using a perfectly aligned ET map. This might be faster.
+
+### Crop to ET
+This is a very heavy operation.
+```{r, eval=F}
+mireET <- sf::st_read("R:/Kladd/Myr/Myrmodell.gdb")
+```
+
+```{r, eval=F}
+wetlands_slitasje_extr_cropped <- sf::st_intersection(wetlands_slitasje_extr, mireET)
+```
+
+### Aggregate to region
+
+```{r, eval=F}
+wetlands_slitasje_extr_cropped_reg <- ea_spread(indicator_data = wetlands_slitasje_extr_cropped,
+                                      indicator = i_2020,
+                                      regions = regions,
+                                      groups = ?)
+```
+
+
 
 
 ### Uncertainty
 
-<!-- Text here -->
-
-Bootstrapping of nin-polygons per infrastructure class and region?
+The calculations of indicator uncertainty is done with bootstrapping, as is described in eaTools.
 
 ## Eksport files (final product)
 
