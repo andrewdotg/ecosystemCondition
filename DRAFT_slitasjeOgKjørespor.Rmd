@@ -91,25 +91,22 @@ The data is from 2018 to present. The data from one field season usually becomes
 
 
 ### Original units
-The 
+The variables are recorded on a coarse four-sped ordinal scale (Fig. \@ref(fig:four-step)).
 
 ### Temporal coverage
-
-<!-- Text here -->
+The data goes back to 2018, but is because of data shortage, it is bulked into one time step. I then use the mean date for the raw data, and define the variable as belonging to the year 2020 (read more [here](#scaled-slitasje-variable)). 
 
 ### Aditional comments about the dataset
-
-<!-- Text here -->
+For a run through of the data set, see [here](#naturtyper)
 
 ## Ecosystem characteristic
-
 ### Norwegain standard
+Primærproduksjon
 
-<!-- Text here -->
+The indicator is tagged to the _Økologisk egenskap_ called Primærproduksjon (Primary productivity). This is tentative, and perhaps _abiotiske forhold_ is more suited. But the thought behind the chiose is that _sliatsje_ affect the potential for primary productivity.
 
 ### UN standard
-
-<!-- Text here. Note that there are two parallell systems for defining ecosystem properties - one Norwegian and one international (SEEA EA). See man/SEEA EA examples.pdf for help -->
+The indicator is tagged as a Physical state characteristics indicator. This is quite clear. It's a tpe of abiotic characteritic that has to do with the physical structure rather than the chemical composition. 
 
 ## Collinearities with other indicators
 
@@ -276,8 +273,11 @@ step scale:
 knitr::include_graphics("images/mdirPRscale.PNG")
 ```
 
-7TK and 7SE use a 4 step scale ![Four step condition
-scale](images/ninAR4b.PNG)
+7TK and 7SE use a 4 step scale 
+
+```{r four-step, fig.cap="Four step condition scale"}
+knitr::include_graphics("images/ninAR4b.PNG")
+```
 
 I want to base this indicator on whichever of the variables have the
 highest value (worst condition). This table shows that a locality may
@@ -773,7 +773,7 @@ comes in. Here's the plan:
 3.  calculate an indicator value for a region (accounting area) by doing a weighted
     average based of the relative area of ecosystem occurrences. Errors shold be carried somehow, perhaps via weighted resampling
 
-#### Scaled variable
+#### Scaled variable {#scaled-slitasje-variable}
 
 The variable is ordinal, not continuous. See fig. \@ref(fig:eight-step).
 I could create another variable which was more like original range
