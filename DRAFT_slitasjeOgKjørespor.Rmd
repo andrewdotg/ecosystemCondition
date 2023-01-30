@@ -11,9 +11,7 @@ editor_options:
 
 *Author and date:* Anders L. Kolstad
 
-```{r}
-Sys.Date()
-```
+
 
 ```{r setup, include=FALSE}
 library(knitr)
@@ -27,6 +25,15 @@ library(eaTools)
 library(tidyverse)
 library(tidyr)
 knitr::opts_chunk$set(echo = TRUE)
+
+# Set up conditional file paths
+dir <- substr(getwd(), 1,2)
+
+pData <- ifelse(dir == "C:", 
+               "P:/41201785_okologisk_tilstand_2022_2023/data/",
+               "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/")
+
+
 ```
 
 ```{r, echo=F}
@@ -47,7 +54,7 @@ knitr::kable(metaData)
 
 ## Introduction
 
-1.  Import [Nature type data set](#NTM) set (incl. GRUK) and [ANO data
+1.  Import [Nature type data](#NTM) data set (incl. GRUK) and [ANO data
     set](#ANO-import)
 
 2.  Identify the [relevant](#naturtype) nature types and [subset](#NTM)
@@ -60,33 +67,31 @@ knitr::kable(metaData)
 
 5.  [Combine](#combine-nt-ano) data sets
 
-6.  [Scale](#scale-slitasje-ind) the `slitasje` variable
+6.  [Scale](#scale-slitasje-ind) the `slitasje` variable based on reference values.
 
 7.  Define [homogeneous impact areas](#HIA) (HIA)
 
 8.  [Aggregate and spread](#spread-slitasje) indicator value across HIAs
     and assessment regions
 
-9.  Crop based on ecosystem delineation
-
-10. Confirm relationship between infrastructure index and indicator
+9. Confirm relationship between infrastructure index and indicator
     values to justify the extrapolation
+    
+10.  Sample 10 00 random points from an ecosystem delineation and extract indicator values and sd at those points.
 
-11. Calculate uncertainty?
 
-12. Export indicator maps and extrapolated maps
+11. Export indicator maps and regional extrapolated maps
 
 ## About the underlying data
-
-<!-- Text here -->
+The indicator uses a data set from a standardised field survey of nature types. You can read more about it [here](#naturtyper). I also import a data set called [ANO](#ANO-import)
 
 ### Representativity in time and space
+The nature type mapping is not random and cannot be said to be area representative. 
+The data is from 2018 to present. The data from one field season usually becomes available early the following year. 
 
-<!-- Text here -->
 
 ### Original units
-
-<!-- Text here -->
+The 
 
 ### Temporal coverage
 
@@ -102,7 +107,7 @@ knitr::kable(metaData)
 
 <!-- Text here -->
 
-### <!-- Text here -->
+### UN standard
 
 <!-- Text here. Note that there are two parallell systems for defining ecosystem properties - one Norwegian and one international (SEEA EA). See man/SEEA EA examples.pdf for help -->
 
@@ -143,16 +148,8 @@ Importing the full dataset can be done like this, but because it can
 take a few seconds due to its size, I will cache the data on the P
 server.
 
-```{r}
-dir <- substr(getwd(), 1,2)
-```
-
 ```{r, eval=F}
-path <- ifelse(dir == "C:", 
-               "P:/41201785_okologisk_tilstand_2022_2023/data/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
-               "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
-
-naturetypes <- sf::st_read(dsn = path)
+naturetypes <- sf::st_read(dsn = paste0(pData, "Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb"))
 ```
 
 We also have a separate summary file where the nature types are manually
@@ -203,10 +200,7 @@ saveRDS(naturetypes, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/
 Import back in
 
 ```{r}
-path <- ifelse(dir == "C:", 
-               "P:/41201785_okologisk_tilstand_2022_2023/data/rds/naturtyper.rds",
-               "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/rds/naturtyper.rds")
-naturetypes <- readRDS(path)
+naturetypes <- readRDS(paste0(pData, "rds/naturtyper.rds"))
 ```
 
 ```{r, fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation."}
@@ -361,7 +355,7 @@ anyDuplicated(naturetypes_wide$identifikasjon_lokalid)
 NA's, and 7TK has
 `r nrow(naturetypes_wide[is.na(naturetypes_wide$var_7TK),])`.
 
-```{r, fig.cap="7SE scores in the naturetype dataset"}
+```{r, fig.cap="7SE scores in the naturetype dataset", fig.width=3}
 temp <- naturetypes_wide %>%
   group_by(var_7SE) %>%
   summarise(sum = n())
@@ -379,7 +373,7 @@ ggplot(temp, aes(x = factor(var_7SE),
 The NA fraction is quite big. These are localities with 7TK recorded,
 but not 7SE.
 
-```{r, fig.cap="7TK scores in the nature type dataset"}
+```{r, fig.cap="7TK scores in the nature type dataset", fig.width=3}
 temp <- naturetypes_wide %>%
   group_by(var_7TK) %>%
   summarise(sum = n())
@@ -408,7 +402,7 @@ Removing these now.
 naturetypes_wide <- naturetypes_wide[naturetypes_wide$slitasje>=0,]
 ```
 
-```{r slitasje-naturetype, fig.cap="Slitasje scores."}
+```{r slitasje-naturetype, fig.cap="Slitasje scores.", fig.width=3}
 temp <- naturetypes_wide %>%
   group_by(slitasje) %>%
   summarise(sum = n())
@@ -429,7 +423,7 @@ I would also like to know how often 7TK was defining of the
 slitasje-indicator, and how often it was 7SE. I can do this by taking
 the difference
 
-```{r, fig.cap="Counting the number of cases where 7TK or 7SE ws defining of the slitasje indicator score."}
+```{r, fig.cap="Counting the number of cases where 7TK or 7SE ws defining of the slitasje indicator score.", fig.width=3}
 diff <- naturetypes_wide$var_7SE - 
         naturetypes_wide$var_7TK
 
@@ -492,11 +486,7 @@ having 7SE for naturally open areas will underestimate the degree of
 degredation in these areas.
 
 ```{r}
-path <- ifelse(dir == "C:", 
-        "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-        "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
-
-ano <- sf::st_read(path,
+ano <- sf::st_read(paste0(pData, "Naturovervaking_eksport.gdb"),
                    layer = "ANO_SurveyPoint") %>%
   dplyr::filter(hovedoekosystem_punkt == "vaatmark")
 ```
@@ -620,8 +610,8 @@ temp$slitasje <- apply(temp[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
 ano$slitasje <- temp$slitasje
 ```
 
-```{r, fig.cap="Distribution of slitasje scores in the ANO data"}
-barplot(table(ano$slitasje), xlab="Sliatsje scores")
+```{r, fig.cap="Distribution of slitasje scores in the ANO data", fig.width=6}
+barplot(table(ano$slitasje), xlab="Sliatsje scores", ylab = "Number of localities")
 ```
 
 ##### Combine Naturtype data and ANO {#combine-nt-ano}
@@ -682,7 +672,7 @@ slitasje_data_points <- slitasje_data %>%
   st_buffer(sqrt(slitasje_data$area/pi))
 ```
 
-Checking no that the new polygons have the area corresponding to the
+Checking now that the new polygons have the area corresponding to the
 proportion of the point that was part of the same main ecosystem:
 
 ```{r new-area, fig.cap="Checking that the area of the new polygons fall in line with the proportion of each point which is part of the main ecosystem."}
@@ -704,7 +694,7 @@ slitasje_data <- bind_rows(slitasje_data_points, slitasje_data_polygons)
 unique(st_geometry_type(slitasje_data))
 ```
 
-The new dataset only contains polygons.
+The new data set contains **only polygons**.
 
 Grouping and tallying the data for plotting
 
@@ -712,7 +702,8 @@ Grouping and tallying the data for plotting
 temp <- as.data.frame(table(slitasje_data$slitasje))
 ```
 
-```{r, fig.cap="Slitasje scores."}
+#### Distribution of Slitasje scores
+```{r, fig.cap="Slitasje scores (ANO Naturetype (and GRUK) data combined). The score for a locality equals the highest (worst) score of the related variables 7TK, 7SE, PRSL and PRTK."}
 ggplot(temp, aes(x = Var1,
                  y = Freq))+
   geom_bar(stat="identity",
@@ -726,7 +717,7 @@ ggplot(temp, aes(x = Var1,
 Let's see the proportion of data points (not area) origination from each
 data set
 
-```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the slitasje indicator."}
+```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the slitasje indicator.", fig.width=4}
 temp <- as.data.frame(table(slitasje_data$origin))
 
 ggplot(temp, aes(x = Var1,
@@ -743,6 +734,8 @@ So the ANO data is not very important here, but it can become more
 important in the future.
 
 #### Outline of Norway and regions
+
+The GIS layers are used to crop out marine areas, and to define accounting areas, respetively. 
 
 ```{r}
 outline <- sf::read_sf("data/outlineOfNorway_EPSG25833.shp")
@@ -768,15 +761,17 @@ area. But perhaps we can assume them to be representative inside
 *homogeneous ecological areas*. That's where the infrastructure index
 comes in. Here's the plan:
 
-1.  scale the indicators at the polygon level.
+1.  normalise the indicators at the polygon level.
 
-2.  take the simplified infrastructure index and, one class at the time,
-    extract the indicator value that intersect with those cells, and
-    extrapolate the mean of those values to all similar cell within a
-    given region.
+2.  take the simplified infrastructure index and
+    extract the indicator value that intersect with a given cell, and
+    extrapolate the area weighted mean of those values to all similar cell within a
+    given region (`ea_spread()`). Errors are calculated from bootstrapping.
+    
+3. Take the new area weighted indicator values for the homogeneous impact area (HIA) and match them with ecosystem occurrences of the same HIA. The errors are the same as for the HIAs.
 
-3.  calculate an indicator value for a region by doing a weighted
-    average based o the relative area of each infrastructure class.
+3.  calculate an indicator value for a region (accounting area) by doing a weighted
+    average based of the relative area of ecosystem occurrences. Errors shold be carried somehow, perhaps via weighted resampling
 
 #### Scaled variable
 
@@ -794,7 +789,7 @@ slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 3] <- (3/
 table(slitasje_data$slitasje_percentage)
 ```
 
-```{r continuous-scale, fig.cap="Showing the conversion from ordinal to (pseudo)continous cale for the slitasje variable"}
+```{r continuous-scale, fig.cap="Showing the conversion from ordinal to (pseudo)continous cale for the slitasje variable", fig.width=5}
 ggplot(slitasje_data, aes(x = slitasje,
                           y = slitasje_percentage))+
   geom_point(size=6)+
@@ -819,7 +814,7 @@ I need to do a little trick and reverse the upper and lower reference
 values for the normalisation to work. This is a bug which can be fixed
 inside eaTools.
 
-```{r slitasje-normalise, fig.cap="Performing a non-linear break-point type normalisation of the slitasje variable."}
+```{r slitasje-normalise, fig.cap="Performing a non-linear break-point type normalisation of the slitasje variable.", fig.width=5}
 eaTools::ea_normalise(data = slitasje_data,
                       vector = "slitasje_percentage",
                       upper_reference_level = lower,
@@ -857,7 +852,7 @@ refer to the ordinal values of the four impact area classes as their
 *Human Impact Factor* (HIF).
 
 ```{r}
-HIA <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/infrastrukturindeks/homogeneous_impact_areas.rds")
+HIA <- readRDS(paste0(pData, "infrastrukturindeks/homogeneous_impact_areas.rds"))
 ```
 
 I want to check that HIF is in fact a good predictor for _slitasje_.
@@ -882,7 +877,8 @@ saveRDS(HIA_regions, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/HIA_re
 
 ```{r, echo=F}
 # silently read cached file
-HIA_regions <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/HIA_regions.rds")
+
+HIA_regions <- readRDS(paste0(pData, "cache/HIA_regions.rds"))
 ```
 
 ```{r}
@@ -945,7 +941,7 @@ saveRDS(all_stats, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/all_stat
 
 ```{r, include=F}
 #silently read cached file
-all_stats <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/all_stats.rds")
+all_stats <- readRDS(paste0(pData, "cache/all_stats.rds"))
 ```
 
 
@@ -988,7 +984,7 @@ saveRDS(corrCheck, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/corrChec
 ```
 ```{r, include=F}
 #Silently read cached data
-corrCheck <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck.rds")
+corrCheck <- readRDS(paste0(pData, "cache/corrCheck.rds"))
 ```
 
 ```{r slitasje-precentageplot, fig.height=12, fig.width=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
@@ -1133,9 +1129,10 @@ natOpen_slitasje_extr <- ea_spread(indicator_data = natOpen,
 #saveRDS(natOpen_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_slitasje_extr.rds")
 ```
 ```{r, include=F}
-wetlands_slitasje_extr <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
-seminat_slitasje_extr <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_slitasje_extr.rds")
-natOpen_slitasje_extr <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_slitasje_extr.rds")
+
+wetlands_slitasje_extr <- readRDS(paste0(pData, "cache/wetlands_slitasje_extr.rds"))
+seminat_slitasje_extr  <- readRDS(paste0(pData, "cache/seminat_slitasje_extr.rds"))
+natOpen_slitasje_extr  <- readRDS(paste0(pData, "cache/natOpen_slitasje_extr.rds"))
 ```
 
 
@@ -1150,7 +1147,7 @@ myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
 
 Cropping the raster to the bbox
 
-```{r}
+```{r, warning=F}
 wetlands_slitasje_extr_trd <- sf::st_crop(wetlands_slitasje_extr, myBB)
 seminat_slitasje_extr_trd <- sf::st_crop(seminat_slitasje_extr, myBB)
 natOpen_slitasje_extr_trd <- sf::st_crop(natOpen_slitasje_extr, myBB)
@@ -1193,25 +1190,91 @@ tm_shape(natOpen_slitasje_extr_trd)+
 HIA_trd)
 ```
 
-There is very little variation both between the ecosystems and the four classes in the modified infrastructure index. Note however, that for wetland and semi-natural areas we did not extrapolate values for the most urban areas, and that for naturally open areas we did not extrapolate to the least affected areas.
+There is some, but very little variation both between the ecosystems and the four classes in the modified infrastructure index. Note however, that for wetland and semi-natural areas we did not extrapolate values for the most urban areas, and that for naturally open areas we did not extrapolate to the least affected areas.
 
-The next steps now are to 
+_These maps are easy to misunderstand, and they should therefor be communicated with caution._
+
+Now, there are multiple way to go proceed. We have indicator maps (vector data), and we have HIA area, and we have the HIA with indicator data (also vector data). 
+
+Option 1:
 
 1. crop the extrapolated indicator maps to ecosystem delineation maps, and then;
 
 2. aggregate these for each region or accounting area.
 
-Alternatively I can rasterize the indicator map, and mask it using a perfectly aligned ET map. This might be faster.
+Step 1 above requires an st_interactions on two very large vactor data sets. This should be avoided.
 
-### Crop to ET
-This is a very heavy operation.
+
+Option 2: 
+
+1. rasterize the extrapolated indicator map, using the ET map as a tamplate, and 
+
+2. mask it using the perfectly aligned ET map. 
+
+This might be faster.
+
+
+Option 3:
+
+1. Draw n random point samples from the ET map, and 
+
+2. extract indicator values at those points (from the extrapolated indicator map (a stars object)).
+
+This is perhaps even faster. I will try the last option, even though it will not provide spatailly explicit indicator values for the entire ecosystem delineation, like option 2 does. Perhaps I will revisit option 2 later.
+
+
+### Ecosystem map
+Importing the wetland map.
+
+This is a quite heavy operation and should be done on a server.
 ```{r, eval=F}
-mireET <- sf::st_read("R:/Kladd/Myr/Myrmodell.gdb")
+mireET <- sf::st_read("/data/R/Kladd/Myr/Myrmodell.gdb")
 ```
 
+This doesn't take that long.
+```{r, eval=F}
+mireET <- st_transform(mireET, 25833)
+```
+
+This take about 10 min. Not sure I need it.
+```{r, eval=F}
+mireET <- st_make_valid(mireET)
+```
+
+
+This takes a long!! time, and should be AVOIDED. 
 ```{r, eval=F}
 wetlands_slitasje_extr_cropped <- sf::st_intersection(wetlands_slitasje_extr, mireET)
 ```
+
+Instead I will draw some random point samples.
+```{r}
+wetland_points <- st_sample(mireET, 10000)
+```
+
+
+And intersect this with the extrapolated indicator values.
+```{r}
+wetland_points_match <- st_intersection(wetlands_slitasje_extr, wetland_points)
+```
+
+
+Create an empty grid, 50 x 50 m resolution
+```{r}
+grd = st_as_stars(st_bbox(wetlands_slitasje_extr), dx = 50, dy = 50, values = NA_real_)
+```
+
+Rasterize the indicator
+```{r}
+wetlands_slitasje_extr_rast <- st_rasterize(wetlands_slitasje_extr, grd)
+```
+
+
+And extract the values
+```{r}
+wetland_points_extracted <- st_extract(wetlands_slitasje_extr, wetland_points)
+```
+
 
 ### Aggregate to region
 
