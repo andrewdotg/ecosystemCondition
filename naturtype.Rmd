@@ -1147,7 +1147,7 @@ DT::datatable(
     pageLength = 10))
 ```
 
-## Export data
+## Export data {#exp-natureType-summary}
 Exporting the table with the summary statistics and other information that I compled for each nature type in the three main ecosystems. This can be merged with the main dataset in order to subset according to a specific research question. 
 
 ```{r, eval = F}
