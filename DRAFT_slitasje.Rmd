@@ -533,8 +533,10 @@ I think I will only use våtmark here since my approach will be to the
 having 7SE for naturally open areas will underestimate the degree of
 degredation in these areas.
 
-> *ANO could harmonie better with the Naturetype data set if it included
+
+> *ANO could harmonise better with the Naturetype data set if it included
 > 7SE and 7TK for Naturally open and Semi natural ecosystem.*
+
 
 ```{r}
 ano <- sf::st_read(paste0(pData, "Naturovervaking_eksport.gdb"),
@@ -559,6 +561,12 @@ NA's here, which is `r round(NAS/nrow(ano), 2)*100`% of the data.
 It appears the proportion of each circle that is made up of the dominant
 ecosystem was only recorded after year 2019. In fact, the main ecosystem
 was not recorded at all in 2019:
+```{r}
+# Hard coding name change
+#unique(ano$hovedtype_250m2)[3]
+ano$hovedtype_250m2[ano$hovedtype_250m2==unique(ano$hovedtype_250m2)[3]] <- "Aapen jordvassmyr"
+```
+
 
 ```{r}
 table(ano$hovedtype_250m2, ano$aar)
@@ -649,8 +657,10 @@ ano$var_7TK <- as.numeric(sub(pattern = "7TK_",
 
 No NA's this time.
 
+
 > *The ANO field app should not allow user to leave blank cells. This
 > resulted in the exclusion of data.*
+
 
 ```{r, fig.cap="Distribution of 7TK and 7SE scores in the ANO data"}
 par(mfrow=c(1,2))
@@ -1047,13 +1057,15 @@ ecosystems. For naturally open ecosystems many polygons are from high
 infrastructure areas, not surprisingly, and there are few points for the
 lowest impact class (zero such polygons in *Sørlandet* for example). We
 may therefore not be able to extrapolate indicator values for Naturally
-open areas in in *Sørlandet* with low levels of infrastructure. We can
-also from the middle row see the association between the indicator
+open areas in in *Sørlandet* with low levels of infrastructure. 
+
+We can also from the middle row see the association between the indicator
 values (area weighted means) and the modified infrastructure index
 (HIF). We should then not put too much weight on the bars were there is
 little data (low n) and/or high standard error (sd, bottom row). For
-example, with Naturally open ecosystems, Midt-Norge has the overall
-lowest errors, and there we also see the kind of relationship between
+example, with Naturally open ecosystems, 
+
+Midt-Norge has the overall lowest errors, and there we also see the kind of relationship between
 the indicator and the pressure that we want to see (middle row). The
 pattern is repeated for all regions except Østlandet, but there we also
 see that HIF class 3 has very little data, and a high sd, and this could
@@ -1259,11 +1271,12 @@ natOpen_slitasje_extr_trd <- sf::st_crop(natOpen_slitasje_extr, myBB)
 ```
 
 ```{r, fig.cap="Slitasje indicator extrapolated over Trondheim"}
+myCol <- "RdYlGn"
 tmap_arrange(
 tm_shape(wetlands_slitasje_extr_trd)+
   tm_polygons(col = "w_mean",
     title="Slitasje indicator",
-    palette = "viridis",
+    palette = myCol,
     style="cont",
     breaks = c(0,1))+
   tm_layout(legend.outside = T)+
@@ -1274,7 +1287,7 @@ tm_shape(wetlands_slitasje_extr_trd)+
 tm_shape(seminat_slitasje_extr_trd)+
   tm_polygons(col = "w_mean",
     title="Slitasje indicator",
-    palette = "viridis",
+    palette = myCol,
     style="cont",
     breaks = c(0,1))+
   tm_layout(legend.outside = T)+
@@ -1285,7 +1298,7 @@ tm_shape(seminat_slitasje_extr_trd)+
 tm_shape(natOpen_slitasje_extr_trd)+
   tm_polygons(col = "w_mean",
     title="Slitasje indicator",
-    palette = "viridis",
+    palette = myCol,
     style="cont",
     breaks = c(0,1))+
   tm_layout(legend.outside = T)+
@@ -1301,9 +1314,11 @@ Note however, that for wetland and semi-natural areas we did not
 extrapolate values for the most urban areas, and that for naturally open
 areas we did not extrapolate to the least affected areas.
 
-> *The maps abov are easy to misunderstand, and they should therefor be
+
+> *The maps above are easy to misunderstand, and they should therefor be
 > communicated with caution. They should be considered as temporary
 > files or as by-products.*
+
 
 Now, there are multiple way to proceed. We have
 
