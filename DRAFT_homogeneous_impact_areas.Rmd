@@ -29,6 +29,7 @@ library(units)
 library(ggpubr)
 library(DT)
 library(tidyverse)
+library(units)
 ```
 
 ## Introduction
@@ -392,7 +393,7 @@ infra_stats <- eaTools::ea_homogeneous_area(infra_agg_discrete_vect,
 saveRDS(infra_stats, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_stats.rds")
 ```
 
-```{r, echo=F}
+```{r, include=F}
 # silently read cached file
 path <- ifelse(dir == "C:", 
         "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_stats.rds",
@@ -402,23 +403,25 @@ infra_stats <- readRDS(path)
 
 Let's calculate the areas of these polygons and compare the HIF in the five regions. 
 ```{r HIF-region, fig.cap="Stacked barplot showing the distribution of human impact factor across five regions in Norway."}
-infra_stats$area <- sf::st_area(infra_stats)
+infra_stats$area_km2 <- units::drop_units(sf::st_area(infra_stats))
+infra_stats$area_km2 <- infra_stats$area_km2/1000
 
 temp <- as.data.frame(infra_stats) %>%
   group_by(region, infrastructureIndex) %>%
-  summarise(area = mean(area))
+  summarise(area_km2 = mean(area_km2))
 
 ggarrange(
-  ggplot(temp, aes(x = region, y = area, fill = factor(infrastructureIndex)))+
+  ggplot(temp, aes(x = region, y = area_km2, fill = factor(infrastructureIndex)))+
     geom_bar(position = "stack", stat = "identity")+
     guides(fill = "none")+
     coord_flip()+
     xlab("")
   ,
-  ggplot(temp, aes(x = region, y = area, fill = factor(infrastructureIndex)))+
+  ggplot(temp, aes(x = region, y = area_km2, fill = factor(infrastructureIndex)))+
     geom_bar(position = "fill", stat = "identity")+
     guides(fill = guide_legend("HIF"))+
     coord_flip()+
+    ylab("Fraction of total area")+
     xlab("")
 )
 ```
@@ -427,7 +430,7 @@ This distribution looks reasonable. The relative proportions are similar in the 
 
 Here are the numbers behind the figure above.
 ```{r}
-temp$area <- round(temp$area,0)
+temp$area_km2 <- round(temp$area_km2,0)
 DT::datatable(temp)
 ```
 
