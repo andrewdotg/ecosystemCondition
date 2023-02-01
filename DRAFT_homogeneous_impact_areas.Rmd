@@ -21,37 +21,35 @@ Sys.Date()
 
 <br />
 
-<!-- Load all you dependencies here -->
+<!-- Load all your dependencies here -->
 
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 library(sf)
 library(tmap)
-library(dplyr)
-library(stars)
-library(ggplot2)
+library(stars);packageVersion("stars")
 library(units)
 library(ggpubr)
 library(DT)
-#library(osmplotr)
+library(tidyverse)
 ```
 
 ## Introduction
 
 This chapter documents the creation of a wall-to-wall map of homogeneous impact areas in Norway.
-The map is produces by binning values in the infrastructure index into four discrete categories.
+The map is produced by binning values in the infrastructure index into four discrete categories.
 It is likely to be a good predictor for some indicators, such as *slitasje* and the presence of *alien species*.
 
 ## About the underlying data
 
 The infrastructure index is explained [here](https://brage.nina.no/nina-xmlui/handle/11250/2983607).
 It is a wall-to-wall raster over Norway with 100 m resolution.
-Each pixel is given a value along a continuous gradient from 0 to around 15.4, representing the frequency or surrounding cells within 500 m with human infrastructure (houses, roads, ect).
+Each pixel is given a value along a continuous gradient from 0 to around 15.4, representing the frequency of surrounding cells within 500 m with human infrastructure (houses, roads, ect).
 
 ### Representativity in time and space
 
-The infrastructure index is calculated with data that have slightly different dates, but can be said to represent the current status, the period 2010-2020.
+The infrastructure index is calculated with data that have slightly different dates, but can be said to represent year 2015.
 The data covers all of mainland Norway.
 
 ### References
@@ -192,7 +190,7 @@ map_trd <- tm_shape(infra_trd)+
   tm_lines(col="white")
 ```
 
-```{r, fig.cap="Infrastructure indeks over Trondheim, comparing the continous scale with the ordinal four-step scale. Major roads are in white."}
+```{r, fig.cap="Infrastructure index over Trondheim, comparing the continous scale with the ordinal four-step scale. Major roads are in white."}
 tmap_arrange(map_trd,
              map_trd_reclassed,
              ncol=1)
@@ -200,13 +198,13 @@ tmap_arrange(map_trd,
 
 I tweaked the thresholds for the bins so that the categories match my knowledge about the land use intensity in Trondheim, for example that most of the forest next to Trondheim (to the left in the map) was in the second lowest class.
 This looks pretty good to me.
-It depicts a gradient in human presence from high within the buildt zone, to *no to very low* in the forests and mountains to the west.
+It depicts a gradient in human presence from high within the built zone, to *no to very low* in the forests and mountains to the west.
 Note that there is still considerable human activity also there in the form of outdoor recreation and even forestry.
 
 #### Aggregate
 
 The resolution in this map is more than we need, and the size of the data implies that the next step, the vectorization, would take too long.
-We therefore aggregate, ar reduce the resolution.
+We therefore aggregate, or reduce the resolution.
 
 ```{r}
 dim <- st_dimensions(infra)
@@ -240,7 +238,7 @@ infra_trd_reclassed_agg <-  infra_trd_reclassed_agg %>%
 ```
 
 
-```{r, fig.cap="Infrastrcture indeks over Trondheim on a four-step discrete scale, aggregated to 1x1 km resolution using the mean function."}
+```{r, fig.cap="Infrastrcture index over Trondheim on a four-step discrete scale, aggregated to 1x1 km resolution using the mean function."}
 tm_shape(infra_trd_reclassed_agg)+
   tm_raster(title="Infrastructure Index",
             style="cat")+
@@ -249,7 +247,7 @@ tm_shape(infra_trd_reclassed_agg)+
   tm_lines(col="white")
 ```
 
-This resolution is more that good enough for our purpose here.
+This resolution is more than good enough for our purpose here.
 I see that the map extends a bit into the fjord. We want to cut away these areas. We can use a map of the outline of Norway to do this.
 
 ```{r}
@@ -266,7 +264,7 @@ infra_trd_reclassed_agg <- st_transform(infra_trd_reclassed_agg, 25833)
 infra_trd_reclassed_agg_terrestrial <- st_crop(infra_trd_reclassed_agg, outline)
 ```
 
-```{r, fig.cap="Infrastrcture indeks over Trondheim on a four-step discrete scale, aggregated to 1x1 km resolution using the mean function."}
+```{r, fig.cap="Infrastrcture index over Trondheim on a four-step discrete scale, aggregated to 1x1 km resolution using the mean function."}
 tm_shape(infra_trd_reclassed_agg_terrestrial)+
   tm_raster(title="Infrastructure Index",
             style="cat")+
@@ -278,7 +276,7 @@ tm_shape(infra_trd_reclassed_agg_terrestrial)+
              col = "black")
 ```
 
-I have treated the raster cells as points when cropping, so that cells where the center or the cell is outside he terrestrial delineation are removed. I think this makes the most sense for unbiased area statistics, but some coastal indicator data could also be excluded because of this. The errors would be smaller with a finer resolution raster, but computation time is a problem.
+I have treated the raster cells as points when cropping, so that cells where the center of the cell is outside the terrestrial delineation are removed. I think this makes the most sense for unbiased area statistics, but some coastal indicator data could also be excluded because of this. The errors would be smaller with a finer resolution raster, but computation time is a problem.
 
 ### Aggregate the entire map to 1x1 km
 
@@ -302,9 +300,14 @@ infra_agg_terrestrial <- st_crop(infra_agg, outline)
 saveRDS(infra_agg_terrestrial, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg_terrestrial.rds")
 ```
 
+
 ```{r, include=F}
 # silently load cached file
-infra_agg_terrestrial <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds")
+path <- ifelse(dir == "C:", 
+        "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds",
+        "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/infra_agg.rds")
+
+infra_agg_terrestrial <- readRDS(path)
 ```
 
 ### Discretize the entire map
