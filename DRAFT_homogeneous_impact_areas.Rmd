@@ -15,10 +15,6 @@ editor_options:
 
 Anders Kolstad
 
-```{r, echo=FALSE}
-Sys.Date()
-```
-
 <br />
 
 <!-- Load all your dependencies here -->
@@ -333,9 +329,21 @@ The reason is that there is no really good way to burn polygon data on to raster
 It was not straight forward then either.
 But calculating intersections between polygons is very fast and easy.
 
-```{r, warning=F}
-infra_agg_discrete_vect <- eaTools::ea_homogeneous_area(infra_agg_discrete, groups = infrastructureIndex)
+```{r , eval=F}
+infra_agg_discrete_vect <- 
+  eaTools::ea_homogeneous_area(infra_agg_discrete, 
+                                groups = infrastructureIndex)
+path <- ifelse(dir == "C:", 
+        "P:/41201785_okologisk_tilstand_2022_2023/data/cache/",
+        "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/")
+
+saveRDS(infra_agg_discrete_vect, paste0(path, "infra_agg_discrete_vect.rds"))
 ```
+
+```{r, include=F}
+infra_agg_discrete_vect <- readRDS(paste0(path, "infra_agg_discrete_vect.rds"))
+```
+
 
 Let's plot this now.
 First, lets crop it to reduce computation time.
@@ -348,7 +356,7 @@ myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
 infra_agg_discrete_vect_trd <- st_crop(infra_agg_discrete_vect, myBB)
 ```
 
-```{r test-2, fig.cap="A vectorized version of the Infrastructure indeks over Trondheim on a four-step discrete scale."}
+```{r test-2, fig.cap="A vectorized version of the Infrastructure index over Trondheim on a four-step discrete scale."}
 tm_shape(infra_agg_discrete_vect_trd)+
   tm_polygons(col="infrastructureIndex",
               style = "cat")+
@@ -357,9 +365,9 @@ tm_shape(infra_agg_discrete_vect_trd)+
   tm_lines(col="white")
 ```
 
-As can be seen in the figure above, `st_warp` merges grid cells that have the same value, and the vectorized raster doesn't not end up being that big in the end.
+As can be seen in the figure above, `st_warp` merges grid cells that have the same value, and the vectorized raster doesn't end up being that big in the end.
 
-## Chech national distribution
+## Check national distribution
 
 ```{r}
 regions <- sf::read_sf("data/regions.shp", options = "ENCODING=UTF8")
@@ -382,7 +390,10 @@ saveRDS(infra_stats, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_
 
 ```{r, echo=F}
 # silently read cached file
-infra_stats <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_stats.rds")
+path <- ifelse(dir == "C:", 
+        "P:/41201785_okologisk_tilstand_2022_2023/data/cache/infra_stats.rds",
+        "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/infra_stats.rds")
+infra_stats <- readRDS(path)
 ```
 
 Let's calculate the areas of these polygons and compare the HIF in the five regions. 
