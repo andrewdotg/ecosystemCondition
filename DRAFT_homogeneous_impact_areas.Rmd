@@ -341,6 +341,10 @@ saveRDS(infra_agg_discrete_vect, paste0(path, "infra_agg_discrete_vect.rds"))
 ```
 
 ```{r, include=F}
+path <- ifelse(dir == "C:", 
+        "P:/41201785_okologisk_tilstand_2022_2023/data/cache/",
+        "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/")
+
 infra_agg_discrete_vect <- readRDS(paste0(path, "infra_agg_discrete_vect.rds"))
 ```
 
