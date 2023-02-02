@@ -2,6 +2,7 @@
 
 This repository is for documenting the design and calculation of indicators for ecosystem condition in Norway.
 
+Contact: Anders L. Kolstad (anders.kolstad@nina.no)
 
 [Link to e-book](https://ninanor.github.io/ecosystemCondition/)
 
