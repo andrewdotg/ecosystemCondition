@@ -1,11 +1,4 @@
----
-title: "Slitasje og kjørespor"
-output:
-  html_document
-editor_options: 
-  markdown: 
-    wrap: 72
----
+# (PART\*) INDICATORS{-}
 
 # Slitasje og kjørespor
 
@@ -49,6 +42,7 @@ knitr::kable(metaData)
 <hr/>
 
 ## Introduction
+This indicator represent human cause terrain damage from hiking or off-road vehicle traffic. The data come from a combination non-random field surveys and area-representative surveys. Therefore extra care is taken not to over-extrapolate, and we use local reference area in the form of _homogeneous impact areas_. 
 
 1.  Import [Nature type data](#NTM) data set (incl. GRUK) and [ANO data
     set](#ANO-import)
@@ -56,10 +50,10 @@ knitr::kable(metaData)
 2.  Identify the [relevant](#naturtype) nature types and [subset](#NTM)
     the data
 
-3.  Covert [ANO points to polygons](#ANO-points-to-poly)
+3.  Convert [ANO points to polygons](#ANO-points-to-poly)
 
 4.  For each polygon, extract the NiN-variable that has the lowest value
-    (worst-rules rule), e.g. like Fig. \@ref(fig:slitasje-naturetype).
+    (one-out all-out principle), e.g. Fig. \@ref(fig:slitasje-naturetype).
 
 5.  [Combine](#combine-nt-ano) data sets
 
@@ -74,7 +68,7 @@ knitr::kable(metaData)
 9.  Confirm relationship between infrastructure index and indicator
     values to justify the extrapolation
 
-10. Sample 10 00 random points from an ecosystem delineation and extract
+10. Sample 1000 random points from an ecosystem delineation and extract
     indicator values and sd at those points.
 
 11. Export indicator maps and regional extrapolated maps
@@ -85,20 +79,20 @@ The indicator uses a data set from a standardised field survey of nature
 types. You can read more about the preliminary analyses
 [here](#naturtype). See also the [official
 site](https://www.miljodirektoratet.no/ansvarsomrader/overvaking-arealplanlegging/naturkartlegging/naturtyper/)
-of the Environmental Agency. I also import a data set called
+of the Environment Agency. I also import a data set called
 [ANO](#ANO-import), which you can read about
 [here](https://www.miljodirektoratet.no/ansvarsomrader/overvaking-arealplanlegging/miljoovervaking/overvakingsprogrammer/natur-pa-land/arealrepresentativ-naturovervakning-ano/)
 
 ### Representativity in time and space
 
 The nature type mapping is not random and cannot be said to be area
-representative. The ANO dataset however, is area representative. The
+representative. The ANO data set however, is area representative. The
 data is from 2018 to present. The data from one field season usually
 becomes available early the following year.
 
 ### Original units
 
-The variables are recorded on a coarse four-sped ordinal scale (Fig.
+The variables are recorded on a coarse four-step ordinal scale (Fig.
 \@ref(fig:four-step)).
 
 ### Temporal coverage
@@ -119,18 +113,18 @@ For a run through of the data set, see [here](#naturtype).
 The indicator is tagged to the *Økologisk egenskap* called
 **Primærproduksjon** (Primary productivity). This is tentative, and
 perhaps *abiotiske forhold* is more suited. But the thought behind the
-chiose is that *sliatsje* affect the potential for primary productivity.
+choise is that *sliatsje* affect the potential for primary productivity.
 
 ### UN standard
 
 The indicator is tagged as a **Physical state characteristics**
-indicator. This is quite clear. It's a tpe of abiotic characteritic that
+indicator. This is quite clear. It's a type of abiotic characteristic that
 has to do with the physical structure rather than the chemical
 composition.
 
 ## Collinearities with other indicators
 
-Slitasje is not thought to exhibit collinearity with any other indicator at
+_Slitasje_ is not thought to exhibit collinearity with any other indicator at
 the present.
 
 ## Reference condition and values
@@ -144,9 +138,15 @@ even though at no point in time would this condition be realized.
 
 ### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
 
+* Upper = 0%
+
+* Threshold = 10%
+
+* Lower = 100%
+
 The upper reference value is 0 (no *slitasje*), and the lower reference
-value is 100%. Note that 100% slitasje does not mean that all the area
-must be scared or damaged, but that all hypothetical quadrats around a
+value is 100%. Note that 100% _slitasje_ does not mean that all the area
+must be scarred or damaged, but that all hypothetical quadrats around a
 point is affected (the variable is frequency-driven, and not
 amount-driven). The threshold for good ecosystem condition is 10%
 damage. This is on the conservative side. Perhaps is should be set
@@ -156,12 +156,12 @@ Read about the normalisation [here](##scaled-slitasje-variable).
 
 ## Uncertainties
 
-Uncertaintiesare estimated for aggregated indicator values by
+Uncertainties/errors are estimated for aggregated indicator values by
 bootstrapping individual indicator values 1000 times and calculating a
 distribution of area weighted means. When aggregating a second time,
 from homogeneous impact areas to accounting areas, we assume a normal
 distribution around the indicator values, with the already mentioned
-errors, and sample n times from these and combine the resamples into an
+errors, and sample _n_ times from these and combine the resamples into an
 a new, area weighted, distribution. The errors for the accounting areas
 thus represents both the spatial variation, and the precision, of the
 indicator values within the accounting areas.
