@@ -8,7 +8,7 @@ output:
 
 <br />
 
-*Author and date:* Anders L. Kolstad
+*Author:* Anders L. Kolstad
 
 <br />
 
@@ -28,7 +28,7 @@ This chapter describes the making of a master raster grid for all of mainland No
 
 ## About the underlying data
 
-I will use the [statistical grid from Norway (5x5km)](https://kartkatalog.geonorge.no/metadata/statistisk-rutenett-5000m/32ac0653-d95c-446c-8558-bf9b79f4934e) and resample this to a higher resolutio of 50 x 50 meters.
+I will use the [statistical grid from Norway (5x5km)](https://kartkatalog.geonorge.no/metadata/statistisk-rutenett-5000m/32ac0653-d95c-446c-8558-bf9b79f4934e) and resample this to a higher resolution of 50 x 50 meters.
 
 ## Analyses
 
@@ -44,7 +44,7 @@ pData <- ifelse(dir == "C:",
 Import data
 ```{r}
 #st_layers(paste0(pData, "Basisdata_0000_Norge_25833_StatistiskRutenett5km_FGDB.gdb"))
-masterGrid_50m <- sf::read_sf(paste0(pData, "Basisdata_0000_Norge_25833_StatistiskRutenett5km_FGDB.gdb")) 
+grid_5km <- sf::read_sf(paste0(pData, "Basisdata_0000_Norge_25833_StatistiskRutenett5km_FGDB.gdb")) 
 ```
 
 ```{r, eval=F}
