@@ -111,7 +111,7 @@ For the indicator map (1 x 1 km raster) there is no uncertainty associated with 
 
 rr and tm are being download from <https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html>
 
-### Additional resources 
+### Additional resources
 
 [Stars package](https://r-spatial.github.io/stars/)
 
@@ -192,7 +192,7 @@ This test data is included in the {stars} package
 
 ```{r}
 tif = system.file("tif/L7_ETMs.tif", package = "stars")
-t1 = as.Date("2018-05-31")
+t1 = as.Date("1970-05-31")
 x = read_stars(c(tif, tif, tif, tif), along = 
                   list(time = c(t1, t1+1, t1+50, t1+100)), 
                RasterIO = list(nXOff = c(1), 
@@ -209,10 +209,10 @@ names(x)
 ```
 
 I can rename it like this
+
 ```{r}
 x <- setNames(x, "Attribute_A")
 ```
-
 
 And I can add another dummy attribute.
 
@@ -220,7 +220,6 @@ And I can add another dummy attribute.
 x <- x %>%
   mutate("Attribute_B" = Attribute_A/2)
 ```
-
 
 The dummy data also has four dimensions
 
@@ -234,8 +233,7 @@ X and y area the coordinates. Band is an integer:
 st_get_dimension_values(x, "band")
 ```
 
-
-And time is four dates covering four months in 2018:
+And time is four dates covering four months in 1970:
 
 ```{r}
 st_get_dimension_values(x, "time")
@@ -253,7 +251,6 @@ reg <- sf::st_read("data/regions.shp")
 #### Ecosystem map
 
 Coming soon ....
-
 
 ### Workflow
 
@@ -295,12 +292,10 @@ The general workflow is like this:
 
 7.  Make trend figure
 
-
-I will try to use [parallelization](https://tmieno2.github.io/R-as-GIS-for-Economists/EE.html) to speed things up. Also, masking to ecosystem time earlier in the workflow might prove smart.  
-
-
+I will try to use [parallelization](https://tmieno2.github.io/R-as-GIS-for-Economists/EE.html) to speed things up. Also, masking to ecosystem time earlier in the workflow might prove smart.
 
 ### Calculate reference values
+
 #### Import
 
 I need to code a for loop here for importing the .nc files.
@@ -310,6 +305,7 @@ But for then selecting the attribute, simply do like this:
 ```{r}
 names(x)
 ```
+
 ```{r}
 x_sub <- x %>% 
   select(Attribute_A)
@@ -321,6 +317,7 @@ names(x_sub)
 Say we want to calculate the mean summer temperature. We then want to exclude the data for the times that is not withing our definition of summer.
 
 Let's try it on the dummy data. Remember this data had three time steps.
+
 ```{r}
 st_get_dimension_values(x, "time")
 ```
@@ -330,8 +327,11 @@ Our data has 365 time steps for each year.
 First I define my start and end dates. I want to keep only the summer data, defined as jun - aug.
 
 ```{r}
-start <-  ymd("2018-06-01")
-end <-  ymd("2018-08-31")
+start_month <-  "06"
+end_month <- "08"
+year_temp <- year(st_get_dimension_values(x, "time")[1])
+start <- ym(paste(year_temp, start_month, sep="-"))
+end <-  ym(paste(year_temp, end_month, sep="-"))
 summer <- interval(start, end)
 ```
 
@@ -344,15 +344,16 @@ st_get_dimension_values(x_aug, "time")
 ```
 
 Let me introduce some differences to Attribute_A between these two dates.
+
 ```{r}
 x_aug$Attribute_A[,,,2] <- x_aug$Attribute_A[,,,1]*4
 ```
 
-
 #### Aggregate across time within a year
 
-For this example I want to calculate the mean temperature over the summer.
-I therefore need to aggregate over time. Here is how:
+For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. Here is how.
+
+*Method 1:*
 
 ```{r}
 x_summerMean <- x_aug %>%
@@ -362,7 +363,9 @@ x_summerMean <- x_aug %>%
 dim(x_summerMean)
 ```
 
-The time (and band) dimension is now gone as we have aggregated accoss it.
+The time (and band) dimension is now gone as we have aggregated across it.
+
+*Method 2:*
 
 We can also use the aggregate function to produce a data cube with lower temporal resolution, for example per year:
 
@@ -371,7 +374,7 @@ x_summerMean_v2 <- x_aug %>%
   aggregate(by = "year", mean)
 ```
 
-Actually, this second method is better because we don't ned to filter out additional dimensions, and it retains the attribute name (the first method replaced it with the function name _mean_).
+Actually, this second method is better because we don't need to filter out additional dimensions, and it retains the attribute name (the first method replaced it with the function name *mean*).
 
 ```{r, fig.cap="Plotting the dummy data showing Attribute_A for the two dates as small maps, and a larger map showing the mean for year 2018"}
 ggarrange(
@@ -395,8 +398,135 @@ ggplot() +
 )
 ```
 
+#### Aggregate across years
+
+For this step we need some more dummy data from different years.
+
+```{r}
+oldTime <- st_get_dimension_values(x_summerMean_v2, "time")
+
+y1 <- x_summerMean_v2
+y2 <- x_summerMean_v2 %>% st_set_dimensions("time", values = oldTime %m+% years(-1)) %>% mutate(Attribute_A = Attribute_A*rnorm(1,1,.3)) 
+y3 <- x_summerMean_v2 %>% st_set_dimensions("time", values = oldTime %m+% years(-2)) %>% mutate(Attribute_A = Attribute_A*rnorm(1,1,.3))
+y4 <- x_summerMean_v2 %>% st_set_dimensions("time", values = oldTime %m+% years(-3)) %>% mutate(Attribute_A = Attribute_A*rnorm(1,1,.3))
+y5 <- x_summerMean_v2 %>% st_set_dimensions("time", values = oldTime %m+% years(-4)) %>% mutate(Attribute_A = Attribute_A*rnorm(1,1,.3))
+
+# We combine the data into one cube:
+y <- c(y1, y2, y3, y4, y5)
+```
+
+```{r}
+ggplot() + 
+  geom_stars(data = y) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))+
+  facet_wrap(~time)
+```
+
+```{r, eval=F, include=F}
+# I would normally do the above code chink using tmap, but I cant get it to work when faceting across dimensions:
+tm_shape(y)+
+  tm_raster()+
+  tm_facets("time")
+```
+
+Now we aggregate across years. For the reference period is is probably best to use *Method 1*, and for he indicator variable (the moving window estimation) probably *Method 2* is best. So Method 1 now.
+
+```{r}
+median_sd <- function(x) { c(median = median(x), sd = sd(x))}
+```
+
+```{r}
+y_ref <- y %>%
+  filter(band==1) %>%
+  st_apply(c("x", "y"), FUN =  median_sd)
+```
+
+```{r}
+dim(y_ref)
+```
+
+```{r}
+st_get_dimension_values(y_ref, "median_sd")
+```
+
+It's easier if median and sd are unique attributes, rather than levels of a dimension.
+
+```{r}
+y_ref <- y_ref %>% split("median_sd")
+```
+
+The attribute name *mean* we can change this to something more meaningful.
+
+```{r}
+y_ref <- setNames(y_ref, c("reference_value", "sd"))
+```
+
+```{r}
+tmap_arrange(
+tm_shape(y_ref)+
+  tm_raster("reference_value")
+,
+tm_shape(y_ref)+
+  tm_raster("sd",
+            palette = "-viridis")
+)
+```
+
+#### Calculate variable values
+
+The climate variable is the same as y1, y2, y~*n*~, ....
+But to create some differences between the variable and the reference values, I will tweak these slightly, more or less divide them by two (pluss some error)
+
+```{r}
+y1v <- y1 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
+y2v <- y2 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
+y3v <- y3 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
+y4v <- y4 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
+y5v <- y5 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
 
 
+#y_v <- c(y1v, y2v, y3v, y4v, y5v, y_ref)
+
+y_v <- c(y1v, select(y_ref, reference_value))
+y_v_merged <- merge(y_v)
+dim(y_v_merged)
+names(y_v_merged)
+y_v_merged <- setNames(y_v_merged, "value")
+
+st_get_dimension_values(y_v_merged, "attributes")
+```
+
+
+#### Normalise variable 
+
+```{r}
+system.time(
+  temp <- st_apply(y_v_merged, c("x", "y"), FUN = function(Attribute_A,reference_value) Attribute_A/reference_value)
+)
+```
+
+```{r}
+tm_shape(temp)+
+  tm_raster("value")
+```
+
+
+```{r}
+
+y_scaled <- merge(y_v)
+dim(y_scaled)
+names(y_scaled)
+```
+
+
+```{r}
+tm_shape(y_v_scaled)+
+  tm_raster()
+```
 
 
 ### Scaled indicator values
