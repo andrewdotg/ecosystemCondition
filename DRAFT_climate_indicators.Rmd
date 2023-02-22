@@ -1,0 +1,142 @@
+---
+title: "Climate indicators"
+output:
+  html_document
+---
+
+# Cilmate indicators
+
+<br />
+
+_Author and date:_
+<!-- Write your name here -->
+
+
+<br />
+
+<!-- Load all you dependencies here -->
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stars)
+library(sf)
+library(tmap)
+library(lubridate)
+```
+
+
+```{r, echo=F}
+Ecosystem <- "All" # e.g. "Skog og fjell"
+Egenskap  <- "Abiotiske egenskaper" # e.g. "Primærproduksjon"
+ECT       <- "Physical state characteristics" # e.g. "Structural state characteristic"
+Contact   <- "Anders L. Kolstad" # e.g. "Anders Kolstad"
+```
+
+```{r, echo=F}
+metaData <- data.frame(Ecosystem,
+                       "Økologisk egenskap" = Egenskap,
+                       "ECT class" = ECT)
+knitr::kable(metaData)
+```
+
+
+<br />
+<br />
+<hr />
+
+
+## Introduction
+This chaters describes a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/).
+
+## About the underlying data
+The data is in a raster format and extends back to 1957 in the form of multiple interpolated climate variables.
+The spatial resolution is 1 x 1 km.
+
+
+### Representativity in time and space
+The data includes the last normal period (1961-1990) which defines the reference condition for climate variables. Therefore the temporal resolution is very good. Also considering tha daily resolution of the data.
+
+Spatially, a 1x1 km resolution is sufficient for most climate variables, esp. in homogeneous terrain, but this needs to be evaluation for each variable and scenario specifically. 
+
+### Original units
+Varied
+
+
+### Temporal coverage
+1957 - present
+
+### Aditional comments about the dataset
+The data format has changes from .BIL to .nc (netcdf) and now a single file contains all the rasters for one year (365 days), and sometimes for multiple variables also. 
+
+
+## Ecosystem characteristic
+### Norwegain standard
+These variables typically will fall under the _abiotiske egenskaper_ class.
+
+### SEEA EA
+In SEEA EA, these variables will typically fall under A1 - Physical state characteristics.
+
+## Collinearities with other indicators
+Climate variables are most likely to be correlated with each other (e.g. temperature and snow). Also, some climate variables are better classed as pressure indicators, and these might have a causal association with several condition indicators.
+
+## Reference condition and values
+### Reference condition
+The reference condition for climate variables is defined as the laste normal period 1961-1990.
+
+### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+
+* Un-scaled indicator value = median value over last 5 year (moving window)
+
+* Upper reference level (best possible condition) = median value from the reference period
+
+* Threshold for good ecosystem condition = 2 standard deviation units for the climate variable during  the reference period.
+
+* Lower reference value = 5 standard deviation units for the climate variable during  the reference period.
+
+
+## Uncertainties
+For the indicator map (1 x 1 km raster) there is no uncertainty associated with the indicator values. For aggregated indicator values (e.g. for regions), the uncertainty in the indicator value is calculated from the spatial variation in the indicator values via bootstrapping.
+
+## References
+
+https://senorge.no/
+
+
+## Analyses
+### Data sets
+<!-- Text here -->
+
+
+#### Data set A
+<!-- Text here -->
+
+
+#### Data set B
+<!-- Text here -->
+
+#### Regions
+<!-- In case you need to map the indicator value to regions, you can do that here. Remove this chapter if not relevant. -->
+Importing a shape file with the regional delineation. 
+```{r}
+#reg <- sf::st_read("data/regions.shp")
+#st_crs(reg)
+```
+
+### Scaled indicator values
+<!-- Text and analyses here -->
+
+### Uncertainty
+<!-- Text here -->
+
+
+## Prepare export
+<!-- Text here -->
+
+
+### Eksport file (final product)
+<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
+
+
+
+
