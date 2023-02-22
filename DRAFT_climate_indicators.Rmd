@@ -8,13 +8,12 @@ output:
 
 <br />
 
-_Author and date:_
-<!-- Write your name here -->
-
+*Author and date:* <!-- Write your name here -->
 
 <br />
 
 <!-- Load all you dependencies here -->
+
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
@@ -23,8 +22,10 @@ library(stars)
 library(sf)
 library(tmap)
 library(lubridate)
-```
 
+dir <- substr(getwd(), 1,2)
+
+```
 
 ```{r, echo=F}
 Ecosystem <- "All" # e.g. "Skog og fjell"
@@ -40,103 +41,256 @@ metaData <- data.frame(Ecosystem,
 knitr::kable(metaData)
 ```
 
+<br /> <br />
 
-<br />
-<br />
 <hr />
 
-
 ## Introduction
+
 This chaters describes a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/).
 
 ## About the underlying data
-The data is in a raster format and extends back to 1957 in the form of multiple interpolated climate variables.
-The spatial resolution is 1 x 1 km.
 
+The data is in a raster format and extends back to 1957 in the form of multiple interpolated climate variables. The spatial resolution is 1 x 1 km.
 
 ### Representativity in time and space
+
 The data includes the last normal period (1961-1990) which defines the reference condition for climate variables. Therefore the temporal resolution is very good. Also considering tha daily resolution of the data.
 
-Spatially, a 1x1 km resolution is sufficient for most climate variables, esp. in homogeneous terrain, but this needs to be evaluation for each variable and scenario specifically. 
+Spatially, a 1x1 km resolution is sufficient for most climate variables, esp. in homogeneous terrain, but this needs to be evaluation for each variable and scenario specifically.
 
 ### Original units
+
 Varied
 
-
 ### Temporal coverage
+
 1957 - present
 
 ### Aditional comments about the dataset
-The data format has changes from .BIL to .nc (netcdf) and now a single file contains all the rasters for one year (365 days), and sometimes for multiple variables also. 
 
+The data format has changes from .BIL to .nc (netcdf) and now a single file contains all the rasters for one year (365 days), and sometimes for multiple variables also.
 
 ## Ecosystem characteristic
+
 ### Norwegain standard
-These variables typically will fall under the _abiotiske egenskaper_ class.
+
+These variables typically will fall under the *abiotiske egenskaper* class.
 
 ### SEEA EA
+
 In SEEA EA, these variables will typically fall under A1 - Physical state characteristics.
 
 ## Collinearities with other indicators
+
 Climate variables are most likely to be correlated with each other (e.g. temperature and snow). Also, some climate variables are better classed as pressure indicators, and these might have a causal association with several condition indicators.
 
 ## Reference condition and values
+
 ### Reference condition
+
 The reference condition for climate variables is defined as the laste normal period 1961-1990.
 
-### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
 
-* Un-scaled indicator value = median value over last 5 year (moving window)
+-   Un-scaled indicator value = median value over last 5 year (moving window)
 
-* Upper reference level (best possible condition) = median value from the reference period
+-   Upper reference level (best possible condition) = median value from the reference period
 
-* Threshold for good ecosystem condition = 2 standard deviation units for the climate variable during  the reference period.
+-   Threshold for good ecosystem condition = 2 standard deviation units for the climate variable during the reference period.
 
-* Lower reference value = 5 standard deviation units for the climate variable during  the reference period.
-
+-   Lower reference value = 5 standard deviation units for the climate variable during the reference period.
 
 ## Uncertainties
+
 For the indicator map (1 x 1 km raster) there is no uncertainty associated with the indicator values. For aggregated indicator values (e.g. for regions), the uncertainty in the indicator value is calculated from the spatial variation in the indicator values via bootstrapping.
 
 ## References
 
-https://senorge.no/
+<https://senorge.no/>
 
+rr and tm are being download from <https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html>
 
 ## Analyses
-### Data sets
-<!-- Text here -->
+
+### Data set
+
+The data is downloaded to a local NINA server, and updated regularly.
+
+```{r}
+path <- ifelse(dir == "C:", 
+      "R:/GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original",
+      "/data/R/GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original")
+```
+
+This folder contains folder for the different parameters
+
+```{r}
+(files <- list.files(path))
+```
+
+This table explains them in more detail
+
+```{r}
+senorgelayers <- read_delim("data/senorgelayers.txt", 
+    delim = "\t", escape_double = FALSE, 
+    trim_ws = TRUE)
+DT::datatable(senorgelayers)
+```
+
+Here is the content of one of these folders (first 10 entries)
+
+```{r}
+(files_tm <- list.files(paste0(path, "/rr_tm")))[1:10]
+```
+
+There are `r length(files_tm)` files, i.e. `r length(files_tm)` years of data, one file per year.
+
+Importing (proxy) file:
+
+```{r, warning=F}
+tg_1957 <- stars::read_ncdf(paste0(path, "/rr_tm/seNorge2018_1957.nc"))
+```
+
+I think I know the CRS, so setting it manually.
+
+```{r}
+st_crs(tg_1957) <- 25833
+```
+
+The data has three dimension
+
+```{r}
+dim(tg_1957)
+```
+
+... and four attributes
+
+```{r}
+names(tg_1957)
+```
+
+Precipitation (rr), mean temperature (tg), max temperatur (tx) and min temperature (tn) are included in the same file.
+
+For this example workflow I will only focus on tg (temperature). I could subset the data like this
+
+```{r}
+tg_1957 %>% select(tg)
+```
+
+, but since this is a proxy object, it will not initiate any change untill later, when I write to file and all the lazy operations are done in squeal. Therefore, I will import a test data set, which is smaller and which I can import to memory. Then I can perform the operations on that data set and we can see the results.
+
+### Dummy data
+
+This test data is included in the {stars} package
+
+```{r}
+tif = system.file("tif/L7_ETMs.tif", package = "stars")
+t1 = as.Date("2018-07-31")
+x = read_stars(c(tif, tif, tif, tif), along = 
+                  list(time = c(t1, t1+1, t1+2, t1+32)), 
+               RasterIO = list(nXOff = c(1), 
+                               nYOff = c(1), 
+                               nXSize = 50, 
+                               nYSize = 50, 
+                               bands = c(1:6)))
+```
+
+A single attribute
+
+```{r}
+names(x)
+```
+
+, and four dimensions
+
+```{r}
+dim(x)
+```
+
+X and y area the coordinates. Band is
+
+```{r}
+st_get_dimension_values(x, "band")
+```
+
+an integer.
+
+And time is
+
+```{r}
+st_get_dimension_values(x, "time")
+```
+
+Four dates covering three months in 2018.
+
+### Workflow
+
+The workflow is as such:
+
+1.  Calculate reference values
+
+    -   Import correct .nc file (loop though year 1961-1990) and subset to the correct attribute (above)
+
+    -   Filter data by dates (optional)
+
+    -   Aggregate across time within a year
+
+    -   Aggregate across years to get median and sd values
+
+    -   Intersect with accounting area polygons
+
+2.  Calculate variable values
+
+    -   Import correct .nc file (loop though the years 1961 to present) and subset to the correct attribute (above)
+
+    -   Repeat the steps from when calculating the reference value, except for calculating the sd.
+
+    -   Add layers to data cube already containing reference values
+
+3.  Normalize climate variable at the individual grid cell level using the three reference values
+
+4.  Write to file (for use with other ecosystem types)
+
+5.  Mask by ecosystem type
+
+6.  Aggregate in space (to accounting areas)
+
+    -   Aggregate across 5 year time steps to smooth out random interannual variation and leav climate signal
+
+    -   Intersect with accounting area polygons
+
+    -   Bootstrap indicator values (cell values) and get median and sd
+
+7.  Make trend figure
 
 
-#### Data set A
-<!-- Text here -->
 
 
-#### Data set B
-<!-- Text here -->
+
+### Filter by dates
 
 #### Regions
-<!-- In case you need to map the indicator value to regions, you can do that here. Remove this chapter if not relevant. -->
-Importing a shape file with the regional delineation. 
+
+Importing a shape file with the regional delineation.
+
 ```{r}
-#reg <- sf::st_read("data/regions.shp")
+reg <- sf::st_read("data/regions.shp")
 #st_crs(reg)
 ```
 
 ### Scaled indicator values
+
 <!-- Text and analyses here -->
 
 ### Uncertainty
-<!-- Text here -->
 
+<!-- Text here -->
 
 ## Prepare export
+
 <!-- Text here -->
 
-
 ### Eksport file (final product)
+
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
-
-
-
-
