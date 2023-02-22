@@ -22,7 +22,7 @@ library(stars)
 library(sf)
 library(tmap)
 library(lubridate)
-
+library(ggpubr)
 dir <- substr(getwd(), 1,2)
 
 ```
@@ -343,6 +343,11 @@ x_aug <- x_sub %>%
 st_get_dimension_values(x_aug, "time")
 ```
 
+Let me introduce some differences to Attribute_A between these two dates.
+```{r}
+x_aug$Attribute_A[,,,2] <- x_aug$Attribute_A[,,,1]*4
+```
+
 
 #### Aggregate across time within a year
 
@@ -368,8 +373,27 @@ x_summerMean_v2 <- x_aug %>%
 
 Actually, this second method is better because we don't ned to filter out additional dimensions, and it retains the attribute name (the first method replaced it with the function name _mean_).
 
-
-
+```{r, fig.cap="Plotting the dummy data showing Attribute_A for the two dates as small maps, and a larger map showing the mean for year 2018"}
+ggarrange(
+ggplot() + 
+  geom_stars(data = x_aug) +
+  coord_equal() +
+  facet_wrap(~time) +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0)),  
+  
+  
+ggplot() + 
+  geom_stars(data = x_summerMean_v2) +
+  coord_equal() +
+  facet_wrap(~time) +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))
+)
+```
 
 
 
