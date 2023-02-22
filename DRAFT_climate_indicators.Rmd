@@ -111,6 +111,12 @@ For the indicator map (1 x 1 km raster) there is no uncertainty associated with 
 
 rr and tm are being download from <https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html>
 
+### Additional resources 
+
+[Stars package](https://r-spatial.github.io/stars/)
+
+[R as a GIS for economists](https://tmieno2.github.io/R-as-GIS-for-Economists/stars-basics.html) chapter 7
+
 ## Analyses
 
 ### Data set
@@ -186,9 +192,9 @@ This test data is included in the {stars} package
 
 ```{r}
 tif = system.file("tif/L7_ETMs.tif", package = "stars")
-t1 = as.Date("2018-07-31")
+t1 = as.Date("2018-05-31")
 x = read_stars(c(tif, tif, tif, tif), along = 
-                  list(time = c(t1, t1+1, t1+2, t1+32)), 
+                  list(time = c(t1, t1+1, t1+50, t1+100)), 
                RasterIO = list(nXOff = c(1), 
                                nYOff = c(1), 
                                nXSize = 50, 
@@ -202,31 +208,56 @@ A single attribute
 names(x)
 ```
 
-, and four dimensions
+I can rename it like this
+```{r}
+x <- setNames(x, "Attribute_A")
+```
+
+
+And I can add another dummy attribute.
+
+```{r}
+x <- x %>%
+  mutate("Attribute_B" = Attribute_A/2)
+```
+
+
+The dummy data also has four dimensions
 
 ```{r}
 dim(x)
 ```
 
-X and y area the coordinates. Band is
+X and y area the coordinates. Band is an integer:
 
 ```{r}
 st_get_dimension_values(x, "band")
 ```
 
-an integer.
 
-And time is
+And time is four dates covering four months in 2018:
 
 ```{r}
 st_get_dimension_values(x, "time")
 ```
 
-Four dates covering three months in 2018.
+#### Regions
+
+Importing a shape file with the regional delineation.
+
+```{r}
+reg <- sf::st_read("data/regions.shp")
+#st_crs(reg)
+```
+
+#### Ecosystem map
+
+Coming soon ....
+
 
 ### Workflow
 
-The workflow is as such:
+The general workflow is like this:
 
 1.  Calculate reference values
 
@@ -265,19 +296,84 @@ The workflow is as such:
 7.  Make trend figure
 
 
+I will try to use [parallelization](https://tmieno2.github.io/R-as-GIS-for-Economists/EE.html) to speed things up. Also, masking to ecosystem time earlier in the workflow might prove smart.  
 
 
 
-### Filter by dates
+### Calculate reference values
+#### Import
 
-#### Regions
+I need to code a for loop here for importing the .nc files.
 
-Importing a shape file with the regional delineation.
+But for then selecting the attribute, simply do like this:
 
 ```{r}
-reg <- sf::st_read("data/regions.shp")
-#st_crs(reg)
+names(x)
 ```
+```{r}
+x_sub <- x %>% 
+  select(Attribute_A)
+names(x_sub)
+```
+
+#### Filter data by dates
+
+Say we want to calculate the mean summer temperature. We then want to exclude the data for the times that is not withing our definition of summer.
+
+Let's try it on the dummy data. Remember this data had three time steps.
+```{r}
+st_get_dimension_values(x, "time")
+```
+
+Our data has 365 time steps for each year.
+
+First I define my start and end dates. I want to keep only the summer data, defined as jun - aug.
+
+```{r}
+start <-  ymd("2018-06-01")
+end <-  ymd("2018-08-31")
+summer <- interval(start, end)
+```
+
+Then I filter
+
+```{r}
+x_aug <- x_sub %>%
+  filter(time %within% summer)
+st_get_dimension_values(x_aug, "time")
+```
+
+
+#### Aggregate across time within a year
+
+For this example I want to calculate the mean temperature over the summer.
+I therefore need to aggregate over time. Here is how:
+
+```{r}
+x_summerMean <- x_aug %>%
+  filter(band ==1) %>% # for our real data we don't need this filter
+  st_apply(1:2, mean) 
+
+dim(x_summerMean)
+```
+
+The time (and band) dimension is now gone as we have aggregated accoss it.
+
+We can also use the aggregate function to produce a data cube with lower temporal resolution, for example per year:
+
+```{r}
+x_summerMean_v2 <- x_aug %>%
+  aggregate(by = "year", mean)
+```
+
+Actually, this second method is better because we don't ned to filter out additional dimensions, and it retains the attribute name (the first method replaced it with the function name _mean_).
+
+
+
+
+
+
+
 
 ### Scaled indicator values
 
