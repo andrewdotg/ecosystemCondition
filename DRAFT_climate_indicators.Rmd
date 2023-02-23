@@ -416,7 +416,7 @@ dim(temp)
 oldTime <- st_get_dimension_values(x_summerMean_v2, "time")
 
 # Function to add random noise
-myRandom <- function(x) x*rnorm(1,1,.1)
+myRandom <- function(x) x*rnorm(1,1,.05)
 
 y1 <- temp
 y2 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-1)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
@@ -424,8 +424,6 @@ y3 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-2)) %>% st
 y4 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-3)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
 y5 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-4)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
 
-dim(y1)
-dim(y2)
 
 # We combine the data into one cube:
 y <- c(y1, y2, y3, y4, y5)
@@ -440,13 +438,6 @@ ggplot() +
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))+
   facet_wrap(~time)
-```
-
-```{r, eval=F, include=F}
-# I would normally do the above code chink using tmap, but I cant get it to work when faceting across dimensions:
-tm_shape(y)+
-  tm_raster()+
-  tm_facets("time")
 ```
 
 Now we aggregate across years. For the reference period is is probably best to use *Method 1*, and for he indicator variable (the moving window estimation) probably *Method 2* is best. So Method 1 now.
@@ -498,10 +489,10 @@ I should export the reference data at this point (write to file) as we don't nee
 #### Calculate variable values
 
 The climate variable is the same as y1, y2, y~*n*~, ....
-But to create some differences between the variable and the reference values, I will tweak these slightly, more or less divide them by two. I then merge with the reference value and sd, creating one common data cube. 
+But to create some differences between the variable and the reference values, I will tweak these slightly, taking them down 2%. I then merge with the reference value and sd, creating one common data cube. 
 
 ```{r}
-y_var <- y %>% mutate(Attribute_A = Attribute_A/2) %>% 
+y_var <- y %>% mutate(Attribute_A = Attribute_A * 0.98) %>% 
   split(3) %>% c(y_ref)
 y_var <- y_var %>%
   setNames(paste0("v_",substr(names(y_var), 1,4)))%>%
@@ -514,17 +505,19 @@ y_var <- y_var %>%
 cols <- names(y_var)[!names(y_var) %in% c("reference", "sd") ]
 cols_new <- cols
 names(cols_new) <- gsub("v_", "i_", cols)
-# Mutate 
-y_var_norm <- y_var %>%
-  mutate(across(all_of(cols), ~.x / reference)) %>%
-  rename(all_of(cols_new))
 
-#y_v <- c(y1v, select(y_ref, reference_value))
-#y_v_merged <- merge(y_v)
-#dim(y_v_merged)
-#names(y_v_merged)
-#y_v_merged <- setNames(y_v_merged, "value")
-#st_get_dimension_values(y_v_merged, "attributes")
+# Mutate
+# can I find a way to keep the v_ columns?
+y_var_norm <- y_var %>%
+  mutate(lower = reference - 5*sd ) %>%
+  mutate(threshold = reference -2*sd ) %>%
+  mutate(across(all_of(cols), ~ if_else(.x < threshold, 
+                                        (.x - lower) / (threshold - lower),
+                                        (.x - threshold) / (reference - threshold),
+                                        ))) %>%
+  mutate(across(all_of(cols), ~ if_else(.x > 1, 1, .x))) %>%
+  mutate(across(all_of(cols), ~ if_else(.x < 0, 0, .x))) %>%
+  rename(all_of(cols_new))
 ```
 
 
