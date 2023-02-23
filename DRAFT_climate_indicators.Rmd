@@ -402,14 +402,30 @@ ggplot() +
 
 For this step we need some more dummy data from different years.
 
+Firt, let me cut the _band_ dimension.
+```{r}
+temp <- x_summerMean_v2 %>%
+  filter(band==1) %>%
+  adrop(drop=4) %>%
+  aperm(c(2,3,1))
+dim(temp)
+```
+
+
 ```{r}
 oldTime <- st_get_dimension_values(x_summerMean_v2, "time")
 
-y1 <- x_summerMean_v2
-y2 <- x_summerMean_v2 %>% st_set_dimensions("time", values = oldTime %m+% years(-1)) %>% mutate(Attribute_A = Attribute_A*rnorm(1,1,.3)) 
-y3 <- x_summerMean_v2 %>% st_set_dimensions("time", values = oldTime %m+% years(-2)) %>% mutate(Attribute_A = Attribute_A*rnorm(1,1,.3))
-y4 <- x_summerMean_v2 %>% st_set_dimensions("time", values = oldTime %m+% years(-3)) %>% mutate(Attribute_A = Attribute_A*rnorm(1,1,.3))
-y5 <- x_summerMean_v2 %>% st_set_dimensions("time", values = oldTime %m+% years(-4)) %>% mutate(Attribute_A = Attribute_A*rnorm(1,1,.3))
+# Function to add random noise
+myRandom <- function(x) x*rnorm(1,1,.1)
+
+y1 <- temp
+y2 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-1)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
+y3 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-2)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
+y4 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-3)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
+y5 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-4)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
+
+dim(y1)
+dim(y2)
 
 # We combine the data into one cube:
 y <- c(y1, y2, y3, y4, y5)
@@ -441,7 +457,6 @@ median_sd <- function(x) { c(median = median(x), sd = sd(x))}
 
 ```{r}
 y_ref <- y %>%
-  filter(band==1) %>%
   st_apply(c("x", "y"), FUN =  median_sd)
 ```
 
@@ -453,7 +468,7 @@ dim(y_ref)
 st_get_dimension_values(y_ref, "median_sd")
 ```
 
-It's easier if median and sd are unique attributes, rather than levels of a dimension.
+It's perhaps easier if median and sd are unique attributes, rather than levels of a dimension.
 
 ```{r}
 y_ref <- y_ref %>% split("median_sd")
@@ -479,22 +494,17 @@ tm_shape(y_ref)+
 #### Calculate variable values
 
 The climate variable is the same as y1, y2, y~*n*~, ....
-But to create some differences between the variable and the reference values, I will tweak these slightly, more or less divide them by two (plus some error). Actually, just leaving the reference layer and the variable layer perfectly correlated causes an error when dividing the dimension using st_apply.
+But to create some differences between the variable and the reference values, I will tweak these slightly, more or less divide them by two.
 
 ```{r}
-
-myRandom <- function(x) x*rnorm(1,1,.1)/2
-myRandom(1)
-
-y1v <- y1 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom)
-y2v <- y2 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
-y3v <- y3 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
-y4v <- y4 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
-y5v <- y5 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
-
-
+#y1v <- y1 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom)
+#y2v <- y2 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
+#y3v <- y3 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
+#y4v <- y4 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
+#y5v <- y5 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
 #y_v <- c(y1v, y2v, y3v, y4v, y5v, y_ref)
 
+y1v <- y1 %>% adrop() %>% mutate(Attribute_A = Attribute_A/2)
 y_v <- c(y1v, select(y_ref, reference_value))
 y_v_merged <- merge(y_v)
 dim(y_v_merged)
@@ -519,13 +529,18 @@ ggplot() +
 #### Normalise variable 
 I now want to to cell-by-cell computations across the _attributes_ dimension, and divide _Attribute_A_ by _reference_value_.
 
+```{r}
+# A function for normalization
+# I need to add a break point and lower reference value here as well.
+# And I need to add truncation.
+myFUN <- function(a,b) (a/b)
+```
+
 
 ```{r}
-myFUN <- function(a,b) (a/b)
 system.time(
   temp <- st_apply(y_v_merged, 
-                   c("x", "y"), 
-                   #1:2,
+                   c("x", "y"),
                    FUN = myFUN
   )
 )
@@ -533,12 +548,12 @@ system.time(
 ```
 
 
-```{r}
+```{r, fig.cap"The normalised indicator for year 1970"}
 tm_shape(temp)+
   tm_raster()+
   tm_layout(legend.outside = T)
 ```
-This looks like perfect noise, and it is., because the variable and reference value are so well correlated.
+This looks like perfect noise, and it is, because the variable and reference value are so well correlated.
 If the reference value was static, it would look different.
 
 ```{r}
@@ -557,14 +572,11 @@ ggplot() +
 ```
 
 ```{r}
-system.time(
-  temp <- st_apply(y_v_merged, 
+temp <- st_apply(y_v_merged, 
                    c("x", "y"), 
                    #1:2,
                    FUN = myFUN
-  )
 )
-
 ```
 
 ```{r}
@@ -573,18 +585,7 @@ tm_shape(temp)+
   tm_layout(legend.outside = T)
 ```
 
-```{r}
 
-y_scaled <- merge(y_v)
-dim(y_scaled)
-names(y_scaled)
-```
-
-
-```{r}
-tm_shape(y_v_scaled)+
-  tm_raster()
-```
 
 
 ### Scaled indicator values
