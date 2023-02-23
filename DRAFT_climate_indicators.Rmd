@@ -491,43 +491,75 @@ tm_shape(y_ref)+
 )
 ```
 
+#### Export
+I should export the reference data at this point (write to file) as we don't need to recalculate this every time we want to update the indicator values.
+
+
 #### Calculate variable values
 
 The climate variable is the same as y1, y2, y~*n*~, ....
-But to create some differences between the variable and the reference values, I will tweak these slightly, more or less divide them by two.
+But to create some differences between the variable and the reference values, I will tweak these slightly, more or less divide them by two. I then merge with the reference value and sd, creating one common data cube. 
 
 ```{r}
-#y1v <- y1 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom)
-#y2v <- y2 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
-#y3v <- y3 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
-#y4v <- y4 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
-#y5v <- y5 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
-#y_v <- c(y1v, y2v, y3v, y4v, y5v, y_ref)
-
-y1v <- y1 %>% adrop() %>% mutate(Attribute_A = Attribute_A/2)
-y_v <- c(y1v, select(y_ref, reference_value))
-y_v_merged <- merge(y_v)
-dim(y_v_merged)
-names(y_v_merged)
-y_v_merged <- setNames(y_v_merged, "value")
-
-st_get_dimension_values(y_v_merged, "attributes")
+y_var <- y %>% mutate(Attribute_A = Attribute_A/2) %>% 
+  split(3) %>% c(y_ref)
+y_var <- y_var %>%
+  setNames(paste0("v_",substr(names(y_var), 1,4)))%>%
+  rename("reference" = v_refe,
+         "sd" = v_sd)
 ```
 
 ```{r}
+# select the columns to normalise
+cols <- names(y_var)[!names(y_var) %in% c("reference", "sd") ]
+cols_new <- cols
+names(cols_new) <- gsub("v_", "i_", cols)
+# Mutate 
+y_var_norm <- y_var %>%
+  mutate(across(all_of(cols), ~.x / reference)) %>%
+  rename(all_of(cols_new))
+
+#y_v <- c(y1v, select(y_ref, reference_value))
+#y_v_merged <- merge(y_v)
+#dim(y_v_merged)
+#names(y_v_merged)
+#y_v_merged <- setNames(y_v_merged, "value")
+#st_get_dimension_values(y_v_merged, "attributes")
+```
+
+
+```{r}
+ggarrange(
 ggplot() + 
-  geom_stars(data = y_v_merged) +
+  geom_stars(data = y_var["v_1970"]) +
   coord_equal() +
   theme_void() +
   scale_fill_viridis_c(option = "D") +  
   scale_x_discrete(expand = c(0, 0)) +
-  scale_y_discrete(expand = c(0, 0))+
-  facet_wrap(~attributes)
+  scale_y_discrete(expand = c(0, 0))
+,
+ggplot() + 
+  geom_stars(data = y_var_norm["reference"]) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))
+,
+ggplot() + 
+  geom_stars(data = y_var_norm["i_1970"]) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))
+, ncol=3
+)
 ```
 
 
 #### Normalise variable 
-I now want to to cell-by-cell computations across the _attributes_ dimension, and divide _Attribute_A_ by _reference_value_.
+I now want to do cell-by-cell computations across the _attributes_ dimension, and divide _Attribute_A_ by _reference_value_.
 
 ```{r}
 # A function for normalization
@@ -546,9 +578,9 @@ system.time(
 )
 
 ```
+This operation is quite fast!
 
-
-```{r, fig.cap"The normalised indicator for year 1970"}
+```{r, fig.cap = "The normalised indicator for year 1970."}
 tm_shape(temp)+
   tm_raster()+
   tm_layout(legend.outside = T)
@@ -579,7 +611,7 @@ temp <- st_apply(y_v_merged,
 )
 ```
 
-```{r}
+```{r, fig.cap = "The normalised indicator for year 1970 when the reference value is the same all over."}
 tm_shape(temp)+
   tm_raster()+
   tm_layout(legend.outside = T)
