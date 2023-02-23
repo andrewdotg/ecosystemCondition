@@ -479,14 +479,18 @@ tm_shape(y_ref)+
 #### Calculate variable values
 
 The climate variable is the same as y1, y2, y~*n*~, ....
-But to create some differences between the variable and the reference values, I will tweak these slightly, more or less divide them by two (pluss some error)
+But to create some differences between the variable and the reference values, I will tweak these slightly, more or less divide them by two (plus some error). Actually, just leaving the reference layer and the variable layer perfectly correlated causes an error when dividing the dimension using st_apply.
 
 ```{r}
-y1v <- y1 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
-y2v <- y2 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
-y3v <- y3 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
-y4v <- y4 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
-y5v <- y5 %>% mutate(Attribute_A = Attribute_A*rnorm(1,.5,.3)) %>% filter(band == 1) %>% adrop() 
+
+myRandom <- function(x) x*rnorm(1,1,.1)/2
+myRandom(1)
+
+y1v <- y1 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom)
+y2v <- y2 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
+y3v <- y3 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
+y4v <- y4 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
+y5v <- y5 %>% filter(band == 1) %>% adrop() %>% st_apply(1:2, FUN = myRandom) 
 
 
 #y_v <- c(y1v, y2v, y3v, y4v, y5v, y_ref)
@@ -500,20 +504,74 @@ y_v_merged <- setNames(y_v_merged, "value")
 st_get_dimension_values(y_v_merged, "attributes")
 ```
 
+```{r}
+ggplot() + 
+  geom_stars(data = y_v_merged) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))+
+  facet_wrap(~attributes)
+```
+
 
 #### Normalise variable 
+I now want to to cell-by-cell computations across the _attributes_ dimension, and divide _Attribute_A_ by _reference_value_.
+
+
+```{r}
+myFUN <- function(a,b) (a/b)
+system.time(
+  temp <- st_apply(y_v_merged, 
+                   c("x", "y"), 
+                   #1:2,
+                   FUN = myFUN
+  )
+)
+
+```
+
+
+```{r}
+tm_shape(temp)+
+  tm_raster()+
+  tm_layout(legend.outside = T)
+```
+This looks like perfect noise, and it is., because the variable and reference value are so well correlated.
+If the reference value was static, it would look different.
+
+```{r}
+y_v_merged$value[,,2] <- 200
+```
+
+```{r}
+ggplot() + 
+  geom_stars(data = y_v_merged) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))+
+  facet_wrap(~attributes)
+```
 
 ```{r}
 system.time(
-  temp <- st_apply(y_v_merged, c("x", "y"), FUN = function(Attribute_A,reference_value) Attribute_A/reference_value)
+  temp <- st_apply(y_v_merged, 
+                   c("x", "y"), 
+                   #1:2,
+                   FUN = myFUN
+  )
 )
+
 ```
 
 ```{r}
 tm_shape(temp)+
-  tm_raster("value")
+  tm_raster()+
+  tm_layout(legend.outside = T)
 ```
-
 
 ```{r}
 
