@@ -23,6 +23,7 @@ library(sf)
 library(tmap)
 library(lubridate)
 library(ggpubr)
+library(microbenchmark)
 dir <- substr(getwd(), 1,2)
 
 ```
@@ -351,30 +352,38 @@ x_aug$Attribute_A[,,,2] <- x_aug$Attribute_A[,,,1]*4
 
 #### Aggregate across time within a year
 
-For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. Here is how.
+For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. There are two ways.
 
 *Method 1:*
 
 ```{r}
-x_summerMean <- x_aug %>%
+microOut <- microbenchmark(
+st_apply =  x_aug %>%
   filter(band ==1) %>% # for our real data we don't need this filter
-  st_apply(1:2, mean) 
-
-dim(x_summerMean)
+  st_apply(1:2, mean, rename=F),
+aggregate = x_aug %>%
+  aggregate(by = "year", mean),
+times=30
+)
 ```
 
 The time (and band) dimension is now gone as we have aggregated across it.
 
-*Method 2:*
-
-We can also use the aggregate function to produce a data cube with lower temporal resolution, for example per year:
-
-```{r}
-x_summerMean_v2 <- x_aug %>%
-  aggregate(by = "year", mean)
+```{r, fig.cap="Comparing computation tome for two spatial aggregation functions."}
+autoplot(microOut)
 ```
 
-Actually, this second method is better because we don't need to filter out additional dimensions, and it retains the attribute name (the first method replaced it with the function name *mean*).
+`st_apply` is considerably faster, even wit the filtering step, but `aggregate` has the advantage of that it retains the time dimension. 
+I think I will try to use `aggregate`, and it it takes too long on the real data, then I can come back to this point, and perhaps switch to st_apply. 
+
+
+```{r}
+x_summerMean <-   x_aug %>%
+  filter(band ==1) %>% 
+  st_apply(1:2, mean, rename=F)
+```
+
+
 
 ```{r, fig.cap="Plotting the dummy data showing Attribute_A for the two dates as small maps, and a larger map showing the mean for year 2018"}
 ggarrange(
@@ -402,7 +411,7 @@ ggplot() +
 
 For this step we need some more dummy data from different years.
 
-Firt, let me cut the _band_ dimension.
+First, let me cut the _band_ dimension.
 ```{r}
 temp <- x_summerMean_v2 %>%
   filter(band==1) %>%
