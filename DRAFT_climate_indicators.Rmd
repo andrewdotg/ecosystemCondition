@@ -357,10 +357,13 @@ For this example I want to calculate the mean temperature over the summer. I the
 *Method 1:*
 
 ```{r}
+temp_names <- year(st_get_dimension_values(x_aug, "time")[1])
+
 microOut <- microbenchmark(
 st_apply =  x_aug %>%
   filter(band ==1) %>% # for our real data we don't need this filter
-  st_apply(1:2, mean, rename=F),
+  st_apply(1:2, mean) %>%
+  setNames(paste0("v_",temp_names)),
 aggregate = x_aug %>%
   aggregate(by = "year", mean),
 times=30
@@ -373,14 +376,15 @@ The time (and band) dimension is now gone as we have aggregated across it.
 autoplot(microOut)
 ```
 
-`st_apply` is considerably faster, even wit the filtering step, but `aggregate` has the advantage of that it retains the time dimension. 
-I think I will try to use `aggregate`, and it it takes too long on the real data, then I can come back to this point, and perhaps switch to st_apply. 
+`st_apply` is considerably faster, even wit the filtering step, but `aggregate` has the advantage of that it retains the time dimension, whereas for `st_apply` I need to set the attribute name to be the year. I will try to use `st_apply`.
 
 
 ```{r}
+temp_names <- year(st_get_dimension_values(x_aug, "time")[1])
 x_summerMean <-   x_aug %>%
   filter(band ==1) %>% 
-  st_apply(1:2, mean, rename=F)
+  st_apply(1:2, mean) %>%
+  setNames(paste0("v_",temp_names))
 ```
 
 
@@ -397,9 +401,9 @@ ggplot() +
   
   
 ggplot() + 
-  geom_stars(data = x_summerMean_v2) +
+  geom_stars(data = x_summerMean) +
   coord_equal() +
-  facet_wrap(~time) +
+  #facet_wrap(~time) +
   theme_void() +
   scale_fill_viridis_c(option = "D") +
   scale_x_discrete(expand = c(0, 0)) +
@@ -413,29 +417,47 @@ For this step we need some more dummy data from different years.
 
 First, let me cut the _band_ dimension.
 ```{r}
-temp <- x_summerMean_v2 %>%
-  filter(band==1) %>%
-  adrop(drop=4) %>%
-  aperm(c(2,3,1))
-dim(temp)
+#temp <- x_summerMean %>%
+#  filter(band==1) %>%
+#  adrop(drop=4) %>%
+#  aperm(c(2,3,1))
+#dim(temp)
 ```
 
 
 ```{r}
-oldTime <- st_get_dimension_values(x_summerMean_v2, "time")
+#oldTime <- st_get_dimension_values(x_summerMean_v2, "time")
+#
+## Function to add random noise
+#myRandom <- function(x) x*rnorm(1,1,.05)
+#
+#y1 <- temp
+#y2 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-1)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
+#y3 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-2)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
+#y4 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-3)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
+#y5 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-4)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
+#
+#
+## We combine the data into one cube:
+#y <- c(y1, y2, y3, y4, y5)
+```
 
+```{r}
 # Function to add random noise
 myRandom <- function(x) x*rnorm(1,1,.05)
-
-y1 <- temp
-y2 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-1)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
-y3 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-2)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
-y4 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-3)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
-y5 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-4)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
+```
 
 
+```{r}
+y1 <- x_summerMean
+y2 <- x_summerMean %>% st_apply(1:2, myRandom) %>% setNames(paste0("v_",temp_names-1)) 
+y3 <- x_summerMean %>% st_apply(1:2, myRandom) %>% setNames(paste0("v_",temp_names-2)) 
+y4 <- x_summerMean %>% st_apply(1:2, myRandom) %>% setNames(paste0("v_",temp_names-3)) 
+y5 <- x_summerMean %>% st_apply(1:2, myRandom) %>% setNames(paste0("v_",temp_names-4)) 
 # We combine the data into one cube:
-y <- c(y1, y2, y3, y4, y5)
+y <- c(y1, y2, y3, y4, y5) %>% 
+  merge(name = "Year") %>%
+  setNames("Attribute_A")
 ```
 
 ```{r}
@@ -446,10 +468,10 @@ ggplot() +
   scale_fill_viridis_c(option = "D") +  
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))+
-  facet_wrap(~time)
+  facet_wrap(~Year)
 ```
 
-Now we aggregate across years. For the reference period is is probably best to use *Method 1*, and for he indicator variable (the moving window estimation) probably *Method 2* is best. So Method 1 now.
+Now we aggregate across years, again using st_apply.
 
 ```{r}
 median_sd <- function(x) { c(median = median(x), sd = sd(x))}
@@ -477,13 +499,13 @@ y_ref <- y_ref %>% split("median_sd")
 The attribute name *mean* we can change this to something more meaningful.
 
 ```{r}
-y_ref <- setNames(y_ref, c("reference_value", "sd"))
+y_ref <- setNames(y_ref, c("reference_upper", "sd"))
 ```
 
 ```{r}
 tmap_arrange(
 tm_shape(y_ref)+
-  tm_raster("reference_value")
+  tm_raster("reference_upper")
 ,
 tm_shape(y_ref)+
   tm_raster("sd",
@@ -503,37 +525,41 @@ But to create some differences between the variable and the reference values, I 
 ```{r}
 y_var <- y %>% mutate(Attribute_A = Attribute_A * 0.98) %>% 
   split(3) %>% c(y_ref)
-y_var <- y_var %>%
-  setNames(paste0("v_",substr(names(y_var), 1,4)))%>%
-  rename("reference" = v_refe,
-         "sd" = v_sd)
 ```
+
+#### Normalise variable 
 
 ```{r}
 # select the columns to normalise
-cols <- names(y_var)[!names(y_var) %in% c("reference", "sd") ]
+cols <- names(y_var)[!names(y_var) %in% c("reference_upper", "sd") ]
 cols_new <- cols
 names(cols_new) <- gsub("v_", "i_", cols)
+```
 
+```{r}
 # Mutate
 # can I find a way to keep the v_ columns?
+system.time(
 y_var_norm <- y_var %>%
-  mutate(lower = reference - 5*sd ) %>%
-  mutate(threshold = reference -2*sd ) %>%
+  mutate(lower = reference_upper - 5*sd ) %>%
+  mutate(threshold = reference_upper -2*sd ) %>%
   mutate(across(all_of(cols), ~ if_else(.x < threshold, 
                                         (.x - lower) / (threshold - lower),
-                                        (.x - threshold) / (reference - threshold),
+                                        (.x - threshold) / (reference_upper - threshold),
                                         ))) %>%
   mutate(across(all_of(cols), ~ if_else(.x > 1, 1, .x))) %>%
   mutate(across(all_of(cols), ~ if_else(.x < 0, 0, .x))) %>%
-  rename(all_of(cols_new))
+  rename(all_of(cols_new)) %>%
+  c(select(y_var, all_of(cols)))
+)
 ```
 
+I'm not sure mutate-across is the fastest way to do this. Perhaps st_apply would be better. 
 
 ```{r}
 ggarrange(
 ggplot() + 
-  geom_stars(data = y_var["v_1970"]) +
+  geom_stars(data = y_var_norm["v_1970"]) +
   coord_equal() +
   theme_void() +
   scale_fill_viridis_c(option = "D") +  
@@ -541,7 +567,7 @@ ggplot() +
   scale_y_discrete(expand = c(0, 0))
 ,
 ggplot() + 
-  geom_stars(data = y_var_norm["reference"]) +
+  geom_stars(data = y_var_norm["reference_upper"]) +
   coord_equal() +
   theme_void() +
   scale_fill_viridis_c(option = "D") +  
@@ -555,69 +581,24 @@ ggplot() +
   scale_fill_viridis_c(option = "D") +  
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))
-, ncol=3
+, ncol=3, align = "hv"
 )
 ```
 
 
-#### Normalise variable 
-I now want to do cell-by-cell computations across the _attributes_ dimension, and divide _Attribute_A_ by _reference_value_.
-
-```{r}
-# A function for normalization
-# I need to add a break point and lower reference value here as well.
-# And I need to add truncation.
-myFUN <- function(a,b) (a/b)
-```
-
-
-```{r}
-system.time(
-  temp <- st_apply(y_v_merged, 
-                   c("x", "y"),
-                   FUN = myFUN
-  )
-)
-
-```
-This operation is quite fast!
-
-```{r, fig.cap = "The normalised indicator for year 1970."}
-tm_shape(temp)+
-  tm_raster()+
-  tm_layout(legend.outside = T)
-```
 This looks like perfect noise, and it is, because the variable and reference value are so well correlated.
-If the reference value was static, it would look different.
+If the reference value was static, or if there was a pattern in v_1970, the scaled indicator map would look different.
+
+#### Plot time series
 
 ```{r}
-y_v_merged$value[,,2] <- 200
+ts <- y_var_norm %>%
+  select(all_of(starts_with("i_"))) %>%
+  st_apply(MARGIN = 3, mean)
 ```
 
-```{r}
-ggplot() + 
-  geom_stars(data = y_v_merged) +
-  coord_equal() +
-  theme_void() +
-  scale_fill_viridis_c(option = "D") +  
-  scale_x_discrete(expand = c(0, 0)) +
-  scale_y_discrete(expand = c(0, 0))+
-  facet_wrap(~attributes)
-```
 
-```{r}
-temp <- st_apply(y_v_merged, 
-                   c("x", "y"), 
-                   #1:2,
-                   FUN = myFUN
-)
-```
 
-```{r, fig.cap = "The normalised indicator for year 1970 when the reference value is the same all over."}
-tm_shape(temp)+
-  tm_raster()+
-  tm_layout(legend.outside = T)
-```
 
 
 
