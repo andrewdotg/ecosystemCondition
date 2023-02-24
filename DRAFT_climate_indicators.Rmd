@@ -592,9 +592,60 @@ If the reference value was static, or if there was a pattern in v_1970, the scal
 #### Plot time series
 
 ```{r}
-ts <- y_var_norm %>%
+  ts1 <- y_var_norm %>%
   select(all_of(starts_with("i_"))) %>%
-  st_apply(MARGIN = 3, mean)
+  st_redimension() %>%
+  st_apply(3, median_sd) %>%
+  as_tibble() %>%
+  setNames(c("metric", "i_year", "value") ) %>%
+  mutate(year = as.numeric(substr(i_year, 3, 7))) %>%
+  pivot_wider(names_from = "metric") %>%
+  select(-i_year) %>%
+  add_column(type = "indicator_value") %>%
+  rename(value = median) %>%
+  add_column(metric = "median")
+```
+
+```{r}
+  ts2 <- y_var_norm %>%
+  select(all_of(starts_with("v_"))) %>%
+  st_redimension() %>%
+  st_apply(3, median_sd) %>%
+  as_tibble() %>%
+  setNames(c("metric", "v_year", "value") ) %>%
+  mutate(year = as.numeric(substr(v_year, 3, 7))) %>%
+  pivot_wider(names_from = "metric") %>%
+  select(-v_year) %>%
+  add_column(type = "variable_value") %>%
+  rename(value = median) %>%
+  add_column(metric = "median")
+```
+
+```{r}
+  ts3 <- y_var_norm %>%
+  select(!all_of(starts_with(c("v_", "i_")))) %>%
+  st_redimension() %>%
+  st_apply(3, median) %>%
+  as_tibble() %>%
+  setNames(c("type", "value")) %>%
+    add_column(metric = "median")
+```
+
+```{r}
+(ts <- bind_rows(ts1, ts2, ts3))
+```
+
+Calculate diference between indicator and reference
+We don't want to include this in ts, but as a temp file.
+```{r}
+tsX <- ts1
+```
+
+
+```{r}
+ts %>% filter(type == "indicator_value") %>%
+  ggplot(aes(x = year, y = value))+
+  geom_line()
 ```
 
 
