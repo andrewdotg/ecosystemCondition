@@ -24,6 +24,7 @@ library(tmap)
 library(lubridate)
 library(ggpubr)
 library(microbenchmark)
+library(tictoc)
 library(ncmeta)
 dir <- substr(getwd(), 1,2)
 
@@ -573,19 +574,25 @@ real_temp_summer <- NULL
 
 for(i in 1:length(myFiles)){
   
+  tic("init")
   temp <- stars::read_ncdf(paste(path2, var="tg"))
   year_temp <- year(st_get_dimension_values(temp, "time")[1])
   start <- ym(paste(year_temp, start_month, sep="-"))
   end <-  ym(paste(year_temp, end_month, sep="-"))
   myInterval <- interval(start, end)
+  toc()
 
+  tic("middle")
   temp <- temp %>%
     filter(time %within% myInterval) %>%
     st_apply(1:2, mean) %>%
     setNames(paste0("v_",year_temp))
+  toc()
   
-  summerTemp_fullSeries <- c(temp, summerTemp_fullSeries)
+  tic("c")
+  real_temp_summer <- c(temp, real_temp_summer)
   rm(temp)
+  toc()
 }
 ```
 
