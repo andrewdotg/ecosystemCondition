@@ -118,6 +118,8 @@ rr and tm are being download from <https://thredds.met.no/thredds/catalog/senorg
 
 [R as a GIS for economists](https://tmieno2.github.io/R-as-GIS-for-Economists/stars-basics.html) chapter 7
 
+## --------------------------------------------------
+
 ## Analyses
 
 ### Data set
@@ -215,7 +217,6 @@ I can rename it like this
 x <- setNames(x, "Attribute_A")
 ```
 
-
 And I can add another dummy attribute.
 
 ```{r}
@@ -235,11 +236,11 @@ X and y area the coordinates. Band is an integer:
 st_get_dimension_values(x, "band")
 ```
 
-I will remove the _band_ dimension.
+I will remove the *band* dimension.
+
 ```{r}
 x <- x %>% filter(band==1) %>% adrop()
 ```
-
 
 Time is four dates covering four months in 1970:
 
@@ -248,12 +249,12 @@ Time is four dates covering four months in 1970:
 ```
 
 I'll add some extra seasonal variation between to the mix
+
 ```{r}
 x$Attribute_A[,,2] <- x$Attribute_A[,,1]*1.2
 x$Attribute_A[,,3] <- x$Attribute_A[,,1]*1.4
 x$Attribute_A[,,4] <- x$Attribute_A[,,1]*1.1
 ```
-
 
 Now I create another four copies of this data, adding some random noise and a continuous decreasing trend.
 
@@ -261,7 +262,6 @@ Now I create another four copies of this data, adding some random noise and a co
 # Function to add random noise
 myRandom <- function(x) x*rnorm(1,1,.05)
 ```
-
 
 ```{r}
 y1 <- x
@@ -336,30 +336,32 @@ reg <- sf::st_read("data/regions.shp")
 
 Coming soon ....
 
+
+## --------------------------------------------------
+
 ### Conseptual workflow
 
 The general, conceptual workflow is like this:
 
-1. Collate variable data series
+1.  Collate variable data series
 
     -   Import .nc files (loop though year 1961-1990) and subset to the correct attribute (above)
 
     -   Filter data by dates (optional) (`dplyr::filter`)
 
     -   Aggregate across time within a year (`stars::st_apply`)
-    
-    -   Join all data into one data cube (´stars:c´) 
 
-1.  Calculate reference values
+    -   Join all data into one data cube (`stars:c`)
 
-    -   Aggregate across reference years to get median and sd values `st_apply`
-    
-    -   Join with existing data cube
+2.  Calculate reference values
 
+    -   Aggregate across reference years to get median and sd values (`st_apply)`
 
-2.  Calculate indicator values
+    -   Join with existing data cube (`stars:c`)
 
-    -   Normalize climate variable at the individual grid cell level using the three reference values `mutate %>% across`
+3.  Calculate indicator values
+
+    -   Normalize climate variable at the individual grid cell level using the three reference values (`mutate(across()))`
 
 4.  Write to file
 
@@ -367,7 +369,7 @@ The general, conceptual workflow is like this:
 
 6.  Aggregate in space (to accounting areas)
 
-    -   Aggregate across 5 year time steps to smooth out random interannual variation and leav climate signal
+    -   Aggregate across 5 year time steps to smooth out random inter-annual variation and leave climate signal
 
     -   Intersect with accounting area polygons `sf:st_intersects`
 
@@ -377,10 +379,9 @@ The general, conceptual workflow is like this:
 
 I will try to use [parallelization](https://tmieno2.github.io/R-as-GIS-for-Economists/EE.html) to speed things up. Also, masking to ecosystem time earlier in the workflow might prove smart.
 
+### 1. Collate variable data series
 
-### Collate variable data series
-
-I need to code a for loop for importing the .nc files. 
+I need to code a for loop for importing the .nc files.
 
 For then selecting the attribute, simply do like this:
 
@@ -415,11 +416,13 @@ end_month <- "08"
 ```
 
 Then for each iteration I need to get the year as well
+
 ```{r}
 (year_temp <- year(st_get_dimension_values(x, "time")[1]))
 ```
 
 Then I can create a time interval object
+
 ```{r}
 start <- ym(paste(year_temp, start_month, sep="-"))
 end <-  ym(paste(year_temp, end_month, sep="-"))
@@ -437,7 +440,6 @@ st_get_dimension_values(x_aug, "time")
 #### Aggregate across time within a year
 
 For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. There are two ways, either using `st_apply` or using `aggregate`.
-
 
 ```{r}
 temp_names <- year(st_get_dimension_values(x_aug, "time")[1])
@@ -468,7 +470,7 @@ x_masked[is.na(dummy_et)] <- NA
 plot(x_masked[,,,1])
 ```
 
-```{r, fig.cap="There is no performance increas by making before aggregating"}
+```{r withMasking, fig.cap="Compareing computation time before and after masking of raster data. There is no performance increase by masking before aggregating."}
 autoplot(
   microbenchmark(
 No_masking =  x_aug %>%
@@ -482,16 +484,17 @@ Masking =  x_masked %>%
  
 ```
 
+Since there is no increase in performance from masking, as we see in Fig. \@ref(fig:withMasking) then it basically means we it is slower to mask beforehand, since the masking was not past of the benchmark assessment.
+
+So, this is my solution:
 
 ```{r}
-temp_names <- year(st_get_dimension_values(x_aug, "time")[1])
 x_summerMean <-   x_aug %>%
-  filter(band ==1) %>% 
   st_apply(1:2, mean) %>%
   setNames(paste0("v_",temp_names))
 ```
 
-
+The *v\_* follows the naming convention in Norway.
 
 ```{r, fig.cap="Plotting the dummy data showing Attribute_A for the two dates as small maps, and a larger map showing the mean for year 2018"}
 ggarrange(
@@ -515,15 +518,74 @@ ggplot() +
 )
 ```
 
-#### Aggregate across years
+Here's the whole first step of the conceptual workflow in action, on the dummy data.
 
-For this step we need some more dummy data from different years.
+```{r}
+
+# Setting up the parameters
+dir <- substr(getwd(), 1,2)
+path <- ifelse(dir == "C:",
+       "P:/", 
+       "/data/P-Prosjekter2/")
+path2 <- paste0(path, 
+                "41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data")
+start_month <-  "06"
+end_month <- "08"
+myFiles <- list.files(path2, full.names = T)
+summerTemp_fullSeries <- NULL
+
+# Looping though the files in the directory
+system.time({
+for(i in 1:length(myFiles)){
+  
+  temp <- readRDS(myFiles[i]) %>%
+    select(Attribute_A)
+  
+  year_temp <- year(st_get_dimension_values(temp, "time")[1])
+  start <- ym(paste(year_temp, start_month, sep="-"))
+  end <-  ym(paste(year_temp, end_month, sep="-"))
+  myInterval <- interval(start, end)
+
+  temp <- temp %>%
+    filter(time %within% myInterval) %>%
+    st_apply(1:2, mean) %>%
+    setNames(paste0("v_",year_temp))
+  
+  summerTemp_fullSeries <- c(temp, summerTemp_fullSeries)
+  rm(temp) # same computation time with and without this function, but more tidy this way
+}
+
+
+# Turn the attributes into a dimension and rename the new attribute
+summerTemp_fullSeries <- summerTemp_fullSeries %>%
+  merge(name="Year") %>%
+  setNames("Attribute_A")
+})
+```
+
+And this is the result.
+
+```{r}
+ggplot()+
+  geom_stars(data = summerTemp_fullSeries) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))+
+  facet_wrap(~Year)
+```
+
+
+### 2. Calculate reference values
+#### Aggregate across reference years
+
+For this step we need some more dummy data from different years. I made data sets y1 to y5 above.
 
 ```{r}
 # Function to add random noise
 myRandom <- function(x) x*rnorm(1,1,.05)
 ```
-
 
 ```{r}
 y1 <- x_summerMean
@@ -591,20 +653,19 @@ tm_shape(y_ref)+
 ```
 
 #### Export
-I should export the reference data at this point (write to file) as we don't need to recalculate this every time we want to update the indicator values.
 
+I should export the reference data at this point (write to file) as we don't need to recalculate this every time we want to update the indicator values.
 
 #### Calculate variable values
 
-The climate variable is the same as y1, y2, y~*n*~, ....
-But to create some differences between the variable and the reference values, I will tweak these slightly, taking them down 2%. I then merge with the reference value and sd, creating one common data cube. 
+The climate variable is the same as y1, y2, y~*n*~, .... But to create some differences between the variable and the reference values, I will tweak these slightly, taking them down 2%. I then merge with the reference value and sd, creating one common data cube.
 
 ```{r}
 y_var <- y %>% mutate(Attribute_A = Attribute_A * 0.98) %>% 
   split(3) %>% c(y_ref)
 ```
 
-#### Normalise variable 
+#### Normalise variable
 
 ```{r}
 # select the columns to normalise
@@ -631,7 +692,7 @@ y_var_norm <- y_var %>%
 )
 ```
 
-I'm not sure mutate-across is the fastest way to do this. Perhaps st_apply would be better. 
+I'm not sure mutate-across is the fastest way to do this. Perhaps st_apply would be better.
 
 ```{r}
 ggarrange(
@@ -662,9 +723,7 @@ ggplot() +
 )
 ```
 
-
-This looks like perfect noise, and it is, because the variable and reference value are so well correlated.
-If the reference value was static, or if there was a pattern in v_1970, the scaled indicator map would look different.
+This looks like perfect noise, and it is, because the variable and reference value are so well correlated. If the reference value was static, or if there was a pattern in v_1970, the scaled indicator map would look different.
 
 #### Plot time series
 
@@ -712,24 +771,17 @@ If the reference value was static, or if there was a pattern in v_1970, the scal
 (ts <- bind_rows(ts1, ts2, ts3))
 ```
 
-Calculate diference between indicator and reference
-We don't want to include this in ts, but as a temp file.
+Calculate diference between indicator and reference We don't want to include this in ts, but as a temp file.
+
 ```{r}
 tsX <- ts1
 ```
-
 
 ```{r}
 ts %>% filter(type == "indicator_value") %>%
   ggplot(aes(x = year, y = value))+
   geom_line()
 ```
-
-
-
-
-
-
 
 ### Scaled indicator values
 
