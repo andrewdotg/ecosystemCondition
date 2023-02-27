@@ -4,7 +4,7 @@ output:
   html_document
 ---
 
-# Cilmate indicators
+# Climate indicators
 
 <br />
 
@@ -24,6 +24,7 @@ library(tmap)
 library(lubridate)
 library(ggpubr)
 library(microbenchmark)
+library(ncmeta)
 dir <- substr(getwd(), 1,2)
 
 ```
@@ -48,7 +49,7 @@ knitr::kable(metaData)
 
 ## Introduction
 
-This chaters describes a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/).
+This chapters describes a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/).
 
 ## About the underlying data
 
@@ -56,13 +57,13 @@ The data is in a raster format and extends back to 1957 in the form of multiple 
 
 ### Representativity in time and space
 
-The data includes the last normal period (1961-1990) which defines the reference condition for climate variables. Therefore the temporal resolution is very good. Also considering tha daily resolution of the data.
+The data includes the last normal period (1961-1990) which defines the reference condition for climate variables. Therefore the temporal resolution is very good. Also considering the daily resolution of the data.
 
 Spatially, a 1x1 km resolution is sufficient for most climate variables, esp. in homogeneous terrain, but this needs to be evaluation for each variable and scenario specifically.
 
 ### Original units
 
-Varied
+Varied. Specified below for each parameter.
 
 ### Temporal coverage
 
@@ -158,7 +159,8 @@ There are `r length(files_tm)` files, i.e. `r length(files_tm)` years of data, o
 Importing (proxy) file:
 
 ```{r, warning=F}
-tg_1957 <- stars::read_ncdf(paste0(path, "/rr_tm/seNorge2018_1957.nc"))
+tg_1957 <- stars::read_ncdf(paste0(path, "/rr_tm/seNorge2018_1957.nc"),
+                            var="tg")
 ```
 
 I think I know the CRS, so setting it manually.
@@ -173,21 +175,13 @@ The data has three dimension
 dim(tg_1957)
 ```
 
-... and four attributes
+Initially the data had four attributes, but I subsettet to only include _tg_.
 
 ```{r}
 names(tg_1957)
 ```
 
-Precipitation (rr), mean temperature (tg), max temperatur (tx) and min temperature (tn) are included in the same file.
-
-For this example workflow I will only focus on tg (temperature). I could subset the data like this
-
-```{r}
-tg_1957 %>% select(tg)
-```
-
-, but since this is a proxy object, it will not initiate any change untill later, when I write to file and all the lazy operations are done in squeal. Therefore, I will import a test data set, which is smaller and which I can import to memory. Then I can perform the operations on that data set and we can see the results.
+`tg_1957` is a stars proxy object and [most commands](https://r-spatial.github.io/stars/articles/stars8.html) will not initiate any change untill later, typically I write to file and all the lazy operations are done in squeal. Therefore, I will prepare a test data set, which is smaller and which I can import to memory. Then I can perform the operations on that data set and we can see the results.
 
 ### Dummy data
 
@@ -301,7 +295,7 @@ saveRDS(y5, paste0(path, "/y5.rds"))
 
 Here is some dummy data for accounting areas (regions) and ecosystem occurrences as well.
 
-```{r}
+```{r, fig.cap="Showing the example account area delineation (raster format)"}
 dummy_aa <- x %>%
   filter(time == oldTime[1]) %>%
   adrop() %>%
@@ -312,7 +306,7 @@ tm_shape(dummy_aa) +
   tm_raster(style="cat")
 ```
 
-```{r}
+```{r, fig.cap="Showing the example Ecosystem type delineation data."}
 dummy_et <- x %>%
   filter(time == oldTime[1]) %>%
   adrop() %>%
@@ -381,20 +375,7 @@ I will try to use [parallelization](https://tmieno2.github.io/R-as-GIS-for-Econo
 
 ### 1. Collate variable data series
 
-I need to code a for loop for importing the .nc files.
-
-For then selecting the attribute, simply do like this:
-
-```{r}
-# list attribute names
-names(x)
-```
-
-```{r}
-x_sub <- x %>% 
-  select(Attribute_A)
-names(x_sub)
-```
+I include a for loop for importing the .nc files at the end.
 
 #### Filter data by dates
 
@@ -464,13 +445,13 @@ autoplot(microOut)
 
 But let me see if I can save time by masking to ET before doing this operation.
 
-```{r, fig.cap="Demonstrating the effecty of maskig the dummy data using a perfectly aligne raster ET map."}
+```{r, fig.cap="Demonstrating the effect of maskig the dummy data using a perfectly aligne raster ET map."}
 x_masked <- x_aug
 x_masked[is.na(dummy_et)] <- NA
 plot(x_masked[,,,1])
 ```
 
-```{r withMasking, fig.cap="Compareing computation time before and after masking of raster data. There is no performance increase by masking before aggregating."}
+```{r withMasking, fig.cap="Comparing computation time before and after masking of raster data. There is no performance increase by masking before aggregating."}
 autoplot(
   microbenchmark(
 No_masking =  x_aug %>%
@@ -484,7 +465,7 @@ Masking =  x_masked %>%
  
 ```
 
-Since there is no increase in performance from masking, as we see in Fig. \@ref(fig:withMasking) then it basically means we it is slower to mask beforehand, since the masking was not past of the benchmark assessment.
+Since there is no increase in performance from masking, as we see in Fig. \@ref(fig: withMasking) then it basically means we it is slower to mask beforehand, since the masking was not past of the benchmark assessment.
 
 So, this is my solution:
 
@@ -574,6 +555,38 @@ ggplot()+
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))+
   facet_wrap(~Year)
+```
+
+Now let's try it on the real data
+
+```{r}
+path <- path <- ifelse(dir == "C:", 
+      "R:/",
+      "/data/R/")
+  
+path2 <- paste0(path, "GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original/rr_tm/") #seNorge2018_1957.nc
+
+myFiles <- list.files(path2, full.names = T)[1:2]
+start_month <-  "06"
+end_month <- "08"
+real_temp_summer <- NULL
+
+for(i in 1:length(myFiles)){
+  
+  temp <- stars::read_ncdf(paste(path2, var="tg"))
+  year_temp <- year(st_get_dimension_values(temp, "time")[1])
+  start <- ym(paste(year_temp, start_month, sep="-"))
+  end <-  ym(paste(year_temp, end_month, sep="-"))
+  myInterval <- interval(start, end)
+
+  temp <- temp %>%
+    filter(time %within% myInterval) %>%
+    st_apply(1:2, mean) %>%
+    setNames(paste0("v_",year_temp))
+  
+  summerTemp_fullSeries <- c(temp, summerTemp_fullSeries)
+  rm(temp)
+}
 ```
 
 
