@@ -560,7 +560,7 @@ ggplot()+
 
 Now let's try it on the real data
 
-```{r}
+```{r, warning=F}
 path <- path <- ifelse(dir == "C:", 
       "R:/",
       "/data/R/")
@@ -575,7 +575,7 @@ real_temp_summer <- NULL
 for(i in 1:length(myFiles)){
   
   tic("init")
-  temp <- stars::read_ncdf(paste(path2, var="tg"))
+  temp <- stars::read_ncdf(paste(myFiles[i]), var="tg")
   year_temp <- year(st_get_dimension_values(temp, "time")[1])
   start <- ym(paste(year_temp, start_month, sep="-"))
   end <-  ym(paste(year_temp, end_month, sep="-"))
@@ -594,6 +594,18 @@ for(i in 1:length(myFiles)){
   rm(temp)
   toc()
 }
+#
+#tic("execute")
+#real_temp_summer <- st_as_stars(real_temp_summer)
+#toc()
+
+write_stars(real_temp_summer, "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/real_temp_summer.tif")
+```
+
+
+```{r}
+dim(real_temp_summer)
+st_get_dimension_values(real_temp_summer, "time")
 ```
 
 
