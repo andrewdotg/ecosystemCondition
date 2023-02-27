@@ -215,6 +215,7 @@ I can rename it like this
 x <- setNames(x, "Attribute_A")
 ```
 
+
 And I can add another dummy attribute.
 
 ```{r}
@@ -234,10 +235,92 @@ X and y area the coordinates. Band is an integer:
 st_get_dimension_values(x, "band")
 ```
 
-And time is four dates covering four months in 1970:
+I will remove the _band_ dimension.
+```{r}
+x <- x %>% filter(band==1) %>% adrop()
+```
+
+
+Time is four dates covering four months in 1970:
 
 ```{r}
-st_get_dimension_values(x, "time")
+(oldTime <- st_get_dimension_values(x, "time"))
+```
+
+I'll add some extra seasonal variation between to the mix
+```{r}
+x$Attribute_A[,,2] <- x$Attribute_A[,,1]*1.2
+x$Attribute_A[,,3] <- x$Attribute_A[,,1]*1.4
+x$Attribute_A[,,4] <- x$Attribute_A[,,1]*1.1
+```
+
+
+Now I create another four copies of this data, adding some random noise and a continuous decreasing trend.
+
+```{r}
+# Function to add random noise
+myRandom <- function(x) x*rnorm(1,1,.05)
+```
+
+
+```{r}
+y1 <- x
+y2 <- x %>% st_apply(1:3, myRandom) %>% st_set_dimensions("time", values = oldTime %m+% years(-1)) %>% mutate(Attribute_A = Attribute_A*0.95)
+y3 <- x %>% st_apply(1:3, myRandom) %>% st_set_dimensions("time", values = oldTime %m+% years(-2)) %>% mutate(Attribute_A = Attribute_A*0.90)
+y4 <- x %>% st_apply(1:3, myRandom) %>% st_set_dimensions("time", values = oldTime %m+% years(-3)) %>% mutate(Attribute_A = Attribute_A*0.85)
+y5 <- x %>% st_apply(1:3, myRandom) %>% st_set_dimensions("time", values = oldTime %m+% years(-4)) %>% mutate(Attribute_A = Attribute_A*0.80)
+
+```
+
+```{r}
+# We combine the data into one cube for plotting:
+temp <- c(y1, y2, y3, y4, y5) 
+
+ggplot() + 
+  geom_stars(data = temp) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))+
+  facet_wrap(~time, ncol=4)
+```
+
+Saving these to file to demonstrate the importing step of the workflow.
+
+```{r, eval=F}
+path <- "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data"
+saveRDS(y1, paste0(path, "/y1.rds"))
+saveRDS(y2, paste0(path, "/y2.rds"))
+saveRDS(y3, paste0(path, "/y3.rds"))
+saveRDS(y4, paste0(path, "/y4.rds"))
+saveRDS(y5, paste0(path, "/y5.rds"))
+```
+
+##### Dummy regions and ET map
+
+Here is some dummy data for accounting areas (regions) and ecosystem occurrences as well.
+
+```{r}
+dummy_aa <- x %>%
+  filter(time == oldTime[1]) %>%
+  adrop() %>%
+  mutate(accuntingAreas = rep(c(1,2), each=length(Attribute_A)/2)) %>%
+  select(accuntingAreas)
+
+tm_shape(dummy_aa) +
+  tm_raster(style="cat")
+```
+
+```{r}
+dummy_et <- x %>%
+  filter(time == oldTime[1]) %>%
+  adrop() %>%
+  mutate(ecosystemType = rep(c(1,NA), length.out = length(Attribute_A))) %>%
+  select(ecosystemType)
+
+tm_shape(dummy_et) +
+  tm_raster(style="cat")
 ```
 
 #### Regions
@@ -253,41 +336,40 @@ reg <- sf::st_read("data/regions.shp")
 
 Coming soon ....
 
-### Workflow
+### Conseptual workflow
 
-The general workflow is like this:
+The general, conceptual workflow is like this:
+
+1. Collate variable data series
+
+    -   Import .nc files (loop though year 1961-1990) and subset to the correct attribute (above)
+
+    -   Filter data by dates (optional) (`dplyr::filter`)
+
+    -   Aggregate across time within a year (`stars::st_apply`)
+    
+    -   Join all data into one data cube (´stars:c´) 
 
 1.  Calculate reference values
 
-    -   Import correct .nc file (loop though year 1961-1990) and subset to the correct attribute (above)
+    -   Aggregate across reference years to get median and sd values `st_apply`
+    
+    -   Join with existing data cube
 
-    -   Filter data by dates (optional)
 
-    -   Aggregate across time within a year
+2.  Calculate indicator values
 
-    -   Aggregate across years to get median and sd values
+    -   Normalize climate variable at the individual grid cell level using the three reference values `mutate %>% across`
 
-    -   Intersect with accounting area polygons
+4.  Write to file
 
-2.  Calculate variable values
-
-    -   Import correct .nc file (loop though the years 1961 to present) and subset to the correct attribute (above)
-
-    -   Repeat the steps from when calculating the reference value, except for calculating the sd.
-
-    -   Add layers to data cube already containing reference values
-
-3.  Normalize climate variable at the individual grid cell level using the three reference values
-
-4.  Write to file (for use with other ecosystem types)
-
-5.  Mask by ecosystem type
+5.  Mask by ecosystem type (this could also be done in step one to save time)
 
 6.  Aggregate in space (to accounting areas)
 
     -   Aggregate across 5 year time steps to smooth out random interannual variation and leav climate signal
 
-    -   Intersect with accounting area polygons
+    -   Intersect with accounting area polygons `sf:st_intersects`
 
     -   Bootstrap indicator values (cell values) and get median and sd
 
@@ -295,15 +377,15 @@ The general workflow is like this:
 
 I will try to use [parallelization](https://tmieno2.github.io/R-as-GIS-for-Economists/EE.html) to speed things up. Also, masking to ecosystem time earlier in the workflow might prove smart.
 
-### Calculate reference values
 
-#### Import
+### Collate variable data series
 
-I need to code a for loop here for importing the .nc files.
+I need to code a for loop for importing the .nc files. 
 
-But for then selecting the attribute, simply do like this:
+For then selecting the attribute, simply do like this:
 
 ```{r}
+# list attribute names
 names(x)
 ```
 
@@ -317,51 +399,51 @@ names(x_sub)
 
 Say we want to calculate the mean summer temperature. We then want to exclude the data for the times that is not withing our definition of summer.
 
-Let's try it on the dummy data. Remember this data had three time steps.
+Let's try it on the dummy data. Remember this data had four time steps.
 
 ```{r}
 st_get_dimension_values(x, "time")
 ```
 
-Our data has 365 time steps for each year.
+Our real data has 365 time steps for each year.
 
 First I define my start and end dates. I want to keep only the summer data, defined as jun - aug.
 
 ```{r}
 start_month <-  "06"
 end_month <- "08"
-year_temp <- year(st_get_dimension_values(x, "time")[1])
+```
+
+Then for each iteration I need to get the year as well
+```{r}
+(year_temp <- year(st_get_dimension_values(x, "time")[1]))
+```
+
+Then I can create a time interval object
+```{r}
 start <- ym(paste(year_temp, start_month, sep="-"))
 end <-  ym(paste(year_temp, end_month, sep="-"))
-summer <- interval(start, end)
+(myInterval <- interval(start, end))
 ```
 
 Then I filter
 
 ```{r}
 x_aug <- x_sub %>%
-  filter(time %within% summer)
+  filter(time %within% myInterval)
 st_get_dimension_values(x_aug, "time")
-```
-
-Let me introduce some differences to Attribute_A between these two dates.
-
-```{r}
-x_aug$Attribute_A[,,,2] <- x_aug$Attribute_A[,,,1]*4
 ```
 
 #### Aggregate across time within a year
 
-For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. There are two ways.
+For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. There are two ways, either using `st_apply` or using `aggregate`.
 
-*Method 1:*
 
 ```{r}
 temp_names <- year(st_get_dimension_values(x_aug, "time")[1])
 
 microOut <- microbenchmark(
 st_apply =  x_aug %>%
-  filter(band ==1) %>% # for our real data we don't need this filter
   st_apply(1:2, mean) %>%
   setNames(paste0("v_",temp_names)),
 aggregate = x_aug %>%
@@ -370,13 +452,35 @@ times=30
 )
 ```
 
-The time (and band) dimension is now gone as we have aggregated across it.
+The time dimension is now gone as we have aggregated across it.
 
 ```{r, fig.cap="Comparing computation tome for two spatial aggregation functions."}
 autoplot(microOut)
 ```
 
-`st_apply` is considerably faster, even wit the filtering step, but `aggregate` has the advantage of that it retains the time dimension, whereas for `st_apply` I need to set the attribute name to be the year. I will try to use `st_apply`.
+`st_apply` is slightly faster, but `aggregate` has the advantage of that it retains the time dimension, whereas for `st_apply` I need to set the attribute name to be the year. I will try to use `st_apply`.
+
+But let me see if I can save time by masking to ET before doing this operation.
+
+```{r, fig.cap="Demonstrating the effecty of maskig the dummy data using a perfectly aligne raster ET map."}
+x_masked <- x_aug
+x_masked[is.na(dummy_et)] <- NA
+plot(x_masked[,,,1])
+```
+
+```{r, fig.cap="There is no performance increas by making before aggregating"}
+autoplot(
+  microbenchmark(
+No_masking =  x_aug %>%
+  st_apply(1:2, mean) %>%
+  setNames(paste0("v_",temp_names)),
+Masking =  x_masked %>%
+  st_apply(1:2, mean) %>%
+  setNames(paste0("v_",temp_names))
+ ), times=30
+)
+ 
+```
 
 
 ```{r}
@@ -414,33 +518,6 @@ ggplot() +
 #### Aggregate across years
 
 For this step we need some more dummy data from different years.
-
-First, let me cut the _band_ dimension.
-```{r}
-#temp <- x_summerMean %>%
-#  filter(band==1) %>%
-#  adrop(drop=4) %>%
-#  aperm(c(2,3,1))
-#dim(temp)
-```
-
-
-```{r}
-#oldTime <- st_get_dimension_values(x_summerMean_v2, "time")
-#
-## Function to add random noise
-#myRandom <- function(x) x*rnorm(1,1,.05)
-#
-#y1 <- temp
-#y2 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-1)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
-#y3 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-2)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
-#y4 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-3)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
-#y5 <- temp %>% st_set_dimensions("time", values = oldTime %m+% years(-4)) %>% st_apply(c("x", "y", "time"), FUN = myRandom)
-#
-#
-## We combine the data into one cube:
-#y <- c(y1, y2, y3, y4, y5)
-```
 
 ```{r}
 # Function to add random noise
