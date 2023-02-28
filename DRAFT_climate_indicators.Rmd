@@ -576,8 +576,6 @@ path <- path <- ifelse(dir == "C:",
 path2 <- paste0(path, "GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original/rr_tm/")
 
 myFiles <- list.files(path2, pattern=".nc$",full.names = T)[1:2]
-start_month <-  "06"
-end_month <- "08"
 real_temp_summer <- NULL
 
 
@@ -586,8 +584,10 @@ temp <- stars::read_ncdf(paste(myFiles[1]))
 start_month_num <-  6
 end_month_num <- 8
 
-julian_start <- yday(st_get_dimension_values(temp, "time")[1] %m+% months(+start_month_num))
-julian_end <- yday(st_get_dimension_values(temp, "time")[1] %m+% months(+end_month_num))
+julian_start <- yday(st_get_dimension_values(temp, "time")[1] %m+%
+                       months(+start_month_num))
+julian_end <- yday(st_get_dimension_values(temp, "time")[1] %m+%
+                     months(+end_month_num))
 step <- julian_end-julian_start
 
 
@@ -598,22 +598,22 @@ for(i in 1:length(myFiles)){
                            ncsub = cbind(start = c(1, 1, julian_start), 
                               count = c(NA, NA, step)))
   year_temp <- year(st_get_dimension_values(temp, "time")[1])
-  start <- ym(paste(year_temp, start_month, sep="-"))
-  end <-  ym(paste(year_temp, end_month, sep="-"))
+  #start <- ym(paste(year_temp, start_month, sep="-"))
+  #end <-  ym(paste(year_temp, end_month, sep="-"))
   #myInterval <- interval(start, end)
-  myInterval <- interval(start, start+1)
+  #myInterval <- interval(start, start+1)
   lookup <- setNames("mean", paste0("v_", year_temp))
   st_crs(temp) <- 25833
   toc()
 
-  tic("middle")
+  tic("filter and st_apply")
   temp <- temp %>%
-    filter(time %within% myInterval) %>%
+    #filter(time %within% myInterval) %>%
     st_apply(1:2, mean) %>%
     rename(all_of(lookup)) 
   toc()
   
-  tic("c")
+  tic("c()")
   real_temp_summer <- c(temp, real_temp_summer)
   #rm(temp)
   toc()
