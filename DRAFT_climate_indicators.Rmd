@@ -414,7 +414,9 @@ end <-  ym(paste(year_temp, end_month, sep="-"))
 Then I filter
 
 ```{r}
-x_aug <- x_sub %>%
+x_aug <- x %>%
+  select(Attribute_A) %>%
+  adrop() %>%
   filter(time %within% myInterval)
 st_get_dimension_values(x_aug, "time")
 ```
@@ -471,9 +473,12 @@ Since there is no increase in performance from masking, as we see in Fig. \@ref(
 So, this is my solution:
 
 ```{r}
+# setNams dont work on stars proxy obejct, so I use rename instead
+lookup <- setNames("mean", paste0("v_", temp_names))
+
 x_summerMean <-   x_aug %>%
   st_apply(1:2, mean) %>%
-  setNames(paste0("v_",temp_names))
+  rename(all_of(lookup))
 ```
 
 The *v\_* follows the naming convention in Norway.
@@ -513,7 +518,7 @@ path2 <- paste0(path,
                 "41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data")
 start_month <-  "06"
 end_month <- "08"
-myFiles <- list.files(path2, full.names = T)
+myFiles <- list.files(path2, pattern=".rds", full.names = T)
 summerTemp_fullSeries <- NULL
 
 # Looping though the files in the directory
@@ -527,11 +532,12 @@ for(i in 1:length(myFiles)){
   start <- ym(paste(year_temp, start_month, sep="-"))
   end <-  ym(paste(year_temp, end_month, sep="-"))
   myInterval <- interval(start, end)
+  lookup <- setNames("mean", paste0("v_", year_temp))
 
   temp <- temp %>%
     filter(time %within% myInterval) %>%
     st_apply(1:2, mean) %>%
-    setNames(paste0("v_",year_temp))
+    rename(all_of(lookup))
   
   summerTemp_fullSeries <- c(temp, summerTemp_fullSeries)
   rm(temp) # same computation time with and without this function, but more tidy this way
@@ -558,53 +564,115 @@ ggplot()+
   facet_wrap(~Year)
 ```
 
-Now let's try it on the real data
+Now let's try it on the real data.
+
+_I initially tried to read stars proxy object and add steps to the call_list and execute these with `st_as_stars`, but this still returned proxy objects. Therefore I read the whole file in without proxy. To save time I can subset based on Julian dates, but this is a hard coded solution._
 
 ```{r, warning=F}
 path <- path <- ifelse(dir == "C:", 
       "R:/",
       "/data/R/")
   
-path2 <- paste0(path, "GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original/rr_tm/") #seNorge2018_1957.nc
+path2 <- paste0(path, "GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original/rr_tm/")
 
-myFiles <- list.files(path2, full.names = T)[1:2]
+myFiles <- list.files(path2, pattern=".nc$",full.names = T)[1:2]
 start_month <-  "06"
 end_month <- "08"
 real_temp_summer <- NULL
 
+
+# Get julian days
+temp <- stars::read_ncdf(paste(myFiles[1]))
+start_month_num <-  6
+end_month_num <- 8
+
+julian_start <- yday(st_get_dimension_values(temp, "time")[1] %m+% months(+start_month_num))
+julian_end <- yday(st_get_dimension_values(temp, "time")[1] %m+% months(+end_month_num))
+step <- julian_end-julian_start
+
+
 for(i in 1:length(myFiles)){
   
   tic("init")
-  temp <- stars::read_ncdf(paste(myFiles[i]), var="tg")
+  temp <- stars::read_ncdf(paste(myFiles[i]), var="tg", proxy=F,
+                           ncsub = cbind(start = c(1, 1, julian_start), 
+                              count = c(NA, NA, step)))
   year_temp <- year(st_get_dimension_values(temp, "time")[1])
   start <- ym(paste(year_temp, start_month, sep="-"))
   end <-  ym(paste(year_temp, end_month, sep="-"))
-  myInterval <- interval(start, end)
+  #myInterval <- interval(start, end)
+  myInterval <- interval(start, start+1)
+  lookup <- setNames("mean", paste0("v_", year_temp))
+  st_crs(temp) <- 25833
   toc()
 
   tic("middle")
   temp <- temp %>%
     filter(time %within% myInterval) %>%
     st_apply(1:2, mean) %>%
-    setNames(paste0("v_",year_temp))
+    rename(all_of(lookup)) 
   toc()
   
   tic("c")
   real_temp_summer <- c(temp, real_temp_summer)
-  rm(temp)
+  #rm(temp)
   toc()
 }
-#
-#tic("execute")
-#real_temp_summer <- st_as_stars(real_temp_summer)
-#toc()
 
-write_stars(real_temp_summer, "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/real_temp_summer.tif")
+```
+
+```{r}
+tif = system.file("tif/L7_ETMs.tif", package = "stars")
+t1 = as.Date("1970-05-31")
+restProxy = read_stars(tif,
+               proxy = T)
+class(restProxy)
+restProxy2 <- st_as_stars(restProxy)
+class(restProxy2)
+dim(restProxy)
+
+restProxy3 <- restProxy %>% filter(band==1)
+dim(restProxy3)
+restProxy4 <- st_as_stars(restProxy3)
+dim(restProxy4)
+
+restProxy5 <- restProxy %>% filter(band==1) %>%
+  st_apply(1:2, mean)
+dim(restProxy5)
+restProxy6 <- st_as_stars(restProxy5)
+dim(restProxy6)
+
+restProxy7 <- restProxy %>% filter(band==1) 
+restProxy7 <- restProxy7 %>%  st_apply(1:2, mean)
+dim(restProxy7)
+restProxy8 <- st_as_stars(restProxy7)
+dim(restProxy8)
+
 ```
 
 
 ```{r}
+dim(temp)
+st_get_dimension_values(temp, "time")
+#
+#tic("execute")
+#
+real_temp_summer2 <- st_as_stars(real_temp_summer)
+real_temp_summer <- st_as_stars(real_temp_summer)
+
+#toc()
+temp <- st_as_stars(temp)
+
+
+write_stars(temp, "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/temp_test.tif")
+
+write_stars(real_temp_summer, "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/real_temp_summer.tif")
+
+dim(temp)
+
 dim(real_temp_summer)
+names(real_temp_summer)
+
 st_get_dimension_values(real_temp_summer, "time")
 ```
 
@@ -775,7 +843,7 @@ This looks like perfect noise, and it is, because the variable and reference val
 ```
 
 ```{r}
-  ts2 <- y_var_norm %>%
+ts2 <- y_var_norm %>%
   select(all_of(starts_with("v_"))) %>%
   st_redimension() %>%
   st_apply(3, median_sd) %>%
