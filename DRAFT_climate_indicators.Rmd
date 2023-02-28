@@ -17,7 +17,9 @@ output:
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
+#library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(stars)
 library(sf)
 library(tmap)
@@ -26,6 +28,8 @@ library(ggpubr)
 library(microbenchmark)
 library(tictoc)
 library(ncmeta)
+library(parallel)
+library(readr)
 dir <- substr(getwd(), 1,2)
 
 ```
@@ -575,9 +579,10 @@ path <- path <- ifelse(dir == "C:",
   
 path2 <- paste0(path, "GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original/rr_tm/")
 
-myFiles <- list.files(path2, pattern=".nc$",full.names = T)[1:2]
+myFiles <- list.files(path2, pattern=".nc$",full.names = T)
 real_temp_summer <- NULL
 
+cl <- makeCluster(10L)
 
 # Get julian days
 temp <- stars::read_ncdf(paste(myFiles[1]))
@@ -591,6 +596,7 @@ julian_end <- yday(st_get_dimension_values(temp, "time")[1] %m+%
 step <- julian_end-julian_start
 
 
+
 for(i in 1:length(myFiles)){
   
   tic("init")
@@ -598,6 +604,7 @@ for(i in 1:length(myFiles)){
                            ncsub = cbind(start = c(1, 1, julian_start), 
                               count = c(NA, NA, step)))
   year_temp <- year(st_get_dimension_values(temp, "time")[1])
+  print(year_temp)
   #start <- ym(paste(year_temp, start_month, sep="-"))
   #end <-  ym(paste(year_temp, end_month, sep="-"))
   #myInterval <- interval(start, end)
@@ -609,7 +616,7 @@ for(i in 1:length(myFiles)){
   tic("filter and st_apply")
   temp <- temp %>%
     #filter(time %within% myInterval) %>%
-    st_apply(1:2, mean) %>%
+    st_apply(1:2, mean, CLUSTER = cl) %>%
     rename(all_of(lookup)) 
   toc()
   
@@ -619,61 +626,85 @@ for(i in 1:length(myFiles)){
   toc()
 }
 
-```
+tic("Merge")
+real_temp_summer <- real_temp_summer %>%
+  merge(name = "Year") %>%
+  setNames("climate_variable")
+toc()
 
-```{r}
-tif = system.file("tif/L7_ETMs.tif", package = "stars")
-t1 = as.Date("1970-05-31")
-restProxy = read_stars(tif,
-               proxy = T)
-class(restProxy)
-restProxy2 <- st_as_stars(restProxy)
-class(restProxy2)
-dim(restProxy)
-
-restProxy3 <- restProxy %>% filter(band==1)
-dim(restProxy3)
-restProxy4 <- st_as_stars(restProxy3)
-dim(restProxy4)
-
-restProxy5 <- restProxy %>% filter(band==1) %>%
-  st_apply(1:2, mean)
-dim(restProxy5)
-restProxy6 <- st_as_stars(restProxy5)
-dim(restProxy6)
-
-restProxy7 <- restProxy %>% filter(band==1) 
-restProxy7 <- restProxy7 %>%  st_apply(1:2, mean)
-dim(restProxy7)
-restProxy8 <- st_as_stars(restProxy7)
-dim(restProxy8)
+stopCluster(cl)
 
 ```
 
+Here's a test for the effect of splitting over more cores.
+```{r, eval=F}
+cl <- makeCluster(2L)
+cl2 <- makeCluster(6L)
+cl3 <- makeCluster(10L)
+
+
+tic("No cluster")
+temp %>%
+    #filter(time %within% myInterval) %>%
+    st_apply(1:2, mean) %>%
+    rename(all_of(lookup)) 
+toc()
+
+tic("Two clusters")
+temp %>%
+    #filter(time %within% myInterval) %>%
+    st_apply(1:2, mean, CLUSTER = cl) %>%
+    rename(all_of(lookup)) 
+stopCluster(cl)
+toc()
+
+tic("Six clusters")
+temp %>%
+    #filter(time %within% myInterval) %>%
+    st_apply(1:2, mean, CLUSTER = cl2) %>%
+    rename(all_of(lookup)) 
+stopCluster(cl2)
+toc()
+
+tic("Ten clusters")
+temp %>%
+    #filter(time %within% myInterval) %>%
+    st_apply(1:2, mean, CLUSTER = cl3) %>%
+    rename(all_of(lookup)) 
+stopCluster(cl3)
+toc()
+  
+```
+No cluster: 21.401 sec elapsed
+Two clusters: 21.546 sec elapsed
+Six clusters: 14.548 sec elapsed
+Ten clusters: 15.29 sec elapsed
+Ten clusters (second run): 13.617 sec elapsed
+
+The RStudio server has 48 cores. More parallel cores is probably on average faster. The NINA guidelines is to use max 10 cores, and to remember to close parallel cluster when done.
 
 ```{r}
-dim(temp)
-st_get_dimension_values(temp, "time")
-#
-#tic("execute")
-#
-real_temp_summer2 <- st_as_stars(real_temp_summer)
-real_temp_summer <- st_as_stars(real_temp_summer)
+#write_stars(real_temp_summer, "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/real_temp_summer.tif")
+```
 
-#toc()
-temp <- st_as_stars(temp)
+I might want to merge this
+
+```{r}
+real_temp_summer <- real_temp_summer %>%
+  merge(name = "Year") %>%
+  setNames("climate_variable")
+```
 
 
-write_stars(temp, "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/temp_test.tif")
-
-write_stars(real_temp_summer, "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/real_temp_summer.tif")
-
-dim(temp)
-
-dim(real_temp_summer)
-names(real_temp_summer)
-
-st_get_dimension_values(real_temp_summer, "time")
+```{r}
+ggplot()+
+  geom_stars(data = real_temp_summer[,,,1:2], downsample = c(10, 10, 0)) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "D") +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))+
+  facet_wrap(~Year)
 ```
 
 
