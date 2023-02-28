@@ -174,6 +174,12 @@ I think I know the CRS, so setting it manually.
 st_crs(tg_1957) <- 25833
 ```
 
+Checking that this is correct
+```{r}
+p = st_sfc(st_point(c(7039947.63, 270783.69)), crs=25833)
+```
+
+
 The data has three dimension
 
 ```{r}
@@ -186,7 +192,7 @@ Initially the data had four attributes, but I subsettet to only include _tg_.
 names(tg_1957)
 ```
 
-`tg_1957` is a stars proxy object and [most commands](https://r-spatial.github.io/stars/articles/stars8.html) will not initiate any change untill later, typically I write to file and all the lazy operations are done in squeal. Therefore, I will prepare a test data set, which is smaller and which I can import to memory. Then I can perform the operations on that data set and we can see the results.
+`tg_1957` is a stars proxy object and [most commands](https://r-spatial.github.io/stars/articles/stars8.html) will not initiate any change until later, typically I write to file and all the lazy operations are done in squeal. Therefore, I will prepare a test data set, which is smaller and which I can import to memory. Then I can perform the operations on that data set and we can see the results.
 
 ### Dummy data
 
@@ -572,7 +578,7 @@ Now let's try it on the real data.
 
 _I initially tried to read stars proxy object and add steps to the call_list and execute these with `st_as_stars`, but this still returned proxy objects. Therefore I read the whole file in without proxy. To save time I can subset based on Julian dates, but this is a hard coded solution._
 
-```{r, warning=F}
+```{r, warning=F, eval=F}
 path <- path <- ifelse(dir == "C:", 
       "R:/",
       "/data/R/")
@@ -580,12 +586,14 @@ path <- path <- ifelse(dir == "C:",
 path2 <- paste0(path, "GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original/rr_tm/")
 
 myFiles <- list.files(path2, pattern=".nc$",full.names = T)
+# The last file, the last year, is incomplete and dont include all juliani dates that we select below
+myFiles <- myFiles[-length(myFiles)]
 real_temp_summer <- NULL
 
 cl <- makeCluster(10L)
 
 # Get julian days
-temp <- stars::read_ncdf(paste(myFiles[1]))
+temp <- stars::read_ncdf(paste(myFiles[1]), var="tg")
 start_month_num <-  6
 end_month_num <- 8
 
@@ -609,7 +617,7 @@ for(i in 1:length(myFiles)){
   #end <-  ym(paste(year_temp, end_month, sep="-"))
   #myInterval <- interval(start, end)
   #myInterval <- interval(start, start+1)
-  lookup <- setNames("mean", paste0("v_", year_temp))
+  lookup <- setNames("mean", paste0("v_", year_temp)) # Perhaps leave out the v_ to get a numeric vector instead, which is easier to subset
   st_crs(temp) <- 25833
   toc()
 
@@ -636,7 +644,7 @@ stopCluster(cl)
 
 ```
 
-Here's a test for the effect of splitting over more cores.
+This takes about 20 sec per file/year, or 22 min on total. Here's a test for the effect of splitting over more cores.
 ```{r, eval=F}
 cl <- makeCluster(2L)
 cl2 <- makeCluster(6L)
@@ -684,62 +692,89 @@ Ten clusters (second run): 13.617 sec elapsed
 The RStudio server has 48 cores. More parallel cores is probably on average faster. The NINA guidelines is to use max 10 cores, and to remember to close parallel cluster when done.
 
 ```{r}
-#write_stars(real_temp_summer, "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/real_temp_summer.tif")
+names(real_temp_summer)
 ```
 
-I might want to merge this
-
 ```{r}
-real_temp_summer <- real_temp_summer %>%
-  merge(name = "Year") %>%
-  setNames("climate_variable")
+dim(real_temp_summer)
 ```
 
+```{r}
+st_get_dimension_values(real_temp_summer, "Year")
+```
+
+```{r, eval=F}
+saveRDS(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.rds")
+write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.tiff")
+```
+
+These files are about 500 MB, but the tiff file reads in a lot quicker then the rds file, so from now on I'll just export as tiff.
+
 
 ```{r}
+temp_median_summer <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.tiff",
+                                 proxy=F)
+# This is too slow:
+# readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/temp_median_summer.rds")
+```
+
+Note that GTiff automatically renames the third dimension _band_ and also renames the attribute.
+
+```{r}
+st_get_dimension_values(temp_median_summer, "band")
+```
+
+I can rename them. 
+```{r}
+temp_median_summer <- temp_median_summer %>% 
+  st_set_dimensions(names = c("x", "y", "v_YEAR")) %>%
+  setNames("temperature")
+dim(temp_median_summer)
+```
+
+```{r, fig.cap="Showing three random slices of the year dimension."}
 ggplot()+
-  geom_stars(data = real_temp_summer[,,,1:2], downsample = c(10, 10, 0)) +
+  geom_stars(data = temp_median_summer[,,,c(1,11,22)], downsample = c(10, 10, 0)) +
   coord_equal() +
   theme_void() +
   scale_fill_viridis_c(option = "D") +  
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))+
-  facet_wrap(~Year)
+  facet_wrap(~v_YEAR)
 ```
 
 
 ### 2. Calculate reference values
 #### Aggregate across reference years
 
-For this step we need some more dummy data from different years. I made data sets y1 to y5 above.
+We need to first to define a reference period and then to subset our data `temp_median_summer`. We can practice on the dummy data `y`.
 
 ```{r}
-# Function to add random noise
-myRandom <- function(x) x*rnorm(1,1,.05)
+dir <- substr(getwd(), 1,2)
+path <- ifelse(dir == "C:",
+       "P:/", 
+       "/data/P-Prosjekter2/")
+path2 <- paste0(path, 
+                "41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data")
+myFiles <- list.files(path2, pattern=".rds", full.names = T)
+y <- NULL
+
+# Looping though the files in the directory
+for(i in 1:length(myFiles)){
+  temp <- readRDS(myFiles[i])
+  y <- c(temp, y)
+}
 ```
 
 ```{r}
-y1 <- x_summerMean
-y2 <- x_summerMean %>% st_apply(1:2, myRandom) %>% setNames(paste0("v_",temp_names-1)) 
-y3 <- x_summerMean %>% st_apply(1:2, myRandom) %>% setNames(paste0("v_",temp_names-2)) 
-y4 <- x_summerMean %>% st_apply(1:2, myRandom) %>% setNames(paste0("v_",temp_names-3)) 
-y5 <- x_summerMean %>% st_apply(1:2, myRandom) %>% setNames(paste0("v_",temp_names-4)) 
-# We combine the data into one cube:
-y <- c(y1, y2, y3, y4, y5) %>% 
-  merge(name = "Year") %>%
-  setNames("Attribute_A")
+st_get_dimension_values(y, "time")
+```
+```{r}
+y_filtered <- y %>%
+  select(Attribute_A) %>%
+  filter(time %within% interval("1961-01-01", "1990-12-31"))
 ```
 
-```{r}
-ggplot() + 
-  geom_stars(data = y) +
-  coord_equal() +
-  theme_void() +
-  scale_fill_viridis_c(option = "D") +  
-  scale_x_discrete(expand = c(0, 0)) +
-  scale_y_discrete(expand = c(0, 0))+
-  facet_wrap(~Year)
-```
 
 Now we aggregate across years, again using st_apply.
 
@@ -748,7 +783,7 @@ median_sd <- function(x) { c(median = median(x), sd = sd(x))}
 ```
 
 ```{r}
-y_ref <- y %>%
+y_ref <- y_filtered %>%
   st_apply(c("x", "y"), FUN =  median_sd)
 ```
 
@@ -772,7 +807,7 @@ The attribute name *mean* we can change this to something more meaningful.
 y_ref <- setNames(y_ref, c("reference_upper", "sd"))
 ```
 
-```{r}
+```{r, fig.cap="Showing the upper reference levels and the standard deviation from the dummy data set."}
 tmap_arrange(
 tm_shape(y_ref)+
   tm_raster("reference_upper")
@@ -783,6 +818,60 @@ tm_shape(y_ref)+
 )
 ```
 
+Let's transfer this over to the real data. First we need to rename our dimension values and turn them back into dates.
+
+```{r}
+new_dims <- as.Date(paste0(substr(st_get_dimension_values(temp_median_summer, "v_YEAR"), 3, 6), "-01-01"))
+temp_median_summer_ref <- temp_median_summer %>%
+  st_set_dimensions("v_YEAR", values = new_dims)
+```
+
+Then I can filter to leave only the reference period.
+
+```{r}
+temp_median_summer_ref <- temp_median_summer_ref %>%
+  filter(v_YEAR %within% interval("1961-01-01", "1990-12-31"))
+st_get_dimension_values(temp_median_summer_ref, "v_YEAR")
+```
+
+And then we calculate the median and sd like above
+
+```{r, eval=FALSE}
+system.time({
+cl <- makeCluster(10L)
+temp_median_summer_ref <- temp_median_summer_ref %>%
+  st_apply(c("x", "y"), 
+           FUN =  median_sd,
+           CLUSTER = cl)
+stopCluster(cl)
+})
+```
+
+  user  system elapsed 
+  9.624   6.069  20.903 
+  
+```{r}
+temp_median_summer_ref <- temp_median_summer_ref %>% split("median_sd")
+```
+
+The attribute name *mean* we can change this to something more meaningful.
+
+```{r}
+temp_median_summer_ref <- setNames(temp_median_summer_ref, c("reference_upper", "sd"))
+```
+
+```{r, fig.cap="Showing the upper reference levels and the standard deviation from actual data of median summer temperatures."}
+tmap_arrange(
+tm_shape(st_downsample(temp_median_summer_ref, 10))+
+  tm_raster("reference_upper")
+,
+tm_shape(st_downsample(temp_median_summer_ref, 10))+
+  tm_raster("sd",
+            palette = "-viridis")
+)
+```
+  
+  
 #### Export
 
 I should export the reference data at this point (write to file) as we don't need to recalculate this every time we want to update the indicator values.
