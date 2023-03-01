@@ -5,6 +5,7 @@ library(dplyr)
 library(plyr)
 library(stringr)
 library(tidyverse)
+library(readxl)
 
 #### download from kartkatalogen to P-drive ####
 # url <- "https://nedlasting.miljodirektoratet.no/naturovervaking/naturovervaking_eksport.gdb.zip"
@@ -19,7 +20,7 @@ st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_e
 
 
 #### upload data from P-drive ####
-# ANO
+## ANO
 st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
 ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
                    layer="ANO_Art")
@@ -28,16 +29,33 @@ ANO.geo <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervakin
 head(ANO.sp)
 head(ANO.geo)
 
-# Tyler indicator data
+## GRUK
+# 2020
+excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2020_181021_edited201021.xlsx")
+
+GRUK2020.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2020_181021_edited201021.xlsx", 
+                       sheet = 5)
+GRUK2020.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2020_181021_edited201021.xlsx", 
+                                 sheet = 2)
+
+
+# 2021
+excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2021_181021_GJELDENDE.xlsx")
+
+# 2022
+excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata2022_GJELDENDE.xlsx")
+
+
+## Tyler indicator data
 ind.Tyler <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
                         sep = '\t', header=T, quote = '')
 head(ind.Tyler)
 
-# Grime CSR-values
+## Grime CSR-values
 ind.Grime <- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Grime CSR.csv",sep=";",dec=",", header=T)
 head(ind.Grime)
 
-# generalized species lists NiN
+## generalized species lists NiN
 load("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators//reference from NiN/Eco_State.RData")
 str(Eco_State)
 
