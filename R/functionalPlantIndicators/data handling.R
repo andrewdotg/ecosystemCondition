@@ -220,6 +220,7 @@ ANO.sp <- ANO.sp %>%
   mutate(Species=str_replace(Species,"Pinus unicinata", "Pinus mugo")) %>%
   mutate(Species=str_replace(Species,"Poa alpigena", "Poa pratensis")) %>%
   mutate(Species=str_replace(Species,"Poa angustifolia", "Poa pratensis")) %>%
+  mutate(Species=str_replace(Species,"Pyrola grandiflora", "Pyrola rotundifolia")) %>%
   mutate(Species=str_replace(Species,"Rumex alpestris", "Rumex acetosa")) %>%
   mutate(Species=str_replace(Species,"Syringa emodi", "Syringa vulgaris")) %>%
   mutate(Species=str_replace(Species,"Taraxacum crocea", "Taraxacum officinale")) %>%
@@ -352,24 +353,39 @@ NiN.sp <- NiN.sp %>%
   mutate(sp=str_replace(sp,"Leontodon autumnalis", "Scorzoneroides autumnalis")) %>%
   mutate(sp=str_replace(sp,"Loiseleuria procumbens", "Kalmia procumbens")) %>%
   mutate(sp=str_replace(sp,"Logfia arvensis", "Filago arvensis")) %>%
-  
+  mutate(sp=str_replace(sp,"Mentha _verticillata", "Mentha verticillata")) %>%
+  mutate(sp=str_replace(sp,"Minuartia rubella", "Sabulina rubella")) %>%
+  mutate(sp=str_replace(sp,"Minuartia stricta", "Sabulina stricta")) %>%
   mutate(sp=str_replace(sp,"Mycelis muralis", "Lactuca muralis")) %>%
   mutate(sp=str_replace(sp,"Omalotheca supina", "Gnaphalium supinum")) %>%
   mutate(sp=str_replace(sp,"Omalotheca norvegica", "Gnaphalium norvegicum")) %>%
   mutate(sp=str_replace(sp,"Omalotheca sylvatica", "Gnaphalium sylvaticum")) %>%
+  mutate(sp=str_replace(sp,"Ononis arvensis", "Ononis spinosa")) %>%
   mutate(sp=str_replace(sp,"Oreopteris limbosperma", "Thelypteris limbosperma")) %>%
   mutate(sp=str_replace(sp,"Oxycoccus microcarpus", "Vaccinium microcarpum")) %>%
   mutate(sp=str_replace(sp,"Oxycoccus palustris", "Vaccinium oxycoccos")) %>%
   mutate(sp=str_replace(sp,"Phalaris minor", "Phalaris arundinacea")) %>%
+  mutate(sp=str_replace(sp,"Phalaroides arundinacea", "Phalaris arundinacea")) %>%
   mutate(sp=str_replace(sp,"Pinus unicinata", "Pinus mugo")) %>%
+  mutate(sp=str_replace(sp,"Platanthera montana", "Platanthera chlorantha")) %>%
   mutate(sp=str_replace(sp,"Poa alpigena", "Poa pratensis")) %>%
   mutate(sp=str_replace(sp,"Poa angustifolia", "Poa pratensis")) %>%
+  mutate(sp=str_replace(sp,"Poa laxa", "Poa flexuosa")) %>%
+  mutate(sp=str_replace(sp,"Poa lindebergii", "Poa arctica")) %>%
+  mutate(sp=str_replace(sp,"Pyrola grandiflora", "Pyrola rotundifolia")) %>%
+  mutate(sp=str_replace(sp,"Rhamnus catharticus", "Rhamnus cathartica")) %>%
   mutate(sp=str_replace(sp,"Rumex alpestris", "Rumex acetosa")) %>%
+  mutate(sp=str_replace(sp,"Salix _fragilis", "Salix fragilis")) %>%
+  mutate(sp=str_replace(sp,"Spergularia salina", "Spergularia marina")) %>%
   mutate(sp=str_replace(sp,"Syringa emodi", "Syringa vulgaris")) %>%
   mutate(sp=str_replace(sp,"Taraxacum crocea", "Taraxacum officinale")) %>%
   mutate(sp=str_replace(sp,"Taraxacum croceum", "Taraxacum officinale")) %>%
+  mutate(sp=str_replace(sp,"Taraxacum erythrospermum", "Taraxacum officinale")) %>%
+  mutate(sp=str_replace(sp,"Taraxacum hamatum", "Taraxacum officinale")) %>%
   mutate(sp=str_replace(sp,"Trientalis europaea", "Lysimachia europaea")) %>%
-  mutate(sp=str_replace(sp,"Trifolium pallidum", "Trifolium pratense"))
+  mutate(sp=str_replace(sp,"Trifolium pallidum", "Trifolium pratense")) %>%
+  mutate(sp=str_replace(sp,"Vicia orobus", "Vicia cassubica"))
+
 
 ## merge species data with indicators
 NiN.sp.ind <- merge(NiN.sp,ind.dat, by.x="sp", by.y="species", all.x=T)
@@ -382,3 +398,138 @@ unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) &
                     is.na(NiN.sp.ind$RR) & 
                     NiN.sp.ind$spgr %in% list("a1a","a1b","a1c")
                   ,'sp'])
+# ok now
+
+#### matching with NiN ecosystem types - wetlands ####
+# NB! beware of rogue spaces in the 'Nature_type' & 'Sub_Type' variables, e.g. "Spring_Forest "
+NiN.wetland <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type=="Mire","ID"]),colnames(ind.dat)[19:23])]   # Continentality, Light, Moisture, Soil_reaction_pH, Nitrogen
+NiN.wetland[1,]
+names(NiN.wetland)
+
+#NiN.wetland <- NiN.wetland[,c(1:41,46:48,59:69)]
+cbind(colnames(NiN.wetland),
+      c("",
+        'V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
+        'V1-C1a','V1-C1b','V1-C1c','V1-C1d','V1-C1e',
+        'V1-C2a','V1-C2b','V1-C2c','V1-C2d',
+        'V1-C3a','V1-C3b','V1-C3c','V1-C3d',
+        'V1-C4a','V1-C4b','V1-C4c','V1-C4d',
+        'V1-C4e','V1-C4f','V1-C4g','V1-C4h',
+        'V3-C2','V1-C5',
+        'V1-C6a','V1-C6b',
+        'V1-C7a','V1-C7b',
+        'V1-C8a','V1-C8b',
+        'V2-C1a','V2-C1b',
+        'V2-C2a','V2-C2b',
+        'V2-C3a','V2-C3b',
+        "V4-C2","V4-C3",
+        "","",
+        'V8-C1','V8-C2','V8-C3',
+        rep("",10),
+        rep("",5)
+      )
+)
+
+NiN.wetland <- NiN.wetland[,c(1:43,46:48,59:63)]
+colnames(NiN.wetland)[2:46] <- c('V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
+                              'V1-C1a','V1-C1b','V1-C1c','V1-C1d','V1-C1e',
+                              'V1-C2a','V1-C2b','V1-C2c','V1-C2d',
+                              'V1-C3a','V1-C3b','V1-C3c','V1-C3d',
+                              'V1-C4a','V1-C4b','V1-C4c','V1-C4d',
+                              'V1-C4e','V1-C4f','V1-C4g','V1-C4h',
+                              'V3-C2','V1-C5',
+                              'V1-C6a','V1-C6b',
+                              'V1-C7a','V1-C7b',
+                              'V1-C8a','V1-C8b',
+                              'V2-C1a','V2-C1b',
+                              'V2-C2a','V2-C2b',
+                              'V2-C3a','V2-C3b',
+                              'V4-C2','V4-C3',
+                              'V8-C1','V8-C2','V8-C3'
+)
+head(NiN.wetland)
+
+
+# translating the abundance classes into %-cover
+coverscale <- data.frame(orig=0:6,
+                         cov=c(0,1/32,1/8,3/8,0.6,4/5,1)
+)
+
+NiN.wetland.cov <- NiN.wetland
+colnames(NiN.wetland.cov)
+for (i in 2:46) {
+  NiN.wetland.cov[,i] <- coverscale[,2][ match(NiN.wetland[,i], 0:6 ) ]
+}
+
+summary(NiN.wetland)
+summary(NiN.wetland.cov)
+
+
+#### matching with NiN ecosystem types - semi-natural ####
+# NB! beware of rogue spaces in the 'Nature_type' & 'Sub_Type' variables, e.g. "Spring_Forest "
+NiN.seminat <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type=="Coastal_Heath" | NiN.env$Sub_Type=="SemiNatMeadow" | NiN.env$Sub_Type=="Field" | NiN.env$Sub_Type=="WetMeadow","ID"]),colnames(ind.dat)[c(3:5,19:27,29)])]   # CSR, ..., Continentality, Light, Moisture, Soil_reaction_pH, Nitrogen, Phosphorus, Salinity, Grazing_mowing, Soil_disturbance, ..., Pollinator_dependence
+
+NiN.seminat[1,]
+names(NiN.seminat)
+# checking heathland types
+names(NiN.seminat)[c(1:5,7:10,13,16)]
+cbind(colnames(NiN.seminat)[c(1:5,7:10,13,16)],
+      c('',
+        'T34-C1','T34-C2a','T34-C2b','T34-C2c',
+        'T34-C3','T34-C4a','T34-C4b','T34-C4c',
+        'T34-C5','T34-C6')
+)
+
+# checking meadow types
+names(NiN.seminat)[c(1,19:37)]
+cbind(colnames(NiN.seminat)[c(1,19:37)],
+      c('',
+        'T32-C1C2','T32-C3C4','T32-C5C20a','T32-C7C8',
+        'T32-C5C20b','T32-C9a','T32-C9b','T32-C15',
+        'T32-C21C6a','T32-C21C6b','T32-C10a','T32-C10b',
+        'T32-C16',
+        'T41a','T41b','T45-C1C2','T45-C3',
+        'V10-C1C2','V10-C3')
+)
+
+#checking all
+names(NiN.seminat)[c(1:5,7:10,13,16,19:37)]
+cbind(colnames(NiN.seminat)[c(1:5,7:10,13,16,19:37)],
+      c('',
+        'T34-C1','T34-C2a','T34-C2b','T34-C2c',
+        'T34-C3','T34-C4a','T34-C4b','T34-C4c',
+        'T34-C5','T34-C6',
+        'T32-C1C2','T32-C3C4','T32-C5C20a','T32-C7C8',
+        'T32-C5C20b','T32-C9a','T32-C9b','T32-C15',
+        'T32-C21C6a','T32-C21C6b','T32-C10a','T32-C10b',
+        'T32-C16',
+        'T41a','T41b','T45-C1C2','T45-C3',
+        'V10-C1C2','V10-C3')
+)
+
+NiN.seminat <- NiN.seminat[,c(1:5,7:10,13,16,19:37,38:50)]
+colnames(NiN.seminat)[1:30] <- c('',
+                                 'T34-C1','T34-C2a','T34-C2b','T34-C2c',
+                                 'T34-C3','T34-C4a','T34-C4b','T34-C4c',
+                                 'T34-C5','T34-C6',
+                                 'T32-C1C2','T32-C3C4','T32-C5C20a','T32-C7C8',
+                                 'T32-C5C20b','T32-C9a','T32-C9b','T32-C15',
+                                 'T32-C21C6a','T32-C21C6b','T32-C10a','T32-C10b',
+                                 'T32-C16',
+                                 'T41a','T41b','T45-C1C2','T45-C3',
+                                 'V10-C1C2','V10-C3')
+colnames(NiN.seminat)
+
+# translating the abundance classes into %-cover
+coverscale <- data.frame(orig=0:6,
+                         cov=c(0,1/32,1/8,3/8,0.6,4/5,1)
+)
+
+NiN.seminat.cov <- NiN.seminat
+colnames(NiN.seminat.cov)
+for (i in 2:30) {
+  NiN.seminat.cov[,i] <- coverscale[,2][ match(NiN.seminat[,i], 0:6 ) ]
+}
+
+summary(NiN.seminat)
+summary(NiN.seminat.cov)
