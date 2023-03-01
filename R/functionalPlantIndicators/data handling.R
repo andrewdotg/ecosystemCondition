@@ -32,18 +32,33 @@ head(ANO.geo)
 ## GRUK
 # 2020
 excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2020_181021_edited201021.xlsx")
-
 GRUK2020.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2020_181021_edited201021.xlsx", 
-                       sheet = 5)
+                                 sheet = 5)
 GRUK2020.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2020_181021_edited201021.xlsx", 
-                                 sheet = 2)
-
+                               sheet = 2)
 
 # 2021
 excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2021_181021_GJELDENDE.xlsx")
 
+GRUK2021.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2021_181021_GJELDENDE.xlsx", 
+                                 sheet = 2)
+GRUK2021.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2021_181021_GJELDENDE.xlsx", 
+                               sheet = 3)
+
+
+excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls")
+
+GRUK2021.condition <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls", 
+                                 sheet = 1)
+
+
 # 2022
 excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata2022_GJELDENDE.xlsx")
+
+GRUK2022.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata2022_GJELDENDE.xlsx", 
+                                 sheet = 2)
+GRUK2022.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata2022_GJELDENDE.xlsx", 
+                               sheet = 3)
 
 
 ## Tyler indicator data
