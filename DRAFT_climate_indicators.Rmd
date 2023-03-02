@@ -691,15 +691,15 @@ Ten clusters (second run): 13.617 sec elapsed
 
 The RStudio server has 48 cores. More parallel cores is probably on average faster. The NINA guidelines is to use max 10 cores, and to remember to close parallel cluster when done.
 
-```{r}
+```{r, eval=F}
 names(real_temp_summer)
 ```
 
-```{r}
+```{r, eval=F}
 dim(real_temp_summer)
 ```
 
-```{r}
+```{r, eval=F}
 st_get_dimension_values(real_temp_summer, "Year")
 ```
 
@@ -710,12 +710,12 @@ write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2
 
 These files are about 500 MB, but the tiff file reads in a lot quicker then the rds file, so from now on I'll just export as tiff.
 
-
 ```{r}
 temp_median_summer <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.tiff",
                                  proxy=F)
 # This is too slow:
 # readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/temp_median_summer.rds")
+# but it could be that RData works better 
 ```
 
 Note that GTiff automatically renames the third dimension _band_ and also renames the attribute.
@@ -851,38 +851,48 @@ stopCluster(cl)
   9.624   6.069  20.903 
   
 ```{r}
-temp_median_summer_ref <- temp_median_summer_ref %>% split("median_sd")
+temp_median_summer_ref_long <- temp_median_summer_ref %>% split("median_sd")
 ```
 
 The attribute name *mean* we can change this to something more meaningful.
 
 ```{r}
-temp_median_summer_ref <- setNames(temp_median_summer_ref, c("reference_upper", "sd"))
+temp_median_summer_ref_long <- setNames(temp_median_summer_ref_long, c("reference_upper", "sd"))
 ```
 
 ```{r, fig.cap="Showing the upper reference levels and the standard deviation from actual data of median summer temperatures."}
 tmap_arrange(
-tm_shape(st_downsample(temp_median_summer_ref, 10))+
+tm_shape(st_downsample(temp_median_summer_ref_long, 10))+
   tm_raster("reference_upper")
 ,
-tm_shape(st_downsample(temp_median_summer_ref, 10))+
+tm_shape(st_downsample(temp_median_summer_ref_long, 10))+
   tm_raster("sd",
             palette = "-viridis")
 )
 ```
   
-  
-#### Export
+This is also something I can export.
+```{r, eval=F}
+# write_stars can only export a single attribute 
+#write_stars(temp_median_summer_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.tiff")
 
-I should export the reference data at this point (write to file) as we don't need to recalculate this every time we want to update the indicator values.
+saveRDS(temp_median_summer_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
+```
 
-#### Calculate variable values
+```{r, eval=F, include=F}
+temp_median_summer_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
+```
 
-The climate variable is the same as y1, y2, y~*n*~, .... But to create some differences between the variable and the reference values, I will tweak these slightly, taking them down 2%. I then merge with the reference value and sd, creating one common data cube.
+
+#### Combine
+
+I need to combine the variables and the ref values in one data cube
 
 ```{r}
-y_var <- y %>% mutate(Attribute_A = Attribute_A * 0.98) %>% 
-  split(3) %>% c(y_ref)
+y_var <- temp_median_summer %>%
+  split(3) %>%
+  c(temp_median_summer_ref_long)
+
 ```
 
 #### Normalise variable
@@ -897,53 +907,94 @@ names(cols_new) <- gsub("v_", "i_", cols)
 ```{r}
 # Mutate
 # can I find a way to keep the v_ columns?
+
+# The break point scaling is actually not needed here, since 
+# having the lower ref value to be 5 sd implies that the threshold is
+# 2 sd in a linear scaling.
+
 system.time(
 y_var_norm <- y_var %>%
-  mutate(lower = reference_upper - 5*sd ) %>%
-  mutate(threshold = reference_upper -2*sd ) %>%
-  mutate(across(all_of(cols), ~ if_else(.x < threshold, 
-                                        (.x - lower) / (threshold - lower),
-                                        (.x - threshold) / (reference_upper - threshold),
-                                        ))) %>%
+  mutate(reference_low = reference_upper - 5*sd ) %>%
+  mutate(reference_low2 = reference_upper + 5*sd ) %>%
+  mutate(threshold_low = reference_upper -2*sd ) %>%
+  mutate(threshold_high = reference_upper +2*sd ) %>%
+  mutate(across(all_of(cols), ~ 
+                  if_else(.x < reference_upper,
+                  if_else(.x < threshold_low, 
+                                        (.x - reference_low) / (threshold_low - reference_low),
+                                        (.x - threshold_low) / (reference_upper - threshold_low),
+                                        ),
+                  if_else(.x > threshold_high, 
+                                        (reference_low2 - .x) / (reference_low2 - threshold_high),
+                                        (threshold_high - .x) / (threshold_high - reference_upper),
+                                        )
+                ))) %>%
   mutate(across(all_of(cols), ~ if_else(.x > 1, 1, .x))) %>%
   mutate(across(all_of(cols), ~ if_else(.x < 0, 0, .x))) %>%
   rename(all_of(cols_new)) %>%
   c(select(y_var, all_of(cols)))
 )
 ```
+  user  system elapsed 
+ 14.803   2.717  17.512 
+ 
 
-I'm not sure mutate-across is the fastest way to do this. Perhaps st_apply would be better.
+```{r, fig.cap="Example showing median summer tempretur in 1970, the upper and lwoer reference temperture, i.e. median and 5 SD units of the temperature between  1961-1990, and finally, the scaled indicator values."}
 
-```{r}
+lims <- c(-5, 22)
+
 ggarrange(
 ggplot() + 
-  geom_stars(data = y_var_norm["v_1970"]) +
+  geom_stars(data = st_downsample(y_var_norm["v_1970"],10)) +
   coord_equal() +
   theme_void() +
-  scale_fill_viridis_c(option = "D") +  
+  scale_fill_viridis_c(option = "D",
+                       limits = lims) +  
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))
 ,
 ggplot() + 
-  geom_stars(data = y_var_norm["reference_upper"]) +
+  geom_stars(data = st_downsample(y_var_norm["reference_upper"], 10)) +
   coord_equal() +
   theme_void() +
-  scale_fill_viridis_c(option = "D") +  
+  scale_fill_viridis_c(option = "D",
+                       limits = lims) +  
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))
 ,
 ggplot() + 
-  geom_stars(data = y_var_norm["i_1970"]) +
+  geom_stars(data = st_downsample(y_var_norm["reference_low"], 10)) +
   coord_equal() +
   theme_void() +
-  scale_fill_viridis_c(option = "D") +  
+  scale_fill_viridis_c(option = "D",
+                       limits = lims) +  
   scale_x_discrete(expand = c(0, 0)) +
   scale_y_discrete(expand = c(0, 0))
-, ncol=3, align = "hv"
+,
+
+ggplot() + 
+  geom_stars(data = st_downsample(y_var_norm["reference_low2"], 10)) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "D",
+                       limits = lims) +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))
+,
+
+ggplot() + 
+  geom_stars(data = st_downsample(y_var_norm["i_1970"],10)) +
+  coord_equal() +
+  theme_void() +
+  scale_fill_viridis_c(option = "A",
+                       limits = c(0, 1)) +  
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0))
+, ncol=2, nrow=3, align = "hv"
 )
 ```
 
-This looks like perfect noise, and it is, because the variable and reference value are so well correlated. If the reference value was static, or if there was a pattern in v_1970, the scaled indicator map would look different.
+
 
 #### Plot time series
 
