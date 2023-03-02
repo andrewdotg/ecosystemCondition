@@ -30,35 +30,30 @@ head(ANO.sp)
 head(ANO.geo)
 
 ## GRUK
-# 2020
-excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2020_181021_edited201021.xlsx")
-GRUK2020.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2020_181021_edited201021.xlsx", 
-                                 sheet = 5)
-GRUK2020.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2020_181021_edited201021.xlsx", 
-                               sheet = 2)
-
-# 2021
-excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2021_181021_GJELDENDE.xlsx")
-
-GRUK2021.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2021_181021_GJELDENDE.xlsx", 
+excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx")
+GRUK.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
                                  sheet = 2)
-GRUK2021.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/S123_GRUK2021_181021_GJELDENDE.xlsx", 
+GRUK.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
                                sheet = 3)
 
-
+# condition evaluation for 2021 data
 excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls")
 
 GRUK2021.condition <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls", 
                                  sheet = 1)
 
+head(GRUK.variables)
+head(GRUK.species)
+head(GRUK2021.condition)
 
-# 2022
-excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata2022_GJELDENDE.xlsx")
 
-GRUK2022.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata2022_GJELDENDE.xlsx", 
-                                 sheet = 2)
-GRUK2022.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata2022_GJELDENDE.xlsx", 
-                               sheet = 3)
+
+
+
+## ASO data
+
+
+
 
 
 ## Tyler indicator data
@@ -291,6 +286,15 @@ summary(ANO.sp.ind)
 head(ANO.sp.ind)
 
 
+#### data handling - GRUK data ####
+
+
+
+
+#### data handling - ASO data ####
+
+
+
 
 #### data handling - reference data ####
 # generalized species lists from NiN
@@ -455,8 +459,8 @@ cbind(colnames(NiN.wetland),
         'V2-C1a','V2-C1b',
         'V2-C2a','V2-C2b',
         'V2-C3a','V2-C3b',
+        "V4-C4","V4-C5",
         "V4-C2","V4-C3",
-        "","",
         'V8-C1','V8-C2','V8-C3',
         rep("",10),
         rep("",5)
