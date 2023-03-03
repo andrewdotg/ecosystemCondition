@@ -34,6 +34,7 @@ library(parallel)
 library(readr)
 library(exactextractr)
 library(tidyr)
+library(data.table)
 library(terra)
 dir <- substr(getwd(), 1,2)
 
@@ -1072,31 +1073,43 @@ I can rastereze the regions data set, turn it into a coded dimension and use st_
 Let me try using `exactextract`, as a parallel to `aggregate`. This requires us to turn to the `terra` package for a bit. 
 
 ```{r, eval=F}
-(
+system.time(
 regional_means <- rast(y_var_norm) %>%
   exact_extract(reg, fun = 'mean', append_cols = "region", progress=T) %>%
   setNames(c("region", names(y_var_norm)))
   )
 ```
 
+ user  system elapsed 
+  7.603   3.071  10.697 
+  
 That was fast! 
+```{r}
+regional_means
+```
+
 
 I should also get the sd:
 
 ```{r, eval=F}
-(
-regional_means_sd <- rast(y_var_norm) %>%
-  exact_extract(reg, fun = function(X) c(mean = mean(x), sd = sd(x)), append_cols = "region", progress=T) %>%
+system.time(
+regional_sd <- rast(y_var_norm) %>%
+  exact_extract(reg, fun = 'stdev', append_cols = "region", progress=T) %>%
   setNames(c("region", names(y_var_norm)))
   )
 ```
 
+  user  system elapsed 
+  7.420   2.921  10.355 
+  
 ```{r, eval=F}
 saveRDS(regional_means, "temp/regional_means.rds")
+saveRDS(regional_sd, "temp/regional_sd.rds")
 ```
 
-```{r}
+```{r, include=F}
 regional_means <- readRDS("temp/regional_means.rds")
+regional_sd <- readRDS("temp/regional_sd.rds")
 ```
 
 Reshape and plot
@@ -1113,7 +1126,6 @@ temp <- regional_means %>%
   as.data.frame() %>%
   select(region, div)
   
-(
 regional_means_long <- regional_means %>%
   as.data.frame() %>%
   select(!all_of(div)) %>%
@@ -1125,9 +1137,22 @@ regional_means_long <- regional_means %>%
   mutate(diff = v-reference_upper) %>%
   mutate(threshold_low_centered = threshold_low-reference_upper) %>%
   mutate(threshold_high_centered = threshold_high-reference_upper)
-)
 
+#Adding the spatial sd
+(
+regional_means_long <- regional_sd %>%
+  select(!all_of(div)) %>%
+  pivot_longer(!region) %>%
+  separate(name, into=c("type", "year")) %>%
+  pivot_wider(names_from = type) %>%
+  rename(i_sd = i,
+         v_sd = v) %>%
+  left_join(regional_means_long, by=join_by(region, year))
+)
 ```
+
+
+
 
 ```{r}
 regOrder = c("Østlandet","Sørlandet","Vestlandet","Midt-Norge","Nord-Norge")
@@ -1158,21 +1183,72 @@ Then we can take the mean over the last 5 years and add to a spatial representat
 
 ```{r}
 (
-i_2022 <- regional_means_long %>%
-  filter(year >2017) %>%
-  group_by(region) %>%
-  summarise(i_2022 = mean(i))
+i_aggregatedToPeriods <- regional_means_long %>%
+  mutate(year = as.numeric(year)) %>%
+  mutate(period = case_when(
+    year %between% c(2018, 2022) ~ "2018-2022",
+    year %between% c(2013, 2017) ~ "2013-2017",
+    year %between% c(2008, 2012) ~ "2008-2012",
+    year %between% c(2003, 2007) ~ "2003-2007",
+    .default = "pre 2003"
+  )) %>%
+  mutate(period_rank = case_when(
+   period == "2018-2022" ~ 5,
+   period == "2013-2017" ~ 4,
+   period == "2008-2012" ~ 3,
+   period == "2003-2007" ~ 2,
+    .default = 1
+  )) %>%
+  group_by(region, period, period_rank) %>%
+  summarise(indicator = mean(i),
+            spatial_sd = sqrt(sum(i_sd^2))/length(i_sd)
+            #,
+            #spatial_sd_mean = mean(i_sd),
+            #spatial_sd2_max = max(i_sd),
+            #spatial_sd2_length = length(i_sd)
+            )
 )
 ```
 
-```{r}
-(
-sd_2022 <- regional_means_long %>%
-  filter(year >2017) %>%
-  group_by(region) %>%
-  summarise(i_2022 = mean(i))  
-)
+```{r, fig.cap="Scaled indicator values, aggregated over 5 year intervals. Errors represent spatial variation within regions and across years."}
+labs <- unique(i_aggregatedToPeriods$period[order(i_aggregatedToPeriods$period_rank)])
+
+i_aggregatedToPeriods %>%
+  ggplot(aes(x = period_rank, 
+             y = indicator,
+             colour=region))+
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin=indicator-spatial_sd, 
+                    ymax=indicator+spatial_sd), 
+                    width=.2,
+                 position=position_dodge(0.2)) +
+  theme_bw(base_size = 12)+
+  scale_x_continuous(breaks = 1:5,
+                     labels = labs)+
+  labs(x = "", y = "indikatorverdi")
 ```
+
+Finally, I can add these values to the sp object.
+
+```{r}
+reg2 <- reg %>%
+  left_join(i_aggregatedToPeriods[i_aggregatedToPeriods$period_rank==5,], by=join_by(region))
+
+```
+
+```{r}
+ggplot(reg2) + 
+  geom_sf(fill = indicator) +
+  geom_sf_label(aes(label = indicator))
+
+```
+
+```{r}
+tm_shape(reg2)+
+  tm_polygons(col=)
+```
+
 
 
 ```{r}
