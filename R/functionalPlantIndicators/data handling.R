@@ -287,7 +287,152 @@ head(ANO.sp.ind)
 
 
 #### data handling - GRUK data ####
+head(GRUK.variables)
+head(GRUK.species)
+head(GRUK2021.condition)
 
+colnames(GRUK.species)[5] <- "art_dekning"
+
+# fix species names
+GRUK.species <- as.data.frame(GRUK.species)
+
+GRUK.species$Species <- GRUK.species$Navn
+unique(as.factor(GRUK.species$Species))
+GRUK.species$Species <- sub(".*?_", "", GRUK.species$Species) # lose the Norwegian name in the front
+GRUK.species$Species <- gsub("_", " ", GRUK.species$Species) # replace underscore with space
+GRUK.species$Species <- str_to_title(GRUK.species$Species) # make first letter capital
+GRUK.species$Species <- gsub("( .*)","\\L\\1",GRUK.species$Species,perl=TRUE) # make capital letters after hyphon to lowercase
+GRUK.species$Species <- gsub("( .*)","\\L\\1",GRUK.species$Species,perl=TRUE) # make capital letters after space to lowercase
+GRUK.species[,'Species'] <- word(GRUK.species[,'Species'], 1,2) # lose subspecies
+
+
+
+
+## merge species data with indicators
+GRUK.species.ind <- merge(x=GRUK.species[,c("Species", "art_dekning", "ParentGlobalID")], 
+                    y= ind.dat[,c("species","CC", "SS", "RR", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                    by.x="Species", by.y="species", all.x=T)
+summary(GRUK.species.ind)
+
+
+# checking which species didn't find a match
+unique(GRUK.species.ind[is.na(GRUK.species.ind$Moisture & 
+                                is.na(GRUK.species.ind$RR)),'Species'])
+
+
+
+# fix species name issues
+ind.dat <- ind.dat %>% 
+#  mutate(species=str_replace(species,"Aconitum lycoctonum", "Aconitum septentrionale")) %>% 
+#  mutate(species=str_replace(species,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
+#  mutate(species=str_replace(species,"Carex myosuroides", "Kobresia myosuroides")) %>%
+#  mutate(species=str_replace(species,"Clinopodium acinos", "Acinos arvensis")) %>%
+#  mutate(species=str_replace(species,"Artemisia rupestris", "Artemisia norvegica")) %>%
+  mutate(species=str_replace(species,"Rosa vosagica", "Rosa vosagiaca"))
+
+
+
+GRUK.species <- GRUK.species %>% 
+    mutate(Species=str_replace(Species,"Arabis wahlenbergii", "Arabis hirsuta")) %>%
+  #  mutate(Species=str_replace(Species,"Arctous alpinus", "Arctous alpina")) %>%
+#  mutate(Species=str_replace(Species,"Betula tortuosa", "Betula pubescens")) %>%
+#  mutate(Species=str_replace(Species,"Blysmopsis rufa", "Blysmus rufus")) %>%
+#  mutate(Species=str_replace(Species,"Cardamine nymanii", "Cardamine pratensis")) %>%
+#  mutate(Species=str_replace(Species,"Carex adelostoma", "Carex buxbaumii")) %>%
+#  mutate(Species=str_replace(Species,"Carex leersii", "Carex echinata")) %>%
+  mutate(Species=str_replace(Species,"Carex paupercula", "Carex magellanica")) %>%
+#  mutate(Species=str_replace(Species,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
+  mutate(Species=str_replace(Species,"Carex viridula", "Carex flava")) %>%
+#  mutate(Species=str_replace(Species,"Chamaepericlymenum suecicum", "Cornus suecia")) %>%
+#  mutate(Species=str_replace(Species,"Cicerbita alpina", "Lactuca alpina")) %>%
+    mutate(Species=str_replace(Species,"Cotoneaster scandinavicus", "Cotoneaster integerrimus")) %>%
+  mutate(Species=str_replace(Species,"Cotoneaster symondsii", "Cotoneaster integrifolius")) %>%
+  mutate(Species=str_replace(Species,"Cyanus montanus", "Centaurea montana")) %>%
+  #  mutate(Species=str_replace(Species,"Empetrum hermaphroditum", "Empetrum nigrum")) %>%
+    mutate(Species=str_replace(Species,"Erysimum virgatum", "Erysimum strictum")) %>%
+  #  mutate(Species=str_replace(Species,"Festuca prolifera", "Festuca rubra")) %>%
+    mutate(Species=str_replace(Species,"Festuca trachyphylla", "Festuca brevipila")) %>%
+  mutate(Species=str_replace(Species,"Galium album", "Galium mollugo")) %>%
+#  mutate(Species=str_replace(Species,"Galium elongatum", "Galium palustre")) %>%
+  mutate(Species=str_replace(Species,"Helictotrichon pratense", "Avenula pratensis")) %>%
+  mutate(Species=str_replace(Species,"Helictotrichon pubescens", "Avenula pubescens")) %>%
+#  mutate(Species=str_replace(Species,"Hieracium alpina", "Hieracium Alpina")) %>%
+#  mutate(Species=str_replace(Species,"Hieracium alpinum", "Hieracium Alpina")) %>%
+#  mutate(Species=str_replace(Species,"Hieracium hieracium", "Hieracium Hieracium")) %>%
+#  mutate(Species=str_replace(Species,"Hieracium hieracioides", "Hieracium umbellatum")) %>%
+  mutate(Species=str_replace(Species,"Hieracium murorum", "Hieracium Vulgata")) %>%
+#  mutate(Species=str_replace(Species,"Hieracium oreadea", "Hieracium Oreadea")) %>%
+#  mutate(Species=str_replace(Species,"Hieracium prenanthoidea", "Hieracium Prenanthoidea")) %>%
+#  mutate(Species=str_replace(Species,"Hieracium vulgata", "Hieracium Vulgata")) %>%
+#  mutate(Species=str_replace(Species,"Hieracium pilosella", "Pilosella officinarum")) %>%
+#  mutate(Species=str_replace(Species,"Hieracium vulgatum", "Hieracium umbellatum")) %>%
+#  mutate(Species=str_replace(Species,"Hierochloã« alpina", "Hierochloë alpina")) %>%
+#  mutate(Species=str_replace(Species,"Hierochloã« hirta", "Hierochloë hirta")) %>%
+#  mutate(Species=str_replace(Species,"Hierochloã« odorata", "Hierochloë odorata")) %>%
+    mutate(Species=str_replace(Species,"Hylotelephium maximum", "Sedum telephium")) %>%
+  #  mutate(Species=str_replace(Species,"Listera cordata", "Neottia cordata")) %>%
+#  mutate(Species=str_replace(Species,"Leontodon autumnalis", "Scorzoneroides autumnalis")) %>%
+    mutate(Species=str_replace(Species,"Lepidotheca suaveolens", "Matricaria discoidea")) %>%
+  #  mutate(Species=str_replace(Species,"Loiseleuria procumbens", "Kalmia procumbens")) %>%
+    mutate(Species=str_replace(Species,"Malus ×domestica", "Malus domestica")) %>%
+  #  mutate(Species=str_replace(Species,"Mycelis muralis", "Lactuca muralis")) %>%
+#  mutate(Species=str_replace(Species,"Omalotheca supina", "Gnaphalium supinum")) %>%
+#  mutate(Species=str_replace(Species,"Omalotheca norvegica", "Gnaphalium norvegicum")) %>%
+#  mutate(Species=str_replace(Species,"Omalotheca sylvatica", "Gnaphalium sylvaticum")) %>%
+#  mutate(Species=str_replace(Species,"Oreopteris limbosperma", "Thelypteris limbosperma")) %>%
+#  mutate(Species=str_replace(Species,"Oxycoccus microcarpus", "Vaccinium microcarpum")) %>%
+#  mutate(Species=str_replace(Species,"Oxycoccus palustris", "Vaccinium oxycoccos")) %>%
+#  mutate(Species=str_replace(Species,"Phalaris minor", "Phalaris arundinacea")) %>%
+#  mutate(Species=str_replace(Species,"Pinus unicinata", "Pinus mugo")) %>%
+#  mutate(Species=str_replace(Species,"Poa alpigena", "Poa pratensis")) %>%
+  mutate(Species=str_replace(Species,"Poa angustifolia", "Poa pratensis")) %>%
+  mutate(Species=str_replace(Species,"Poa humilis", "Poa pratensis")) %>%
+  #  mutate(Species=str_replace(Species,"Pyrola grandiflora", "Pyrola rotundifolia")) %>%
+    mutate(Species=str_replace(Species,"Rosa dumalis", "Rosa vosagiaca")) %>%
+  #  mutate(Species=str_replace(Species,"Rumex alpestris", "Rumex acetosa")) %>%
+#  mutate(Species=str_replace(Species,"Syringa emodi", "Syringa vulgaris")) %>%
+#  mutate(Species=str_replace(Species,"Taraxacum crocea", "Taraxacum officinale")) %>%
+#  mutate(Species=str_replace(Species,"Taraxacum croceum", "Taraxacum officinale")) %>%
+#  mutate(Species=str_replace(Species,"Trientalis europaea", "Lysimachia europaea")) %>%
+  mutate(Species=str_replace(Species,"Trifolium pallidum", "Trifolium pratense"))
+
+## merge species data with indicators
+GRUK.species.ind <- merge(x=GRUK.species[,c("Species", "art_dekning", "ParentGlobalID")], 
+                    y= ind.dat[,c("species","CC", "SS", "RR", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                    by.x="Species", by.y="species", all.x=T)
+summary(GRUK.species.ind)
+# checking which species didn't find a match
+unique(GRUK.species.ind[is.na(GRUK.species.ind$Moisture & 
+                                is.na(GRUK.species.ind$RR)),'Species'])
+
+
+
+
+
+
+
+
+#### continue here ####
+
+## adding information on ecosystem and condition variables
+ANO.sp.ind <- merge(x=ANO.sp.ind, 
+                    y=ANO.geo[,c("GlobalID","ano_flate_id","ano_punkt_id","ssb_id","aar",
+                                 "hovedoekosystem_punkt","hovedtype_1m2","kartleggingsenhet_1m2",
+                                 "vedplanter_total_dekning","busker_dekning","tresjikt_dekning","roesslyng_dekning")], 
+                    by.x="ParentGlobalID", by.y="GlobalID", all.x=T)
+# trimming away the points without information on NiN, species or cover
+ANO.sp.ind <- ANO.sp.ind[!is.na(ANO.sp.ind$Species),]
+ANO.sp.ind <- ANO.sp.ind[!is.na(ANO.sp.ind$art_dekning),]
+
+#rm(ANO.sp)
+
+#ANO.sp <- ANO.sp[!is.na(ANO.sp$Hovedoekosystem_rute),] # need to check
+unique(as.factor(ANO.sp.ind$hovedoekosystem_punkt))
+unique(as.factor(ANO.sp.ind$hovedtype_1m2))
+unique(as.factor(ANO.sp.ind$kartleggingsenhet_1m2))
+
+summary(ANO.sp.ind)
+head(ANO.sp.ind)
 
 
 
