@@ -194,7 +194,7 @@ names(tg_1957)
 
 `tg_1957` is a stars proxy object and [most commands](https://r-spatial.github.io/stars/articles/stars8.html) will not initiate any change until later, typically I write to file and all the lazy operations are done in squeal. Therefore, I will prepare a test data set, which is smaller and which I can import to memory. Then I can perform the operations on that data set and we can see the results.
 
-### Dummy data
+#### Dummy data
 
 This test data is included in the {stars} package
 
@@ -333,8 +333,27 @@ tm_shape(dummy_et) +
 Importing a shape file with the regional delineation.
 
 ```{r}
-reg <- sf::st_read("data/regions.shp")
+reg <- sf::st_read("data/regions.shp", options = "ENCODING=UTF8")
 #st_crs(reg)
+```
+
+Outline of Norway
+
+```{r}
+nor <- sf::st_read("data/outlineOfNorway_EPSG25833.shp")
+```
+Remoce marine areas from regions
+
+```{r}
+reg <- st_intersection(reg, nor)
+```
+
+
+```{r, fig.cap="Five accounting areas (regions)."}
+
+tm_shape(reg) +
+  tm_polygons(col="region")
+
 ```
 
 #### Ecosystem map
@@ -850,13 +869,27 @@ stopCluster(cl)
   user  system elapsed 
   9.624   6.069  20.903 
   
-```{r}
+
+
+This is also something I can export.
+```{r, eval=F}
+# write_stars can only export a single attribute 
+#write_stars(temp_median_summer_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.tiff")
+
+saveRDS(temp_median_summer_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
+```
+
+```{r, eval=T, include=F}
+temp_median_summer_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
+```
+
+```{r, eval=T}
 temp_median_summer_ref_long <- temp_median_summer_ref %>% split("median_sd")
 ```
 
 The attribute name *mean* we can change this to something more meaningful.
 
-```{r}
+```{r, eval=T}
 temp_median_summer_ref_long <- setNames(temp_median_summer_ref_long, c("reference_upper", "sd"))
 ```
 
@@ -871,17 +904,6 @@ tm_shape(st_downsample(temp_median_summer_ref_long, 10))+
 )
 ```
   
-This is also something I can export.
-```{r, eval=F}
-# write_stars can only export a single attribute 
-#write_stars(temp_median_summer_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.tiff")
-
-saveRDS(temp_median_summer_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
-```
-
-```{r, eval=F, include=F}
-temp_median_summer_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
-```
 
 
 #### Combine
@@ -904,7 +926,7 @@ cols_new <- cols
 names(cols_new) <- gsub("v_", "i_", cols)
 ```
 
-```{r}
+```{r, eval=F}
 # Mutate
 # can I find a way to keep the v_ columns?
 
@@ -938,6 +960,17 @@ y_var_norm <- y_var %>%
   user  system elapsed 
  14.803   2.717  17.512 
  
+```{r, eval=F}
+gc()
+saveRDS(y_var_norm, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData")
+```
+
+```{r, include=FALSE}
+y_var_norm <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData")
+```
+
+
+
 
 ```{r, fig.cap="Example showing median summer tempretur in 1970, the upper and lwoer reference temperture, i.e. median and 5 SD units of the temperature between  1961-1990, and finally, the scaled indicator values."}
 
@@ -994,9 +1027,78 @@ ggplot() +
 )
 ```
 
+The _real_ indicator values should be running means over 5 years, but calculating a running mean for all time steps is too time consuming. Therefore, the time series will be presented with yearly resolution, and the scaled, regional indicator values will be calculated for distinct time steps.
 
 
-#### Plot time series
+#### Plot time series as line graphs
+
+We could also plot a time series as a series of maps, but then we need to avergae over this 5 time periods firs. We can get to that later.
+
+To plot time series I first need to do a spatial aggregation. One option is to spatially aggregate the stars object directly, using the `reg` data set:
+
+```{r, eval=F}
+temp <- y_var_norm[1,,] %>%
+  aggregate(reg, mean, na.rm=T)
+plot(temp)
+temp2 <- temp %>%
+  st_as_sf() # too slow
+```
+
+However, this does not preserve the region name, and a subsequent st_intersection taks a little whie and gives some boundary problems.
+
+I can also converting att pixels to points and then do the intersection. 
+
+```{r, eval=F}
+temp_points <- y_var_norm[1,,] %>%
+  st_as_sf(as_points = TRUE, merge = FALSE)
+temp_points2 <- temp_points %>%
+  st_intersection(reg) " too slow"
+```
+
+But this also took too long.
+
+I can perhaps aggregate, and then turn to points and intersect, but that did not work perfect either.
+
+I can rastereze the regions data set, turn it into a coded dimension and use st_apply, but thats tedious. 
+
+Let me try using `exactextract`, as a parallel to `aggregate`. This requires us to turn to the `terra` package for a bit. 
+
+```{r, eval=F}
+(
+regional_means <- rast(y_var_norm[,,]) %>%
+  exact_extract(reg, fun = 'mean', append_cols = "region", progress=T) %>%
+  setNames(c("region", names(y_var_norm)))
+  )
+```
+
+That was fast! 
+
+```{r, eval=F}
+saveRDS(regional_means, "temp/regional_means.rds")
+```
+
+Reshape and plot
+
+```{r}
+(
+regional_means_long <- regional_means %>%
+  as.data.frame() %>%
+  rename(referenceUpper = reference_upper,
+         referenceLow = reference_low,
+         referenceLow2 = reference_low2,
+         thresholdLow = threshold_low,
+         thresholdHigh = threshold_high) %>%
+  pivot_longer(!region) %>%
+  separate(name, into=c("type", "year"), remove=F)
+)
+```
+
+
+```{r}
+temp3 <- temp2 %>%
+  st_intersection(reg)
+```
+
 
 ```{r}
   ts1 <- y_var_norm %>%
