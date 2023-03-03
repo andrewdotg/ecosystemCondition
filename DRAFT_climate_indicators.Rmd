@@ -8,7 +8,9 @@ output:
 
 <br />
 
-*Author and date:* <!-- Write your name here -->
+*Author and date:* 
+Anders L. Kolstad
+March 2023
 
 <br />
 
@@ -17,7 +19,7 @@ output:
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
-#library(tidyverse)
+#library(tidyverse) # cant update to v2 on server
 library(dplyr)
 library(ggplot2)
 library(stars)
@@ -30,6 +32,9 @@ library(tictoc)
 library(ncmeta)
 library(parallel)
 library(readr)
+library(exactextractr)
+library(tidyr)
+library(terra)
 dir <- substr(getwd(), 1,2)
 
 ```
@@ -54,7 +59,7 @@ knitr::kable(metaData)
 
 ## Introduction
 
-This chapters describes a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/).
+This chapters describes the development of a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/). 
 
 ## About the underlying data
 
@@ -502,7 +507,7 @@ Since there is no increase in performance from masking, as we see in Fig. \@ref(
 So, this is my solution:
 
 ```{r}
-# setNams dont work on stars proxy obejct, so I use rename instead
+# setNames dont work on stars proxy obejct, so I use rename instead
 lookup <- setNames("mean", paste0("v_", temp_names))
 
 x_summerMean <-   x_aug %>%
@@ -710,17 +715,6 @@ Ten clusters (second run): 13.617 sec elapsed
 
 The RStudio server has 48 cores. More parallel cores is probably on average faster. The NINA guidelines is to use max 10 cores, and to remember to close parallel cluster when done.
 
-```{r, eval=F}
-names(real_temp_summer)
-```
-
-```{r, eval=F}
-dim(real_temp_summer)
-```
-
-```{r, eval=F}
-st_get_dimension_values(real_temp_summer, "Year")
-```
 
 ```{r, eval=F}
 saveRDS(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.rds")
@@ -736,6 +730,20 @@ temp_median_summer <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstan
 # readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/temp_median_summer.rds")
 # but it could be that RData works better 
 ```
+
+```{r, eval=T}
+names(real_temp_summer)
+```
+
+```{r, eval=T}
+dim(real_temp_summer)
+```
+
+```{r, eval=T}
+st_get_dimension_values(real_temp_summer, "Year")
+```
+
+
 
 Note that GTiff automatically renames the third dimension _band_ and also renames the attribute.
 
@@ -887,7 +895,7 @@ temp_median_summer_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilsta
 temp_median_summer_ref_long <- temp_median_summer_ref %>% split("median_sd")
 ```
 
-The attribute name *mean* we can change this to something more meaningful.
+The attribute name is *mean*. We can change this to something more meaningful.
 
 ```{r, eval=T}
 temp_median_summer_ref_long <- setNames(temp_median_summer_ref_long, c("reference_upper", "sd"))
@@ -1065,7 +1073,7 @@ Let me try using `exactextract`, as a parallel to `aggregate`. This requires us 
 
 ```{r, eval=F}
 (
-regional_means <- rast(y_var_norm[,,]) %>%
+regional_means <- rast(y_var_norm) %>%
   exact_extract(reg, fun = 'mean', append_cols = "region", progress=T) %>%
   setNames(c("region", names(y_var_norm)))
   )
@@ -1073,30 +1081,97 @@ regional_means <- rast(y_var_norm[,,]) %>%
 
 That was fast! 
 
+I should also get the sd:
+
+```{r, eval=F}
+(
+regional_means_sd <- rast(y_var_norm) %>%
+  exact_extract(reg, fun = function(X) c(mean = mean(x), sd = sd(x)), append_cols = "region", progress=T) %>%
+  setNames(c("region", names(y_var_norm)))
+  )
+```
+
 ```{r, eval=F}
 saveRDS(regional_means, "temp/regional_means.rds")
 ```
 
+```{r}
+regional_means <- readRDS("temp/regional_means.rds")
+```
+
 Reshape and plot
 
-```{r}
+```{r, warning=F}
+div <- c("reference_upper",
+         "reference_low",
+         "reference_low2",
+         "threshold_low",
+         "threshold_high",
+         "sd")
+
+temp <- regional_means %>%
+  as.data.frame() %>%
+  select(region, div)
+  
 (
 regional_means_long <- regional_means %>%
   as.data.frame() %>%
-  rename(referenceUpper = reference_upper,
-         referenceLow = reference_low,
-         referenceLow2 = reference_low2,
-         thresholdLow = threshold_low,
-         thresholdHigh = threshold_high) %>%
+  select(!all_of(div)) %>%
   pivot_longer(!region) %>%
-  separate(name, into=c("type", "year"), remove=F)
+  separate(name, into=c("type", "year")) %>%
+  pivot_wider(#id_cols = region,
+              names_from = type)  %>%
+  left_join(temp, by=join_by(region)) %>% 
+  mutate(diff = v-reference_upper) %>%
+  mutate(threshold_low_centered = threshold_low-reference_upper) %>%
+  mutate(threshold_high_centered = threshold_high-reference_upper)
+)
+
+```
+
+```{r}
+regOrder = c("Østlandet","Sørlandet","Vestlandet","Midt-Norge","Nord-Norge")
+
+regional_means_long %>%
+  mutate(col = if_else(diff>0, "1", "2")) %>%
+  ggplot(aes(x = as.numeric(year), 
+           y = diff, fill = col))+
+  geom_bar(stat="identity")+
+  geom_hline(aes(yintercept = threshold_low_centered),
+        linetype=2)+
+  geom_hline(aes(yintercept = threshold_high_centered),
+        linetype=2)+
+  geom_segment(x = 1961, xend=1990,
+               y = 0, yend = 0,
+               linewidth=2)+
+  scale_fill_hue(l=70, c=60)+
+  theme_bw(base_size = 12)+
+  ylab("Sommertempratur\navvik fra 1961-1990")+
+  xlab("")+
+  guides(fill="none")+
+  facet_wrap( .~ factor(region, levels = regOrder),
+              ncol=3,
+              scales = "free_y")
+```
+
+Then we can take the mean over the last 5 years and add to a spatial representation.
+
+```{r}
+(
+i_2022 <- regional_means_long %>%
+  filter(year >2017) %>%
+  group_by(region) %>%
+  summarise(i_2022 = mean(i))
 )
 ```
 
-
 ```{r}
-temp3 <- temp2 %>%
-  st_intersection(reg)
+(
+sd_2022 <- regional_means_long %>%
+  filter(year >2017) %>%
+  group_by(region) %>%
+  summarise(i_2022 = mean(i))  
+)
 ```
 
 
