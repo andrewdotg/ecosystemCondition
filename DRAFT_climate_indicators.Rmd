@@ -733,15 +733,15 @@ temp_median_summer <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstan
 ```
 
 ```{r, eval=T}
-names(real_temp_summer)
+names(temp_median_summer)
 ```
 
 ```{r, eval=T}
-dim(real_temp_summer)
+dim(temp_median_summer)
 ```
 
 ```{r, eval=T}
-st_get_dimension_values(real_temp_summer, "Year")
+st_get_dimension_values(temp_median_summer, "Year")
 ```
 
 
@@ -1084,10 +1084,6 @@ regional_means <- rast(y_var_norm) %>%
   7.603   3.071  10.697 
   
 That was fast! 
-```{r}
-regional_means
-```
-
 
 I should also get the sd:
 
@@ -1110,6 +1106,10 @@ saveRDS(regional_sd, "temp/regional_sd.rds")
 ```{r, include=F}
 regional_means <- readRDS("temp/regional_means.rds")
 regional_sd <- readRDS("temp/regional_sd.rds")
+```
+
+```{r}
+regional_means
 ```
 
 Reshape and plot
@@ -1234,19 +1234,43 @@ Finally, I can add these values to the sp object.
 ```{r}
 reg2 <- reg %>%
   left_join(i_aggregatedToPeriods[i_aggregatedToPeriods$period_rank==5,], by=join_by(region))
-
+names(reg2)
 ```
 
-```{r}
-ggplot(reg2) + 
-  geom_sf(fill = indicator) +
-  geom_sf_label(aes(label = indicator))
 
-```
 
 ```{r}
-tm_shape(reg2)+
-  tm_polygons(col=)
+myCol <- "RdYlGn"
+myCol2 <- "-RdYlGn"
+
+tm_main <- tm_shape(reg2)+
+  tm_polygons(col="indicator",
+              title="Indikator:\nsommertemperatur",
+    palette = myCol,
+    style="fixed",
+    breaks = seq(0,1,.2)) 
+  
+
+tm_inset <- tm_shape(reg2)+
+  tm_polygons(col="spatial_sd",
+              title="SD",
+              palette = myCol2,
+              style="cont")+
+  tm_layout(legend.format = list(digits=2))
+
+
+#tm_main <- tmap_grob(tm_main)
+#tm_inset <- tmap_grob(tm_inset)
+
+#ggdraw() +
+#  draw_plot(tm_main) +
+#  draw_plot(tm_inset,
+#    height = 0.4,
+#    x = 0.12, y = .35
+#  )
+
+tmap_arrange(tm_main, 
+             tm_inset)
 ```
 
 
