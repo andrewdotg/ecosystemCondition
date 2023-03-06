@@ -460,8 +460,8 @@ summary(GRUK.species.ind)
 head(GRUK.species.ind)
 
 
-#### continue here ####
-#### data handling - ASO data ####
+
+#### data handling - ASO data ... NOT DONE YET ####
 
 
 
@@ -578,11 +578,14 @@ NiN.sp <- NiN.sp %>%
   mutate(sp=str_replace(sp,"Poa alpigena", "Poa pratensis")) %>%
   mutate(sp=str_replace(sp,"Poa angustifolia", "Poa pratensis")) %>%
   mutate(sp=str_replace(sp,"Poa laxa", "Poa flexuosa")) %>%
+  mutate(sp=str_replace(sp,"Poa _herjedalica", "Poa herjedalica")) %>%
+  mutate(sp=str_replace(sp,"Poa _jemtlandica", "Poa jemtlandica")) %>%
   mutate(sp=str_replace(sp,"Poa lindebergii", "Poa arctica")) %>%
   mutate(sp=str_replace(sp,"Pyrola grandiflora", "Pyrola rotundifolia")) %>%
   mutate(sp=str_replace(sp,"Rhamnus catharticus", "Rhamnus cathartica")) %>%
   mutate(sp=str_replace(sp,"Rumex alpestris", "Rumex acetosa")) %>%
   mutate(sp=str_replace(sp,"Salix _fragilis", "Salix fragilis")) %>%
+  mutate(sp=str_replace(sp,"Saxifraga _opdalensis", "Saxifraga opdalensis")) %>%
   mutate(sp=str_replace(sp,"Spergularia salina", "Spergularia marina")) %>%
   mutate(sp=str_replace(sp,"Syringa emodi", "Syringa vulgaris")) %>%
   mutate(sp=str_replace(sp,"Taraxacum crocea", "Taraxacum officinale")) %>%
@@ -606,6 +609,7 @@ unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) &
                     NiN.sp.ind$spgr %in% list("a1a","a1b","a1c")
                   ,'sp'])
 # ok now
+
 
 #### matching with NiN ecosystem types - wetlands ####
 # NB! beware of rogue spaces in the 'Nature_type' & 'Sub_Type' variables, e.g. "Spring_Forest "
