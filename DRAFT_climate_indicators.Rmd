@@ -8,8 +8,10 @@ output:
 
 <br />
 
-*Author and date:* 
+*Author and date:*
+
 Anders L. Kolstad
+
 March 2023
 
 <br />
@@ -60,7 +62,7 @@ knitr::kable(metaData)
 
 ## Introduction
 
-This chapters describes the development of a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/). 
+This chapters describes the development of a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/).
 
 ## About the underlying data
 
@@ -80,13 +82,13 @@ Varied. Specified below for each parameter.
 
 1957 - present
 
-### Aditional comments about the dataset
+### Additional comments about the data set
 
-The data format has changes from .BIL to .nc (netcdf) and now a single file contains all the rasters for one year (365 days), and sometimes for multiple variables also.
+The data format has recently changed from .BIL to .nc (netcdf) and now a single file contains all the rasters for one year (365 days), and sometimes for multiple variables also.
 
 ## Ecosystem characteristic
 
-### Norwegain standard
+### Norwegian standard
 
 These variables typically will fall under the *abiotiske egenskaper* class.
 
@@ -102,27 +104,27 @@ Climate variables are most likely to be correlated with each other (e.g. tempera
 
 ### Reference condition
 
-The reference condition for climate variables is defined as the laste normal period 1961-1990.
+The reference condition for climate variables is defined as the last normal period 1961-1990.
 
 ### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
 
--   Un-scaled indicator value = median value over last 5 year (moving window)
+-   Un-scaled indicator value = median value over 5 year periods
 
 -   Upper reference level (best possible condition) = median value from the reference period
 
--   Threshold for good ecosystem condition = 2 standard deviation units for the climate variable during the reference period.
+-   Thresholds for good ecosystem condition = 2 standard deviation units away from the upper reference level for the climate variable during the reference period.
 
--   Lower reference value = 5 standard deviation units for the climate variable during the reference period.
+-   Lower reference values (two-directional) = 5 standard deviation units for the climate variable during the reference period (implies linear scaling).
 
 ## Uncertainties
 
-For the indicator map (1 x 1 km raster) there is no uncertainty associated with the indicator values. For aggregated indicator values (e.g. for regions), the uncertainty in the indicator value is calculated from the spatial variation in the indicator values via bootstrapping.
+For the indicator map (1 x 1 km raster) there is no uncertainty associated with the indicator values. For aggregated indicator values (e.g. for regions), the uncertainty in the indicator value is calculated from the spatial variation in the indicator values via bootstrapping. This might, however, be changed later to the temporal variation between the five years of each period.
 
 ## References
 
 <https://senorge.no/>
 
-rr and tm are being download from <https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html>
+*rr and tm are being download from:* <https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html>
 
 ### Additional resources
 
@@ -152,7 +154,7 @@ This folder contains folder for the different parameters
 
 This table explains them in more detail
 
-```{r}
+```{r, fig.cap="Table explaining the available climate parameters in the data set."}
 senorgelayers <- read_delim("data/senorgelayers.txt", 
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE)
@@ -174,17 +176,11 @@ tg_1957 <- stars::read_ncdf(paste0(path, "/rr_tm/seNorge2018_1957.nc"),
                             var="tg")
 ```
 
-I think I know the CRS, so setting it manually.
+I know the CRS, so setting it manually. Although I cannot rule out 32633, I don't think it matters.
 
 ```{r}
 st_crs(tg_1957) <- 25833
 ```
-
-Checking that this is correct
-```{r}
-p = st_sfc(st_point(c(7039947.63, 270783.69)), crs=25833)
-```
-
 
 The data has three dimension
 
@@ -192,7 +188,7 @@ The data has three dimension
 dim(tg_1957)
 ```
 
-Initially the data had four attributes, but I subsettet to only include _tg_.
+Initially the data had four attributes, but I subsettet to only include *tg*.
 
 ```{r}
 names(tg_1957)
@@ -297,7 +293,7 @@ ggplot() +
   facet_wrap(~time, ncol=4)
 ```
 
-Saving these to file to demonstrate the importing step of the workflow.
+Saving these to file.
 
 ```{r, eval=F}
 path <- "P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data"
@@ -310,7 +306,7 @@ saveRDS(y5, paste0(path, "/y5.rds"))
 
 ##### Dummy regions and ET map
 
-Here is some dummy data for accounting areas (regions) and ecosystem occurrences as well.
+Here is some dummy data for accounting areas (regions) and ecosystem occurrences as well, in case I need them later.
 
 ```{r, fig.cap="Showing the example account area delineation (raster format)"}
 dummy_aa <- x %>%
@@ -345,17 +341,17 @@ reg <- sf::st_read("data/regions.shp", options = "ENCODING=UTF8")
 
 Outline of Norway
 
-```{r}
+```{r, message=FALSE}
 nor <- sf::st_read("data/outlineOfNorway_EPSG25833.shp")
 ```
-Remoce marine areas from regions
+
+Remove marine areas from regions
 
 ```{r}
 reg <- st_intersection(reg, nor)
 ```
 
-
-```{r, fig.cap="Five accounting areas (regions)."}
+```{r, fig.cap="Five accounting areas (regions) in Norway."}
 
 tm_shape(reg) +
   tm_polygons(col="region")
@@ -366,20 +362,21 @@ tm_shape(reg) +
 
 Coming soon ....
 
+The climate indicators need to be masked with ecosystem type maps. This step is part of this chapter.
 
 ## --------------------------------------------------
 
-### Conseptual workflow
+### Conceptual workflow
 
-The general, conceptual workflow is like this:
+The general, the conceptual workflow is like this:
 
 1.  Collate variable data series
 
-    -   Import .nc files (loop though year 1961-1990) and subset to the correct attribute (above)
+    -   Import .nc files (loop though year 1961-1990) and subset to the correct attribute
 
-    -   Filter data by dates (optional) (`dplyr::filter`)
+    -   Filter data by dates (optional) (`dplyr::filter`). *This means reading all 365 rasters into memory, and it is much quicker to filter out the correct rasters in the importing step above (see examples later in this chapter)*
 
-    -   Aggregate across time within a year (`stars::st_apply`)
+    -   Aggregate across time within a year (`stars::st_apply`). *This is the most time consuming operation in the workflow.*
 
     -   Join all data into one data cube (`stars:c`)
 
@@ -393,21 +390,15 @@ The general, conceptual workflow is like this:
 
     -   Normalize climate variable at the individual grid cell level using the three reference values (`mutate(across()))`
 
-4.  Write to file
+4.  Mask by ecosystem type (*This could also be done in step one, but it doesn't speed things up to set some cells to NA*)
 
-5.  Mask by ecosystem type (this could also be done in step one to save time)
-
-6.  Aggregate in space (to accounting areas)
+5.  Aggregate in space (to accounting areas) (*zonal statistics*)
 
     -   Aggregate across 5 year time steps to smooth out random inter-annual variation and leave climate signal
 
-    -   Intersect with accounting area polygons `sf:st_intersects`
+    -   Intersect with accounting area polygons `exactextrar::exact_extract` and get mean/median and (spatial) sd. (*Alternatively, get temporal sd at the grid cell level in the step above.*)
 
-    -   Bootstrap indicator values (cell values) and get median and sd
-
-7.  Make trend figure
-
-I will try to use [parallelization](https://tmieno2.github.io/R-as-GIS-for-Economists/EE.html) to speed things up. Also, masking to ecosystem time earlier in the workflow might prove smart.
+6.  Make trend figure and spatially aggregated maps,
 
 ### 1. Collate variable data series
 
@@ -456,9 +447,11 @@ x_aug <- x %>%
 st_get_dimension_values(x_aug, "time")
 ```
 
+*Later I discover that \`dplyr::filter\` work after reading the whole object to file, and therefor it is too slow for our use. I therefore filter data a different way further down.*
+
 #### Aggregate across time within a year
 
-For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. There are two ways, either using `st_apply` or using `aggregate`.
+For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. Many climate indicators will need this functionality. There are two ways, either using `st_apply` or using `aggregate`.
 
 ```{r}
 temp_names <- year(st_get_dimension_values(x_aug, "time")[1])
@@ -516,7 +509,7 @@ x_summerMean <-   x_aug %>%
   rename(all_of(lookup))
 ```
 
-The *v\_* follows the naming convention in Norway.
+The *v\_* follows the naming convention we have developed for ourselves.
 
 ```{r, fig.cap="Plotting the dummy data showing Attribute_A for the two dates as small maps, and a larger map showing the mean for year 2018"}
 ggarrange(
@@ -588,7 +581,7 @@ summerTemp_fullSeries <- summerTemp_fullSeries %>%
 
 And this is the result.
 
-```{r}
+```{r, fig.cap="Temporal aggregation on the dummy data set."}
 ggplot()+
   geom_stars(data = summerTemp_fullSeries) +
   coord_equal() +
@@ -601,7 +594,9 @@ ggplot()+
 
 Now let's try it on the real data.
 
-_I initially tried to read stars proxy object and add steps to the call_list and execute these with `st_as_stars`, but this still returned proxy objects. Therefore I read the whole file in without proxy. To save time I can subset based on Julian dates, but this is a hard coded solution._
+*I initially tried to read stars proxy object and add steps to the call_list and execute these with `st_as_stars`, but this still returned proxy objects. Therefore I read the whole file in without proxy. To save time I can subset based on Julian dates.*
+
+I will use [parallelization](https://tmieno2.github.io/R-as-GIS-for-Economists/EE.html) to speed things up.
 
 ```{r, warning=F, eval=F}
 path <- path <- ifelse(dir == "C:", 
@@ -611,13 +606,15 @@ path <- path <- ifelse(dir == "C:",
 path2 <- paste0(path, "GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original/rr_tm/")
 
 myFiles <- list.files(path2, pattern=".nc$",full.names = T)
-# The last file, the last year, is incomplete and dont include all juliani dates that we select below
+# The last file (the last year) is incomplete and don't include all julian dates that we select below, so I will not include it:
 myFiles <- myFiles[-length(myFiles)]
+
 real_temp_summer <- NULL
 
+# set up parallel cluster using 10 cores
 cl <- makeCluster(10L)
 
-# Get julian days
+# Get julian days after defining months
 temp <- stars::read_ncdf(paste(myFiles[1]), var="tg")
 start_month_num <-  6
 end_month_num <- 8
@@ -638,11 +635,9 @@ for(i in 1:length(myFiles)){
                               count = c(NA, NA, step)))
   year_temp <- year(st_get_dimension_values(temp, "time")[1])
   print(year_temp)
-  #start <- ym(paste(year_temp, start_month, sep="-"))
-  #end <-  ym(paste(year_temp, end_month, sep="-"))
-  #myInterval <- interval(start, end)
-  #myInterval <- interval(start, start+1)
-  lookup <- setNames("mean", paste0("v_", year_temp)) # Perhaps leave out the v_ to get a numeric vector instead, which is easier to subset
+  lookup <- setNames("mean", paste0("v_", year_temp)) 
+    # Perhaps leave out the v_ to get a numeric vector instead, 
+    # which is easier to subset
   st_crs(temp) <- 25833
   toc()
 
@@ -669,7 +664,8 @@ stopCluster(cl)
 
 ```
 
-This takes about 20 sec per file/year, or 22 min on total. Here's a test for the effect of splitting over more cores.
+This takes about 20 sec per file/year, or 22 min on total. That is not too bad. About 6000 raster are read into memory. Here's a test for the effect of splitting over more cores.
+
 ```{r, eval=F}
 cl <- makeCluster(2L)
 cl2 <- makeCluster(6L)
@@ -708,21 +704,25 @@ stopCluster(cl3)
 toc()
   
 ```
-No cluster: 21.401 sec elapsed
-Two clusters: 21.546 sec elapsed
-Six clusters: 14.548 sec elapsed
-Ten clusters: 15.29 sec elapsed
-Ten clusters (second run): 13.617 sec elapsed
+
+-   No cluster: 21.401 sec elapsed
+
+-   Two clusters: 21.546 sec elapsed
+
+-   Six clusters: 14.548 sec elapsed
+
+-   Ten clusters: 15.29 sec elapsed
+
+-   Ten clusters (second run): 13.617 sec elapsed
 
 The RStudio server has 48 cores. More parallel cores is probably on average faster. The NINA guidelines is to use max 10 cores, and to remember to close parallel cluster when done.
-
 
 ```{r, eval=F}
 saveRDS(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.rds")
 write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.tiff")
 ```
 
-These files are about 500 MB, but the tiff file reads in a lot quicker then the rds file, so from now on I'll just export as tiff.
+These files are about 500 MB, but the tiff file reads in a lot quicker then the rds file, so from now on I'll just export as tiff. *(This could perhaps have been solved with a `gc()`,. Later I save as RData with no problems).*
 
 ```{r}
 temp_median_summer <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.tiff",
@@ -744,15 +744,14 @@ dim(temp_median_summer)
 st_get_dimension_values(temp_median_summer, "Year")
 ```
 
-
-
-Note that GTiff automatically renames the third dimension _band_ and also renames the attribute.
+Note that GTiff automatically renames the third dimension *band* and also renames the attribute.
 
 ```{r}
 st_get_dimension_values(temp_median_summer, "band")
 ```
 
-I can rename them. 
+I can rename them.
+
 ```{r}
 temp_median_summer <- temp_median_summer %>% 
   st_set_dimensions(names = c("x", "y", "v_YEAR")) %>%
@@ -771,8 +770,8 @@ ggplot()+
   facet_wrap(~v_YEAR)
 ```
 
-
 ### 2. Calculate reference values
+
 #### Aggregate across reference years
 
 We need to first to define a reference period and then to subset our data `temp_median_summer`. We can practice on the dummy data `y`.
@@ -797,12 +796,12 @@ for(i in 1:length(myFiles)){
 ```{r}
 st_get_dimension_values(y, "time")
 ```
+
 ```{r}
 y_filtered <- y %>%
   select(Attribute_A) %>%
   filter(time %within% interval("1961-01-01", "1990-12-31"))
 ```
-
 
 Now we aggregate across years, again using st_apply.
 
@@ -875,12 +874,10 @@ stopCluster(cl)
 })
 ```
 
-  user  system elapsed 
-  9.624   6.069  20.903 
-  
-
+user system elapsed 9.624 6.069 20.903
 
 This is also something I can export.
+
 ```{r, eval=F}
 # write_stars can only export a single attribute 
 #write_stars(temp_median_summer_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.tiff")
@@ -912,8 +909,6 @@ tm_shape(st_downsample(temp_median_summer_ref_long, 10))+
             palette = "-viridis")
 )
 ```
-  
-
 
 #### Combine
 
@@ -966,9 +961,9 @@ y_var_norm <- y_var %>%
   c(select(y_var, all_of(cols)))
 )
 ```
-  user  system elapsed 
- 14.803   2.717  17.512 
- 
+
+user system elapsed 14.803 2.717 17.512
+
 ```{r, eval=F}
 gc()
 saveRDS(y_var_norm, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData")
@@ -977,9 +972,6 @@ saveRDS(y_var_norm, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/d
 ```{r, include=FALSE}
 y_var_norm <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData")
 ```
-
-
-
 
 ```{r, fig.cap="Example showing median summer tempretur in 1970, the upper and lwoer reference temperture, i.e. median and 5 SD units of the temperature between  1961-1990, and finally, the scaled indicator values."}
 
@@ -1036,8 +1028,7 @@ ggplot() +
 )
 ```
 
-The _real_ indicator values should be running means over 5 years, but calculating a running mean for all time steps is too time consuming. Therefore, the time series will be presented with yearly resolution, and the scaled, regional indicator values will be calculated for distinct time steps.
-
+The *real* indicator values should be running means over 5 years, but calculating a running mean for all time steps is too time consuming. Therefore, the time series will be presented with yearly resolution, and the scaled, regional indicator values will be calculated for distinct time steps.
 
 #### Plot time series as line graphs
 
@@ -1055,7 +1046,7 @@ temp2 <- temp %>%
 
 However, this does not preserve the region name, and a subsequent st_intersection taks a little whie and gives some boundary problems.
 
-I can also converting att pixels to points and then do the intersection. 
+I can also converting att pixels to points and then do the intersection.
 
 ```{r, eval=F}
 temp_points <- y_var_norm[1,,] %>%
@@ -1068,9 +1059,9 @@ But this also took too long.
 
 I can perhaps aggregate, and then turn to points and intersect, but that did not work perfect either.
 
-I can rastereze the regions data set, turn it into a coded dimension and use st_apply, but thats tedious. 
+I can rastereze the regions data set, turn it into a coded dimension and use st_apply, but thats tedious.
 
-Let me try using `exactextract`, as a parallel to `aggregate`. This requires us to turn to the `terra` package for a bit. 
+Let me try using `exactextract`, as a parallel to `aggregate`. This requires us to turn to the `terra` package for a bit.
 
 ```{r, eval=F}
 system.time(
@@ -1080,10 +1071,9 @@ regional_means <- rast(y_var_norm) %>%
   )
 ```
 
- user  system elapsed 
-  7.603   3.071  10.697 
-  
-That was fast! 
+user system elapsed 7.603 3.071 10.697
+
+That was fast!
 
 I should also get the sd:
 
@@ -1095,9 +1085,8 @@ regional_sd <- rast(y_var_norm) %>%
   )
 ```
 
-  user  system elapsed 
-  7.420   2.921  10.355 
-  
+user system elapsed 7.420 2.921 10.355
+
 ```{r, eval=F}
 saveRDS(regional_means, "temp/regional_means.rds")
 saveRDS(regional_sd, "temp/regional_sd.rds")
@@ -1150,9 +1139,6 @@ regional_means_long <- regional_sd %>%
   left_join(regional_means_long, by=join_by(region, year))
 )
 ```
-
-
-
 
 ```{r}
 regOrder = c("Østlandet","Sørlandet","Vestlandet","Midt-Norge","Nord-Norge")
@@ -1237,8 +1223,6 @@ reg2 <- reg %>%
 names(reg2)
 ```
 
-
-
 ```{r}
 myCol <- "RdYlGn"
 myCol2 <- "-RdYlGn"
@@ -1272,8 +1256,6 @@ tm_inset <- tm_shape(reg2)+
 tmap_arrange(tm_main, 
              tm_inset)
 ```
-
-
 
 ```{r}
   ts1 <- y_var_norm %>%
