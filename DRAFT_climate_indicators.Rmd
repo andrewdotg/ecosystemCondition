@@ -382,7 +382,7 @@ The general, the conceptual workflow is like this:
 
 2.  Calculate reference values
 
-    -   Aggregate across reference years to get median and sd values (`st_apply)`
+    -   Aggregate (`st_apply)` across reference years (`dplyr::filter`) to get median and sd values
 
     -   Join with existing data cube (`stars:c`)
 
@@ -718,50 +718,50 @@ toc()
 The RStudio server has 48 cores. More parallel cores is probably on average faster. The NINA guidelines is to use max 10 cores, and to remember to close parallel cluster when done.
 
 ```{r, eval=F}
-saveRDS(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.rds")
-write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.tiff")
+saveRDS(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp.rds")
+write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp.tiff")
 ```
 
 These files are about 500 MB, but the tiff file reads in a lot quicker then the rds file, so from now on I'll just export as tiff. *(This could perhaps have been solved with a `gc()`,. Later I save as RData with no problems).*
 
 ```{r}
-temp_median_summer <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.tiff",
+summer_median_temp <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp.tiff",
                                  proxy=F)
 # This is too slow:
-# readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/temp_median_summer.rds")
+# readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/summer_median_temp.rds")
 # but it could be that RData works better 
 ```
 
 ```{r, eval=T}
-names(temp_median_summer)
+names(summer_median_temp)
 ```
 
 ```{r, eval=T}
-dim(temp_median_summer)
+dim(summer_median_temp)
 ```
 
 ```{r, eval=T}
-st_get_dimension_values(temp_median_summer, "Year")
+st_get_dimension_values(summer_median_temp, "Year")
 ```
 
 Note that GTiff automatically renames the third dimension *band* and also renames the attribute.
 
 ```{r}
-st_get_dimension_values(temp_median_summer, "band")
+st_get_dimension_values(summer_median_temp, "band")
 ```
 
 I can rename them.
 
 ```{r}
-temp_median_summer <- temp_median_summer %>% 
+summer_median_temp <- summer_median_temp %>% 
   st_set_dimensions(names = c("x", "y", "v_YEAR")) %>%
   setNames("temperature")
-dim(temp_median_summer)
+dim(summer_median_temp)
 ```
 
 ```{r, fig.cap="Showing three random slices of the year dimension."}
 ggplot()+
-  geom_stars(data = temp_median_summer[,,,c(1,11,22)], downsample = c(10, 10, 0)) +
+  geom_stars(data = summer_median_temp[,,,c(1,11,22)], downsample = c(10, 10, 0)) +
   coord_equal() +
   theme_void() +
   scale_fill_viridis_c(option = "D") +  
@@ -774,7 +774,7 @@ ggplot()+
 
 #### Aggregate across reference years
 
-We need to first to define a reference period and then to subset our data `temp_median_summer`. We can practice on the dummy data `y`.
+We need to first to define a reference period and then to subset our data `summer_median_temp`. We can practice on the dummy data `y`.
 
 ```{r}
 dir <- substr(getwd(), 1,2)
@@ -848,17 +848,18 @@ tm_shape(y_ref)+
 Let's transfer this over to the real data. First we need to rename our dimension values and turn them back into dates.
 
 ```{r}
-new_dims <- as.Date(paste0(substr(st_get_dimension_values(temp_median_summer, "v_YEAR"), 3, 6), "-01-01"))
-temp_median_summer_ref <- temp_median_summer %>%
+new_dims <- as.Date(paste0(
+  substr(st_get_dimension_values(summer_median_temp, "v_YEAR"), 3, 6), "-01-01"))
+summer_median_temp_ref <- summer_median_temp %>%
   st_set_dimensions("v_YEAR", values = new_dims)
 ```
 
 Then I can filter to leave only the reference period.
 
 ```{r}
-temp_median_summer_ref <- temp_median_summer_ref %>%
+summer_median_temp_ref <- summer_median_temp_ref %>%
   filter(v_YEAR %within% interval("1961-01-01", "1990-12-31"))
-st_get_dimension_values(temp_median_summer_ref, "v_YEAR")
+st_get_dimension_values(summer_median_temp_ref, "v_YEAR")
 ```
 
 And then we calculate the median and sd like above
@@ -866,7 +867,7 @@ And then we calculate the median and sd like above
 ```{r, eval=FALSE}
 system.time({
 cl <- makeCluster(10L)
-temp_median_summer_ref <- temp_median_summer_ref %>%
+summer_median_temp_ref <- summer_median_temp_ref %>%
   st_apply(c("x", "y"), 
            FUN =  median_sd,
            CLUSTER = cl)
@@ -874,37 +875,41 @@ stopCluster(cl)
 })
 ```
 
-user system elapsed 9.624 6.069 20.903
+| user  | system | elapsed |
+|-------|--------|---------|
+| 9.624 | 6.069  | 20.903  |
 
 This is also something I can export.
 
 ```{r, eval=F}
 # write_stars can only export a single attribute 
-#write_stars(temp_median_summer_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.tiff")
+#write_stars(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.tiff")
 
-saveRDS(temp_median_summer_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
+saveRDS(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")
 ```
 
 ```{r, eval=T, include=F}
-temp_median_summer_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
+summer_median_temp_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")
 ```
 
+Pivot and turn dimension into attributes:
+
 ```{r, eval=T}
-temp_median_summer_ref_long <- temp_median_summer_ref %>% split("median_sd")
+summer_median_temp_ref_long <- summer_median_temp_ref %>% split("median_sd")
 ```
 
 The attribute name is *mean*. We can change this to something more meaningful.
 
 ```{r, eval=T}
-temp_median_summer_ref_long <- setNames(temp_median_summer_ref_long, c("reference_upper", "sd"))
+summer_median_temp_ref_long <- setNames(summer_median_temp_ref_long, c("reference_upper", "sd"))
 ```
 
 ```{r, fig.cap="Showing the upper reference levels and the standard deviation from actual data of median summer temperatures."}
 tmap_arrange(
-tm_shape(st_downsample(temp_median_summer_ref_long, 10))+
+tm_shape(st_downsample(summer_median_temp_ref_long, 10))+
   tm_raster("reference_upper")
 ,
-tm_shape(st_downsample(temp_median_summer_ref_long, 10))+
+tm_shape(st_downsample(summer_median_temp_ref_long, 10))+
   tm_raster("sd",
             palette = "-viridis")
 )
@@ -915,9 +920,9 @@ tm_shape(st_downsample(temp_median_summer_ref_long, 10))+
 I need to combine the variables and the ref values in one data cube
 
 ```{r}
-y_var <- temp_median_summer %>%
+y_var <- summer_median_temp %>%
   split(3) %>%
-  c(temp_median_summer_ref_long)
+  c(summer_median_temp_ref_long)
 
 ```
 
@@ -932,7 +937,6 @@ names(cols_new) <- gsub("v_", "i_", cols)
 
 ```{r, eval=F}
 # Mutate
-# can I find a way to keep the v_ columns?
 
 # The break point scaling is actually not needed here, since 
 # having the lower ref value to be 5 sd implies that the threshold is
@@ -962,15 +966,17 @@ y_var_norm <- y_var %>%
 )
 ```
 
-user system elapsed 14.803 2.717 17.512
+| user   | system | elapsed |
+|--------|--------|---------|
+| 14.803 | 2.717  | 17.512  |
 
 ```{r, eval=F}
 gc()
-saveRDS(y_var_norm, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData")
+saveRDS(y_var_norm, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_normalised.RData")
 ```
 
 ```{r, include=FALSE}
-y_var_norm <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData")
+y_var_norm <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_normalised.RData")
 ```
 
 ```{r, fig.cap="Example showing median summer tempretur in 1970, the upper and lwoer reference temperture, i.e. median and 5 SD units of the temperature between  1961-1990, and finally, the scaled indicator values."}
@@ -1028,11 +1034,11 @@ ggplot() +
 )
 ```
 
-The *real* indicator values should be running means over 5 years, but calculating a running mean for all time steps is too time consuming. Therefore, the time series will be presented with yearly resolution, and the scaled, regional indicator values will be calculated for distinct time steps.
+The *real* indicator values should be means over 5 year periods. Calculating a running mean for all time steps is too time consuming. Therefore, the scaled, regional indicator values will be calculated for distinct time steps. The time series can perhaps best be presented with yearly resolution.
 
 #### Plot time series as line graphs
 
-We could also plot a time series as a series of maps, but then we need to avergae over this 5 time periods firs. We can get to that later.
+We could also plot a time series as a series of maps, but then we need to average over these 5 year time periods first. We can get to that later.
 
 To plot time series I first need to do a spatial aggregation. One option is to spatially aggregate the stars object directly, using the `reg` data set:
 
@@ -1044,9 +1050,9 @@ temp2 <- temp %>%
   st_as_sf() # too slow
 ```
 
-However, this does not preserve the region name, and a subsequent st_intersection taks a little whie and gives some boundary problems.
+However, this does no preserve the region name, and a subsequent `st_intersection` taks a little while and gives some boundary problems.
 
-I can also converting att pixels to points and then do the intersection.
+I can also convert pixels to points and then do the intersection.
 
 ```{r, eval=F}
 temp_points <- y_var_norm[1,,] %>%
@@ -1059,9 +1065,9 @@ But this also took too long.
 
 I can perhaps aggregate, and then turn to points and intersect, but that did not work perfect either.
 
-I can rastereze the regions data set, turn it into a coded dimension and use st_apply, but thats tedious.
+I can rasterize the regions data set, turn it into a coded dimension and use st_apply, but that is tedious.
 
-Let me try using `exactextract`, as a parallel to `aggregate`. This requires us to turn to the `terra` package for a bit.
+Let me try using `exact_extract`, as an alternative to `aggregate`. This requires us to turn to the `terra` package for a bit.
 
 ```{r, eval=F}
 system.time(
@@ -1071,7 +1077,7 @@ regional_means <- rast(y_var_norm) %>%
   )
 ```
 
-user system elapsed 7.603 3.071 10.697
+user; system; elapsed: 7.603; 3.071; 10.697
 
 That was fast!
 
@@ -1085,7 +1091,7 @@ regional_sd <- rast(y_var_norm) %>%
   )
 ```
 
-user system elapsed 7.420 2.921 10.355
+user; system; elapsed: 7.420; 2.921; 10.355
 
 ```{r, eval=F}
 saveRDS(regional_means, "temp/regional_means.rds")
@@ -1140,7 +1146,7 @@ regional_means_long <- regional_sd %>%
 )
 ```
 
-```{r}
+```{r, fig.cap="Times series for median summer temperature centered on the median value during the reference period. The reference period is indicated with a thick horizontal line. Dottet horisontal lines are 2 sd units for the reference period."}
 regOrder = c("Østlandet","Sørlandet","Vestlandet","Midt-Norge","Nord-Norge")
 
 regional_means_long %>%
@@ -1223,7 +1229,7 @@ reg2 <- reg %>%
 names(reg2)
 ```
 
-```{r}
+```{r, fig.cap="Summer tempreature indicator values for five accounting areas in Norway. SD is the spatial variation."}
 myCol <- "RdYlGn"
 myCol2 <- "-RdYlGn"
 
@@ -1234,7 +1240,6 @@ tm_main <- tm_shape(reg2)+
     style="fixed",
     breaks = seq(0,1,.2)) 
   
-
 tm_inset <- tm_shape(reg2)+
   tm_polygons(col="spatial_sd",
               title="SD",
@@ -1242,89 +1247,9 @@ tm_inset <- tm_shape(reg2)+
               style="cont")+
   tm_layout(legend.format = list(digits=2))
 
-
-#tm_main <- tmap_grob(tm_main)
-#tm_inset <- tmap_grob(tm_inset)
-
-#ggdraw() +
-#  draw_plot(tm_main) +
-#  draw_plot(tm_inset,
-#    height = 0.4,
-#    x = 0.12, y = .35
-#  )
-
 tmap_arrange(tm_main, 
              tm_inset)
 ```
 
-```{r}
-  ts1 <- y_var_norm %>%
-  select(all_of(starts_with("i_"))) %>%
-  st_redimension() %>%
-  st_apply(3, median_sd) %>%
-  as_tibble() %>%
-  setNames(c("metric", "i_year", "value") ) %>%
-  mutate(year = as.numeric(substr(i_year, 3, 7))) %>%
-  pivot_wider(names_from = "metric") %>%
-  select(-i_year) %>%
-  add_column(type = "indicator_value") %>%
-  rename(value = median) %>%
-  add_column(metric = "median")
-```
 
-```{r}
-ts2 <- y_var_norm %>%
-  select(all_of(starts_with("v_"))) %>%
-  st_redimension() %>%
-  st_apply(3, median_sd) %>%
-  as_tibble() %>%
-  setNames(c("metric", "v_year", "value") ) %>%
-  mutate(year = as.numeric(substr(v_year, 3, 7))) %>%
-  pivot_wider(names_from = "metric") %>%
-  select(-v_year) %>%
-  add_column(type = "variable_value") %>%
-  rename(value = median) %>%
-  add_column(metric = "median")
-```
 
-```{r}
-  ts3 <- y_var_norm %>%
-  select(!all_of(starts_with(c("v_", "i_")))) %>%
-  st_redimension() %>%
-  st_apply(3, median) %>%
-  as_tibble() %>%
-  setNames(c("type", "value")) %>%
-    add_column(metric = "median")
-```
-
-```{r}
-(ts <- bind_rows(ts1, ts2, ts3))
-```
-
-Calculate diference between indicator and reference We don't want to include this in ts, but as a temp file.
-
-```{r}
-tsX <- ts1
-```
-
-```{r}
-ts %>% filter(type == "indicator_value") %>%
-  ggplot(aes(x = year, y = value))+
-  geom_line()
-```
-
-### Scaled indicator values
-
-<!-- Text and analyses here -->
-
-### Uncertainty
-
-<!-- Text here -->
-
-## Prepare export
-
-<!-- Text here -->
-
-### Eksport file (final product)
-
-<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
