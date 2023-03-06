@@ -286,6 +286,8 @@ summary(ANO.sp.ind)
 head(ANO.sp.ind)
 
 
+
+
 #### data handling - GRUK data ####
 head(GRUK.variables)
 head(GRUK.species)
@@ -418,18 +420,17 @@ GRUK2021.condition$Flate_ID <- GRUK2021.condition$områdenavn
 unique(as.factor(GRUK2021.condition$Flate_ID))
 GRUK2021.condition$Flate_ID <- gsub("_", " ", GRUK2021.condition$Flate_ID) # replace underscore with space
 unique(as.factor(GRUK2021.condition$Flate_ID))
-GRUK2021.condition$Flate_ID <- gsub(" ", "-", GRUK2021.condition$Flate_ID) # replace space with hyphon
-GRUK2021.condition$Flate_ID <- gsub("[^0-9\\-]", "", GRUK2021.condition$Flate_ID) # remove all non-numerics except '-'
-GRUK2021.condition$Flate_ID <- gsub("--", "-", GRUK2021.condition$Flate_ID) # remove double hyphons
-GRUK2021.condition$Flate_ID
-GRUK2021.condition$Flate_ID <- substr(GRUK2021.condition$Flate_ID, 1, nchar(GRUK2021.condition$Flate_ID)-1) # remove the last character ('-' for all)
-GRUK2021.condition$Flate_ID
+GRUK2021.condition$Flate_ID <- sub(" .*", "", GRUK2021.condition$Flate_ID) # remove everything after space
+unique(as.factor(GRUK2021.condition$Flate_ID))
+
+#GRUK2021.condition$Flate_ID <- gsub(" ", "-", GRUK2021.condition$Flate_ID) # replace space with hyphon
+#GRUK2021.condition$Flate_ID <- gsub("[^0-9\\-]", "", GRUK2021.condition$Flate_ID) # remove all non-numerics except '-'
+#GRUK2021.condition$Flate_ID <- gsub("--", "-", GRUK2021.condition$Flate_ID) # remove double hyphons
+#GRUK2021.condition$Flate_ID <- substr(GRUK2021.condition$Flate_ID, 1, nchar(GRUK2021.condition$Flate_ID)-1) # remove the last character ('-' for all)
 
 
 colnames(GRUK.variables)
 colnames(GRUK2021.condition)
-#### continue here ####
-
 
 GRUK.variables <- merge(x=GRUK.variables, 
                           y=GRUK2021.condition[,c("tilstandsvurdering","tilstandsgrunn","artsmangfoldvurdering","lokalitetskvalitet","Flate_ID")], 
@@ -437,36 +438,29 @@ GRUK.variables <- merge(x=GRUK.variables,
 
 
 
-
-
-
-
-
-
-
-
-## adding information on ecosystem and condition variables
+## adding information on ecosystem and condition variables to species data
 GRUK.species.ind <- merge(x=GRUK.species.ind, 
-                    y=ANO.geo[,c("GlobalID","ano_flate_id","ano_punkt_id","ssb_id","aar",
-                                 "hovedoekosystem_punkt","hovedtype_1m2","kartleggingsenhet_1m2",
-                                 "vedplanter_total_dekning","busker_dekning","tresjikt_dekning","roesslyng_dekning")], 
+                    y=GRUK.variables[,c("GlobalID","year","Flate_ID","Punkt_ID",
+                                        "Total dekning % av karplanter registert","Dekning % av karplanter i feltsjikt","Dekning % av moser",
+                                        "Dekning % av lav","Dekning % av strø","Dekning % av bar jord/grus/stein/berg",
+                                        "Kartleggingsenhet",
+                                        "Spor etter ferdsel med tunge kjøretøy (%)","Spor etter slitasje og slitasjebetinget erosjon (%)","Dekning % av nakent berg","Menneskeskapte objekter i sirkelen?",
+                                        "Total dekning % av vedplanter i feltsjikt","Dekning % av busker i busksjikt","Dekning % av tresjikt","Dekning % av problemarter","Total dekning % av fremmede arter",
+                                        "x","y")], 
                     by.x="ParentGlobalID", by.y="GlobalID", all.x=T)
 # trimming away the points without information on NiN, species or cover
 GRUK.species.ind <- GRUK.species.ind[!is.na(GRUK.species.ind$Species),]
 GRUK.species.ind <- GRUK.species.ind[!is.na(GRUK.species.ind$art_dekning),]
 
 #rm(GRUK.species)
+#rm(GRUK.variables)
 
-#GRUK.species <- GRUK.species[!is.na(GRUK.species$Hovedoekosystem_rute),] # need to check
-unique(as.factor(GRUK.species.ind$hovedoekosystem_punkt))
-unique(as.factor(GRUK.species.ind$hovedtype_1m2))
-unique(as.factor(GRUK.species.ind$kartleggingsenhet_1m2))
 
 summary(GRUK.species.ind)
 head(GRUK.species.ind)
 
 
-
+#### continue here ####
 #### data handling - ASO data ####
 
 
