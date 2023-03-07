@@ -12,7 +12,10 @@ library(ggpubr)
 library(DT)
 library(units)
 library(eaTools)
-library(tidyverse)
+#library(tidyverse)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 
 # Set up conditional file paths

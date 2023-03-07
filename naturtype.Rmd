@@ -1026,6 +1026,7 @@ ntyp_fill2 %>%
          NiN_mainTypeCoverage,
          count)%>%
   ungroup() %>%
+  mutate(count = replace_na(count, 0)) %>%
   mutate(NiN_mainType = fct_reorder(NiN_mainType, count)) %>%
   ggplot(aes(x = NiN_mainType,
              y = count,
