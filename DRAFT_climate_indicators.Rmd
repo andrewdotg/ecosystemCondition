@@ -132,7 +132,7 @@ For the indicator map (1 x 1 km raster) there is no uncertainty associated with 
 
 [R as a GIS for economists](https://tmieno2.github.io/R-as-GIS-for-Economists/stars-basics.html) chapter 7
 
-## --------------------------------------------------
+<hl/>
 
 ## Analyses
 
@@ -154,7 +154,7 @@ This folder contains folder for the different parameters
 
 This table explains them in more detail
 
-```{r, fig.cap="Table explaining the available climate parameters in the data set."}
+```{r,warning=FALSE, message=FALSE, fig.cap="Table explaining the available climate parameters in the data set."}
 senorgelayers <- read_delim("data/senorgelayers.txt", 
     delim = "\t", escape_double = FALSE, 
     trim_ws = TRUE)
@@ -312,8 +312,8 @@ Here is some dummy data for accounting areas (regions) and ecosystem occurrences
 dummy_aa <- x %>%
   filter(time == oldTime[1]) %>%
   adrop() %>%
-  mutate(accuntingAreas = rep(c(1,2), each=length(Attribute_A)/2)) %>%
-  select(accuntingAreas)
+  mutate(accountingAreas = rep(c(1,2), each=length(Attribute_A)/2)) %>%
+  select(accountingAreas)
 
 tm_shape(dummy_aa) +
   tm_raster(style="cat")
@@ -725,7 +725,7 @@ write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2
 These files are about 500 MB, but the tiff file reads in a lot quicker then the rds file, so from now on I'll just export as tiff. *(This could perhaps have been solved with a `gc()`,. Later I save as RData with no problems).*
 
 ```{r}
-summer_median_temp <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp.tiff",
+summer_median_temp <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.tiff",
                                  proxy=F)
 # This is too slow:
 # readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/summer_median_temp.rds")
@@ -889,7 +889,7 @@ saveRDS(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand
 ```
 
 ```{r, eval=T, include=F}
-summer_median_temp_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")
+summer_median_temp_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
 ```
 
 Pivot and turn dimension into attributes:
@@ -976,7 +976,7 @@ saveRDS(y_var_norm, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/d
 ```
 
 ```{r, include=FALSE}
-y_var_norm <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_normalised.RData")
+y_var_norm <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData")
 ```
 
 ```{r, fig.cap="Example showing median summer tempretur in 1970, the upper and lwoer reference temperture, i.e. median and 5 SD units of the temperature between  1961-1990, and finally, the scaled indicator values."}
@@ -1101,10 +1101,6 @@ saveRDS(regional_sd, "temp/regional_sd.rds")
 ```{r, include=F}
 regional_means <- readRDS("temp/regional_means.rds")
 regional_sd <- readRDS("temp/regional_sd.rds")
-```
-
-```{r}
-regional_means
 ```
 
 Reshape and plot
