@@ -104,17 +104,20 @@ Climate variables are most likely to be correlated with each other (e.g. tempera
 
 ### Reference condition
 
-The reference condition for climate variables is defined as the last normal period 1961-1990.
+The reference condition for climate variables is defined as the normal period 1961-1990.
 
 ### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
 
--   Un-scaled indicator value = median value over 5 year periods
+-   Un-scaled indicator value = median value over 5 year periods (5 years being a pragmatic choice. It is long enough to smooth out a lot of inter-annual variation, and it's long enough to enable estimating errors)
 
 -   Upper reference level (best possible condition) = median value from the reference period
 
 -   Thresholds for good ecosystem condition = 2 standard deviation units away from the upper reference level for the climate variable during the reference period.
 
 -   Lower reference values (two-directional) = 5 standard deviation units for the climate variable during the reference period (implies linear scaling).
+
+
+The choice to use 2 SD units as the threshold values is a subjective choice in many ways, and not founded in any empirical or known relationship between the indicators and ecosystem integrity. The value comes from the common practice of calling something _extreme weather_ when it is outside 2 SD units of the current running average. So, if the indicator value today is <0.6 it implies that the mean for that variable over the last year would have been referred to as _extreme_ if it had occurred between 1961 and 1990. This is I think a conservative threshold, since one would/could call it _extreme_ if only one year is outside the 2SD range, and having the mean of 5 years being outside this range is _really_ extreme.
 
 ## Uncertainties
 
