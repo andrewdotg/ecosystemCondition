@@ -165,6 +165,11 @@ head(ind.dat)
 head(ANO.sp)
 head(ANO.geo)
 
+# fix NiN information
+ANO.geo$hovedtype_rute <- substr(ANO.geo$kartleggingsenhet_1m2,1,3) # take the 3 first characters
+ANO.geo$hovedtype_rute <- gsub("-", "", ANO.geo$hovedtype_rute) # remove hyphon
+unique(as.factor(ANO.geo$hovedtype_rute))
+
 # fix species names
 ANO.sp$Species <- ANO.sp$art_navn
 unique(as.factor(ANO.sp$Species))

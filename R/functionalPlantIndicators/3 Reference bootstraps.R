@@ -1,41 +1,45 @@
 #### running bootstraps - wetlands ####
 colnames(NiN.wetland)
-mount.ind.list <- indBoot(sp=NiN.wetland[,1],abun=NiN.wetland[,2:46],ind=NiN.wetland[,47:51],
-                          iter=10000,obl=6,rat=1/3,var.abun=T)
+wetland.ref <- indBoot(sp=NiN.wetland[,1],abun=NiN.wetland[,2:46],ind=NiN.wetland[,47:51],
+                          iter=1000,obl=6,rat=1/3,var.abun=T)
 
-mount.ind.list.cov <- indBoot(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:51],
-                          iter=10000,obl=1,rat=1/3,var.abun=T)
+wetland.ref.cov <- indBoot(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:51],
+                          iter=1000,obl=1,rat=1/3,var.abun=T)
 
 ### saving backups
-#mount.ind.list.backup <- mount.ind.list
-#mount.ind.list.cov.backup <- mount.ind.list.cov
+#wetland.ref.backup <- wetland.ref
+#wetland.ref.cov.backup <- wetland.ref.cov
+
+
+wetland.ref <- mount.ind.list
+wetland.ref.cov <- mount.ind.list.cov
 
 
 ### fixing NaN's
-for (i in 1:length(mount.ind.list) ) {
-  for (j in 1:ncol(mount.ind.list[[i]]) ) {
-    v <- mount.ind.list[[i]][,j]
+for (i in 1:length(wetland.ref) ) {
+  for (j in 1:ncol(wetland.ref[[i]]) ) {
+    v <- wetland.ref[[i]][,j]
     v[is.nan(v)] <- NA
-    mount.ind.list[[i]][,j] <- v
+    wetland.ref[[i]][,j] <- v
   }
 }
 
-for (i in 1:length(mount.ind.list.cov) ) {
-  for (j in 1:ncol(mount.ind.list.cov[[i]]) ) {
-    v <- mount.ind.list.cov[[i]][,j]
+for (i in 1:length(wetland.ref.cov) ) {
+  for (j in 1:ncol(wetland.ref.cov[[i]]) ) {
+    v <- wetland.ref.cov[[i]][,j]
     v[is.nan(v)] <- NA
-    mount.ind.list.cov[[i]][,j] <- v
+    wetland.ref.cov[[i]][,j] <- v
   }
 }
 
 
 #### checking NiN-types with several species lists ####
 # mountain
-str(mount.ind.list)
+str(wetland.ref)
 # L, F, R, N, S, HM, T
 #indID <- colnames(ind.dat)[c(3:8)]
 indID <- colnames(ind.dat)[c(3,5,6)]
-NiNID <- colnames(mount.ind.list[[1]])
+NiNID <- colnames(wetland.ref[[1]])
 
 for (i in indID) {
   
@@ -46,7 +50,7 @@ for (i in indID) {
   
   par(mfrow=c(5,5))
   for (j in NiNID) {
-    plot(density(mount.ind.list[[i]][,j],na.rm=T),main=j,xlim=c(3,8))
+    plot(density(wetland.ref[[i]][,j],na.rm=T),main=j,xlim=c(3,8))
   }
   dev.off()
 }
@@ -55,32 +59,35 @@ for (i in indID) {
 
 
 #### checking NiN-types with several species lists ####
-# mountain
-str(mount.ind.list.cov)
-# L, F, R, N, S, HM, T
-#indID <- colnames(ind.dat)[c(3:8)]
-indID <- colnames(ind.dat)[c(3,5,6)]
-NiNID <- colnames(mount.ind.list.cov[[1]])
+str(wetland.ref.cov)
+
+indID <- colnames(ind.dat[,c("Continentality", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen")])
+NiNID <- colnames(wetland.ref.cov[[1]])
 
 for (i in indID) {
   
-  dirOutput <- "C:/Users/joachim.topper/OneDrive - NINA/work/R projects/projects/økol tilst indikatorverdier/output/checks/mountain"
+  dirOutput <- "C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition_PP&FPI/R/functionalPlantIndicators/testoutput"
   setwd(dirOutput)
-  name <- paste('Ellenberg',i,'.jpg',sep='')
-  jpeg(filename=name,width=4000,height=4000,res=300)
+  name <- paste('wetland',i,'.jpg',sep='')
+  jpeg(filename=name,width=8000,height=4000,res=300)
   
-  par(mfrow=c(5,5))
+  par(mfrow=c(5,9))
   for (j in NiNID) {
-    plot(density(mount.ind.list.cov[[i]][,j],na.rm=T),main=j,xlim=c(3,8))
+    plot(density(wetland.ref.cov[[i]][,j],na.rm=T),main=j,xlim=c(1,10))
   }
   dev.off()
 }
 
+## omit V1-C1a & V1-C8a
+str(wetland.ref.cov)
+
+wetland.ref.cov <- lapply(wetland.ref.cov, function(x) x[!(names(x) %in% c("V1-C1a", "V1-C8a"))])
+wetland.ref <- lapply(wetland.ref, function(x) x[!(names(x) %in% c("V1-C1a", "V1-C8a"))])
 
 
 #### storing reference lists ####
-#rm(list= ls()[!(ls() %in% c('forest.ind.list','mire.ind.list','semiNat.ind.list','heath.ind.list','mount.ind.list','ind.dat'))])
-#rm(list= ls()[!(ls() %in% c('mount.ind.list.backup','mount.ind.list','mount.ind.list.cov.backup','mount.ind.list.cov','ind.dat'))])
+#rm(list= ls()[!(ls() %in% c('forest.ind.list','mire.ind.list','semiNat.ind.list','heath.ind.list','wetland.ref','ind.dat'))])
+#rm(list= ls()[!(ls() %in% c('wetland.ref.backup','wetland.ref','wetland.ref.cov.backup','wetland.ref.cov','ind.dat'))])
 
 # settings <- "iter=10000,obl=6,rat=1/3,var.abun=T"
 #save.image("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/projects/?kol tilst fjell 2021/input/reference/reference list/ref_lists_mount211123_10000.RData")
