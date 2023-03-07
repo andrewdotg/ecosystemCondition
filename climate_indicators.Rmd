@@ -1,9 +1,3 @@
----
-title: "Climate indicators"
-output:
-  html_document
----
-
 # Climate indicators
 
 <br />

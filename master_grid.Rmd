@@ -1,14 +1,12 @@
----
-title: ""
-output:
-  html_document
----
-
 # Master grid
 
 <br />
 
-*Author:* Anders L. Kolstad
+*Author:* 
+
+Anders L. Kolstad
+
+March 2023
 
 <br />
 
@@ -18,13 +16,16 @@ output:
 library(knitr)
 library(sf)
 library(stars)
-library(tidyverse)
+library(tmap)
+#library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
 
 This chapter describes the making of a master raster grid for all of mainland Norway. This grid is used to align all ecosystem and indicator maps so that it becomes possible to do easy resamping, masking and aggregating.
+
+_To do_ : I plan to add examples how to use this master grid on real data.
 
 ## About the underlying data
 
@@ -79,7 +80,7 @@ So, quite a lot. For the area accounts we might consider using 10x10m.
 
 ### Eksport file (final product)
 
-```{r}
+```{r, eval=F}
 stars::write_stars(masterGrid_50m, paste0(pData, "masterGrid_50m.tiff"))
 ```
 
