@@ -4,7 +4,7 @@
 
 Author. Anders L. Kolstad
 
-Date: 2023-02-02
+Date: 2023-03-07
 
 **Superseeded :** *The functionality explained here is moved over to the [eaTools](https://github.com/NINAnor/eaTools) package. Please see the documentation there for updated examples.*
 
@@ -48,6 +48,8 @@ ggplot(temp,
            fill = stat(x)))+
   ridge+
   scale_fill_gradient(low = low, high = high)
+#> Warning: `stat(x)` was deprecated in ggplot2 3.4.0.
+#> ℹ Please use `after_stat(x)` instead.
 #> Picking joint bandwidth of 1.22
 ```
 
@@ -105,6 +107,9 @@ ggplot(dat)+
   xlab("Variable values")+
   
   scale_fill_gradient("Indicator values", low = low, high = high)
+#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2
+#> 3.4.0.
+#> ℹ Please use `linewidth` instead.
 ```
 
 <img src="scalingFunctions_files/figure-html/unnamed-chunk-8-1.png" width="672" />
