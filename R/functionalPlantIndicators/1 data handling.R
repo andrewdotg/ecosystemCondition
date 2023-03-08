@@ -170,6 +170,16 @@ ANO.geo$hovedtype_rute <- substr(ANO.geo$kartleggingsenhet_1m2,1,3) # take the 3
 ANO.geo$hovedtype_rute <- gsub("-", "", ANO.geo$hovedtype_rute) # remove hyphon
 unique(as.factor(ANO.geo$hovedtype_rute))
 
+# check that every point is present only once
+length(levels(as.factor(ANO.geo$ano_flate_id)))
+length(levels(as.factor(ANO.geo$ano_punkt_id)))
+summary(as.factor(ANO.geo$ano_punkt_id))
+# there's many double presences, probably some wrong registrations of point numbers,
+# but also double registrations (e.g. ANO0159_55)
+# CHECK THIS when preparing ecosystem-datasets for scaling
+
+
+
 # fix species names
 ANO.sp$Species <- ANO.sp$art_navn
 unique(as.factor(ANO.sp$Species))
@@ -182,7 +192,7 @@ ANO.sp$Species <- gsub("( .*)","\\L\\1",ANO.sp$Species,perl=TRUE) # make capital
 
 ## merge species data with indicators
 ANO.sp.ind <- merge(x=ANO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                y= ind.dat[,c("species","CC", "SS", "RR", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                y= ind.dat[,c("species","CC", "SS", "RR","Continentality", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
                 by.x="Species", by.y="species", all.x=T)
 summary(ANO.sp.ind)
 
@@ -263,7 +273,7 @@ ANO.sp <- ANO.sp %>%
 
 ## merge species data with indicators
 ANO.sp.ind <- merge(x=ANO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                    y= ind.dat[,c("species","CC", "SS", "RR", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                    y= ind.dat[,c("species","CC", "SS", "RR","Continentality","Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
                     by.x="Species", by.y="species", all.x=T)
 summary(ANO.sp.ind)
 # checking which species didn't find a match
@@ -273,7 +283,7 @@ unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
 ## adding information on ecosystem and condition variables
 ANO.sp.ind <- merge(x=ANO.sp.ind, 
                 y=ANO.geo[,c("GlobalID","ano_flate_id","ano_punkt_id","ssb_id","aar",
-                             "hovedoekosystem_punkt","hovedtype_1m2","kartleggingsenhet_1m2",
+                             "hovedoekosystem_punkt","hovedtype_rute","kartleggingsenhet_1m2",
                              "vedplanter_total_dekning","busker_dekning","tresjikt_dekning","roesslyng_dekning")], 
             by.x="ParentGlobalID", by.y="GlobalID", all.x=T)
 # trimming away the points without information on NiN, species or cover
@@ -284,7 +294,7 @@ ANO.sp.ind <- ANO.sp.ind[!is.na(ANO.sp.ind$art_dekning),]
 
 #ANO.sp <- ANO.sp[!is.na(ANO.sp$Hovedoekosystem_rute),] # need to check
 unique(as.factor(ANO.sp.ind$hovedoekosystem_punkt))
-unique(as.factor(ANO.sp.ind$hovedtype_1m2))
+unique(as.factor(ANO.sp.ind$hovedtype_rute))
 unique(as.factor(ANO.sp.ind$kartleggingsenhet_1m2))
 
 summary(ANO.sp.ind)

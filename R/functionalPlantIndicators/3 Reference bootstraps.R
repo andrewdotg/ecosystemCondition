@@ -11,10 +11,6 @@ wetland.ref.cov <- indBoot(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],in
 #wetland.ref.cov.backup <- wetland.ref.cov
 
 
-wetland.ref <- mount.ind.list
-wetland.ref.cov <- mount.ind.list.cov
-
-
 ### fixing NaN's
 for (i in 1:length(wetland.ref) ) {
   for (j in 1:ncol(wetland.ref[[i]]) ) {
@@ -73,7 +69,7 @@ for (i in indID) {
   
   par(mfrow=c(5,9))
   for (j in NiNID) {
-    plot(density(wetland.ref.cov[[i]][,j],na.rm=T),main=j,xlim=c(1,10))
+    plot(density(wetland.ref.cov[[i]][,j],na.rm=T),main=j,xlim=c(-2,10))
   }
   dev.off()
 }
