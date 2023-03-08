@@ -1,15 +1,15 @@
 #### running bootstraps - wetlands ####
 colnames(NiN.wetland)
 wetland.ref <- indBoot(sp=NiN.wetland[,1],abun=NiN.wetland[,2:46],ind=NiN.wetland[,47:51],
-                          iter=1000,obl=6,rat=1/3,var.abun=T)
+                          iter=1000,obl=6,rat=2/3,var.abun=T)
 
+# NB! the indboot function does not work with var.abun=T for cover data yet
 wetland.ref.cov <- indBoot(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:51],
-                          iter=1000,obl=1,rat=1/3,var.abun=T)
+                          iter=1000,obl=1,rat=2/3,var.abun=F)
 
 ### saving backups
 #wetland.ref.backup <- wetland.ref
 #wetland.ref.cov.backup <- wetland.ref.cov
-
 
 ### fixing NaN's
 for (i in 1:length(wetland.ref) ) {
@@ -32,21 +32,19 @@ for (i in 1:length(wetland.ref.cov) ) {
 #### checking NiN-types with several species lists ####
 # mountain
 str(wetland.ref)
-# L, F, R, N, S, HM, T
-#indID <- colnames(ind.dat)[c(3:8)]
-indID <- colnames(ind.dat)[c(3,5,6)]
+indID <- colnames(ind.dat[,c("Continentality", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen")])
 NiNID <- colnames(wetland.ref[[1]])
 
 for (i in indID) {
   
   dirOutput <- "C:/Users/joachim.topper/OneDrive - NINA/work/R projects/projects/økol tilst indikatorverdier/output/checks/mountain"
   setwd(dirOutput)
-  name <- paste('Ellenberg',i,'.jpg',sep='')
-  jpeg(filename=name,width=4000,height=4000,res=300)
+  name <- paste('wetland',i,'.jpg',sep='')
+  jpeg(filename=name,width=8000,height=4000,res=300)
   
-  par(mfrow=c(5,5))
+  par(mfrow=c(5,9))
   for (j in NiNID) {
-    plot(density(wetland.ref[[i]][,j],na.rm=T),main=j,xlim=c(3,8))
+    plot(density(wetland.ref[[i]][,j],na.rm=T),main=j,xlim=c(-2,10))
   }
   dev.off()
 }
@@ -75,10 +73,10 @@ for (i in indID) {
 }
 
 ## omit V1-C1a & V1-C8a
-str(wetland.ref.cov)
+#str(wetland.ref.cov)
 
-wetland.ref.cov <- lapply(wetland.ref.cov, function(x) x[!(names(x) %in% c("V1-C1a", "V1-C8a"))])
-wetland.ref <- lapply(wetland.ref, function(x) x[!(names(x) %in% c("V1-C1a", "V1-C8a"))])
+#wetland.ref.cov <- lapply(wetland.ref.cov, function(x) x[!(names(x) %in% c("V1-C1a", "V1-C8a"))])
+#wetland.ref <- lapply(wetland.ref, function(x) x[!(names(x) %in% c("V1-C1a", "V1-C8a"))])
 
 
 #### storing reference lists ####

@@ -144,10 +144,10 @@ for (i in 1:nrow(ANO.wetland) ) {  #
 
 
 
-    
+    # if the ANO.hovedtype exists in the reference
     if (ANO.wetland$hovedtype_rute[i] %in% unique(substr(wetland.ref.val$grunn,1,2)) ) {
       
-      # species indicator values  
+      # if there is any species present in current ANO point  
       if ( length(ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),'Species']) > 0 ) {
         
         
@@ -164,72 +164,132 @@ for (i in 1:nrow(ANO.wetland) ) {  #
             lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
             maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
             # coercing x into results.wetland dataframe
-            results.wetland[['scaled']][i,'EllN1'] <- scal() 
-            results.wetland[['non-truncated']][i,'EllN1'] <- scal.2() 
-            results.wetland[['original']][i,'EllN1'] <- val 
+            results.wetland[['scaled']][i,'Cont1'] <- scal() 
+            results.wetland[['non-truncated']][i,'Cont1'] <- scal.2() 
+            results.wetland[['original']][i,'Cont1'] <- val 
             
             # upper part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='EllN2' & wetland.ref.cov.val$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='EllN2' & wetland.ref.cov.val$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='EllN2' & wetland.ref.cov.val$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
             # coercing x into results.wetland dataframe
-            results.wetland[['scaled']][i,'EllN2'] <- scal() 
-            results.wetland[['non-truncated']][i,'EllN2'] <- scal.2() 
-            results.wetland[['original']][i,'EllN2'] <- val
+            results.wetland[['scaled']][i,'Cont2'] <- scal() 
+            results.wetland[['non-truncated']][i,'Cont2'] <- scal.2() 
+            results.wetland[['original']][i,'Cont2'] <- val
           }
           
-          #Ellenberg L
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('Dekning','L','Kartleggingsenhet_rute')]
-          dat <- dat[!is.na(dat$L),]
+          
+          
+          # Light
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Light','kartleggingsenhet_1m2')]
+          results.wetland[['original']][i,'richness'] <- nrow(dat)
+          dat <- dat[!is.na(dat$Light),]
           
           if ( nrow(dat)>0 ) {
             
-            val <- sum(dat[,'Dekning'] * dat[,'L'],na.rm=T) / sum(dat[,'Dekning'],na.rm=T)
+            val <- sum(dat[,'art_dekning'] * dat[,'Light'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- wetland.cov.ref[wetland.cov.ref$Ind=='EllL1' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Rv']
-            lim <- wetland.cov.ref[wetland.cov.ref$Ind=='EllL1' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Gv']
-            maxmin <- wetland.cov.ref[wetland.cov.ref$Ind=='EllL1' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
             # coercing x into results.wetland dataframe
-            results.wetland[['scaled']][i,'EllL1'] <- scal() 
-            results.wetland[['non-truncated']][i,'EllL1'] <- scal.2() 
-            results.wetland[['original']][i,'EllL1'] <- val 
+            results.wetland[['scaled']][i,'Light1'] <- scal() 
+            results.wetland[['non-truncated']][i,'Light1'] <- scal.2() 
+            results.wetland[['original']][i,'Light1'] <- val 
             
             # upper part of distribution
-            ref <- wetland.cov.ref[wetland.cov.ref$Ind=='EllL2' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Rv']
-            lim <- wetland.cov.ref[wetland.cov.ref$Ind=='EllL2' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Gv']
-            maxmin <- wetland.cov.ref[wetland.cov.ref$Ind=='EllL2' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
             # coercing x into results.wetland dataframe
-            results.wetland[['scaled']][i,'EllL2'] <- scal() 
-            results.wetland[['non-truncated']][i,'EllL2'] <- scal.2() 
-            results.wetland[['original']][i,'EllL2'] <- val
+            results.wetland[['scaled']][i,'Light2'] <- scal() 
+            results.wetland[['non-truncated']][i,'Light2'] <- scal.2() 
+            results.wetland[['original']][i,'Light2'] <- val
           }
           
-          #Ellenberg R
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('Dekning','R','Kartleggingsenhet_rute')]
-          dat <- dat[!is.na(dat$R),]
+          
+          # Moisture
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Moisture','kartleggingsenhet_1m2')]
+          results.wetland[['original']][i,'richness'] <- nrow(dat)
+          dat <- dat[!is.na(dat$Moisture),]
           
           if ( nrow(dat)>0 ) {
             
-            val <- sum(dat[,'Dekning'] * dat[,'R'],na.rm=T) / sum(dat[,'Dekning'],na.rm=T)
+            val <- sum(dat[,'art_dekning'] * dat[,'Moisture'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- wetland.cov.ref[wetland.cov.ref$Ind=='EllR1' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Rv']
-            lim <- wetland.cov.ref[wetland.cov.ref$Ind=='EllR1' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Gv']
-            maxmin <- wetland.cov.ref[wetland.cov.ref$Ind=='EllR1' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
             # coercing x into results.wetland dataframe
-            results.wetland[['scaled']][i,'EllR1'] <- scal() 
-            results.wetland[['non-truncated']][i,'EllR1'] <- scal.2() 
-            results.wetland[['original']][i,'EllR1'] <- val 
+            results.wetland[['scaled']][i,'Moist1'] <- scal() 
+            results.wetland[['non-truncated']][i,'Moist1'] <- scal.2() 
+            results.wetland[['original']][i,'Moist1'] <- val 
             
             # upper part of distribution
-            ref <- wetland.cov.ref[wetland.cov.ref$Ind=='EllR2' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Rv']
-            lim <- wetland.cov.ref[wetland.cov.ref$Ind=='EllR2' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'Gv']
-            maxmin <- wetland.cov.ref[wetland.cov.ref$Ind=='EllR2' & wetland.cov.ref$grunn==as.character(unique(dat$Kartleggingsenhet_rute)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
             # coercing x into results.wetland dataframe
-            results.wetland[['scaled']][i,'EllR2'] <- scal() 
-            results.wetland[['non-truncated']][i,'EllR2'] <- scal.2() 
-            results.wetland[['original']][i,'EllR2'] <- val
+            results.wetland[['scaled']][i,'Moist2'] <- scal() 
+            results.wetland[['non-truncated']][i,'Moist2'] <- scal.2() 
+            results.wetland[['original']][i,'Moist2'] <- val
           }
           
+          
+          # Soil_reaction_pH
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Soil_reaction_pH','kartleggingsenhet_1m2')]
+          results.wetland[['original']][i,'richness'] <- nrow(dat)
+          dat <- dat[!is.na(dat$Soil_reaction_pH),]
+          
+          if ( nrow(dat)>0 ) {
+            
+            val <- sum(dat[,'art_dekning'] * dat[,'Soil_reaction_pH'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+            # lower part of distribution
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'pH1'] <- scal() 
+            results.wetland[['non-truncated']][i,'pH1'] <- scal.2() 
+            results.wetland[['original']][i,'pH1'] <- val 
+            
+            # upper part of distribution
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'pH2'] <- scal() 
+            results.wetland[['non-truncated']][i,'pH2'] <- scal.2() 
+            results.wetland[['original']][i,'pH2'] <- val
+          }
+          
+          
+          # Nitrogen
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Nitrogen','kartleggingsenhet_1m2')]
+          results.wetland[['original']][i,'richness'] <- nrow(dat)
+          dat <- dat[!is.na(dat$Nitrogen),]
+          
+          if ( nrow(dat)>0 ) {
+            
+            val <- sum(dat[,'art_dekning'] * dat[,'Nitrogen'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+            # lower part of distribution
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'Nitrogen1'] <- scal() 
+            results.wetland[['non-truncated']][i,'Nitrogen1'] <- scal.2() 
+            results.wetland[['original']][i,'Nitrogen1'] <- val 
+            
+            # upper part of distribution
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'Nitrogen2'] <- scal() 
+            results.wetland[['non-truncated']][i,'Nitrogen2'] <- scal.2() 
+            results.wetland[['original']][i,'Nitrogen2'] <- val
+          }
           
         }
       }
@@ -246,34 +306,54 @@ summary(results.wetland[['scaled']])
 results.wetland[['2-sided_Ellenberg']] <- results.wetland[['non-truncated']]
 
 # check if there are values equalling exactly 1
-results.wetland[['2-sided_Ellenberg']]$EllN1[results.wetland[['2-sided_Ellenberg']]$EllN1==1]
-results.wetland[['2-sided_Ellenberg']]$EllN2[results.wetland[['2-sided_Ellenberg']]$EllN2==1]
-results.wetland[['2-sided_Ellenberg']]$EllR1[results.wetland[['2-sided_Ellenberg']]$EllN1==1]
-results.wetland[['2-sided_Ellenberg']]$EllR2[results.wetland[['2-sided_Ellenberg']]$EllN2==1]
-results.wetland[['2-sided_Ellenberg']]$EllL1[results.wetland[['2-sided_Ellenberg']]$EllN1==1]
-results.wetland[['2-sided_Ellenberg']]$EllL2[results.wetland[['2-sided_Ellenberg']]$EllN2==1]
+results.wetland[['2-sided_Ellenberg']]$Cont1[results.wetland[['2-sided_Ellenberg']]$Cont1==1]
+results.wetland[['2-sided_Ellenberg']]$Cont2[results.wetland[['2-sided_Ellenberg']]$Cont2==1]
+results.wetland[['2-sided_Ellenberg']]$Light1[results.wetland[['2-sided_Ellenberg']]$Light1==1]
+results.wetland[['2-sided_Ellenberg']]$Light2[results.wetland[['2-sided_Ellenberg']]$Light2==1]
+results.wetland[['2-sided_Ellenberg']]$Moist1[results.wetland[['2-sided_Ellenberg']]$Moist1==1]
+results.wetland[['2-sided_Ellenberg']]$Moist2[results.wetland[['2-sided_Ellenberg']]$Moist2==1]
+results.wetland[['2-sided_Ellenberg']]$pH1[results.wetland[['2-sided_Ellenberg']]$pH1==1]
+results.wetland[['2-sided_Ellenberg']]$pH2[results.wetland[['2-sided_Ellenberg']]$pH2==1]
+results.wetland[['2-sided_Ellenberg']]$Nitrogen1[results.wetland[['2-sided_Ellenberg']]$Nitrogen1==1]
+results.wetland[['2-sided_Ellenberg']]$Nitrogen2[results.wetland[['2-sided_Ellenberg']]$Nitrogen2==1]
+
+
+
 
 # remove values >1 for Ellenberg
-results.wetland[['2-sided_Ellenberg']]$EllN1[results.wetland[['2-sided_Ellenberg']]$EllN1>1] <- NA
-results.wetland[['2-sided_Ellenberg']]$EllN2[results.wetland[['2-sided_Ellenberg']]$EllN2>1] <- NA
+results.wetland[['2-sided_Ellenberg']]$Cont1[results.wetland[['2-sided_Ellenberg']]$Cont1>1] <- NA
+results.wetland[['2-sided_Ellenberg']]$Cont2[results.wetland[['2-sided_Ellenberg']]$Cont2>1] <- NA
 
-results.wetland[['2-sided_Ellenberg']]$EllR1[results.wetland[['2-sided_Ellenberg']]$EllR1>1] <- NA
-results.wetland[['2-sided_Ellenberg']]$EllR2[results.wetland[['2-sided_Ellenberg']]$EllR2>1] <- NA
+results.wetland[['2-sided_Ellenberg']]$Light1[results.wetland[['2-sided_Ellenberg']]$Light1>1] <- NA
+results.wetland[['2-sided_Ellenberg']]$Light2[results.wetland[['2-sided_Ellenberg']]$Light2>1] <- NA
 
-results.wetland[['2-sided_Ellenberg']]$EllL1[results.wetland[['2-sided_Ellenberg']]$EllL1>1] <- NA
-results.wetland[['2-sided_Ellenberg']]$EllL2[results.wetland[['2-sided_Ellenberg']]$EllL2>1] <- NA
+results.wetland[['2-sided_Ellenberg']]$Moist1[results.wetland[['2-sided_Ellenberg']]$Moist1>1] <- NA
+results.wetland[['2-sided_Ellenberg']]$Moist2[results.wetland[['2-sided_Ellenberg']]$Moist2>1] <- NA
+
+results.wetland[['2-sided_Ellenberg']]$pH1[results.wetland[['2-sided_Ellenberg']]$pH1>1] <- NA
+results.wetland[['2-sided_Ellenberg']]$pH2[results.wetland[['2-sided_Ellenberg']]$pH2>1] <- NA
+
+results.wetland[['2-sided_Ellenberg']]$Nitrogen1[results.wetland[['2-sided_Ellenberg']]$Nitrogen1>1] <- NA
+results.wetland[['2-sided_Ellenberg']]$Nitrogen2[results.wetland[['2-sided_Ellenberg']]$Nitrogen2>1] <- NA
 
 
-# check distributions
-par(mfrow=c(3,2))
-hist(results.wetland[['2-sided_Ellenberg']]$EllN1,breaks=40)
-hist(results.wetland[['2-sided_Ellenberg']]$EllN2,breaks=40)
+# check distribution
+x11()
+par(mfrow=c(2,5))
+hist(results.wetland[['2-sided_Ellenberg']]$Cont1,breaks=40)
+hist(results.wetland[['2-sided_Ellenberg']]$Cont2,breaks=40)
 
-hist(results.wetland[['2-sided_Ellenberg']]$EllR1,breaks=40)
-hist(results.wetland[['2-sided_Ellenberg']]$EllR2,breaks=40)
+hist(results.wetland[['2-sided_Ellenberg']]$Light1,breaks=40)
+hist(results.wetland[['2-sided_Ellenberg']]$Light2,breaks=40)
 
-hist(results.wetland[['2-sided_Ellenberg']]$EllL1,breaks=40)
-hist(results.wetland[['2-sided_Ellenberg']]$EllL2,breaks=40)
+hist(results.wetland[['2-sided_Ellenberg']]$Moist1,breaks=40)
+hist(results.wetland[['2-sided_Ellenberg']]$Moist2,breaks=40)
+
+hist(results.wetland[['2-sided_Ellenberg']]$pH1,breaks=40)
+hist(results.wetland[['2-sided_Ellenberg']]$pH2,breaks=40)
+
+hist(results.wetland[['2-sided_Ellenberg']]$Nitrogen1,breaks=40)
+hist(results.wetland[['2-sided_Ellenberg']]$Nitrogen2,breaks=40)
 
 
 

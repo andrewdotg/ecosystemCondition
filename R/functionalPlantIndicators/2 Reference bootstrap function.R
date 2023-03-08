@@ -17,8 +17,8 @@ indBoot <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
   ind.list <- as.list(1:length(colnames(ind)))
   names(ind.list) <- colnames(ind)
   
-  for (k in 1:length(colnames(ind)) ) 
-    { ind.list[[k]] <- ind.b }
+  for (k in 1:length(colnames(ind)) ) {
+     ind.list[[k]] <- ind.b }
   
   for (j in 1:length(colnames(abun)) ) {
     
@@ -28,8 +28,8 @@ indBoot <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
     
     for (i in 1:iter) {
       
-      speciesSample <- sample(dat$sp[dat[,2] < obl], size=round( (length(dat$sp)-length(dat$sp[dat[,2] > (obl-1)])) *rat,0), replace=F)  
-      dat.b <- rbind(dat[dat[,2] > (obl-1),],
+      speciesSample <- sample(dat$sp[dat[,2] < obl], size=round( (length(dat$sp)-length(dat$sp[dat[,2]>=obl])) *rat,0), replace=F)  
+      dat.b <- rbind(dat[dat[,2] >= obl,],
                      dat[match(speciesSample,dat$sp),]
                      )
       
