@@ -2,7 +2,11 @@
 
 # Slitasje og kjørespor
 
-*Author and date:* Anders L. Kolstad
+*Author and date:* 
+
+Anders L. Kolstad
+
+March 2023
 
 ```{r setup, include=FALSE}
 library(knitr)
@@ -21,10 +25,9 @@ knitr::opts_chunk$set(echo = TRUE)
 # Set up conditional file paths
 dir <- substr(getwd(), 1,2)
 
-pData <- ifelse(dir == "C:", 
-               "P:/41201785_okologisk_tilstand_2022_2023/data/",
-               "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/")
-
+path <- ifelse(dir == "C:", 
+               "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/Naturtyper_nin_0000_norge_25833_FILEGDB/Naturtyper_nin_0000_norge_25833_FILEGDB.gdb",
+               "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/Naturtyper_nin_0000_norge_25833_FILEGDB/Naturtyper_nin_0000_norge_25833_FILEGDB.gdb")
 
 ```
 
@@ -45,7 +48,11 @@ knitr::kable(metaData)
 <hr/>
 
 ## Introduction
-This indicator represent human cause terrain damage from hiking or off-road vehicle traffic. The data come from a combination non-random field surveys and area-representative surveys. Therefore extra care is taken not to over-extrapolate, and we use local reference area in the form of _homogeneous impact areas_. 
+This indicator represent human caused damage or **disturbance to soils and vegetation**, typically from things like recreational activities and off-road vehicle traffic. Effects from domestic animal is not included here, and the upper reference value is 0% disturbance. The data come from a combination non-random field surveys and area-representative surveys. 
+
+Since the data is not sampled in a systematic or random way, we must take extra care not to over-extrapolate in space. We delineate _homogeneous impact areas_ (HIA) based on four classes of increasing infrastructure, and we say that the field data is representative inside the HIA and region (_five regions in Norway_) where it was recorded. We then calculate an aerea weighted mean (and error) indicator value for each HIA and region combination, as long as there is more than 100 data point for a give combination of HIA and region.     
+
+Here a general workflow for the calculation of the indicator.
 
 1.  Import [Nature type data](#NTM) data set (incl. GRUK) and [ANO data
     set](#ANO-import)
@@ -100,8 +107,7 @@ The variables are recorded on a coarse four-step ordinal scale (Fig.
 
 ### Temporal coverage
 
-The data goes back to 2018, but is because of data shortage, it is
-bulked into one time step. I then use the mean date for the raw data,
+The data goes back to 2018. I therefore bulk all the data from 2018 to 2022 into one time step. I then use the mean date for the raw data,
 and define the variable as belonging to the year 2020 (read more
 [here](#scaled-slitasje-variable)).
 
@@ -116,7 +122,7 @@ For a run through of the data set, see [here](#naturtype).
 The indicator is tagged to the *Økologisk egenskap* called
 **Primærproduksjon** (Primary productivity). This is tentative, and
 perhaps *abiotiske forhold* is more suited. But the thought behind the
-choise is that *sliatsje* affect the potential for primary productivity.
+choice is that *slitasje* affect the potential for primary productivity.
 
 ### UN standard
 
@@ -152,8 +158,11 @@ value is 100%. Note that 100% _slitasje_ does not mean that all the area
 must be scarred or damaged, but that all hypothetical quadrats around a
 point is affected (the variable is frequency-driven, and not
 amount-driven). The threshold for good ecosystem condition is 10%
-damage. This is on the conservative side. Perhaps is should be set
-somewhat higher, like 20 or 30%.
+damage. Perhaps is should be set somewhat higher, like 20 or 30%.
+The indicator value could be interpretted differently at the polygon
+vs at the landscape scale. At the polygon scale, 10% damage may seem 
+like not that much, whilst at the landscape scale, 10% seems more serious.
+This final threshold value should be debated and illustrated with examples.
 
 Read about the normalisation [here](##scaled-slitasje-variable).
 
@@ -161,7 +170,9 @@ Read about the normalisation [here](##scaled-slitasje-variable).
 
 Uncertainties/errors are estimated for aggregated indicator values by
 bootstrapping individual indicator values 1000 times and calculating a
-distribution of area weighted means. When aggregating a second time,
+distribution of area weighted means. This uncertainty is different from 
+the spatial variation which we could get more straight forward without 
+bootstrapping. When aggregating a second time,
 from homogeneous impact areas to accounting areas, we assume a normal
 distribution around the indicator values, with the already mentioned
 errors, and sample _n_ times from these and combine the resamples into an
@@ -184,67 +195,50 @@ This indicator uses the data set
 [here](https://kartkatalog.geonorge.no/metadata/naturtyper-miljoedirektoratets-instruks/eb48dd19-03da-41e1-afd9-7ebc3079265c).
 See also [here](#naturtype) for a detailed description of the data set.
 
-<!-- Importing the full data set can be done like this, but because it can -->
-
-<!-- take a few seconds due to its size, I will cache the data on the P -->
-
-<!-- server after subsetting. -->
-
-```{r, eval=F}
-naturetypes <- sf::st_read(dsn = paste0(pData, "Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb"))
-```
-
 We also have a separate [summary file](##exp-natureType-summary) where
-the nature types are manually mapped to the correct NiN-main types. We
-can use this to find the nature types associated with the NiN main types
+the nature types are manually mapped the NiN variables and to the correct NiN-main types. We can use this to find the nature types associated with the NiN main types
 that we are interested in.
 
 ```{r}
-naturetypes_summary <- readRDS("data/naturetypes/natureType_summary.rds")
+naturetypes_summary_import <- readRDS("data/naturetypes/natureType_summary.rds")
 ```
 
-We are only interested in a few NiN main types and their mapping units
-(see [here](#naturtype) for justification)
+We are only interested in a mapping units that include our target variables.
 
 ```{r}
-main_NiN_types <- c("T12",
-          "T18",
-          "T21",
-          "T31",
-          "T33",
-          "T34",
-          "V1",
-          "V3")
+naturetypes_summary <- naturetypes_summary_import %>%
+  rowwise() %>%
+  mutate(keepers = sum(c_across(
+    c('7TK', '7SE', 'PRTK', 'PRSL'))>0, na.rm=T)) %>%
+  filter(keepers > 0) %>%
+  select(Nature_type, NiN_mainType, Year)
 ```
+
+This deleted `r nrow(naturetypes_summary_import) - nrow(naturetypes_summary)` nature types and left us with these:
 
 ```{r}
-naturetypes_summary <- naturetypes_summary[naturetypes_summary$NiN_mainType %in% main_NiN_types,]
+DT::datatable(naturetypes_summary)
 ```
 
-Sub-setting the main data file:
+naturligÅpneOmråderILavlandet"] <- "naturligÅpneOmråderUnderSkoggrensa"
 
-```{r, eval=F}
-naturetypes <- naturetypes[naturetypes$naturtype %in% naturetypes_summary$Nature_type,]
+Importing and sub-setting the main data file, fix duplicate _hovedøkosystem_, calculate area, split one column in two, make numeric, and select target variables:
+```{r, message=F}
+naturetypes <- sf::st_read(dsn = path) %>%
+  filter(naturtype %in% naturetypes_summary$Nature_type) %>%
+  mutate(hovedøkosystem = recode(hovedøkosystem,
+                                 "naturligÅpneOmråderUnderSkoggrensa" = "naturligÅpneOmråderILavlandet"),
+         area = st_area(.)) %>%
+  separate_rows(ninBeskrivelsesvariable, sep=",") %>%
+  separate(col = ninBeskrivelsesvariable,
+           into = c("NiN_variable_code", "NiN_variable_value"),
+           sep = "_",
+           remove=F) %>%
+  mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
+  filter(NiN_variable_code %in% c("7SE", "7TK", "PRTK", "PRSL"))
 ```
 
-Fix duplicated name for an ecosystem
-
-```{r, eval=F}
-naturetypes$hovedøkosystem[naturetypes$hovedøkosystem=="Naturlig åpne områder i lavlandet"] <- "Naturlig åpne områder under skoggrensa"
-```
-
-Export subsetted data set
-
-```{r, eval=F}
-saveRDS(naturetypes, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/rds/naturtyper.rds")
-```
-
-```{r, include=F}
-# Import back in
-naturetypes <- readRDS(paste0(pData, "rds/naturtyper.rds"))
-```
-
-```{r, fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation."}
+```{r fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation.", fig.height=10, fig.width=4}
 ggplot(data = naturetypes, aes(x = naturtype, fill = hovedøkosystem))+
   geom_bar()+
   coord_flip()+
@@ -255,42 +249,6 @@ ggplot(data = naturetypes, aes(x = naturtype, fill = hovedøkosystem))+
   #guides(fill = "none")+
   xlab("")+
   ylab("Number of localities")
-```
-
-Calculate area for each polygon.
-
-```{r}
-naturetypes$area <- sf::st_area(naturetypes)
-```
-
-The NiN variables are combined into a single field which we need to spit
-apart.
-
-```{r}
-naturetypes <- tidyr::separate_rows(naturetypes,
-                                    ninbeskrivelsesvariabler,
-                                    sep=",") %>%
-  separate(col = ninbeskrivelsesvariabler,
-           into = c("NiN_variable_code", "NiN_variable_value"),
-           sep = "_",
-           remove=F
-           )
-```
-
-Convert the value column to numeric. Ignore NA's.
-
-```{r}
-naturetypes$NiN_variable_value <- as.numeric(naturetypes$NiN_variable_value)
-```
-
-Keep only the four relevant variables.
-
-```{r}
-myVars <- c(
-  #"7FA",     #treated separately in a different indicator
-  "7SE", "7TK", "PRTK", "PRSL")
-naturetypes <- filter(naturetypes,
-                      NiN_variable_code %in% myVars)
 ```
 
 Column names starting with a number is problematic, so adding a prefix
@@ -308,7 +266,7 @@ variable which I then paste back into the sf object.
 naturetypes_wide <- pivot_wider(naturetypes,
                                 names_from = "NiN_variable_code",
                                 values_from = "NiN_variable_value",
-                                id_cols = "identifikasjon_lokalid")
+                                id_cols = "identifikasjon_lokalId")
 naturetypes_wide <- as.data.frame(naturetypes_wide)
 head(naturetypes_wide)
 ```
