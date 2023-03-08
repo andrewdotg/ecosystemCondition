@@ -206,10 +206,15 @@ naturetypes_summary_import <- readRDS("data/naturetypes/natureType_summary.rds")
 We are only interested in a mapping units that include our target variables.
 
 ```{r}
+myVars <- c('7TK', '7SE', 'PRTK', 'PRSL')
+```
+
+
+```{r}
 naturetypes_summary <- naturetypes_summary_import %>%
   rowwise() %>%
   mutate(keepers = sum(c_across(
-    c('7TK', '7SE', 'PRTK', 'PRSL'))>0, na.rm=T)) %>%
+    myVars)>0, na.rm=T)) %>%
   filter(keepers > 0) %>%
   select(Nature_type, NiN_mainType, Year)
 ```
@@ -219,8 +224,6 @@ This deleted `r nrow(naturetypes_summary_import) - nrow(naturetypes_summary)` na
 ```{r}
 DT::datatable(naturetypes_summary)
 ```
-
-naturligÅpneOmråderILavlandet"] <- "naturligÅpneOmråderUnderSkoggrensa"
 
 Importing and sub-setting the main data file, fix duplicate _hovedøkosystem_, calculate area, split one column in two, make numeric, and select target variables:
 ```{r, message=F}
@@ -235,7 +238,7 @@ naturetypes <- sf::st_read(dsn = path) %>%
            sep = "_",
            remove=F) %>%
   mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
-  filter(NiN_variable_code %in% c("7SE", "7TK", "PRTK", "PRSL"))
+  filter(NiN_variable_code %in% myVars)
 ```
 
 ```{r fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation.", fig.height=10, fig.width=4}
@@ -259,17 +262,7 @@ naturetypes$NiN_variable_code <- paste0("var_", naturetypes$NiN_variable_code)
 
 Now I need to create a single row per locality with a new variable which
 is a product/function of the four variables "7SE", "7TK", "PRTK" and
-"PRSL". I will create a new data table where I calculate the new
-variable which I then paste back into the sf object.
-
-```{r}
-naturetypes_wide <- pivot_wider(naturetypes,
-                                names_from = "NiN_variable_code",
-                                values_from = "NiN_variable_value",
-                                id_cols = "identifikasjon_lokalId")
-naturetypes_wide <- as.data.frame(naturetypes_wide)
-head(naturetypes_wide)
-```
+"PRSL". I want to base this indicator on whichever of the variables have the highest value (worst condition). Therefore I first convert the ordinal scale to a continuous scale, using the median value of each ordinal step.
 
 The variables use slightly different scales. PRSL and PRTK use this 8
 step scale:
@@ -284,79 +277,41 @@ knitr::include_graphics("images/mdirPRscale.PNG")
 knitr::include_graphics("images/ninAR4b.PNG")
 ```
 
-I want to base this indicator on whichever of the variables have the
-highest value (worst condition). This table shows that a locality may
-have been assessed with both a PR variable and a NiN variable:
 
 ```{r}
-table(naturetypes_wide$var_7SE, naturetypes_wide$var_PRTK)
+naturetypes <- naturetypes %>%
+  mutate(NiN_variable_value = case_when(
+    NiN_variable_code %in% c("var_7TK", "var_7SE") ~ 
+      case_match(NiN_variable_value,
+             0 ~ 0,
+             1 ~ mean(c(0, 1/16))*100,
+             2 ~ mean(c(1/16, 1/2))*100,
+             3 ~ 75),
+    NiN_variable_code %in% c('var_PRTK', 'var_PRSL') ~ 
+      case_match(NiN_variable_value,
+             0 ~ 0,
+             1 ~ 1.5,
+             2 ~ mean(c(3, 6.25)),
+             3 ~ mean(c(6.25, 12.5)),
+             4 ~ mean(c(12.5, 25)),
+             5 ~ mean(c(25, 50)),
+             6 ~ mean(c(50, 75)),
+             7 ~ mean(c(75, 100)))
+    )
+  )
 ```
 
-Therefore I need to reconcile these scales. The only way I can think of
-is to decrease the resolution of the PR variables to the ar4b scale.
-This is of course a shame to loose this detail.
 
-A locality will never have values for both 7SE and PRSL
+I will create a new data table where I calculate the new
+variable which I then paste back into the sf object.
 
 ```{r}
-table(naturetypes_wide$var_7SE, naturetypes_wide$var_PRSL)
-```
-
-nor 7TK and PRTK
-
-```{r}
-table(naturetypes_wide$var_7TK, naturetypes_wide$var_PRTK)
-```
-
-```{r}
-naturetypes_wide$var_7TK <-  ifelse(is.na(naturetypes_wide$var_7TK),
-                              ifelse(naturetypes_wide$var_PRTK == 0, 0,
-                                ifelse(naturetypes_wide$var_PRTK < 3, 1,
-                                  ifelse(naturetypes_wide$var_PRTK < 6, 2, 3))),
-                            naturetypes_wide$var_7TK)
-```
-
-Checking that I successfully combined classes 1+2, 3+4+5 and 6+7.
-
-```{r}
-table(naturetypes_wide$var_7TK, naturetypes_wide$var_PRTK,
-      deparse.level = 2)
-```
-
-That looks fine. Now doing the same for the other variable PRSL:
-
-```{r}
-naturetypes_wide$var_7SE <-  ifelse(is.na(naturetypes_wide$var_7SE),
-                              ifelse(naturetypes_wide$var_PRSL == 0, 0,
-                                ifelse(naturetypes_wide$var_PRSL < 3, 1,
-                                  ifelse(naturetypes_wide$var_PRSL < 6, 2, 3))),
-                            naturetypes_wide$var_7SE)
-```
-
-Remove the old PR variables.
-
-```{r}
-naturetypes_wide <- select(naturetypes_wide,
-                           -var_PRTK,
-                           -var_PRSL)
-```
-
-There are some very few cells with X's. These are NA's.
-
-```{r}
-naturetypes_wide$var_7SE[naturetypes_wide$var_7SE == "X"] <- NA
-naturetypes_wide$var_7TK[naturetypes_wide$var_7TK == "X"] <- NA
-
-naturetypes_wide$var_7SE <- as.numeric(naturetypes_wide$var_7SE)
-naturetypes_wide$var_7TK <- as.numeric(naturetypes_wide$var_7TK)
-```
-
-```{r}
-head(naturetypes_wide)
-```
-
-```{r}
-anyDuplicated(naturetypes_wide$identifikasjon_lokalid)
+naturetypes_wide <- pivot_wider(naturetypes,
+                                names_from = "NiN_variable_code",
+                                values_from = "NiN_variable_value",
+                                id_cols = "identifikasjon_lokalId")
+naturetypes_wide <- as.data.frame(naturetypes_wide)
+head(naturetypes_wide, 10)
 ```
 
 7SE has `r nrow(naturetypes_wide[is.na(naturetypes_wide$var_7SE),])`
@@ -400,10 +355,10 @@ Then I can combine these two variables into a composite variable called
 `slitasje`
 
 ```{r, warning=F}
-naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
+naturetypes_wide$slitasje <- apply(naturetypes_wide[,-1], 1, max, na.rm=T)
 ```
 
-When both variables are NA, we get -Inf. There were nine cases of this
+When both variables are NA, we get -Inf. There were 13 cases of this
 (in 2023). Removing these now.
 
 ```{r}
@@ -421,19 +376,22 @@ ggplot(temp, aes(x = factor(slitasje),
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "slitasje score",
-       y = "Number of localities")
+  labs(x = "Slitasje score converted to percentage",
+       y = "Number of localities")+
+  coord_flip()
 ```
 
 It appears most localities are in good condition.
 
 I would also like to know how often 7TK was defining of the
 slitasje-indicator, and how often it was 7SE. I can do this by taking
-the difference
+the difference.
 
-```{r, fig.cap="Counting the number of cases where 7TK or 7SE ws defining of the slitasje indicator score.", fig.width=3}
-diff <- naturetypes_wide$var_7SE - 
-        naturetypes_wide$var_7TK
+```{r, fig.cap="Counting the number of cases where 7TK or 7SE was defining of the slitasje indicator score.", fig.width=3}
+
+
+diff <- max(naturetypes_wide$var_7SE, naturetypes_wide$var_PRSL, na.rm=T) - 
+        max(naturetypes_wide$var_7TK, naturetypes_wide$var_PRTK, na.rm=T)
 
 diff <- ifelse(diff == 0, "7TK and 7SE",
                ifelse(diff <0, "7TK", "7SE"))
