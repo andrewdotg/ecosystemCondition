@@ -1,0 +1,257 @@
+---
+title: "Template for indicator documentation"
+output:
+  html_document
+---
+
+<!-- This is a template for how to document the indicator analyses. 
+
+Make a copy of this file and store it in the root folder (same as where this template is stored) folder. 
+Name te file DRAFT_myIndicatorName.Rmd. 
+
+Because this is a stand-alone Rmd file inside a bookdown project, in order to knit the file for preview purposes,
+you need to type rmarkdown::render("template.Rmd") in the console, 
+as the the usual Ctrl + Alt + k will not work. 
+
+Make sure also to not change the order, or modify the headers, unless you really need to. This is because it
+easier to read the web page as a whole of the indicators are presented using the same layout. 
+
+When the analyses is complete, Anders Kolstad, or someone else, will perform a rapid code review, making sure 
+the analysis is repeatable by someone else. Be therefore very careful to annotate 
+and comment on every step in the analysis. When completed, Anders will make a copy
+of the working file and put it in the same project root folder, but removing the 'DRAFT_' part of the name. 
+After modifying it slightly (mainly removing the top YAML header and updating the rmd_files argument in '_bookdown.yml') 
+the output will become available on the website (https://ninanor.github.io/ecosystemCondition/). -->
+
+
+<!-- Examples: 
+
+For an example, see 'indicators/breareal-workingFile.Rmd' 
+and the subsequent 'breareal.Rmd' 
+which again, when rendered, produces this:
+https://ninanor.github.io/ecosystemCondition/areal-av-isbreer.html
+
+Notice the degree of annotation.
+
+-->
+
+
+<!-- Replace 'indicator name' with yor own indicator name  -->
+# Functional plant indicators (Moisture, Light, pH, Nitrogen)
+
+<br />
+
+_Author and date:_
+Joachim Töpper
+
+```{r}
+Sys.Date()
+```
+
+<br />
+
+<!-- Load all you dependencies here -->
+```{r setup, include=FALSE}
+library(sf)
+library(tidyr)
+library(dplyr)
+library(plyr)
+library(stringr)
+library(tidyverse)
+library(readxl)
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+<!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
+```{r, echo=F}
+Ecosystem <- "våtmark"
+Egenskap  <- c("Primærproduksjon","Abiotiske forhold")
+ECT       <- "" # e.g. "Structural state characteristic"
+Contact   <- "Joachim Töpper"
+```
+
+```{r, echo=F}
+metaData <- data.frame(Ecosystem,
+                       "Økologisk egenskap" = Egenskap,
+                       "ECT class" = ECT)
+knitr::kable(metaData)
+```
+
+<!-- Don't remove these three html lines -->
+<br />
+<br />
+<hr />
+
+
+
+<!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
+
+## Introduction
+<!-- Text here -->
+
+## About the underlying data
+<!-- Text here -->
+
+
+### Representativity in time and space
+<!-- Text here -->
+
+### Original units
+<!-- Text here -->
+
+
+### Temporal coverage
+<!-- Text here -->
+
+
+### Aditional comments about the dataset
+<!-- Text here -->
+
+
+## Ecosystem characteristic
+### Norwegian standard
+<!-- Text here -->
+
+### <!-- Text here -->
+<!-- Text here. Note that there are two parallell systems for defining ecosystem properties - one Norwegian and one international (SEEA EA). See man/SEEA EA examples.pdf for help -->
+
+## Collinearities with other indicators
+<!-- Text here -->
+
+## Reference state and values
+### Reference state
+<!-- Text here -->
+
+
+### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+<!-- Text here -->
+
+
+## Uncertainties
+<!-- Text here -->
+
+## References
+<!-- Text here -->
+
+
+## Analyses
+### Data sets
+
+ANO data
+
+```{r}
+st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
+ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
+                   layer="ANO_Art")
+ANO.geo <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
+                  layer="ANO_SurveyPoint")
+head(ANO.sp)
+head(ANO.geo)
+```
+
+Plant indicators from Tyler et al. 2021 and Grime
+```{r}
+## Tyler indicator data
+ind.dat <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
+                        sep = '\t', header=T, quote = '')
+head(ind.datr)
+
+```
+
+Generalized species lists NiN
+```{r}
+load("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators//reference from NiN/Eco_State.RData")
+str(Eco_State)
+```
+
+#### Plant indicator data handling
+```{r}
+
+ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+ind.dat <- ind.dat %>% filter( !(species.orig %in% list("Ammophila arenaria x Calamagrostis epigejos",
+                                                            "Anemone nemorosa x ranunculoides",
+                                                            "Armeria maritima ssp. elongata",
+                                                            "Asplenium trichomanes ssp. quadrivalens",
+                                                            "Calystegia sepium ssp. spectabilis",
+                                                            "Campanula glomerata 'Superba'",
+                                                            "Dactylorhiza maculata ssp. fuchsii",
+                                                            "Erigeron acris ssp. droebachensis",
+                                                            "Erigeron acris ssp. politus",
+                                                            "Erysimum cheiranthoides L. ssp. alatum",
+                                                            "Euphrasia nemorosa x stricta var. brevipila",
+                                                            "Galium mollugo x verum",
+                                                            "Geum rivale x urbanum",
+                                                            "Hylotelephium telephium (ssp. maximum)",
+                                                            "Juncus alpinoarticulatus ssp. rariflorus",
+                                                            "Lamiastrum galeobdolon ssp. argentatum",
+                                                            "Lathyrus latifolius ssp. heterophyllus",
+                                                            "Medicago sativa ssp. falcata",
+                                                            "Medicago sativa ssp. x varia",
+                                                            "Monotropa hypopitys ssp. hypophegea",
+                                                            "Ononis spinosa ssp. hircina",
+                                                            "Ononis spinosa ssp. procurrens",
+                                                            "Pilosella aurantiaca ssp. decolorans",
+                                                            "Pilosella aurantiaca ssp. dimorpha",
+                                                            "Pilosella cymosa ssp. gotlandica",
+                                                            "Pilosella cymosa ssp. praealta",
+                                                            "Pilosella officinarum ssp. peleteranum",
+                                                            "Poa x jemtlandica (Almq.) K. Richt.",
+                                                            "Poa x herjedalica Harry Sm.",
+                                                            "Ranunculus peltatus ssp. baudotii",
+                                                            "Sagittaria natans x sagittifolia",
+                                                            "Salix repens ssp. rosmarinifolia",
+                                                            "Stellaria nemorum L. ssp. montana",
+                                                            "Trichophorum cespitosum ssp. germanicum")
+) )
+ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+# getting rid of sect. for Hieracium
+ind.dat <- ind.dat %>% mutate(species=gsub("sect. ","",species.orig))
+ind.dat[,'species'] <- word(ind.dat[,'species'], 1,2)
+
+ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+# only hybrids left -> get rid of these
+ind.dat <- ind.dat[!duplicated(ind.dat[,'species']),]
+ind.dat[duplicated(ind.dat[,'species']),"species"]
+
+ind.dat$species <- as.factor(ind.dat$species)
+summary(ind.dat$species)
+# no duplicates left
+```
+
+
+#### Data set B
+<!-- Text here -->
+
+#### Regions
+<!-- In case you need to map the indicator value to regions, you can do that here. Remove this chapter if not relevant. -->
+Importing a shape file with the regional delineation. 
+```{r}
+#reg <- sf::st_read("data/regions.shp")
+#st_crs(reg)
+```
+
+### Scaled indicator values
+<!-- Text and analyses here -->
+
+### Uncertainty
+<!-- Text here -->
+
+
+## Prepare export
+<!-- Text here -->
+
+
+### Eksport file (final product)
+<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
+
+
+
+
