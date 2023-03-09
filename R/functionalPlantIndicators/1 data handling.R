@@ -165,18 +165,72 @@ head(ind.dat)
 head(ANO.sp)
 head(ANO.geo)
 
-# fix NiN information
+## fix NiN information
 ANO.geo$hovedtype_rute <- substr(ANO.geo$kartleggingsenhet_1m2,1,3) # take the 3 first characters
 ANO.geo$hovedtype_rute <- gsub("-", "", ANO.geo$hovedtype_rute) # remove hyphon
 unique(as.factor(ANO.geo$hovedtype_rute))
 
-# check that every point is present only once
+## fix NiN-variables
+colnames(ANO.geo)
+colnames(ANO.geo)[42:47] <- c("groeftingsintensitet",
+                              "bruksintensitet",
+                              "beitetrykk",
+                              "slatteintensitet",
+                              "tungekjoretoy",
+                              "slitasje")
+head(ANO.geo)
+
+# remove variable code in the data
+ANO.geo$groeftingsintensitet <- gsub("7GR-GI_", "", ANO.geo$groeftingsintensitet) 
+unique(ANO.geo$groeftingsintensitet)
+ANO.geo$groeftingsintensitet <- gsub("X", "NA", ANO.geo$groeftingsintensitet)
+unique(ANO.geo$groeftingsintensitet)
+ANO.geo$groeftingsintensitet <- as.numeric(ANO.geo$groeftingsintensitet)
+unique(ANO.geo$groeftingsintensitet)
+
+ANO.geo$bruksintensitet <- gsub("7JB-BA_", "", ANO.geo$bruksintensitet) 
+unique(ANO.geo$bruksintensitet)
+ANO.geo$bruksintensitet <- gsub("X", "NA", ANO.geo$bruksintensitet)
+unique(ANO.geo$bruksintensitet)
+ANO.geo$bruksintensitet <- as.numeric(ANO.geo$bruksintensitet)
+unique(ANO.geo$bruksintensitet)
+
+ANO.geo$beitetrykk <- gsub("7JB-BT_", "", ANO.geo$beitetrykk) 
+unique(ANO.geo$beitetrykk)
+ANO.geo$beitetrykk <- gsub("X", "NA", ANO.geo$beitetrykk)
+unique(ANO.geo$beitetrykk)
+ANO.geo$beitetrykk <- as.numeric(ANO.geo$beitetrykk)
+unique(ANO.geo$beitetrykk)
+
+ANO.geo$slatteintensitet <- gsub("7JB-SI_", "", ANO.geo$slatteintensitet) 
+unique(ANO.geo$slatteintensitet)
+ANO.geo$slatteintensitet <- gsub("X", "NA", ANO.geo$slatteintensitet)
+unique(ANO.geo$slatteintensitet)
+ANO.geo$slatteintensitet <- as.numeric(ANO.geo$slatteintensitet)
+unique(ANO.geo$slatteintensitet)
+
+ANO.geo$tungekjoretoy <- gsub("7TK_", "", ANO.geo$tungekjoretoy) 
+unique(ANO.geo$tungekjoretoy)
+ANO.geo$tungekjoretoy <- gsub("X", "NA", ANO.geo$tungekjoretoy)
+unique(ANO.geo$tungekjoretoy)
+ANO.geo$tungekjoretoy <- as.numeric(ANO.geo$tungekjoretoy)
+unique(ANO.geo$tungekjoretoy)
+
+ANO.geo$slitasje <- gsub("7SE_", "", ANO.geo$slitasje) 
+unique(ANO.geo$slitasje)
+ANO.geo$slitasje <- gsub("X", "NA", ANO.geo$slitasje)
+unique(ANO.geo$slitasje)
+ANO.geo$slitasje <- as.numeric(ANO.geo$slitasje)
+unique(ANO.geo$slitasje)
+
+## check that every point is present only once
 length(levels(as.factor(ANO.geo$ano_flate_id)))
 length(levels(as.factor(ANO.geo$ano_punkt_id)))
 summary(as.factor(ANO.geo$ano_punkt_id))
 # there's many double presences, probably some wrong registrations of point numbers,
 # but also double registrations (e.g. ANO0159_55)
 # CHECK THIS when preparing ecosystem-datasets for scaling
+
 
 
 
