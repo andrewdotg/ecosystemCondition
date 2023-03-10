@@ -29,6 +29,10 @@ path <- ifelse(dir == "C:",
                "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/Naturtyper_nin_0000_norge_25833_FILEGDB/Naturtyper_nin_0000_norge_25833_FILEGDB.gdb",
                "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/Naturtyper_nin_0000_norge_25833_FILEGDB/Naturtyper_nin_0000_norge_25833_FILEGDB.gdb")
 
+pData <- ifelse(dir == "C:", 
+               "P:/41201785_okologisk_tilstand_2022_2023/data/",
+               "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/")
+
 ```
 
 ```{r, echo=F}
@@ -277,6 +281,7 @@ knitr::include_graphics("images/mdirPRscale.PNG")
 knitr::include_graphics("images/ninAR4b.PNG")
 ```
 
+I here transfer these ordinal variables over to a continuous scale.
 
 ```{r}
 naturetypes <- naturetypes %>%
@@ -314,40 +319,52 @@ naturetypes_wide <- as.data.frame(naturetypes_wide)
 head(naturetypes_wide, 10)
 ```
 
-7SE has `r nrow(naturetypes_wide[is.na(naturetypes_wide$var_7SE),])`
-NA's, and 7TK has
-`r nrow(naturetypes_wide[is.na(naturetypes_wide$var_7TK),])`.
+First I will combine 7TK and PRTK, and also 7SE and PRSL
 
-```{r, fig.cap="7SE scores in the naturetype dataset", fig.width=3}
+```{r}
+naturetypes_wide <- naturetypes_wide %>%
+  mutate(TK = if_else(
+    is.na(var_PRTK), var_7TK, var_PRTK),
+    SE = if_else(
+      is.na(var_PRSL), var_7SE, var_PRSL)
+    )
+```
+
+
+SE has `r nrow(naturetypes_wide[is.na(naturetypes_wide$SE),])`
+NA's, and TK has
+`r nrow(naturetypes_wide[is.na(naturetypes_wide$TK),])`.
+
+```{r, fig.cap="7SE scores in the naturetype dataset", fig.width=5}
 temp <- naturetypes_wide %>%
-  group_by(var_7SE) %>%
+  group_by(SE) %>%
   summarise(sum = n())
 
-ggplot(temp, aes(x = factor(var_7SE),
+ggplot(temp, aes(x = factor(SE),
                  y = sum))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "7SE score",
+  labs(x = "7SE or PRSL score",
        y = "Number of localities")
 ```
 
-The NA fraction is quite big. These are localities with 7TK recorded,
-but not 7SE.
+The NA fraction is quite big. These are localities with 7TK or PRTK recorded,
+but not 7SE or PRSL.
 
-```{r, fig.cap="7TK scores in the nature type dataset", fig.width=3}
+```{r, fig.cap="7TK scores in the nature type dataset", fig.width=5}
 temp <- naturetypes_wide %>%
-  group_by(var_7TK) %>%
+  group_by(TK) %>%
   summarise(sum = n())
 
-ggplot(temp, aes(x = factor(var_7TK),
+ggplot(temp, aes(x = factor(TK),
                  y = sum))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "7TK score",
+  labs(x = "7TK og PRTK score",
        y = "Number of localities")
 ```
 
@@ -355,11 +372,10 @@ Then I can combine these two variables into a composite variable called
 `slitasje`
 
 ```{r, warning=F}
-naturetypes_wide$slitasje <- apply(naturetypes_wide[,-1], 1, max, na.rm=T)
+naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("TK", "SE")], 1, max, na.rm=T)
 ```
 
-When both variables are NA, we get -Inf. There were 13 cases of this
-(in 2023). Removing these now.
+When both variables are NA, we get -Inf. There were `r nrow(naturetypes_wide[naturetypes_wide$slitasje<0,])` cases of this. Removing these now.
 
 ```{r}
 naturetypes_wide <- naturetypes_wide[naturetypes_wide$slitasje>=0,]
@@ -377,24 +393,23 @@ ggplot(temp, aes(x = factor(slitasje),
            colour = "black")+
   theme_bw(base_size = 12)+
   labs(x = "Slitasje score converted to percentage",
-       y = "Number of localities")+
-  coord_flip()
+       y = "Number of localities") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.5))
 ```
 
 It appears most localities are in good condition.
 
-I would also like to know how often 7TK was defining of the
-slitasje-indicator, and how often it was 7SE. I can do this by taking
-the difference.
+I would also like to know, when both tk and SE was recordedm
+how often TK was defining of the slitasje-indicator, and how 
+often it was SE. I can do this by taking the difference.
 
-```{r, fig.cap="Counting the number of cases where 7TK or 7SE was defining of the slitasje indicator score.", fig.width=3}
+```{r, fig.cap="Counting the number of cases where TK or SE was defining of the slitasje indicator score.", fig.width=3}
 
 
-diff <- max(naturetypes_wide$var_7SE, naturetypes_wide$var_PRSL, na.rm=T) - 
-        max(naturetypes_wide$var_7TK, naturetypes_wide$var_PRTK, na.rm=T)
+diff <- naturetypes_wide$SE - naturetypes_wide$TK
 
-diff <- ifelse(diff == 0, "7TK and 7SE",
-               ifelse(diff <0, "7TK", "7SE"))
+diff <- ifelse(diff == 0, "TK and SE",
+               ifelse(diff <0, "TK", "SE"))
 
 diff_tbl <- as.data.frame(table(diff))
 
@@ -407,12 +422,12 @@ ggplot(diff_tbl, aes(x = diff, y = Freq))+
        y = "Number of localities")
 ```
 
-Looks like 7SE is more likely to be in a detrimental state.
+Looks like SE (= 7SE or PRSL) is more likely to be in a detrimental state.
 
 Now I will copy these slitasje-values into the sf object.
 
 ```{r}
-naturetypes$slitasje <- naturetypes_wide$slitasje[match(naturetypes$identifikasjon_lokalid, naturetypes_wide$identifikasjon_lokalid)]
+naturetypes$slitasje <- naturetypes_wide$slitasje[match(naturetypes$identifikasjon_lokalId, naturetypes_wide$identifikasjon_lokalId)]
 #nrow(naturetypes[is.na(naturetypes$slitasje),])  # 13 cases
 naturetypes <- naturetypes[!is.na(naturetypes$slitasje),]
 ```
@@ -443,7 +458,7 @@ areas only.
 | 7TK      | X       | X                     | \-                     |
 
 : Table showing which main ecosystems the two NiN variables 7SE and 7TK
-is recorded in withing the ANO dataset.
+is recorded in withing the ANO data set.
 
 It would be very nice to have 7SE recorded for naturally open areas.
 This variable is very relevant here.
@@ -484,7 +499,7 @@ was not recorded at all in 2019:
 ```{r}
 # Hard coding name change
 #unique(ano$hovedtype_250m2)[3]
-ano$hovedtype_250m2[ano$hovedtype_250m2==unique(ano$hovedtype_250m2)[3]] <- "Aapen jordvassmyr"
+#ano$hovedtype_250m2[ano$hovedtype_250m2==unique(ano$hovedtype_250m2)[3]] <- "Aapen jordvassmyr"
 ```
 
 
@@ -588,7 +603,9 @@ barplot(table(ano$var_7TK), xlab="7TK scores")
 barplot(table(ano$var_7SE), xlab="7SE scores")
 ```
 
-Combining these two variables into the indicator, same as for the nature
+The ANO sites seem to be in an even better condition than the localities in the naturtype data set.
+
+Combining these two variables 7TJ and 7SE into one, same as for the nature
 type data.
 
 ```{r}
@@ -597,8 +614,20 @@ temp$slitasje <- apply(temp[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
 ano$slitasje <- temp$slitasje
 ```
 
+Then I extract the mid values for each ordinal range step, like I did previously for the nature type data set.
+
+```{r}
+ano <- ano %>%
+  mutate(slitasje = case_match(slitasje,
+             0 ~ 0,
+             1 ~ mean(c(0, 1/16))*100,
+             2 ~ mean(c(1/16, 1/2))*100,
+             3 ~ 75))
+```
+
+
 ```{r, fig.cap="Distribution of slitasje scores in the ANO data", fig.width=6}
-barplot(table(ano$slitasje), xlab="Sliatsje scores", ylab = "Number of localities")
+barplot(table(ano$slitasje), xlab="% Slitasje", ylab = "Number of localities")
 ```
 
 ##### Combine Naturtype data and ANO {#combine-nt-ano}
@@ -634,7 +663,7 @@ slitasje_data <- dplyr::bind_rows(select(ano,
                                   slitasje,
                                   SHAPE), 
                            select(naturetypes,
-                                  identifikasjon_lokalid,
+                                  identifikasjon_lokalId,
                                   origin,
                                   hovedøkosystem,
                                   kartleggingsår,
@@ -667,6 +696,7 @@ slitasje_data_points$area2 <- st_area(slitasje_data_points)
 plot(slitasje_data_points$area, slitasje_data_points$area2,
      xlab = "Target area",
      ylab = "Area of the new polygons")
+abline(0,1)
 ```
 
 The area calculation seems to have worked fine. Checking that the new
@@ -740,7 +770,7 @@ polygon level, then I could scale at that level. I think they are.
 However, the combined surveyed area is a very small fraction of the
 total area of Norway, so that only producing indicator values for the
 mapped areas leaves the indicator without much value for regional
-assessments. When we do regional assessments and calcualte regional
+assessments. When we do regional assessments and calculate regional
 indicator values, we cannot simply do an area weighting of the polygons
 in each region. This is because we don't want to assume that the
 polygons are representative far outside of the mapped area. But perhaps
@@ -768,36 +798,12 @@ infrastructure index comes in. Here's the plan:
 
 #### Scaled variable {#scaled-slitasje-variable}
 
-The variable is ordinal, not continuous. See fig. \@ref(fig:eight-step).
-I could create another variable which was more like original range
-scale. Although not perfect, I will use the median value for each
-category. I.e. when the variable is recorded as 2 (meaning from 1/16th
-to 1/2), this is converted to 31.25%, i.e. in the middle between the two
-end points of the category.
-
-```{r}
-slitasje_data$slitasje_percentage <- slitasje_data$slitasje
-
-slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 1] <- ((1/16)/2)*100
-slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 2] <- (((1/2)/2)+(1/16))*100
-slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 3] <- (3/4)*100
-table(slitasje_data$slitasje_percentage)
-```
-
-```{r continuous-scale, fig.cap="Showing the conversion from ordinal to (pseudo)continous cale for the slitasje variable", fig.width=5}
-ggplot(slitasje_data, aes(x = slitasje,
-                          y = slitasje_percentage))+
-  geom_point(size=6)+
-  geom_line()+
-  theme_bw(base_size = 16)
-```
-
 I will use the same reference levels/values for all of Norway:
 
 ```{r}
 upper <- 0
 lower <- 100
-threshold <- 10
+threshold <- 5
 ```
 
 This implies that it is impossible to detect or measure a state when it
@@ -805,16 +811,18 @@ is in its most degraded form (100% disturbed). This is a problem with
 the original data resolution. But I will compensate somewhat for this by
 using a non-linear transformation.
 
-Also, the threshold value is set quite conservativly, and should be
+Also, the threshold value is set quite conservatively (I think), and should be
 discussed.
 
 I need to do a little trick and reverse the upper and lower reference
 values for the normalisation to work. This is a bug which can be fixed
 inside eaTools.
 
-```{r slitasje-normalise, fig.cap="Performing a non-linear break-point type normalisation of the slitasje variable.", fig.width=5}
+<!-- THE BREAKPOINT IS AT 0.5 RATHER THAN 0.6. TEST CODE FROM HERE: https://ninanor.github.io/eaTools/articles/normalise-condition-variable.html -->
+
+```{r slitasje-normalise, fig.cap="Performing a linear break-point type normalisation of the slitasje variable.", fig.width=5}
 eaTools::ea_normalise(data = slitasje_data,
-                      vector = "slitasje_percentage",
+                      vector = "slitasje",
                       upper_reference_level = lower,
                       lower_reference_level = upper,
                       break_point = threshold,
