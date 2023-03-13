@@ -1293,105 +1293,57 @@ option 2 later.
 
 Importing the wetland map.
 
-This is a quite heavy operation and should be done on a server.
+```{r, eval=F}
+#takes about one minute without the proxy
+mireET <- stars::read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Myrmodell/myrmodell90pros.tif",
+                             proxy=T)
+mireET
+```
+
+This is in the wrong CRS. We want to stay with 25833.
+
+We have a 50x50 m [master grid](#master-grid) with the correct CRS, and I would warp mireET to fit that grid like this:
+```{r, eval=F}
+grid <- stars::read_stars(paste0(pData, "masterGrid_50m.tiff"))
+mireET_warped <- stars::st_warp(mireET, grid)
+```
+
+... but I don't want to down sample the mire data, since we will loose a lot of the smaller ecosystem occurrences. 
+
+I could make a 10x10 master grid, but I have not found a way to stop this from being just a massive file.
+
+I can transform the ET map like this, and not worry about the rasters being perfectly aligned, but even this operation is too heavy for the R Studio Server:
 
 ```{r, eval=F}
-#takes about one minute
+mireET_trans <- sf::st_transform(mireET, 25833)
+```
+
+So I will transform the extrapolated indicator map ti match the ET instead. Note that the ET map is just for southern Norway up to about the middle of the country.
+
+```{r}
+system.time(
+  wetlands_slitasje_extr <- st_transform(wetlands_slitasje_extr, st_crs(mireET))
+)
+```
+
+Then I import the real ET data and mask
+
+```{r, eval=F}
 mireET <- stars::read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Myrmodell/myrmodell90pros.tif",
                              proxy=F)
 ```
 
-This is in the wrong CRS. 
+<!-- PLAN: rasterize wetland_slitasje_extr and c() with mireET, and mask -->
+<!-- Or use  -->
+<!-- wetlands_slitasje_extr[mireET==0] <- NA -->
 
 ```{r}
-mireET <- sf::st_transform(mireET, 25833)
+wetlands_slitasje_extr_stars <- stars::st_as_stars(wetlands_slitasje_extr)
+temp <- c(wetlands_slitasje_extr_masked, mireET)
+class(wetlands_slitasje_extr)
+dim(temp)
 ```
 
-
-```{r, eval=F}
-system.time(
-  mireET_warped <- stars::st_warp(mireET, grid)
-)
-```
-
-user: 597.308
-
-system: 139.164 
-
-elapsed: 735.907
-
-```{r}
-mireET
-```
-
-```{r, eval=F}
-write_stars(mireET_warped, paste0(pData, "wetland_ecosystem_EPSG25833_50m.tif"))
-```
-
-
-
-```{r}
-wetlands_trd <- sf::st_crop(mireET, myBB)
-tm_shape(wetlands_trd)+
-  tm_raster()+
-  tm_shape(hw_utm)+
-  tm_lines(col="blue")
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## OLD
-Instead I will draw some random point samples.
-
-```{r, eval=F}
-wetland_points <- st_sample(mireET, 10000)
-```
-
-And intersect this with the extrapolated indicator values.
-
-```{r, eval=F}
-wetland_points_match <- st_intersection(wetlands_slitasje_extr, wetland_points)
-```
-
-And extract the values
-
-```{r, eval=F}
-wetland_points_extracted <- st_intersection(wetlands_slitasje_extr, wetland_points)
-```
-
-If we went for option 2, we could instead do something like this, and
-
-create an empty grid over Norway, 50 x 50 m resolution
-
-<!--# This we should perhaps do once, in a separate misc chapter, and make available for all chapters -->
-
-```{r, eval=F}
-grd = st_as_stars(st_bbox(wetlands_slitasje_extr), dx = 50, dy = 50, values = NA_real_)
-```
-
-and then rasterize the indicator
-
-```{r, eval=F}
-wetlands_slitasje_extr_rast <- st_rasterize(wetlands_slitasje_extr, grd)
-```
-
-To get a perfect alignment with the ET map, we should change `grd` with
-the ET raster map.
-
-Then we can use starts filtering with `[ .. ]` to mask out the areas
-that do not belong to the ET.
 
 ### Aggregate to region
 
