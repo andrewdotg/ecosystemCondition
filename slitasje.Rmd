@@ -17,6 +17,7 @@ library(DT)
 library(units)
 library(eaTools)
 #library(tidyverse)
+library(tibble)
 library(ggplot2)
 library(tidyr)
 library(dplyr)
@@ -843,7 +844,7 @@ Assigning the indicator to year 2020.
 
 ```{r}
 slitasje_data$i_2020 <- eaTools::ea_normalise(data = slitasje_data,
-                      vector = "slitasje_percentage",
+                      vector = "slitasje",
                       upper_reference_level = lower,
                       lower_reference_level = upper,
                       break_point = threshold,
@@ -873,7 +874,7 @@ this I need the two layers to have the same CRS.
 st_crs(HIA) == st_crs(regions)
 ```
 
-Since the two layers are completely overlapping, we can get the
+Since the HIA map and the _region_ map are completely overlapping (HIA was masked using the region map), we can get the
 intersections
 
 ```{r, eval=F}
@@ -898,19 +899,30 @@ HIA_regions <- HIA_regions %>%
 
 #### Validate
 
-I now have 20 unique areas (for each main ecosystem) that I will, given
+I now have `r length(unique(HIA_regions$region_HIF))` unique areas (for each main ecosystem) that I will, given
 there is data, extrapolate indicator values over.
 
 ###### Subset ETs
 
-I will subset the `sliatsje_data` in the three ecosystems. Note that
+I will subset the `slitasje_data` into the three ecosystems. Note that
 only for open wetland do we have good ecosystem delineation maps to base
 a spatial averaging on.
 
 ```{r}
-wetlands <- slitasje_data[slitasje_data$hovedøkosystem == "Våtmark",]
-seminat <- slitasje_data[slitasje_data$hovedøkosystem == "Semi-naturlig mark",]
-natOpen <- slitasje_data[slitasje_data$hovedøkosystem == "Naturlig åpne områder under skoggrensa",]
+#Check spelling
+#unique(slitasje_data$hovedøkosystem)
+
+# Rename one level
+slitasje_data <- slitasje_data %>%
+  mutate(hovedøkosystem = recode(hovedøkosystem, "Våtmark" = "våtmark"))
+
+#make valid
+slitasje_data <- st_make_valid(slitasje_data)
+
+#subset
+wetlands <- slitasje_data[slitasje_data$hovedøkosystem == "våtmark",]
+seminat <- slitasje_data[slitasje_data$hovedøkosystem == "semi-naturligMark",]
+natOpen <- slitasje_data[slitasje_data$hovedøkosystem == "naturligÅpneOmråderILavlandet",]
 ```
 
 Creating some summary statistics.
@@ -950,7 +962,8 @@ all_stats <- all_stats %>%
   separate(region_HIF,
            into = c("region", "HIF"),
            sep = " ")
-saveRDS(all_stats, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/all_stats.rds")
+
+saveRDS(all_stats, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/all_stats.rds")
 ```
 
 ```{r, include=F}
@@ -958,28 +971,45 @@ saveRDS(all_stats, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/all_stat
 all_stats <- readRDS(paste0(pData, "cache/all_stats.rds"))
 ```
 
-```{r dense-stats, fig.height=20, fig.width=12}
+```{r dense-stats, fig.height= 12, fig.width=6}
+temp_plot <- all_stats %>%
+  mutate(HIF_NA = case_when(
+    n > 150 ~ HIF
+  ))
+
+myColour_list <- unique(temp_plot$myColour)
+names(myColour_list) <-   myColour_list
+
 ggarrange(
-ggplot(all_stats, aes(x = region, y = n, group = HIF, fill = HIF))+
-  geom_bar(position = "dodge", stat = "identity")+
-  theme_bw(base_size = 30)+
+ggplot(temp_plot, aes(x = region, y = n, group = HIF, fill = HIF_NA))+
+  geom_bar(position = "dodge", stat = "identity", col="black")+
+  theme_bw(base_size = 20)+
+  scale_fill_brewer(palette="Oranges")+
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
   facet_wrap(.~eco),
-ggplot(all_stats, aes(x = region, y = w_mean, group = HIF, fill = HIF))+
-  geom_bar(position = "dodge", stat = "identity")+
-  theme_bw(base_size = 30)+
+ggplot(temp_plot, aes(x = region, y = w_mean, group = HIF, fill = HIF_NA))+
+  geom_bar(position = "dodge", stat = "identity", col="black")+
+  theme_bw(base_size = 20)+
+  scale_fill_brewer(palette="Oranges")+
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
   facet_wrap(.~eco),
-ggplot(all_stats, aes(x = region, y = sd, group = HIF, fill = HIF))+
-  geom_bar(position = "dodge", stat = "identity")+
-  theme_bw(base_size = 30)+
+ggplot(temp_plot, aes(x = region, y = sd, group = HIF, fill = HIF_NA))+
+  geom_bar(position = "dodge", stat = "identity", col="black")+
+  theme_bw(base_size = 20)+
+  scale_fill_brewer(palette="Oranges")+
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
   facet_wrap(.~eco),
 ncol = 1)
 
 ```
 
-This rather dense figure needs to be looked at carefully. In the top row
+In the figure above, colors refer to Human Impact Factor (amount or frequency of infrastructure) 
+and NA means that there are less than 150 data points which we set as a threshold for evaluating the indicator values.
+
+In the top row
 we see that the sample size (number of polygons) varies between
 ecosystems. For naturally open ecosystems many polygons are from high
 infrastructure areas, not surprisingly, and there are few points for the
@@ -987,23 +1017,40 @@ lowest impact class (zero such polygons in *Sørlandet* for example). We
 may therefore not be able to extrapolate indicator values for Naturally
 open areas in in *Sørlandet* with low levels of infrastructure. 
 
+In semi-natural areas and wetlands, we have very little data from HIF
+class 3.
+
 We can also from the middle row see the association between the indicator
 values (area weighted means) and the modified infrastructure index
-(HIF). We should then not put too much weight on the bars were there is
-little data (low n) and/or high standard error (sd, bottom row). For
-example, with Naturally open ecosystems, 
+(HIF). We should then not put any weight on the bars were there is
+little data (transparent bars). Then we se the general pattern that the indicator 
+value decreases with increasing HIF. But there are exceptions, like for Semi-natural areas
+in Vestlandet.
 
-Midt-Norge has the overall lowest errors, and there we also see the kind of relationship between
-the indicator and the pressure that we want to see (middle row). The
-pattern is repeated for all regions except Østlandet, but there we also
-see that HIF class 3 has very little data, and a high sd, and this could
-explain the discrepancy (but it doesn't support the general relationship
-either).
+Let us look at the indicator to pressure relationship across all ecosystems.
 
-In semi-natural areas and wetlands, we have very little data from HIF
-class 3, and the sd's are very big. The indicator-pressure relationship
-(middle row) looks the most messy for wetlands, but if ignoring HIF=3,
-the relationship looks much better.
+```{r, fig.cap="Indicator to pressure relationship across all ecosystems."}
+temp_plot %>%
+  filter(!is.na(HIF_NA)) %>%
+  ggplot(aes(x = HIF_NA, y = w_mean))+
+  geom_point(size=2, position = position_dodge2(.1))+
+  geom_violin(alpha=0)+
+  theme_bw()
+```
+
+The pattern is not perfect, and there is quite some noise. But this is perhaps also expected.
+
+Let us look at the effect of sample size on the indicator uncertainty.
+
+```{r, fig.cap="Smaple size against indicator uncertainty."}
+temp_plot %>%
+  ggplot(aes(x = n, y = sd))+
+  geom_point(size=2, position = position_dodge2(.1))+
+  theme_bw()+
+    facet_wrap(.~eco)
+```
+
+This shows that the uncertainty is inflated with sample sizes less than about 300-500.
 
 ```{r, fig.cap="Summary statistics for the slitasje indicator."}
 DT::datatable(all_stats)
@@ -1016,7 +1063,7 @@ become useless, so I will present a relative frequency plot.
 
 ```{r, eval=F}
 corrCheck <- st_intersection(slitasje_data, HIA_regions)
-saveRDS(corrCheck, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck.rds")
+saveRDS(corrCheck, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck.rds")
 ```
 
 ```{r, include=F}
@@ -1025,12 +1072,13 @@ corrCheck <- readRDS(paste0(pData, "cache/corrCheck.rds"))
 ```
 
 ```{r slitasje-precentageplot, fig.height=12, fig.width=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
-ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(i_2020)))+
+ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
   geom_bar(position="fill")+
   theme_bw(base_size = 12)+
   guides(fill = guide_legend("Sliatsje indicator"))+
   ylab("Fraction of data points")+
   xlab("HIF")+
+  scale_fill_brewer(palette = "RdYlGn")+
   facet_grid(hovedøkosystem~region)
 ```
 
@@ -1039,51 +1087,6 @@ and justifies using the HIA+region intersections as local reference
 areas. Especially when down-weighting the importance of those
 groups/categories that have very little data.
 
-We can also calculate *Kendall tau b* coefficients, although I'm not
-complete sure this is valid when we have ordinal data with only four
-levels, since there will be a lot of ties.
-
-```{r}
-corrCheck_grouped <- as.data.frame(corrCheck) %>%
-  group_by(hovedøkosystem, region) %>%
-  summarise(cor = cor(i_2020, infrastructureIndex, method = "kendall"))
-```
-
-```{r, fig.cap="Pearson correlations between the indicator values at the polygons level and the HIF."}
-ggplot(corrCheck_grouped, aes(x = hovedøkosystem, 
-                      y = cor))+
-  geom_bar(stat = "identity")+
-  facet_wrap(.~region)+
-  coord_flip()
-```
-
-```{r, fig.cap="Pearson correlations between indicator values and the HIF."}
-corrCheck_eco <- corrCheck_grouped %>%
-  group_by(hovedøkosystem) %>%
-  summarise(cor = mean(cor))
-corrCheck_reg <- corrCheck_grouped %>%
-  group_by(region) %>%
-  summarise(cor = mean(cor))
-
-ggarrange(
-ggplot(corrCheck_eco, aes(x = hovedøkosystem, 
-                      y = cor))+
-  geom_bar(stat = "identity")+
-  coord_flip(),
-ggplot(corrCheck_reg, aes(x = region, 
-                      y = cor))+
-  geom_bar(stat = "identity")+
-  coord_flip(),
-ncol=1
-)
-```
-
-From the figures above it appears that the relationship is quite week in
-general. However, the sheer number of data points suggest that group
-differences will be very reliable. *Naturlig åpne områder* has the
-lowest correlation between the indicator and the homogeneous area
-classes, and of the five regions, *Nord-Norge* has the lowest
-correlation.
 
 #### Looking at the HIA
 
