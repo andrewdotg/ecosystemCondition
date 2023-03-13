@@ -1140,8 +1140,8 @@ ggplot(temp, aes(x = region, y = area, fill = factor(infrastructureIndex)))+
   guides(fill = guide_legend("HIF"))
 ```
 
-The figure above shows that Nord-Norge for example, has a lot of
-relatively untouched areas, and that Østlandet has the highest
+The figure above shows that _Nord-Norge_ for example, has a lot of
+relatively untouched areas, and that _Østlandet_ has the highest
 proportion of impacted areas. This is expected.
 
 ### Aggregate and spread (extrapolate) {#spread-slitasje}
@@ -1151,31 +1151,29 @@ aggregate) and to spread these out spatially to the entire HIA within
 each region (i.e. to extrapolate).
 
 I want to add a threshold so that we don't end up over extrapolating
-based on too few data points. From Fig. \@ref(fig:dense-stats) I
-conclude that we need at least 70 data points for the sd to stabilize. I
-will conservatively round this up to 100 data points.
+based on too few data points. I have previousl used 150 data pionts, and I think that was about right.
 
 ```{r, eval=F}
 wetlands_slitasje_extr <- ea_spread(indicator_data = wetlands,
                          indicator = i_2020,
                          regions = HIA_regions,
                          groups = region_HIF,
-                         threshold = 100)
+                         threshold = 150)
 
 seminat_slitasje_extr <- ea_spread(indicator_data = seminat,
                          indicator = i_2020,
                          regions = HIA_regions,
                          groups = region_HIF,
-                         threshold = 100)
+                         threshold = 150)
 
 natOpen_slitasje_extr <- ea_spread(indicator_data = natOpen,
                          indicator = i_2020,
                          regions = HIA_regions,
                          groups = region_HIF,
-                         threshold = 100)
-#saveRDS(wetlands_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
-#saveRDS(seminat_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_slitasje_extr.rds")
-#saveRDS(natOpen_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_slitasje_extr.rds")
+                         threshold = 150)
+#saveRDS(wetlands_slitasje_extr, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
+#saveRDS(seminat_slitasje_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_slitasje_extr.rds")
+#saveRDS(natOpen_slitasje_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_slitasje_extr.rds")
 ```
 
 ```{r, include=F}
