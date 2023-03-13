@@ -1237,12 +1237,10 @@ tm_shape(natOpen_slitasje_extr_trd)+
 HIA_trd)
 ```
 
-There is some, but very little variation, both between the ecosystems
-and between the four HIF classes in the modified infrastructure index.
-Note however, that for wetland and semi-natural areas we did not
+Note that for wetland and semi-natural areas we did not
 extrapolate values for the most urban areas, and that for naturally open
 areas we did not extrapolate to the least affected areas.
-
+For the other regions we generally excluded more HIFs. 
 
 > *The maps above are easy to misunderstand, and they should therefor be
 > communicated with caution. They should be considered as temporary
@@ -1251,12 +1249,12 @@ areas we did not extrapolate to the least affected areas.
 
 Now, there are multiple way to proceed. We have
 
--   indicator maps (vector data), and we have
+-   indicator maps (vector data, small polygons), and we have
 
--   total HIA areas, and we have the
+-   total area for each HIA class and region combo, and we have the
 
 -   extrapolated indicator maps (HIA maps with aggregated indicator
-    values and errors, also vector data).
+    values and errors, also vector data, wall-to-wall with some NA areas).
 
 -   We also have, for wetlands, an ecosystem type (ET) map.
 
@@ -1298,27 +1296,63 @@ Importing the wetland map.
 This is a quite heavy operation and should be done on a server.
 
 ```{r, eval=F}
-mireET <- sf::st_read("/data/R/Kladd/Myr/Myrmodell.gdb")
+#takes about one minute
+mireET <- stars::read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Myrmodell/myrmodell90pros.tif",
+                             proxy=F)
 ```
 
-This doesn't take that long.
+This is in the wrong CRS. 
+
+```{r}
+mireET <- sf::st_transform(mireET, 25833)
+```
+
 
 ```{r, eval=F}
-mireET <- st_transform(mireET, 25833)
+system.time(
+  mireET_warped <- stars::st_warp(mireET, grid)
+)
 ```
 
-This take about 10 min. Not sure I need it.
+user: 597.308
+
+system: 139.164 
+
+elapsed: 735.907
+
+```{r}
+mireET
+```
 
 ```{r, eval=F}
-mireET <- st_make_valid(mireET)
+write_stars(mireET_warped, paste0(pData, "wetland_ecosystem_EPSG25833_50m.tif"))
 ```
 
-This takes a long!! time, and should be AVOIDED.
 
-```{r, eval=F}
-wetlands_slitasje_extr_cropped <- sf::st_intersection(wetlands_slitasje_extr, mireET)
+
+```{r}
+wetlands_trd <- sf::st_crop(mireET, myBB)
+tm_shape(wetlands_trd)+
+  tm_raster()+
+  tm_shape(hw_utm)+
+  tm_lines(col="blue")
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## OLD
 Instead I will draw some random point samples.
 
 ```{r, eval=F}
