@@ -20,7 +20,7 @@ hist(results.wetland[['original']][results.wetland[['original']]$kartleggingsenh
 
 
 #### regressions vs. ANO variables ####
-library(betareg)
+
 
 head(results.wetland[['original']])
 colnames(results.wetland[['original']])[c(42:47,54:56)]
@@ -54,6 +54,10 @@ summary(lm(Moist1~tresjikt_dekning, data=df ))
 points(0:100,predict(lm(Moist1~tresjikt_dekning, data=df ),
                      newdata=data.frame(tresjikt_dekning=0:100) ),
        type='l', lty=2, lwd=3)
+
+
+library(betareg)
+summary( betareg(Moist1 ~ tresjikt_dekning, data=df[!is.na(df$Moist1),]) )
 
 #with(results.wetland[['scaled']],plot(busker_dekning,Light1))
 #summary(lm(Light1~busker_dekning, data=results.wetland[['scaled']]))

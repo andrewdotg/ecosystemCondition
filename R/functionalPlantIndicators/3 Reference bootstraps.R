@@ -3,8 +3,8 @@ colnames(NiN.wetland)
 wetland.ref <- indBoot(sp=NiN.wetland[,1],abun=NiN.wetland[,2:46],ind=NiN.wetland[,47:51],
                           iter=1000,obl=6,rat=2/3,var.abun=T)
 
-# NB! the indboot function does not work with var.abun=T for cover data yet
-wetland.ref.cov <- indBoot(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:51],
+
+wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:51],
                           iter=1000,obl=1,rat=2/3,var.abun=F)
 
 ### saving backups
@@ -28,26 +28,6 @@ for (i in 1:length(wetland.ref.cov) ) {
   }
 }
 
-
-#### checking NiN-types with several species lists ####
-# mountain
-str(wetland.ref)
-indID <- colnames(ind.dat[,c("Continentality", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen")])
-NiNID <- colnames(wetland.ref[[1]])
-
-for (i in indID) {
-  
-  dirOutput <- "C:/Users/joachim.topper/OneDrive - NINA/work/R projects/projects/økol tilst indikatorverdier/output/checks/mountain"
-  setwd(dirOutput)
-  name <- paste('wetland',i,'.jpg',sep='')
-  jpeg(filename=name,width=8000,height=4000,res=300)
-  
-  par(mfrow=c(5,9))
-  for (j in NiNID) {
-    plot(density(wetland.ref[[i]][,j],na.rm=T),main=j,xlim=c(-2,10))
-  }
-  dev.off()
-}
 
 
 

@@ -71,7 +71,6 @@ tab$NiN <- gsub("C", "C-", tab$NiN) # add extra hyphon after C for NiN-types
 tab
 
 
-
 # restructuring into separate indicators for lower (q2.5) and higher (q97.5) than reference value (=median, q50)
 y.Cont <- numeric(length=nrow(tab)*2)
 y.Cont[((1:dim(tab)[1])*2)-1] <- tab$Cont_q2.5 
@@ -131,7 +130,7 @@ summary(wetland.ref.val)
 
 
 
-## doing the same for wetland.ref.cov.cov
+## doing the same for wetland.ref.cov
 # 5 indicator-value indicators: Tyler's Continentality, Light, Moisture, Soil_reaction_pH, "Nitrogen"
 indEll.n=5
 # creating a table to hold:

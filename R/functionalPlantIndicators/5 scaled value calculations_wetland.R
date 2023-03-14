@@ -62,7 +62,7 @@ scal.2 <- function() {
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
 unique(substr(wetland.ref.val$grunn,1,2)) # NiN types in reference
-#### creating dataframe to holde the results for wetlands ####
+#### creating dataframe to hold the results for wetlands ####
 # all ANO points
 nrow(ANO.geo)
 # all wetland ANO points
