@@ -83,10 +83,11 @@ Here a general workflow for the calculation of the indicator.
 9.  Confirm relationship between infrastructure index and indicator
     values to justify the extrapolation
 
-10. Sample 1000 random points from an ecosystem delineation and extract
-    indicator values and sd at those points.
+10. TO DO: Prepare ecosystem delineation maps and us ethese to mask the extrapolated indicator maps
 
-11. Export indicator maps and regional extrapolated maps
+11. Spatial aggregation of indicator values and uncertainties to accounting areas
+
+12. Export indicator maps and regional extrapolated maps
 
 ## About the underlying data
 
@@ -1199,7 +1200,7 @@ seminat_slitasje_extr_trd <- sf::st_crop(seminat_slitasje_extr, myBB)
 natOpen_slitasje_extr_trd <- sf::st_crop(natOpen_slitasje_extr, myBB)
 ```
 
-```{r, fig.cap="Slitasje indicator extrapolated over Trondheim"}
+```{r extrapolated-slitasje, fig.cap="Slitasje indicator extrapolated over Trondheim"}
 myCol <- "RdYlGn"
 tmap_arrange(
 tm_shape(wetlands_slitasje_extr_trd)+
@@ -1247,57 +1248,33 @@ For the other regions we generally excluded more HIFs.
 > files or as by-products.*
 
 
-Now, there are multiple way to proceed. We have
+The next step now is to
 
--   indicator maps (vector data, small polygons), and we have
+1. Prepare ecosystem delineation maps in EPSG25833 and perfectly aligned to a master grid
 
--   total area for each HIA class and region combo, and we have the
+2. Rasterize the extrapolated indicator map, using the ET map as a template 
 
--   extrapolated indicator maps (HIA maps with aggregated indicator
-    values and errors, also vector data, wall-to-wall with some NA areas).
+3. and mask it using the perfectly aligned ET map.
 
--   We also have, for wetlands, an ecosystem type (ET) map.
 
-Option 1:
-
-1.  crop (i.e. intersect) the extrapolated indicator maps to ecosystem
-    delineation maps, and then;
-
-2.  aggregate these for each region or accounting area.
-
-Step 1 above requires an st_interactions on two very large vector data
-sets with millions of polygons. This should be avoided.
-
-Option 2:
-
-1.  rasterize the extrapolated indicator map, using the ET map as a
-    template, and
-
-2.  mask it using the perfectly aligned ET map.
-
-This might be faster.
-
-Option 3:
+A faster way could be to:
 
 1.  Draw *n* random point samples from the ET map, and
 
 2.  extract indicator values at those points (from the extrapolated
     indicator map (a stars object)).
 
-This is perhaps even faster again. I will try the last option, even
-though it will not provide spatially explicit indicator values for the
-entire ecosystem delineation, like option 2 does. Perhaps I will revisit
-option 2 later.
+... but his will not provide spatially explicit indicator values for the
+entire ecosystem delineation.
 
 ### Ecosystem map
 
 Importing the wetland map.
 
-```{r, eval=F}
+```{r, eval=T}
 #takes about one minute without the proxy
-mireET <- stars::read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Myrmodell/myrmodell90pros.tif",
-                             proxy=T)
-mireET
+(mireET <- stars::read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Myrmodell/myrmodell90pros.tif",
+                             proxy=T))
 ```
 
 This is in the wrong CRS. We want to stay with 25833.
@@ -1318,39 +1295,18 @@ I can transform the ET map like this, and not worry about the rasters being perf
 mireET_trans <- sf::st_transform(mireET, 25833)
 ```
 
-So I will transform the extrapolated indicator map ti match the ET instead. Note that the ET map is just for southern Norway up to about the middle of the country.
-
-```{r}
-system.time(
-  wetlands_slitasje_extr <- st_transform(wetlands_slitasje_extr, st_crs(mireET))
-)
-```
-
-Then I import the real ET data and mask
-
-```{r, eval=F}
-mireET <- stars::read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Myrmodell/myrmodell90pros.tif",
-                             proxy=F)
-```
-
-<!-- PLAN: rasterize wetland_slitasje_extr and c() with mireET, and mask -->
-<!-- Or use  -->
-<!-- wetlands_slitasje_extr[mireET==0] <- NA -->
-
-```{r}
-wetlands_slitasje_extr_stars <- stars::st_as_stars(wetlands_slitasje_extr)
-temp <- c(wetlands_slitasje_extr_masked, mireET)
-class(wetlands_slitasje_extr)
-dim(temp)
-```
+I will therefore ask GIS engineers to prepare ecosystem maps to the standard that we chose, so that we can simply combine the stars object with `stars::c()`, or perhaps side-step that operatio and just mask directly like this: `wetlands_slitasje_extr[mireET==0] <- NA`.
 
 
 ### Aggregate to region
 
 We need to aggreate the ET occurence and their indicator values, to a
-regional delineation. This functionality will be developed in `eaTools`.
-We need to produce distributions for the indicator valeus for each ET
-occurrence (or groups of them) and resample the distributions wiht an
+regional delineation. This functionality can be developed in `eaTools`,
+but will in any case build around `exactextratr::exact_extract()`.
+
+To carry the errors, we can for example
+produce distributions for the indicator values for each ET
+occurrence (or groups of them) and resample the distributions with an
 area weighting.
 
 ### Uncertainty
@@ -1366,22 +1322,22 @@ For the finest resolution indicator map I will not include columns for
 uncertainty (because this will only be estimated at the aggregated
 level), or reference levels (because there is no spatial variation).
 
-But I will also export a map of the indicator where we extrapolate the
-indicator values to the homogeneous areas. This map should be
-interpreted with caution, since they seem to provide explicit indicator
+I can also export a map of the indicator where we extrapolate the
+indicator values to the homogeneous areas (e.g. Fig. \@ref(fig:extrapolated-slitasje) . This map should be
+interpreted with caution, since they appear as providing explicit indicator
 values for areas where there is no data. This map is mainly for
 aggregation purposes. I will mark this map with the prefix
-*homogeneous-areas*. I can also export this same mappen after masking it
-with the ET map, and this output must come with the same discalimers.
+*homogeneous-areas*. I will also export this same map after masking it
+with the ET map, and this output must come with the same disclaimers.
 
 Finally I will export a map of the five accounting areas with
-wall-to-wall indicator value and errors. This map can also contain data
+wall-to-wall indicator value and errors (e.g. Fig \@ref(fig:wall-to-wall-summer-temp-indicator)). This map can also contain data
 covering other ETs. Otherwise the maps would not we visually
 interpretative.
 
 ### Slitasje in wetlands
 
-Prepare export
+This is how I plan to export the final product.
 
 ```{r, eval=F}
 # keep col names short and standardized
