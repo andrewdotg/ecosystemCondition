@@ -1,4 +1,4 @@
-# Climate indicators
+# Climate indicators excplained
 
 <br />
 
@@ -56,7 +56,7 @@ knitr::kable(metaData)
 
 ## Introduction
 
-This chapters describes the development of a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/).
+This chapters describes the development of a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/). I describe the process using dummy data and also discuss alternate approaches and dead ends that occured in the development process. For a succinct workflow example for a spesific indikcator, see [Median summer temperature](#median-summer-temp).
 
 ## About the underlying data
 
