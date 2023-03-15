@@ -74,7 +74,7 @@ Step 4 on the R7 scale is the step that, concordantly, best matches the 5% thres
 knitr::include_graphics("images/R7 scale.PNG")
 ```
 
-```{r fremmedart-prosentVSinnslag, fig.cap="Comparing the R7 scale (x axis) which is used in the nature type monitoring program with %cover (y-axis), which is how alien species is recorded in ANO. Cropped from Evju et al (2022)."}
+```{r fremmedart-prosentVSinnslag, fig.cap="Comparing the R7 scale (x axis) which is used in the nature type monitoring program with %cover (y-axis), which is how alien species is recorded in ANO. I am assuming the x axis is shifted downwards compared to the original R7 scale which range from 1 to 7, so that a value of 0 here exualrs to an R7 value of 1. Cropped from Evju et al (2022)."}
 knitr::include_graphics("images/fremmedart_prosentVSinnslag.PNG")
 ```
 
@@ -238,7 +238,7 @@ naturetypes_summary <- naturetypes_summary_import %>%
   select(Nature_type, NiN_mainType, Year)
 ```
 
-This deleted `r nrow(naturetypes_summary_import) - nrow(naturetypes_summary)` nature types and left us with these `r nrow(naturetypes_summary)` naturetypes where 7FA was recorded:
+This deleted `r nrow(naturetypes_summary_import) - nrow(naturetypes_summary)` nature types and left us with these `r nrow(naturetypes_summary)` nature types where 7FA was recorded:
 
 ```{r}
 DT::datatable(naturetypes_summary)
@@ -260,17 +260,18 @@ naturetypes <- sf::st_read(dsn = path) %>%
   filter(NiN_variable_code %in% myVars)
 ```
 
-```{r fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation.", fig.height=10, fig.width=4}
+```{r fig.cap="An overview of the naturetypes for which we will calculate the indicator.", fig.height=8, fig.width=4}
 ggplot(data = naturetypes, aes(x = naturtype, fill = hovedøkosystem))+
   geom_bar()+
   coord_flip()+
-  theme_bw(base_size = 12)+
+  theme_bw(base_size = 10)+
   theme(legend.position = "top",
         legend.title = element_blank(),
         legend.direction = "vertical")+
-  #guides(fill = "none")+
+  guides(fill = "none")+
   xlab("")+
-  ylab("Number of localities")
+  ylab("Number of localities")+
+  facet_wrap(.~hovedøkosystem, ncol=1, scale="free")
 ```
 
 Column names starting with a number is problematic, so adding a prefix
@@ -279,173 +280,25 @@ Column names starting with a number is problematic, so adding a prefix
 naturetypes$NiN_variable_code <- paste0("var_", naturetypes$NiN_variable_code)
 ```
 
-Now I need to create a single row per locality with a new variable which
-is a product/function of the four variables "7SE", "7TK", "PRTK" and
-"PRSL". I want to base this indicator on whichever of the variables have the highest value (worst condition). Therefore I first convert the ordinal scale to a continuous scale, using the median value of each ordinal step.
-
-The variables use slightly different scales. PRSL and PRTK use this 8
-step scale:
-
-```{r eight-step, fig.cap="Eight step condition scale"}
-knitr::include_graphics("images/mdirPRscale.PNG")
-```
-
-7TK and 7SE use a 4 step scale
-
-```{r four-step, fig.cap="Four step condition scale"}
-knitr::include_graphics("images/ninAR4b.PNG")
-```
-
-I here transfer these ordinal variables over to a continuous scale.
+Removing NA's
 
 ```{r}
-naturetypes <- naturetypes %>%
-  mutate(NiN_variable_value = case_when(
-    NiN_variable_code %in% c("var_7TK", "var_7SE") ~ 
-      case_match(NiN_variable_value,
-             0 ~ 0,
-             1 ~ mean(c(0, 1/16))*100,
-             2 ~ mean(c(1/16, 1/2))*100,
-             3 ~ 75),
-    NiN_variable_code %in% c('var_PRTK', 'var_PRSL') ~ 
-      case_match(NiN_variable_value,
-             0 ~ 0,
-             1 ~ 1.5,
-             2 ~ mean(c(3, 6.25)),
-             3 ~ mean(c(6.25, 12.5)),
-             4 ~ mean(c(12.5, 25)),
-             5 ~ mean(c(25, 50)),
-             6 ~ mean(c(50, 75)),
-             7 ~ mean(c(75, 100)))
-    )
-  )
+naturetypes <- naturetypes[!is.na(naturetypes$NiN_variable_value),]
 ```
 
 
-I will create a new data table where I calculate the new
-variable which I then paste back into the sf object.
-
-```{r}
-naturetypes_wide <- pivot_wider(naturetypes,
-                                names_from = "NiN_variable_code",
-                                values_from = "NiN_variable_value",
-                                id_cols = "identifikasjon_lokalId")
-naturetypes_wide <- as.data.frame(naturetypes_wide)
-head(naturetypes_wide, 10)
-```
-
-First I will combine 7TK and PRTK, and also 7SE and PRSL
-
-```{r}
-naturetypes_wide <- naturetypes_wide %>%
-  mutate(TK = if_else(
-    is.na(var_PRTK), var_7TK, var_PRTK),
-    SE = if_else(
-      is.na(var_PRSL), var_7SE, var_PRSL)
-    )
-```
-
-
-SE has `r nrow(naturetypes_wide[is.na(naturetypes_wide$SE),])`
-NA's, and TK has
-`r nrow(naturetypes_wide[is.na(naturetypes_wide$TK),])`.
-
-```{r, fig.cap="7SE scores in the naturetype dataset", fig.width=5}
-temp <- naturetypes_wide %>%
-  group_by(SE) %>%
-  summarise(sum = n())
-
-ggplot(temp, aes(x = factor(SE),
-                 y = sum))+
-  geom_bar(stat="identity",
-           fill="grey",
-           colour = "black")+
-  theme_bw(base_size = 12)+
-  labs(x = "7SE or PRSL score",
-       y = "Number of localities")
-```
-
-The NA fraction is quite big. These are localities with 7TK or PRTK recorded,
-but not 7SE or PRSL.
-
-```{r, fig.cap="7TK scores in the nature type dataset", fig.width=5}
-temp <- naturetypes_wide %>%
-  group_by(TK) %>%
-  summarise(sum = n())
-
-ggplot(temp, aes(x = factor(TK),
-                 y = sum))+
-  geom_bar(stat="identity",
-           fill="grey",
-           colour = "black")+
-  theme_bw(base_size = 12)+
-  labs(x = "7TK og PRTK score",
-       y = "Number of localities")
-```
-
-Then I can combine these two variables into a composite variable called
-`slitasje`
-
-```{r, warning=F}
-naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("TK", "SE")], 1, max, na.rm=T)
-```
-
-When both variables are NA, we get -Inf. There were `r nrow(naturetypes_wide[naturetypes_wide$slitasje<0,])` cases of this. Removing these now.
-
-```{r}
-naturetypes_wide <- naturetypes_wide[naturetypes_wide$slitasje>=0,]
-```
-
-```{r slitasje-naturetype, fig.cap="Slitasje scores.", fig.width=3}
-temp <- naturetypes_wide %>%
-  group_by(slitasje) %>%
-  summarise(sum = n())
-
-ggplot(temp, aes(x = factor(slitasje),
-                 y = sum))+
-  geom_bar(stat="identity",
-           fill="grey",
-           colour = "black")+
-  theme_bw(base_size = 12)+
-  labs(x = "Slitasje score converted to percentage",
-       y = "Number of localities") + 
-  theme(axis.text.x = element_text(angle=90, vjust=0.5))
-```
-
-It appears most localities are in good condition.
-
-I would also like to know, when both tk and SE was recordedm
-how often TK was defining of the slitasje-indicator, and how 
-often it was SE. I can do this by taking the difference.
-
-```{r, fig.cap="Counting the number of cases where TK or SE was defining of the slitasje indicator score.", fig.width=3}
-
-
-diff <- naturetypes_wide$SE - naturetypes_wide$TK
-
-diff <- ifelse(diff == 0, "TK and SE",
-               ifelse(diff <0, "TK", "SE"))
-
-diff_tbl <- as.data.frame(table(diff))
-
-ggplot(diff_tbl, aes(x = diff, y = Freq))+
-  geom_bar(stat = "identity",
+```{r alien-naturetype, fig.cap="Alien species variable scores."}
+ggplot(naturetypes, aes(x = NiN_variable_value))+
+  geom_histogram(fill="grey",
            colour = "black",
-           fill = "grey")+
+           binwidth = 1)+
   theme_bw(base_size = 12)+
-  labs(x = "Defining variable",
-       y = "Number of localities")
+  labs(x = "Alien species variable score") +
+  facet_wrap(.~hovedøkosystem, scales="free")
 ```
 
-Looks like SE (= 7SE or PRSL) is more likely to be in a detrimental state.
+It appears most localities are in good condition, and most localities have no alien species at all.
 
-Now I will copy these slitasje-values into the sf object.
-
-```{r}
-naturetypes$slitasje <- naturetypes_wide$slitasje[match(naturetypes$identifikasjon_lokalId, naturetypes_wide$identifikasjon_lokalId)]
-#nrow(naturetypes[is.na(naturetypes$slitasje),])  # 13 cases
-naturetypes <- naturetypes[!is.na(naturetypes$slitasje),]
-```
 
 #### GRUK
 
@@ -457,41 +310,27 @@ The nature type data set I'm working on here includes this data already
 not published. In any case it is better to use the harmonized data set
 in our case.
 
-#### ANO {#ANO-import}
+_NOTE: I'm not sure, but I wonder if the 2021 GRUK data was a pilot project and that most GRUK data, and all futute GRUK data, will not be included in this data set._
+
+#### ANO {#ANO-import2}
 
 Arealrepresentativ Naturovervåking (ANO) consist of 1000 systematically
 placed locations each with 18 sample points. In each sample point a
 circle of 250 m2 is visualised, and the main ecosystem is recorded.
-Depending on the main ecosystem, certain NiN variables are also
-recorded. 7SE is recorded for våtmark, but not semi-natural areas or
-naturally open areas. 7TK is recorded in våtmark and naturally open
-areas only.
 
-| Variable | Våtmark | Naturlig åpne områder | Semi-naturlige områder |
-|----------|---------|-----------------------|------------------------|
-| 7SE      | X       | \-                    | \-                     |
-| 7TK      | X       | X                     | \-                     |
-
-: Table showing which main ecosystems the two NiN variables 7SE and 7TK
-is recorded in withing the ANO data set.
-
-It would be very nice to have 7SE recorded for naturally open areas.
-This variable is very relevant here.
-
-I think I will only use våtmark here since my approach will be to the
-'worst value' of the variable 7SE and 7TK (see below). I think not
-having 7SE for naturally open areas will underestimate the degree of
-degredation in these areas.
+The %cover of alien vascular plant is estimated, independent on main ecosystem type. 
+In contrast to the nature type data set, ANO only looks at vascular plants, and then also only the three strictest categories
+in the alien plant list (SE, HI, PH). It is therefore not completely unproblematic to combine these to data sets,
+but we will do so anyway. We expect plants to be the by far most common species group to influence the 7FA variable as well.
+And similarly, we expect the three strictest  alien plant categories to contain the most aggressive species which will
+drive the 7FA variable more so than the other categories.
 
 
-> *ANO could harmonise better with the Naturetype data set if it included
-> 7SE and 7TK for Naturally open and Semi natural ecosystem.*
-
-
-```{r}
+```{r, message=F}
+ano_eco <- c("vaatmark", "naturlig_apne", "semi_naturlig_mark")
 ano <- sf::st_read(paste0(pData, "Naturovervaking_eksport.gdb"),
                    layer = "ANO_SurveyPoint") %>%
-  dplyr::filter(hovedoekosystem_punkt == "vaatmark")
+  dplyr::filter(hovedoekosystem_punkt %in% ano_eco)
 ```
 
 ```{r}
@@ -569,83 +408,54 @@ use m^2^ as area units.
 ano$area <- (ano$andel_hovedoekosystem_punkt/100)*250
 ```
 
-Let's now look at the distribution of the variables. First I need to
-separate the variable name from the values themselves. Now the data
-looks like this:
+Let's now look at the distribution of the variable. It is coded as `fa_total_dekning`. 
+First, there are `r length(ano[is.na(ano$fa_total_dekning),])` NA's in this column which we can remove.
 
 ```{r}
-ano$bv_7se[1:6]
+ano <- ano[!is.na(ano$fa_total_dekning),]
 ```
 
-So I create a new variable prefixed var\_:
+Let us plot the distribution of values.
 
-```{r}
-ano$var_7SE <- as.numeric(sub(pattern = "7SE_",
-                 replacement = "",
-                 x = ano$bv_7se))
+```{r ano-alien-dist, fig.cap"Distribution of %cover of alien plants variable in the ANO data set"}
+ggplot(ano, aes(x = fa_total_dekning))+
+  geom_histogram(fill="grey",
+           colour = "black",
+           binwidth = 1)+
+  theme_bw(base_size = 12)+
+  labs(x = "% cover alien vascular plants") +
+  facet_wrap(.~hovedoekosystem_punkt, scales="free_y")
 ```
 
-The NA's is the case of blank cells. The field app should not allow
-users leaving this field blank. I will need to remove these rows. There
-are fourteen cases:
+The ANO localities seemingly have less alien plants in them than the nature type localities. This can be du to sampling biases in the latter.
 
-```{r}
-nrow(ano[is.na(ano$var_7SE),])
-```
+Now I will convert these %cover values into 7FA classes. This is a critical step, since there is not one-to-one mapping here, 
+but rather there is considerable overlap, as can be seen in Fig. \@ref(fig:fremmedart-prosentVSinnslag).
 
-```{r}
-ano <- ano[!is.na(ano$var_7SE),]
-```
-
-Same with the other variable 7TK
-
-```{r}
-ano$var_7TK <- as.numeric(sub(pattern = "7TK_",
-                 replacement = "",
-                 x = ano$bv_7tk))
-```
-
-No NA's this time.
-
-
-> *The ANO field app should not allow user to leave blank cells. This
-> resulted in the exclusion of data.*
-
-
-```{r, fig.cap="Distribution of 7TK and 7SE scores in the ANO data"}
-par(mfrow=c(1,2))
-barplot(table(ano$var_7TK), xlab="7TK scores")
-barplot(table(ano$var_7SE), xlab="7SE scores")
-```
-
-The ANO sites seem to be in an even better condition than the localities in the naturtype data set.
-
-Combining these two variables 7TJ and 7SE into one, same as for the nature
-type data.
-
-```{r}
-temp <- as.data.frame(ano)
-temp$slitasje <- apply(temp[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
-ano$slitasje <- temp$slitasje
-```
-
-Then I extract the mid values for each ordinal range step, like I did previously for the nature type data set.
 
 ```{r}
 ano <- ano %>%
-  mutate(slitasje = case_match(slitasje,
-             0 ~ 0,
-             1 ~ mean(c(0, 1/16))*100,
-             2 ~ mean(c(1/16, 1/2))*100,
-             3 ~ 75))
+  mutate(var_7FA = case_when(
+             fa_total_dekning>90 ~ 7,
+             fa_total_dekning>25 ~ 6,
+             fa_total_dekning>10 ~ 5,
+             fa_total_dekning>5 ~ 4,
+             fa_total_dekning>2 ~ 3,
+             fa_total_dekning>1 ~ 2,
+             fa_total_dekning<1 ~ 1))
 ```
 
-
-```{r, fig.cap="Distribution of slitasje scores in the ANO data", fig.width=6}
-barplot(table(ano$slitasje), xlab="% Slitasje", ylab = "Number of localities")
+```{r ano-alien-dist-R7, fig.cap"Distribution of R7 values in the ANO data set"}
+ggplot(ano, aes(x = var_7FA))+
+  geom_histogram(fill="grey",
+           colour = "black",
+           binwidth = 1)+
+  theme_bw(base_size = 12)+
+  labs(x = "% cover alien vascular plants\n converted to the R7 scale") +
+  facet_wrap(.~hovedoekosystem_punkt, scales="free_y")
 ```
 
-##### Combine Naturtype data and ANO {#combine-nt-ano}
+##### Combine Naturtype data and ANO {#combine-nt-ano2}
 
 We need to combine the nature type data set with the ANO data set. I
 will add a column `origin` to show where the data comes from. I will
@@ -654,7 +464,7 @@ also add a column with the main ecosystem.
 ```{r}
 ano$origin <- "ANO"
 naturetypes$origin <- "Nature type mapping"
-ano$hovedøkosystem <- "Våtmark"
+ano$hovedøkosystem <- ano$hovedoekosystem_punkt
 ano$kartleggingsår <- ano$aar
 ```
 
@@ -669,13 +479,13 @@ I use `dplyr::select` to reduce the number of columns to keep things a
 bit more tidy.
 
 ```{r}
-slitasje_data <- dplyr::bind_rows(select(ano,
+alien_data <- dplyr::bind_rows(select(ano,
                                   GlobalID,
                                   origin,
                                   kartleggingsår,
                                   hovedøkosystem,
                                   area,
-                                  slitasje,
+                                  var_7FA,
                                   SHAPE), 
                            select(naturetypes,
                                   identifikasjon_lokalId,
@@ -683,32 +493,34 @@ slitasje_data <- dplyr::bind_rows(select(ano,
                                   hovedøkosystem,
                                   kartleggingsår,
                                   area,
-                                  slitasje,
+                                  var_7FA = NiN_variable_value,
                                   SHAPE))
-
-unique(st_geometry_type(slitasje_data))
 ```
 
 ###### Points to polygons {#ANO-points-to-poly}
 
-The ANO data is point data, and the nature type data is *multipolygon*.
+The ANO data is point data and the nature type data is *multipolygon*:
+```{r}
+unique(st_geometry_type(alien_data))
+```
+
 Because later we might want to save this as a shape file, we cannot have
 a mixed class type. I will therefore convert the points to polygons. I
 use the area column to calculate a radii that gives that area.
 
 ```{r}
-slitasje_data_points <- slitasje_data %>%
+alien_data_points <- alien_data %>%
   mutate(g_type = st_geometry_type(.)) %>%
   filter(g_type =="POINT") %>%
-  st_buffer(sqrt(slitasje_data$area/pi))
+  st_buffer(sqrt(alien_data$area/pi))
 ```
 
 Checking now that the new polygons have the area corresponding to the
 proportion of the point that was part of the same main ecosystem:
 
-```{r new-area, fig.cap="Checking that the area of the new polygons fall in line with the proportion of each point which is part of the main ecosystem."}
-slitasje_data_points$area2 <- st_area(slitasje_data_points)
-plot(slitasje_data_points$area, slitasje_data_points$area2,
+```{r new-area2, fig.cap="Checking that the area of the new polygons fall in line with the proportion of each point which is part of the main ecosystem."}
+alien_data_points$area2 <- st_area(alien_data_points)
+plot(alien_data_points$area, alien_data_points$area2,
      xlab = "Target area",
      ylab = "Area of the new polygons")
 abline(0,1)
@@ -718,36 +530,36 @@ The area calculation seems to have worked fine. Checking that the new
 data set contains **only polygons**.
 
 ```{r}
-slitasje_data_polygons <- slitasje_data %>%
+alien_data_polygons <- alien_data %>%
   mutate(g_type = st_geometry_type(.)) %>%
   filter(g_type !="POINT")
 
-slitasje_data <- bind_rows(slitasje_data_points, slitasje_data_polygons)
+alien_data <- bind_rows(alien_data_points, alien_data_polygons)
 
-unique(st_geometry_type(slitasje_data))
+unique(st_geometry_type(alien_data))
 ```
 
 Ok.
 
-#### Distribution of Slitasje scores
+#### Distribution of 7FA scores
 
-```{r, fig.cap="Slitasje scores (ANO Naturetype (and GRUK) data combined). The score for a locality equals the highest (worst) score of the related variables 7TK, 7SE, PRSL and PRTK."}
-temp <- as.data.frame(table(slitasje_data$slitasje))
+```{r, fig.cap="7FA (alien species) scores (ANO Naturetype (and GRUK) data combined)."}
+temp <- as.data.frame(table(alien_data$var_7FA))
 ggplot(temp, aes(x = Var1,
                  y = Freq))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "slitasje score",
+  labs(x = "7FA score",
        y = "Number of localities")
 ```
 
 Let's see the proportion of data points (not area) origination from each
 data set
 
-```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the slitasje indicator.", fig.width=4}
-temp <- as.data.frame(table(slitasje_data$origin))
+```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the alien species indicator.", fig.width=4}
+temp <- as.data.frame(table(alien_data$origin))
 
 ggplot(temp, aes(x = Var1,
                  y = Freq))+
