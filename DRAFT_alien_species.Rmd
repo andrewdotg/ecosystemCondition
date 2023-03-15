@@ -66,7 +66,7 @@ Here I base the indicator on the R7 scale, since this is, presumably, the bigger
 
 Upper reference value is then 1, and lower reference value is 7, on the R7 scale.
 For the threshold value I will set this to value 4 on the R7 scale. 
-This is based on interpretation of the definition of this value in Fig. \@ref(fig:R7). 
+This is based on interpretation by the author and based of the definition of this value in Fig. \@ref(fig:R7). 
 Step 4 on the R7 scale is the step that, concordantly, best matches the 5% threshold in the old approach, as seen from Fig. \@ref(fig:fremmedart-prosentVSinnslag).
 
 
@@ -214,17 +214,18 @@ This indicator uses the data set
 See also [here](#naturtype) for a detailed description of the data set.
 
 We also have a separate [summary file](##exp-natureType-summary) where
-the nature types are manually mapped the NiN variables and to the correct NiN-main types. We can use this to find the nature types associated with the NiN main types
+the nature types are manually mapped the NiN variables and to the correct NiN-main types. 
+We can use this to find the nature types associated with the NiN main types
 that we are interested in.
 
 ```{r}
 naturetypes_summary_import <- readRDS("data/naturetypes/natureType_summary.rds")
 ```
 
-We are only interested in a mapping units that include our target variables.
+We are only interested in a mapping units that include our target variables. The variable _fremmedartsinnslag_ is coded as 7FA.
 
 ```{r}
-myVars <- c('7TK', '7SE', 'PRTK', 'PRSL')
+myVars <- '7FA'
 ```
 
 
@@ -232,12 +233,12 @@ myVars <- c('7TK', '7SE', 'PRTK', 'PRSL')
 naturetypes_summary <- naturetypes_summary_import %>%
   rowwise() %>%
   mutate(keepers = sum(c_across(
-    myVars)>0, na.rm=T)) %>%
-  filter(keepers > 0) %>%
+    all_of(myVars))>0, na.rm=T)) %>%
+  filter(keepers >0) %>%
   select(Nature_type, NiN_mainType, Year)
 ```
 
-This deleted `r nrow(naturetypes_summary_import) - nrow(naturetypes_summary)` nature types and left us with these:
+This deleted `r nrow(naturetypes_summary_import) - nrow(naturetypes_summary)` nature types and left us with these `r nrow(naturetypes_summary)` naturetypes where 7FA was recorded:
 
 ```{r}
 DT::datatable(naturetypes_summary)
