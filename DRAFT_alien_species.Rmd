@@ -594,6 +594,29 @@ regions <- sf::read_sf("data/regions.shp", options = "ENCODING=UTF8")
 unique(regions$region)
 ```
 
+Municipalities
+
+```{r}
+path1 <- ifelse(dir == "C:", 
+               "R:/",
+               "/data/R/")
+
+path <- paste0(path1, "GeoSpatialData/AdministrativeUnits/Norway_AdministrativeUnits/Original/Norway_Municipalities/Basisdata_0000_Norge_25833_Kommuner_FGDB.gdb")
+
+# find the correct layer
+#st_layers(path)
+muni <- sf::read_sf(path, options = "ENCODING=UTF8", layer = "kommune")
+```
+
+There are som multisurfaces in here that I will convert to multoipolygons before plotting.
+
+```{r kommuner, fig.cap="Municipalities in Norway."}
+muni <- st_cast(muni, "MULTIPOLYGON")
+tm_shape(muni)+
+  tm_polygons(col="kommunenummer")+
+  tm_layout(legend.outside = T)
+```
+
 ### Scaled indicator values {#scale-alien-ind}
 
 I can scale the indicator for each polygon, or I can chose to aggregate
@@ -634,8 +657,8 @@ infrastructure index comes in. Here's the plan:
 I will use the same reference levels/values for all of Norway:
 
 ```{r}
-upper <- 1
-lower <- 7
+low <- 1
+high <- 7
 threshold <- 4
 ```
 
@@ -645,11 +668,11 @@ values for the normalisation to work. This is a bug which can be fixed
 inside eaTools (see [GitHub issue](https://github.com/NINAnor/eaTools/issues/15)).
 
 
-```{r slitasje-normalise, fig.cap="Performing a linear break-point type normalisation of the slitasje variable.", fig.width=3}
+```{r alien-normalise, fig.cap="Performing a linear break-point type normalisation of the slitasje variable.", fig.width=4}
 eaTools::ea_normalise(data = alien_data,
                       vector = "var_7FA",
-                      upper_reference_level = upper,
-                      lower_reference_level = lower,
+                      upper_reference_level = high,
+                      lower_reference_level = low,
                       break_point = threshold,
                       plot=T,
                       reverse = T
@@ -661,16 +684,16 @@ values. There is no point yet making this a time series, and I will
 assign all the indicator value to the average year of the data.
 
 ```{r}
-mean(slitasje_data$kartleggingsår)
+mean(alien_data$kartleggingsår)
 ```
 
 Assigning the indicator to year 2020.
 
 ```{r}
-slitasje_data$i_2020 <- eaTools::ea_normalise(data = slitasje_data,
-                      vector = "slitasje",
-                      upper_reference_level = lower,
-                      lower_reference_level = upper,
+alien_data$i_2020 <- eaTools::ea_normalise(data = alien_data,
+                      vector = "var_7FA",
+                      upper_reference_level = high,
+                      lower_reference_level = low,
                       break_point = threshold,
                       reverse = T
                       )
@@ -689,9 +712,9 @@ the Norwegian Infrastructure Index.
 HIA <- readRDS(paste0(pData, "infrastrukturindeks/homogeneous_impact_areas.rds"))
 ```
 
-I want to check that HIF is in fact a good predictor for *slitasje*.
+I want to check that HIF is in fact a good predictor for *alien species*.
 
-I also want to split these four HIA classes based on their region. To do
+I also want to split these four HIA classes based on municipality. To do
 this I need the two layers to have the same CRS.
 
 ```{r}
