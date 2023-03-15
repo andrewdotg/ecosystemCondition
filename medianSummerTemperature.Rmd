@@ -56,7 +56,7 @@ knitr::kable(metaData)
 
 ## Introduction
 
-This chapters describes the workflow for an indicator describing the median summer temperature. For a more comprehensive documentaion on the development of the workflow itself, se [here](#climate-indicators-explained). The data comes from interpolated climate surfaces from [SeNorge](https://senorge.no/) which contain one 1x1km raster for each day since 1957 to present. The reference levels are extracted from the time period 1961-1990 (a temporal reference condition). 
+This chapters describes the workflow for an indicator describing the median summer temperature. For a more comprehensive documentation on the development of the workflow itself, see [here](#climate-indicators-explained). The data comes from interpolated climate surfaces from [SeNorge](https://senorge.no/) which contain one 1x1km raster for each day since 1957 to present. The reference levels are extracted from the time period 1961-1990 (a temporal reference condition). 
 
 **Workflow**
 
