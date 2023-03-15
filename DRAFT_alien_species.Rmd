@@ -286,6 +286,12 @@ Removing NA's
 naturetypes <- naturetypes[!is.na(naturetypes$NiN_variable_value),]
 ```
 
+Shift variable to start from 1 rather than from 0.
+
+```{r}
+naturetypes$NiN_variable_value <- naturetypes$NiN_variable_value+1
+```
+
 
 ```{r alien-naturetype, fig.cap="Alien species variable scores."}
 ggplot(naturetypes, aes(x = NiN_variable_value))+
@@ -294,7 +300,7 @@ ggplot(naturetypes, aes(x = NiN_variable_value))+
            binwidth = 1)+
   theme_bw(base_size = 12)+
   labs(x = "Alien species variable score") +
-  facet_wrap(.~hovedøkosystem, scales="free")
+  facet_wrap(.~hovedøkosystem, scales="free_y")
 ```
 
 It appears most localities are in good condition, and most localities have no alien species at all.
@@ -588,7 +594,7 @@ regions <- sf::read_sf("data/regions.shp", options = "ENCODING=UTF8")
 unique(regions$region)
 ```
 
-### Scaled indicator values {#scale-slitasje-ind}
+### Scaled indicator values {#scale-alien-ind}
 
 I can scale the indicator for each polygon, or I can chose to aggregate
 them first. If the scaled value is representative and precise at the
@@ -610,12 +616,12 @@ infrastructure index comes in. Here's the plan:
 2.  take a simplified infrastructure index (vector data set with HIAs)
     and extract the corresponding indicator values that intersect with a
     given HIA, and extrapolate the area weighted mean of those values to
-    the entire HIA withing a given geographical region. Errors are
+    the entire HIA withing a given geographical region (municipality). Errors are
     calculated from bootstrapping.
 
 3.  Take the new area weighted indicator values for the HIAs and match
-    them with ecosystem occurrences of the same HIA (possibly using
-    randomly sampled points from the available ecosystem occurrences).
+    them with ecosystem occurrences of the same HIA (_possibly using
+    randomly sampled points from the available ecosystem occurrences_).
     The errors are the same as for the HIAs.
 
 4.  calculate an indicator value for a region (accounting area) by doing
@@ -628,30 +634,22 @@ infrastructure index comes in. Here's the plan:
 I will use the same reference levels/values for all of Norway:
 
 ```{r}
-upper <- 0
-lower <- 100
-threshold <- 5
+upper <- 1
+lower <- 7
+threshold <- 4
 ```
 
-This implies that it is impossible to detect or measure a state when it
-is in its most degraded form (100% disturbed). This is a problem with
-the original data resolution. But I will compensate somewhat for this by
-using a non-linear transformation.
-
-Also, the threshold value is set quite conservatively (I think), and should be
-discussed.
 
 I need to do a little trick and reverse the upper and lower reference
 values for the normalisation to work. This is a bug which can be fixed
-inside eaTools.
+inside eaTools (see [GitHub issue](https://github.com/NINAnor/eaTools/issues/15)).
 
-<!-- THE BREAKPOINT IS AT 0.5 RATHER THAN 0.6. TEST CODE FROM HERE: https://ninanor.github.io/eaTools/articles/normalise-condition-variable.html -->
 
-```{r slitasje-normalise, fig.cap="Performing a linear break-point type normalisation of the slitasje variable.", fig.width=5}
-eaTools::ea_normalise(data = slitasje_data,
-                      vector = "slitasje",
-                      upper_reference_level = lower,
-                      lower_reference_level = upper,
+```{r slitasje-normalise, fig.cap="Performing a linear break-point type normalisation of the slitasje variable.", fig.width=3}
+eaTools::ea_normalise(data = alien_data,
+                      vector = "var_7FA",
+                      upper_reference_level = upper,
+                      lower_reference_level = lower,
                       break_point = threshold,
                       plot=T,
                       reverse = T
