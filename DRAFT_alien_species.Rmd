@@ -892,31 +892,31 @@ level. Because the indicator is pseudo-continuous, boxplots for example
 become useless, so I will present a relative frequency plot.
 
 ```{r, eval=F}
-corrCheck <- st_intersection(alien_data, HIA_muni)
-saveRDS(corrCheck, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck.rds")
+corrCheck <- st_intersection(alien_data, HIA)
+#saveRDS(corrCheck, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck_alienSpecies.rds")
+saveRDS(corrCheck, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck_alienSpecies.rds")
 ```
 
 ```{r, include=F}
 #Silently read cached data
-corrCheck <- readRDS(paste0(pData, "cache/corrCheck.rds"))
+corrCheck <- readRDS(paste0(pData, "cache/corrCheck_alienSpecies.rds"))
 ```
+ 
 
-```{r slitasje-precentageplot, fig.height=12, fig.width=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
+```{r alien-precentageplot, fig.height=5, fig.width=8, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
 ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
   geom_bar(position="fill")+
   theme_bw(base_size = 12)+
-  guides(fill = guide_legend("Sliatsje indicator"))+
+  guides(fill = guide_legend("Alien species indicator"))+
   ylab("Fraction of data points")+
   xlab("HIF")+
   scale_fill_brewer(palette = "RdYlGn")+
-  facet_grid(hovedøkosystem~region)
+  facet_wrap(.~hovedøkosystem)
 ```
 
 The figure above I think supports the indicator-pressure relationship
-and justifies using the HIA+region intersections as local reference
-areas. Especially when down-weighting the importance of those
-groups/categories that have very little data.
-
+and justifies using the HIA+municipality intersections as local reference
+areas.
 
 #### Looking at the HIA
 
@@ -925,13 +925,13 @@ Here is a view of the data zooming in on Trondheim
 ```{r}
 myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
                 ymin = 7032142.5, ymax = 7045245.27),
-                crs = st_crs(HIA_regions))
+                crs = st_crs(HIA_muni))
 ```
 
 Cropping the raster to the bbox
 
 ```{r}
-HIA_trd <- sf::st_crop(HIA_regions, myBB)
+HIA_trd <- sf::st_crop(HIA_muni, myBB)
 ```
 
 Get map of major roads, for context
@@ -953,32 +953,15 @@ hw_utm <- readRDS("data/cache/highways_trondheim.rds")
   tm_borders(col = "black", lwd=2))
 ```
 
-Let's calculate the areas of these polygons and compare the HIF in the
-five regions.
+See Fig. \@ref(fig.HIF-region) for a closer look at the distribution of HIA classes across Norway.
 
-```{r}
-HIA_regions$area <- sf::st_area(HIA_regions)
-```
-
-```{r HIF-region, fig.cap="Stacked barplot showing the distribution of human impact factor across five regions in Norway."}
-temp <- as.data.frame(HIA_regions) %>%
-  group_by(region, infrastructureIndex) %>%
-  summarise(area = mean(area))
-
-ggplot(temp, aes(x = region, y = area, fill = factor(infrastructureIndex)))+
-  geom_bar(position = "stack", stat = "identity")+
-  guides(fill = guide_legend("HIF"))
-```
-
-The figure above shows that _Nord-Norge_ for example, has a lot of
-relatively untouched areas, and that _Østlandet_ has the highest
-proportion of impacted areas. This is expected.
-
-### Aggregate and spread (extrapolate) {#spread-slitasje}
+### Aggregate and spread (extrapolate) {#spread-alien}
 
 I now want to find the mean indicator value for each HIA (i.e. to
 aggregate) and to spread these out spatially to the entire HIA within
-each region (i.e. to extrapolate).
+each municipality (i.e. to extrapolate).
+
+<!-- FORTSETT HER -->
 
 I want to add a threshold so that we don't end up over extrapolating
 based on too few data points. I have previousl used 150 data pionts, and I think that was about right.
