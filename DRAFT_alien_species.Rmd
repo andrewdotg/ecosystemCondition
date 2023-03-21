@@ -261,7 +261,7 @@ naturetypes <- sf::st_read(dsn = path) %>%
   filter(NiN_variable_code %in% myVars)
 ```
 
-```{r fig.cap="An overview of the naturetypes for which we will calculate the indicator.", fig.height=8, fig.width=6}
+```{r, fig.cap="An overview of the naturetypes for which we will calculate the indicator.", fig.height=8, fig.width=6}
 ggplot(data = naturetypes, aes(x = naturtype, fill = hovedøkosystem))+
   geom_bar()+
   coord_flip()+
@@ -274,6 +274,8 @@ ggplot(data = naturetypes, aes(x = naturtype, fill = hovedøkosystem))+
   ylab("Number of localities")+
   facet_wrap(.~hovedøkosystem, ncol=1, scale="free")
 ```
+
+Note that there is a lot more data for semi-natural ecosystem compared to the other two.
 
 Column names starting with a number is problematic, so adding a prefix
 
@@ -384,7 +386,7 @@ ano <- ano[!is.na(ano$andel_hovedoekosystem_punkt),]
 Let's look at the variation in the recorded proportion of ecosystem
 cover
 
-```{r, fig.cap="Distribution of the ANO variable andel_hovedoekosystem_punkt for wetland localities."}
+```{r, fig.cap="Distribution of the ANO variable andel_hovedoekosystem_punkt."}
 par(mar=c(5,6,4,2))
 plot(ano$andel_hovedoekosystem_punkt[order(ano$andel_hovedoekosystem_punkt)],
      ylab="Percentage of the 250 m2 area\ncovered by the main ecosystem")
@@ -398,13 +400,13 @@ ano <- ano[ano$andel_hovedoekosystem_punkt>20,]
 
 Here's another plot of the distribution of the same variable:
 
-```{r, warning=F, fig.cap="Percentage cover of the Våtmark main ecosystem in the 250m2 circle"}
+```{r, warning=F, fig.cap="Percentage cover of the main ecosystem in the 250m2 circle"}
 ggplot(ano, aes(x = andel_hovedoekosystem_punkt))+
          geom_histogram(fill = "grey",
                         colour="black",
                         binwidth = 1)+
   theme_bw(base_size = 12)+
-  xlab("Percentage cover of the Våtmark main ecosystem\n in the 250m2 circle")+
+  xlab("Percentage cover of the main ecosystem\n in the 250m2 circle")+
   scale_x_continuous(limits = c(0,101),
                      breaks = seq(0,100,10))
 ```
@@ -604,7 +606,7 @@ unique(regions$region)
 
 Municipalities
 
-```{r}
+```{r, warning=F}
 path1 <- ifelse(dir == "C:", 
                "R:/",
                "/data/R/")
@@ -629,7 +631,7 @@ muni_names$navn <- stringi::stri_encode(muni_names$navn, from = "UTF-8", to = "U
 
 There are some multi-surfaces in here that I will convert to multi-polygons before plotting.
 
-```{r kommuner, fig.cap="Municipalities in Norway."}
+```{r kommuner, fig.cap="Municipalities in Norway.", warning=F}
 muni <- st_cast(muni, "MULTIPOLYGON")
 tm_shape(muni)+
   tm_polygons(col="kommunenummer")+
@@ -671,7 +673,7 @@ infrastructure index comes in. Here's the plan:
     occurrences. Errors should be carried somehow, perhaps via weighted
     resampling.
 
-#### Scaled variable {#scaled-slitasje-variable}
+#### Scaled variable {#scaled-alien-variable}
 
 I will use the same reference levels/values for all of Norway:
 
@@ -682,7 +684,7 @@ threshold <- 4
 ```
 
 
-```{r alien-normalise, fig.cap="Performing a linear break-point type normalisation of the slitasje variable.", fig.width=4}
+```{r alien-normalise, fig.cap="Performing a linear break-point type normalisation of the alien species variable.", fig.width=4}
 eaTools::ea_normalise(data = alien_data,
                       vector = "var_7FA",
                       upper_reference_level = high,
@@ -839,7 +841,7 @@ all_stats %>%
   facet_wrap(.~eco)
 ```
 
-If we say that we need 20 data points for each HIA and municipality combintaion in order to extrapolate to the entire HIA for that municipality, we get much less to work with:
+If we say that we need 20 data points for each HIA and municipality combination in order to extrapolate to the entire HIA for that municipality, we get much less to work with:
 
 ```{r, fig.cap="Number of municipalities we have at least 20 data points for, specific for each human impact factor level."}
 all_stats %>%
@@ -857,16 +859,18 @@ all_stats %>%
 
 
 
-```{r, fig.cap="Indicator to pressure relationship across all ecosystems."}
+```{r, fig.cap="Indicator-pressure relationship across all ecosystems."}
 all_stats %>%
   filter(n > 20) %>%
   ggplot(aes(x = HIF, y = w_mean))+
   geom_point(size=2, position = position_dodge2(.1))+
   geom_violin(alpha=0)+
-  theme_bw()
+  theme_bw()+
+  labs(x = "Human impact factor",
+       y = "Indicator value (area weighted means)")
 ```
 
-There is a trend here, but not very strong.
+There is a trend here, but not very strong perhaps.
 
 Here is a similar figure, looking at the relative frequency of indicator level of polygons and within each HIA.
 
@@ -894,7 +898,7 @@ ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_202
 ```
 
 The figure above I think supports the indicator-pressure relationship
-and justifies using the HIA+municipality intersections as local reference
+and justifies using the HIA x municipality intersections as local reference
 areas.
 
 Let us look at the effect of sample size on the indicator uncertainty.
@@ -981,6 +985,9 @@ natOpen_alien_extr <- ea_spread(indicator_data = natOpen,
                          regions = HIA_muni,
                          groups = muni_HIF,
                          threshold = 20)
+```
+
+```{r, eval=F, include=F}
 #saveRDS(wetlands_alien_extr, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_alien_extr.rds")
 #saveRDS( seminat_alien_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_alien_extr.rds")
 #saveRDS( natOpen_alien_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_alien_extr.rds")
@@ -988,7 +995,6 @@ natOpen_alien_extr <- ea_spread(indicator_data = natOpen,
 #saveRDS(wetlands_alien_extr,  "P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_alien_extr.rds")
 #saveRDS( seminat_alien_extr,  "P:/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_alien_extr.rds")
 #saveRDS( natOpen_alien_extr,  "P:/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_alien_extr.rds")
-
 ```
 
 ```{r, include=F}
@@ -997,14 +1003,7 @@ seminat_alien_extr  <- readRDS(paste0(pData,  "cache/seminat_alien_extr.rds"))
 natOpen_alien_extr  <- readRDS(paste0(pData,  "cache/natOpen_alien_extr.rds"))
 ```
 
-It's easier to see what's happening if we zoom in a bit. 
-
-Trondheim is municipality nr 5001 
-
-3020 is Nordre Follo
-
-5418 is Målselv
-
+It's easier to see what's happening if we zoom in a bit. I will look more closely at three example municipalities: Trondheim (municipality nr 5001), Nordre Follo (3020) and Målselv (5418).
 
 ```{r}
 wetland_alien_extr <- wetland_alien_extr %>%
@@ -1078,8 +1077,21 @@ all_stats %>%
   formatRound(columns=3:8, digits=2)
 ```
 
+Note that we can also show the uncertainties as maps
 
-The next step now is to
+```{r sd-alien, fig.cap="Map showing the uncertainties around the indicator values for alien species in three example municipalities for Semi-natural ecosystems."}
+tm_shape(alien_extr_trd_nf[alien_extr_trd_nf$eco=="semi_natural",])+
+  tm_polygons(col = "sd",
+    title="SD(alien\nspecies indicator)",
+    palette = "-viridis"
+     )+
+  tm_layout(legend.outside = T)+
+  tm_facets(by="municipalityNumber")
+```
+
+## Next steps
+
+The next steps now are to
 
 1. Prepare ecosystem delineation maps in EPSG25833 and perfectly aligned to a master grid
 
@@ -1088,4 +1100,4 @@ The next step now is to
 3. and mask it using the perfectly aligned ET map.
 
 
-This workflow should be syncronized with the [slitasje](#slitasje-og-kjørespor) indicator.
+This workflow should be synchronized with the [slitasje](#slitasje-og-kjørespor) indicator.
