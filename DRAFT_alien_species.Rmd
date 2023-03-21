@@ -868,28 +868,7 @@ all_stats %>%
 
 There is a trend here, but not very strong.
 
-Let us look at the effect of sample size on the indicator uncertainty.
-
-```{r, fig.cap="Sample size against indicator uncertainty."}
-all_stats %>%
-  filter(n > 5) %>%
-  ggplot(aes(x = n, y = sd))+
-  geom_point(size=2, position = position_dodge2(.1))+
-  theme_bw()+
-    facet_wrap(.~eco, scales="free")
-```
-
-This shows that the uncertainty is really inflated with sample sizes less than about 50-100.
-
-```{r, fig.cap="Summary statistics for the alien species indicator."}
-DT::datatable(all_stats) %>%
-  formatRound(columns=3:8, digits=2)
-```
-
-In addition to looking at the area weighted means and its relationship
-with the pressure indicator (HIF), we can do the same at the polygon
-level. Because the indicator is pseudo-continuous, boxplots for example
-become useless, so I will present a relative frequency plot.
+Here is a similar figure, looking at the relative frequency of indicator level of polygons and within each HIA.
 
 ```{r, eval=F}
 corrCheck <- st_intersection(alien_data, HIA)
@@ -917,6 +896,26 @@ ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_202
 The figure above I think supports the indicator-pressure relationship
 and justifies using the HIA+municipality intersections as local reference
 areas.
+
+Let us look at the effect of sample size on the indicator uncertainty.
+
+```{r, fig.cap="Sample size against indicator uncertainty."}
+all_stats %>%
+  filter(n > 5) %>%
+  ggplot(aes(x = n, y = sd))+
+  geom_point(size=2, position = position_dodge2(.1))+
+  theme_bw()+
+    facet_wrap(.~eco, scales="free")
+```
+
+This shows that the uncertainty is really inflated with sample sizes less than about 50-100.
+
+```{r, fig.cap="Summary statistics for the alien species indicator."}
+DT::datatable(all_stats) %>%
+  formatRound(columns=3:8, digits=2)
+```
+
+
 
 #### Looking at the HIA
 
@@ -961,103 +960,114 @@ I now want to find the mean indicator value for each HIA (i.e. to
 aggregate) and to spread these out spatially to the entire HIA within
 each municipality (i.e. to extrapolate).
 
-<!-- FORTSETT HER -->
-
 I want to add a threshold so that we don't end up over extrapolating
-based on too few data points. I have previousl used 150 data pionts, and I think that was about right.
+based on too few data points. I will use 20 data points as a minimum.
 
 ```{r, eval=F}
-wetlands_slitasje_extr <- ea_spread(indicator_data = wetlands,
+wetland_alien_extr <- ea_spread(indicator_data = wetlands,
                          indicator = i_2020,
-                         regions = HIA_regions,
-                         groups = region_HIF,
-                         threshold = 150)
+                         regions = HIA_muni,
+                         groups = muni_HIF,
+                         threshold = 20)
 
-seminat_slitasje_extr <- ea_spread(indicator_data = seminat,
+seminat_alien_extr <- ea_spread(indicator_data = seminat,
                          indicator = i_2020,
-                         regions = HIA_regions,
-                         groups = region_HIF,
-                         threshold = 150)
+                         regions = HIA_muni,
+                         groups = muni_HIF,
+                         threshold = 20)
 
-natOpen_slitasje_extr <- ea_spread(indicator_data = natOpen,
+natOpen_alien_extr <- ea_spread(indicator_data = natOpen,
                          indicator = i_2020,
-                         regions = HIA_regions,
-                         groups = region_HIF,
-                         threshold = 150)
-#saveRDS(wetlands_slitasje_extr, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
-#saveRDS(seminat_slitasje_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_slitasje_extr.rds")
-#saveRDS(natOpen_slitasje_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_slitasje_extr.rds")
+                         regions = HIA_muni,
+                         groups = muni_HIF,
+                         threshold = 20)
+#saveRDS(wetlands_alien_extr, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_alien_extr.rds")
+#saveRDS( seminat_alien_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_alien_extr.rds")
+#saveRDS( natOpen_alien_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_alien_extr.rds")
+
+#saveRDS(wetlands_alien_extr,  "P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_alien_extr.rds")
+#saveRDS( seminat_alien_extr,  "P:/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_alien_extr.rds")
+#saveRDS( natOpen_alien_extr,  "P:/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_alien_extr.rds")
+
 ```
 
 ```{r, include=F}
-wetlands_slitasje_extr <- readRDS(paste0(pData, "cache/wetlands_slitasje_extr.rds"))
-seminat_slitasje_extr  <- readRDS(paste0(pData, "cache/seminat_slitasje_extr.rds"))
-natOpen_slitasje_extr  <- readRDS(paste0(pData, "cache/natOpen_slitasje_extr.rds"))
+wetland_alien_extr <- readRDS(paste0(pData, "cache/wetlands_alien_extr.rds"))
+seminat_alien_extr  <- readRDS(paste0(pData,  "cache/seminat_alien_extr.rds"))
+natOpen_alien_extr  <- readRDS(paste0(pData,  "cache/natOpen_alien_extr.rds"))
 ```
 
-It's easier to see what's happening if we zoom in a bit. Lets get a
-boundary box around Trondheim.
+It's easier to see what's happening if we zoom in a bit. 
+
+Trondheim is municipality nr 5001 
+
+3020 is Nordre Follo
+
+5418 is Målselv
+
 
 ```{r}
-myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
-                ymin = 7032142.5, ymax = 7045245.27),
-                crs = st_crs(wetlands_slitasje_extr))
+wetland_alien_extr <- wetland_alien_extr %>%
+  separate(ID,
+           into = c("ID", "municipalityNumber", "HIF"),
+           sep = "_") %>%
+  add_column(eco = "wetlands")
+
+seminat_alien_extr <- seminat_alien_extr %>%
+  separate(ID,
+           into = c("ID", "municipalityNumber", "HIF"),
+           sep = "_") %>%
+  add_column(eco = "semi_natural")
+
+natOpen_alien_extr <- natOpen_alien_extr %>%
+  separate(ID,
+           into = c("ID", "municipalityNumber", "HIF"),
+           sep = "_") %>%
+  add_column(eco = "naturally_open")
+
+alien_extr <- rbind(
+  wetland_alien_extr,
+  seminat_alien_extr,
+  natOpen_alien_extr
+)
 ```
 
-Cropping the data to the bbox
 
-```{r, warning=F}
-wetlands_slitasje_extr_trd <- sf::st_crop(wetlands_slitasje_extr, myBB)
-seminat_slitasje_extr_trd <- sf::st_crop(seminat_slitasje_extr, myBB)
-natOpen_slitasje_extr_trd <- sf::st_crop(natOpen_slitasje_extr, myBB)
+```{r}
+alien_extr_trd_nf <- alien_extr %>%
+  filter(municipalityNumber %in% c("5001", "3020", "5418"))
 ```
 
-```{r extrapolated-slitasje, fig.cap="Slitasje indicator extrapolated over Trondheim"}
+
+
+```{r extrapolated-alien, fig.cap="Alein species indicator extrapolated over Nordre Follo (3020), Trondheim (5001) and Målselv (5418). Note that the maps are not masked by ecosystem type, so the three ecosystem specific indicators are overlaping. The bottom row shows the location of the four different human impact sones."}
 myCol <- "RdYlGn"
+
 tmap_arrange(
-tm_shape(wetlands_slitasje_extr_trd)+
+tm_shape(alien_extr_trd_nf)+
   tm_polygons(col = "w_mean",
-    title="Slitasje indicator",
+    title="Alien species indicator",
     palette = myCol,
     style="cont",
     breaks = c(0,1))+
   tm_layout(legend.outside = T)+
-  tm_shape(hw_utm)+
-  tm_lines(col="blue")+
-  tm_layout(title = "Wetland"),
-
-tm_shape(seminat_slitasje_extr_trd)+
-  tm_polygons(col = "w_mean",
-    title="Slitasje indicator",
-    palette = myCol,
+  tm_facets(by=c("eco", "municipalityNumber"))
+,
+tm_shape(alien_extr_trd_nf)+
+  tm_polygons(col = "HIF",
+    title="Human impact factor",
+    palette = "-viridis",
     style="cont",
     breaks = c(0,1))+
   tm_layout(legend.outside = T)+
-  tm_shape(hw_utm)+
-  tm_lines(col="blue")+
-  tm_layout(title = "Semi-natural areas"),
-
-tm_shape(natOpen_slitasje_extr_trd)+
-  tm_polygons(col = "w_mean",
-    title="Slitasje indicator",
-    palette = myCol,
-    style="cont",
-    breaks = c(0,1))+
-  tm_layout(legend.outside = T)+
-  tm_shape(hw_utm)+
-  tm_lines(col="blue")+
-  tm_layout(title = "Naturally open areas"),
-HIA_trd)
+  tm_facets(by=c("municipalityNumber"))
+,
+ncol=1,
+heights = c(1,0.3))
 ```
 
-Note that for wetland and semi-natural areas we did not
-extrapolate values for the most urban areas, and that for naturally open
-areas we did not extrapolate to the least affected areas.
-For the other regions we generally excluded more HIFs. 
+Figure \@ref(fig:extrapolated-alien) shows that this indicator will have a lot of missing data. For Nordre Follo and Trondheim for example, we do not have any indicator values tied to naturally open or wetland ecosystems, and for semi natural ecosystems we only have data for HIF class 2. This is, however, still a lot better than discarding the entire data set due to issues related to area representativity. The amount of missing data in the indicator maps is closely ties to the chosen threshold value for how many data points we must have in order to calculate an (area weighted) men indicator value. We have used 20 as the threshold here. For Målselv (far right column), we ended up having enough data for wetlands in HIF class 0, and since most of the municipality is in this HIF class we get a lot of indicator coverage.
 
-> *The maps above are easy to misunderstand, and they should therefor be
-> communicated with caution. They should be considered as temporary
-> files or as by-products.*
 
 
 The next step now is to
