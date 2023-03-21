@@ -13,17 +13,17 @@ March 2023
 
 ```{r setup, include=FALSE}
 library(knitr)
+library(tidyverse)
 library(sf)
 library(tmap)
 library(ggpubr)
 library(DT)
 library(units)
 library(eaTools)
-#library(tidyverse)
 library(tibble)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
+#library(ggplot2)
+#library(tidyr)
+#library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 
 # Set up conditional file paths
@@ -1048,8 +1048,8 @@ tm_shape(alien_extr_trd_nf)+
   tm_polygons(col = "w_mean",
     title="Alien species indicator",
     palette = myCol,
-    style="cont",
-    breaks = c(0,1))+
+     style="fixed",
+    breaks = seq(0,1,.1))+
   tm_layout(legend.outside = T)+
   tm_facets(by=c("eco", "municipalityNumber"))
 ,
@@ -1068,6 +1068,15 @@ heights = c(1,0.3))
 
 Figure \@ref(fig:extrapolated-alien) shows that this indicator will have a lot of missing data. For Nordre Follo and Trondheim for example, we do not have any indicator values tied to naturally open or wetland ecosystems, and for semi natural ecosystems we only have data for HIF class 2. This is, however, still a lot better than discarding the entire data set due to issues related to area representativity. The amount of missing data in the indicator maps is closely ties to the chosen threshold value for how many data points we must have in order to calculate an (area weighted) men indicator value. We have used 20 as the threshold here. For Målselv (far right column), we ended up having enough data for wetlands in HIF class 0, and since most of the municipality is in this HIF class we get a lot of indicator coverage.
 
+The following table contains the data values underlying Figure \@ref(fig:extrapolated-alien), including the combination with <20 data points.
+
+```{r, fig.cap="Summary statistics for three example municipalities."}
+all_stats %>%
+  filter(municipalityNumber %in% c("5001", "3020", "5418")) %>%
+  arrange(municipalityNumber, eco, HIF) %>%
+  DT::datatable()%>%
+  formatRound(columns=3:8, digits=2)
+```
 
 
 The next step now is to
@@ -1079,111 +1088,4 @@ The next step now is to
 3. and mask it using the perfectly aligned ET map.
 
 
-A faster way could be to:
-
-1.  Draw *n* random point samples from the ET map, and
-
-2.  extract indicator values at those points (from the extrapolated
-    indicator map (a stars object)).
-
-... but his will not provide spatially explicit indicator values for the
-entire ecosystem delineation.
-
-### Ecosystem map
-
-Importing the wetland map.
-
-```{r, eval=T}
-#takes about one minute without the proxy
-(mireET <- stars::read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Myrmodell/myrmodell90pros.tif",
-                             proxy=T))
-```
-
-This is in the wrong CRS. We want to stay with 25833.
-
-We have a 50x50 m [master grid](#master-grid) with the correct CRS, and I would warp mireET to fit that grid like this:
-```{r, eval=F}
-grid <- stars::read_stars(paste0(pData, "masterGrid_50m.tiff"))
-mireET_warped <- stars::st_warp(mireET, grid)
-```
-
-... but I don't want to down sample the mire data, since we will loose a lot of the smaller ecosystem occurrences. 
-
-I could make a 10x10 master grid, but I have not found a way to stop this from being just a massive file.
-
-I can transform the ET map like this, and not worry about the rasters being perfectly aligned, but even this operation is too heavy for the R Studio Server:
-
-```{r, eval=F}
-mireET_trans <- sf::st_transform(mireET, 25833)
-```
-
-I will therefore ask GIS engineers to prepare ecosystem maps to the standard that we chose, so that we can simply combine the stars object with `stars::c()`, or perhaps side-step that operatio and just mask directly like this: `wetlands_slitasje_extr[mireET==0] <- NA`.
-
-
-### Aggregate to region
-
-We need to aggreate the ET occurence and their indicator values, to a
-regional delineation. This functionality can be developed in `eaTools`,
-but will in any case build around `exactextratr::exact_extract()`.
-
-To carry the errors, we can for example
-produce distributions for the indicator values for each ET
-occurrence (or groups of them) and resample the distributions with an
-area weighting.
-
-### Uncertainty
-
-The calculations of indicator uncertainty is done with bootstrapping, as
-is described in eaTools.
-
-## Eksport files (final product)
-
-According to the workflow specifications, I will export the indicator
-map at its highest resolution, for use in various web interfaces etc.
-For the finest resolution indicator map I will not include columns for
-uncertainty (because this will only be estimated at the aggregated
-level), or reference levels (because there is no spatial variation).
-
-I can also export a map of the indicator where we extrapolate the
-indicator values to the homogeneous areas (e.g. Fig. \@ref(fig:extrapolated-slitasje) . This map should be
-interpreted with caution, since they appear as providing explicit indicator
-values for areas where there is no data. This map is mainly for
-aggregation purposes. I will mark this map with the prefix
-*homogeneous-areas*. I will also export this same map after masking it
-with the ET map, and this output must come with the same disclaimers.
-
-Finally I will export a map of the five accounting areas with
-wall-to-wall indicator value and errors (e.g. Fig \@ref(fig:wall-to-wall-summer-temp-indicator)). This map can also contain data
-covering other ETs. Otherwise the maps would not we visually
-interpretative.
-
-### Slitasje in wetlands
-
-This is how I plan to export the final product.
-
-```{r, eval=F}
-# keep col names short and standardized
-exp_wetland <- ...
-```
-
-```{r, eval=F}
-exp_wetland_HIAextrapolated <- …
-```
-
-```{r, eval=F}
-exp_wetland_AAextrapolated <- …
-```
-
-Write to file
-
-```{r, eval=F}
-st_write(exp_wetland, "indicators/indicatorMaps/slitasje/wetland_slitasje.shp",
-         append = F)
-
-st_write(exp_wetlandHIAextrapolated, 
-         "indicators/indicatorMaps/extrapolated_to_homogeneous_areas/slitasje/homogeneous_areas_wetland_slitasje.shp",
-         append = F)
-
-st_write(exp_wetland, "indicators/indicatorMaps/extrapolated_to_accounting_areas/slitasje/accounting_areas_wetland_slitasje.shp",
-         append = F)
-```
+This workflow should be syncronized with the [slitasje](#slitasje-og-kjørespor) indicator.
