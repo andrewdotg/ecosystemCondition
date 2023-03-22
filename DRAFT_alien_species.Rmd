@@ -41,8 +41,8 @@ pData <- ifelse(dir == "C:",
 
 ```{r, echo=F}
 Ecosystem <- "Våtmark, Naturlig åpne områder under skoggrensa, Semi-naturlig mark" 
-Egenskap  <- "Primærproduksjon (evt. Abiotiske fohold)"
-ECT       <- "Physical state characteristics" 
+Egenskap  <- "Funksjonelt viktige arter og strukturer"
+ECT       <- "B1 Compositional state characteristics" 
 Contact   <- "anders.kolstad@nina.no"
 ```
 
@@ -56,11 +56,11 @@ knitr::kable(metaData)
 <hr/>
 
 ## Introduction
-This indicator represent the the ecological on-site effect from  alien species. Whilst the introduction of alien species is best considered a pressure variable, the physical abundance or relative abundance of alien species on a given location is seen here as a manifestation of this negative anthropogenic impact, and is therefore a good condition indicator.
+This indicator represent the the ecological on-site effect from  alien species. Whilst the introduction of alien species is best considered a pressure variable, the relative abundance of alien species on a given location is seen here as a manifestation of this negative anthropogenic impact, and is therefore a valid condition indicator.
 
 A related variable has been used previously for [alpine](https://ninanor.github.io/IBECA/faktaark.html#Frav%C3%A6r_av_fremmede_arter) and forest ecosystems in Norway. These indicators were based on ANO, a national monitoring program, where alien species cover was estimated to the closest whole %. The upper and lower reference levels that was used back then was 0 or 100% of the species composition made up of alien species, respectively. The threshold value between good and reduced condition was defined as 5%. In this approach, the indicator represented the relative area with an absence of alien species. It is in a way the flip-side of _alien species abundance_. The latter was said to be a pressure variable, whilst the former reacts as direct and linear consequence of changes to this variable, and was therefore accepted as a condition indicator. We do not make this distinction here. 
 
-This time we are using the [nature type mapping dataset](#naturtype) which records the _effect_ of alien species,, rather than the % cover. The recording scale is called R7 (Fig. \@ref(fig:R7)) and is an ordinal scale which has a non-linear relationship with %cover recorded in ANO (Fig. \@ref(fig:fremmedart-prosentVSinnslag)). In order to combine these two data sets, we must convert one of these scales to match the other.
+This time we are using the [nature type mapping dataset](#naturtype) which records the assumed _effect_ of alien species, rather than a direct measure of abundance such as % cover. The recording scale is called R7 (Fig. \@ref(fig:R7)) and is an ordinal scale which has a non-linear relationship with %cover recorded in ANO (Fig. \@ref(fig:fremmedart-prosentVSinnslag)). In order to combine these two data sets, we must convert one of these scales to match the other.
 
 Here I base the indicator on the R7 scale, since this is, presumably, the bigger data set. I therefore convert %cover into R7 classes based on what I can interpret from Fig. \@ref(fig:fremmedart-prosentVSinnslag).
 
@@ -74,14 +74,14 @@ Step 4 on the R7 scale is the step that, concordantly, best matches the 5% thres
 knitr::include_graphics("images/R7 scale.PNG")
 ```
 
-```{r fremmedart-prosentVSinnslag, fig.cap="Comparing the R7 scale (x axis) which is used in the nature type monitoring program with %cover (y-axis), which is how alien species is recorded in ANO. I am assuming the x axis is shifted downwards compared to the original R7 scale which range from 1 to 7, so that a value of 0 here exualrs to an R7 value of 1. Cropped from Evju et al (2022)."}
+```{r fremmedart-prosentVSinnslag, fig.cap="Comparing the R7 scale (x axis) which is used in the nature type monitoring program with %cover (y-axis), which is how alien species is recorded in ANO. I am assuming the x axis is shifted downwards compared to the original R7 scale which range from 1 to 7, so that a value of 0 here equals an R7 value of 1. Cropped from Evju et al (2022)."}
 knitr::include_graphics("images/fremmedart_prosentVSinnslag.PNG")
 ```
 
 
-Since the nature type data is not sampled in a systematic or random way, we must take extra care not to over-extrapolate in space. We delineate _homogeneous impact areas_ (HIA) based on four classes of increasing infrastructure, and we say that the field data is representative inside the HIA and region. In [a related indicator](#slitasje-og-kjørespor) we used the accounting areas as regions (5 accounting areas in Norway). For this indicator, we expect more gradients also inside accounting areas, and therefore we define areas as municipalities. This means that there will be more missing data in our final indicator maps, since not all municipalities will have sufficient data points to estimate indicator values.
+Since the nature type data is not sampled in a systematic or random way, we must take extra care not to over-extrapolate in space. We delineate _homogeneous impact areas_ (HIA) based on four classes of increasing infrastructure intersected with municipality borders, and we say that if we have more than _n_ data points than this field data is representative inside the entire HIA. In [a related indicator](#slitasje-og-kjørespor) we used the accounting areas to define the HIA (5 accounting areas in Norway), in addition to the infrastructure classes. For this indicator, we expect more gradients also inside accounting areas, and therefore we define HIAs based on municipalities. This means that there will be more missing data in our final indicator maps, since not all municipalities will have sufficient data points to estimate indicator values.
 
-We then calculate an area weighted mean (and error) indicator value for each HIA and municipality combination, as long as there is more than _n_ data points for a given combination of HIA and municipality.     
+We then calculate an area weighted mean (and error) indicator value for each HIA, as long as there is more than _n_ data points for a given combination of HIA and municipality.     
 
 Here a general workflow for the calculation of the indicator.
 
@@ -115,12 +115,12 @@ Here a general workflow for the calculation of the indicator.
 ## About the underlying data
 
 The indicator uses a data set from a standardised field survey of nature
-types. You can read more about the preliminary analyses
+types. You can read more about this data set from my preliminary analyses
 [here](#naturtype). See also the [official
 site](https://www.miljodirektoratet.no/ansvarsomrader/overvaking-arealplanlegging/naturkartlegging/naturtyper/)
 of the Environment Agency. I also import a data set called
 [ANO](#ANO-import2), which you can read about
-[here](https://www.miljodirektoratet.no/ansvarsomrader/overvaking-arealplanlegging/miljoovervaking/overvakingsprogrammer/natur-pa-land/arealrepresentativ-naturovervakning-ano/)
+[here](https://www.miljodirektoratet.no/ansvarsomrader/overvaking-arealplanlegging/miljoovervaking/overvakingsprogrammer/natur-pa-land/arealrepresentativ-naturovervakning-ano/).
 
 ### Representativity in time and space
 
@@ -131,8 +131,8 @@ becomes available early the following year.
 
 ### Original units
 
-The variables are recorded on a seven-step ordinal scale (Fig.
-\@ref(fig:R7)) or a %cover of alien species.
+The variables are recorded on a unitless seven-step ordinal scale (Fig.
+\@ref(fig:R7)) or a as a % cover of alien species.
 
 ### Temporal coverage
 
@@ -149,7 +149,7 @@ For a run through of the nature type data set, see [here](#naturtype).
 ### Norwegain standard
 
 The indicator is tagged to the *Økologisk egenskap* called
-**Funksjonelt viktige arter og strukturer** (Functionally important species and structures). 
+**Funksjonelt viktige arter og strukturer** (Functionally important species and structures). This emphasises the negaivte effect that alien species has on for example supressing or excluding native species. In some cases, alien species can also affect nutrient cycling or recruitment.
 
 ### UN standard
 
@@ -214,9 +214,8 @@ This indicator uses the data set
 See also [here](#naturtype) for a detailed description of the data set.
 
 We also have a separate [summary file](##exp-natureType-summary) where
-the nature types are manually mapped the NiN variables and to the correct NiN-main types. 
-We can use this to find the nature types associated with the NiN main types
-that we are interested in.
+the nature types are manually mapped to the NiN variables and to the correct NiN-main types. 
+We can use this to find the nature types of interest.
 
 ```{r}
 naturetypes_summary_import <- readRDS("data/naturetypes/natureType_summary.rds")
@@ -245,7 +244,7 @@ DT::datatable(naturetypes_summary)
 ```
 
 Importing and sub-setting the main data file, fix duplicate _hovedøkosystem_, calculate area, split one column in two, make numeric, and select target variables:
-```{r, message=F}
+```{r, message=F, warning=FALSE}
 naturetypes <- sf::st_read(dsn = path) %>%
   filter(naturtype %in% naturetypes_summary$Nature_type) %>%
   mutate(hovedøkosystem = case_match(hovedøkosystem,
@@ -296,7 +295,7 @@ naturetypes$NiN_variable_value <- naturetypes$NiN_variable_value+1
 ```
 
 
-```{r alien-naturetype, fig.cap="Alien species variable scores."}
+```{r alien-naturetype, fig.cap="Alien species variable scores in the nature type data set."}
 ggplot(naturetypes, aes(x = NiN_variable_value))+
   geom_histogram(fill="grey",
            colour = "black",
@@ -319,12 +318,12 @@ The nature type data set I'm working on here includes this data already
 not published. In any case it is better to use the harmonized data set
 in our case.
 
-_NOTE: I'm not sure, but I wonder if the 2021 GRUK data was a pilot project and that most GRUK data, and all futute GRUK data, will not be included in this data set._
+_NOTE: I'm not sure, but I wonder if the 2021 GRUK data was a pilot project and that most GRUK data, and all future GRUK data, will not be included in this data set._
 
 #### ANO {#ANO-import2}
 
 Arealrepresentativ Naturovervåking (ANO) consist of 1000 systematically
-placed locations each with 18 sample points. In each sample point a
+placed locations in Norway, each with 18 sample points. In each sample point a
 circle of 250 m2 is visualised, and the main ecosystem is recorded.
 
 The %cover of alien vascular plant is estimated, independent on main ecosystem type. 
@@ -364,12 +363,6 @@ NA's here, which is `r round(NAS/nrow(ano), 2)*100`% of the data.
 It appears the proportion of each circle that is made up of the dominant
 ecosystem was only recorded after year 2019. In fact, the main ecosystem
 was not recorded at all in 2019:
-```{r}
-# Hard coding name change
-#unique(ano$hovedtype_250m2)[3]
-#ano$hovedtype_250m2[ano$hovedtype_250m2==unique(ano$hovedtype_250m2)[3]] <- "Aapen jordvassmyr"
-```
-
 
 ```{r}
 table(ano$hovedtype_250m2, ano$aar)
@@ -392,7 +385,7 @@ plot(ano$andel_hovedoekosystem_punkt[order(ano$andel_hovedoekosystem_punkt)],
      ylab="Percentage of the 250 m2 area\ncovered by the main ecosystem")
 ```
 
-The zero in there is an obvious mistake.
+The zero in there is an obvious mistake. Removing it:
 
 ```{r}
 ano <- ano[ano$andel_hovedoekosystem_punkt>20,]
@@ -431,7 +424,7 @@ ano <- ano[!is.na(ano$fa_total_dekning),]
 
 Let us plot the distribution of values.
 
-```{r ano-alien-dist, fig.cap"Distribution of %cover of alien plants variable in the ANO data set"}
+```{r ano-alien-dist, fig.cap="Distribution of %cover of alien plants variable in the ANO data set"}
 ggplot(ano, aes(x = fa_total_dekning))+
   geom_histogram(fill="grey",
            colour = "black",
@@ -443,7 +436,7 @@ ggplot(ano, aes(x = fa_total_dekning))+
 
 The ANO localities seemingly have less alien plants in them than the nature type localities. This can be du to sampling biases in the latter.
 
-Now I will convert these %cover values into 7FA classes. This is a critical step, since there is not one-to-one mapping here, 
+Now I will convert these %cover values into 7FA classes. This is a critical step, since there is no one-to-one mapping here, 
 but rather there is considerable overlap, as can be seen in Fig. \@ref(fig:fremmedart-prosentVSinnslag).
 
 
@@ -459,7 +452,7 @@ ano <- ano %>%
              fa_total_dekning<1 ~ 1))
 ```
 
-```{r ano-alien-dist-R7, fig.cap"Distribution of R7 values in the ANO data set"}
+```{r ano-alien-dist-R7, fig.cap="Distribution of R7 values in the ANO data set"}
 ggplot(ano, aes(x = var_7FA))+
   geom_histogram(fill="grey",
            colour = "black",
@@ -520,8 +513,7 @@ The ANO data is point data and the nature type data is *multipolygon*:
 unique(st_geometry_type(alien_data))
 ```
 
-Because later we might want to save this as a shape file, we cannot have
-a mixed class type. I will therefore convert the points to polygons. I
+Because later we will rasterize these data, we will  convert the points to polygons. I
 use the area column to calculate a radii that gives that area.
 
 ```{r}
@@ -571,10 +563,10 @@ ggplot(temp, aes(x = Var1,
        y = "Number of localities")
 ```
 
-Let's see the proportion of data points (not area) origination from each
+Let's see the proportion of data points (not area) originating from each
 data set
 
-```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the alien species indicator.", fig.width=4}
+```{r, fig.cap="Barplot showing the contribution (number of localities) of different data sets to the alien species indicator.", fig.width=4}
 temp <- as.data.frame(table(alien_data$origin))
 
 ggplot(temp, aes(x = Var1,
@@ -592,7 +584,7 @@ important in the future so good to have them included in the workflow.
 
 #### Outline of Norway and regions
 
-The GIS layers are used to crop out marine areas, and to define
+These layers are used to crop out marine areas, and to define
 accounting areas, respectively.
 
 ```{r}
@@ -647,9 +639,9 @@ polygon level, then I could scale at that level. I think they are.
 However, the combined surveyed area is a very small fraction of the
 total area of Norway, so that only producing indicator values for the
 mapped areas leaves the indicator without much value for regional
-assessments. When we do regional assessments and calculate regional
-indicator values, we cannot simply do an area weighting of the polygons
-in each region. This is because we don't want to assume that the
+assessments. But we cannot simply do an area weighting of the polygons
+in each region. This is because we expect considerable sampling bias
+and we can't assume that the
 polygons are representative far outside of the mapped area. But perhaps
 we can assume them to be representative inside *homogeneous ecological
 areas,* or *Homoegeneous Impact Areas* (HIAs). That's where the
@@ -657,16 +649,15 @@ infrastructure index comes in. Here's the plan:
 
 1.  normalise the indicators at the polygon level.
 
-2.  take a simplified infrastructure index (vector data set with HIAs)
-    and extract the corresponding indicator values that intersect with a
+2.  take a simplified infrastructure index (vector data) and intersect this with municipality boarders to produce a map of homogeneous impact areas (HIAs).
+
+1.  extract the corresponding indicator values that intersect with a
     given HIA, and extrapolate the area weighted mean of those values to
-    the entire HIA withing a given geographical region (municipality). Errors are
+    the entire HIA. Errors are
     calculated from bootstrapping.
 
-3.  Take the new area weighted indicator values for the HIAs and match
-    them with ecosystem occurrences of the same HIA (_possibly using
-    randomly sampled points from the available ecosystem occurrences_).
-    The errors are the same as for the HIAs.
+3.  Take the new area weighted indicator values for the HIAs, rasterize it, and mask these
+    with ecosystem occurrences. The errors are the same as for the HIAs.
 
 4.  calculate an indicator value for a region (accounting area) by doing
     a weighted average based of the relative area of ecosystem
