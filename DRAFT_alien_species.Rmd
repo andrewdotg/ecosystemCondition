@@ -1192,7 +1192,98 @@ The next steps now are to
 
 3. and mask it using the perfectly aligned ET map.
 
-4. Then, look at [Median Summer Temperature] for how to aggregate spatially tp accounting areas (regions)
+4. Then, look at [Median Summer Temperature] for how to aggregate spatially to accounting areas (regions)
 
 
-This workflow should be synchronized with the [slitasje](#slitasje-og-kjørespor) indicator.
+This workflow should be synchronized with the [slitasje](#slitasje-og-kjørespor) indicator. I will attempt a little proof of concept below.
+
+
+## Masking with an ecosystem delineation - example
+
+Let's try steps 2 and 3 on a reduced data set. I'll work with wetlands in Gran municipality.
+
+```{r}
+gran <- wetland_alien_extr %>%
+  filter(municipalityNumber == "3446")
+```
+
+```{r, fig.cap="Alien species indicator over wetlands in Gran municipality."}
+tm_shape(gran)+
+  tm_polygons(col = "w_mean",
+    title="Alien species indicator - wetlands",
+    palette = myCol,
+     style="fixed",
+    breaks = seq(0,1,.1))+
+  tm_layout(legend.outside = T,
+            title = "Gran municipality")
+```
+
+Then I can import and crop the ecosystem delineation map.
+
+```{r, eval=F}
+file <- "P:/41201785_okologisk_tilstand_2022_2023/data/Myrmodell/myrmodell90pros.tif"
+EDM <- stars::read_stars(file, proxy=F)
+```
+
+The EDM is in UTM32 when we actually want to have it in UTM33. But transforming it takes too long, so I will transform the indicator map instead.
+
+```{r, eval=FALSE}
+gran <- st_transform(gran, st_crs(EDM))
+```
+
+
+```{r, eval=F}
+mire_gran <- st_crop(EDM, gran)
+saveRDS(mire_gran, paste0(pData, "cache/mire_gran.rds"))
+```
+
+```{r, include=FALSE}
+mire_gran <- readRDS(paste0(pData, "cache/mire_gran.rds"))
+```
+
+
+```{r, fig.cap="Wetlands in Gran municipality"}
+ggplot()+
+  geom_stars(data = st_downsample(mire_gran, 10))
+```
+
+Then I rasterize the indicator map to match the EDM. This takes a while, even for just one municipality. I'm not sure this would work for the entire country.
+
+```{r, eval=F}
+gran_rast <- st_rasterize(gran, template = mire_gran)  
+saveRDS(gran_rast, paste0(pData, "cache/gran_rast.rds"))
+```
+
+```{r, include=FALSE}
+gran_rast <- readRDS(paste0(pData, "cache/gran_rast.rds"))
+```
+
+```{r}
+gran_outline <- muni %>%
+  filter(kommunenummer == "3446")
+```
+
+```{r, fig.cap="Indictor values (alien species, extrapolated and area weighted values) in Gran municipality"}
+tm_shape(st_downsample(gran_rast, 10))+
+  tm_raster(col="w_mean")+
+  tm_shape(gran_outline)+
+  tm_borders(col="red")
+```
+
+Then i mask
+
+```{r}
+gran_rast_masked <- gran_rast
+gran_rast_masked[mire_gran == 0] <- NA
+```
+
+```{r, fig.cap="Indictor values (alien species, extrapolated and area weighted values) in Gran municipality"}
+tm_shape(st_downsample(gran_rast_masked, 10))+
+  tm_raster(col="w_mean",
+            palette = "red")+
+  tm_shape(gran_outline)+
+  tm_borders(col="red")
+```
+
+From here it is easy to get zonal statistics using `exactextratr`. If I have this kind of map for all of Norway I can get the mean value for the regions (defined via a polygon set) and it will of course be area weighted. 
+
