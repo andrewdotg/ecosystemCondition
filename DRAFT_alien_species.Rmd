@@ -649,7 +649,7 @@ infrastructure index comes in. Here's the plan:
 
 1.  normalise the indicators at the polygon level.
 
-2.  take a simplified infrastructure index (vector data) and intersect this with municipality boarders to produce a map of homogeneous impact areas (HIAs).
+2.  take a simplified infrastructure index (vector data) and intersect this with municipality borders to produce a map of homogeneous impact areas (HIAs).
 
 1.  extract the corresponding indicator values that intersect with a
     given HIA, and extrapolate the area weighted mean of those values to
@@ -788,9 +788,9 @@ See Fig. \@ref(fig:HIF-region) for a closer look at the distribution of HIA clas
 
 #### Validate
 
-I now have `r length(unique(HIA_muni$muni_HIF))` unique areas (for each main ecosystem) that I will, given
+I now have `r length(unique(HIA_muni$muni_HIF))` HIAs (for each main ecosystem) that I will, given
 there is data, extrapolate indicator values over. But first I want to validate the assumption that the HIF 
-explains a considerable portion of the variation i the indicator values.
+explains a considerable portion of the variation in the indicator values.
 
 I will subset the `alien_data` into the three ecosystems.
 
@@ -910,7 +910,7 @@ corrCheck <- readRDS(paste0(pData, "cache/corrCheck_alienSpecies.rds"))
 ```
  
 
-```{r alien-precentageplot, fig.height=5, fig.width=8, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
+```{r alien-precentageplot, fig.height=5, fig.width=8, fig.cap="Relative frequency plot showing the distribution of polygons with different indicator values."}
 ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
   geom_bar(position="fill")+
   theme_bw(base_size = 12)+
@@ -947,8 +947,7 @@ DT::datatable(all_stats) %>%
 ### Aggregate and spread (extrapolate) {#spread-alien}
 
 I now want to find the mean indicator value for each HIA (i.e. to
-aggregate) and to spread these out spatially to the entire HIA within
-each municipality (i.e. to extrapolate).
+aggregate) and to _spread_ these out spatially to the entire HIA (i.e. to extrapolate).
 
 I want to add a threshold so that we don't end up over extrapolating
 based on too few data points. I will use 20 data points as a minimum.
@@ -989,7 +988,9 @@ seminat_alien_extr  <- readRDS(paste0(pData,  "cache/seminat_alien_extr.rds"))
 natOpen_alien_extr  <- readRDS(paste0(pData,  "cache/natOpen_alien_extr.rds"))
 ```
 
-It's easier to see what's happening if we zoom in a bit. I will look more closely at three example municipalities: Trondheim (municipality nr 5001), Nordre Follo (3020) and Målselv (5418).
+It's easier to see what's happening if we zoom in a bit. I will look more closely at three example municipalities: 
+
+Trondheim (municipality nr 5001), Nordre Follo (3020) and Målselv (5418).
 
 ```{r}
 wetland_alien_extr <- wetland_alien_extr %>%
@@ -1025,7 +1026,7 @@ alien_extr_trd_nf <- alien_extr %>%
 
 
 
-```{r extrapolated-alien, fig.cap="Alein species indicator extrapolated over Nordre Follo (3020), Trondheim (5001) and Målselv (5418). Note that the maps are not masked by ecosystem type, so the three ecosystem specific indicators are overlaping. The bottom row shows the location of the four different human impact sones."}
+```{r extrapolated-alien, fig.cap="Alien species indicator extrapolated over Nordre Follo (3020), Trondheim (5001) and Målselv (5418). Note that the maps are not masked by ecosystem type, so the three ecosystem specific indicators are overlaping. The bottom row shows the location of the four human impact sones."}
 myCol <- "RdYlGn"
 
 tmap_arrange(
@@ -1051,9 +1052,9 @@ ncol=1,
 heights = c(1,0.3))
 ```
 
-Figure \@ref(fig:extrapolated-alien) shows that this indicator will have a lot of missing data. For Nordre Follo and Trondheim for example, we do not have any indicator values tied to naturally open or wetland ecosystems, and for semi natural ecosystems we only have data for HIF class 2. This is, however, still a lot better than discarding the entire data set due to issues related to area representativity. The amount of missing data in the indicator maps is closely ties to the chosen threshold value for how many data points we must have in order to calculate an (area weighted) men indicator value. We have used 20 as the threshold here. For Målselv (far right column), we ended up having enough data for wetlands in HIF class 0, and since most of the municipality is in this HIF class we get a lot of indicator coverage.
+Figure \@ref(fig:extrapolated-alien) again indicates that this indicator will have a lot of missing data (see also [here](#alien-data-coverage)). For Nordre Follo and Trondheim for example, we do not have any indicator values tied to naturally open or wetland ecosystems, and for semi natural ecosystems we only have data for HIF class 2. This is, however, still a lot better than discarding the entire data set due to issues related to area representativity. The amount of missing data in the indicator maps is closely tied to the chosen threshold value for how many data points we must have in order to calculate an (area weighted) mean indicator value. We have used 20 as the threshold here. For Målselv (far right column), we ended up having enough data for wetlands in HIF class 0, and since most of the municipality is in this HIF class we get a lot of indicator coverage.
 
-The following table contains the data values underlying Figure \@ref(fig:extrapolated-alien), including the combination with <20 data points.
+The following table contains the data values underlying Figure \@ref(fig:extrapolated-alien), including HIAs with <20 data points.
 
 ```{r, fig.cap="Summary statistics for three example municipalities."}
 all_stats %>%
@@ -1063,9 +1064,9 @@ all_stats %>%
   formatRound(columns=3:8, digits=2)
 ```
 
-Note that we can also show the uncertainties as maps
+Note that we can also show the uncertainties on maps:
 
-```{r sd-alien, fig.cap="Map showing the uncertainties around the indicator values for alien species in three example municipalities for Semi-natural ecosystems."}
+```{r sd-alien, fig.cap="Map showing the uncertainties (spatial variation) around the indicator values for alien species in three example municipalities for Semi-natural ecosystems."}
 tm_shape(alien_extr_trd_nf[alien_extr_trd_nf$eco=="semi_natural",])+
   tm_polygons(col = "sd",
     title="SD(alien\nspecies indicator)",
@@ -1089,7 +1090,7 @@ alien_extr %>%
        y = "Number of HIAs with >20 data points")
 ```
 
-#### Data coverage
+#### Data coverage {#alien-data-coverage}
 
 Let's see how big proportion of Norway we ended up having data for. Ideally I would do this after masking the indicator maps with ecosystem delineations, 
 but I can also get a good feel for the data coverage like this as well.
@@ -1100,7 +1101,7 @@ The area of Norway is
 ```
 
 And here is the total and relative area of the indicator maps
-```{r relative-area, fig.cap="Relative area cover of the indicator maps for the alien species indicator (i.e. value 1 means that all HIAs had > 20 data points, and 0.2 means 20% of them did). If assuming the ecosystems are equally common where they are mapped and where hey are not, this measure of data coverage is representative of the real indicator coverage after maksing the maps with ecosystem delineations."}
+```{r relative-area, fig.cap="Relative area cover of the indicator maps for the alien species indicator (i.e. value 1 means that all HIAs had > 20 data points, and 0.2 means 20% of them did). If assuming the ecosystems are equally common where they are mapped and where they are not, this measure of data coverage is representative of the real indicator coverage after masking the maps with ecosystem delineations."}
 alien_extr %>%
   filter(!is.na(w_mean)) %>%
   mutate(m2 = st_area(.)) %>%
@@ -1111,10 +1112,11 @@ alien_extr %>%
   ggplot()+
   geom_bar(aes(x = eco, y = relative_area),
            stat = "identity")+
+  labs(x = "Ecosystem", y = "Relative indicator data coverage")+
   theme_bw()
 ```
 
-Figure \@ref(fig:relative-area) shows us that this indicator will provide indicator values for about 20% of the semi-natural ecosystem, and considerably less for the other two ecosystems. The data coverage is very sensitive to the threshold for minimum data points, set to >20 in this case. Also, with more nature type data accumulating over time, the data coverage will increase. Therefore this indicator is worth while, and is seen as considerably better than the alternative to discard the entire data set.
+Figure \@ref(fig:relative-area) shows us that this indicator will provide indicator values for about 20% of the semi-natural ecosystem, and considerably less for the other two ecosystems. The data coverage is very sensitive to the threshold for minimum data points, set to >20 in this case. Also, with more nature type data accumulating over time, the data coverage will increase. Therefore I think this indicator is worth while, and that this is considerably better than the alternative to discard the entire data set.
 
 #### Effect of latitude
 
@@ -1122,7 +1124,7 @@ Alien species tend to invade from the south. Let us see if there is an effect of
 
 Extracting x and y coordinates
 
-```{r}
+```{r, warning=FALSE}
 temp <- alien_extr %>%
   filter(!is.na(w_mean)) %>%
   st_centroid() %>%
@@ -1276,5 +1278,5 @@ tm_shape(st_downsample(gran_rast_masked, 10))+
   tm_borders(col="red")
 ```
 
-From here it is easy to get zonal statistics using `exactextratr`. If I have this kind of map for all of Norway I can get the mean value for the regions (defined via a polygon set) and it will of course be area weighted. 
+From here it is easy to get zonal statistics using `exactextratr`. If I have this kind of map for all of Norway I can get the mean value for the regions (defined via a polygon set) and it will of course be area weighted (but no weight given to ecosystem occurences that don't have indicator values). 
 
