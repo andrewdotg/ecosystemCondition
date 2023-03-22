@@ -759,19 +759,52 @@ HIA_muni <- HIA_muni %>%
   mutate(muni_HIF = paste("ID", kommunenummer, infrastructureIndex, sep="_"))
 ```
 
+Here is a view of the data zooming in on Trondheim
+
+```{r}
+myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
+                ymin = 7032142.5, ymax = 7045245.27),
+                crs = st_crs(HIA_muni))
+```
+
+Cropping the raster to the bbox
+
+```{r}
+HIA_trd <- sf::st_crop(HIA_muni, myBB)
+```
+
+Get map of major roads, for context
+
+```{r}
+hw_utm <- readRDS("data/cache/highways_trondheim.rds")
+```
+
+```{r, fig.cap="A closer look at the HIA designation over Trondheim"}
+(HIA_trd <- tm_shape(HIA_trd)+
+  tm_polygons(col = "infrastructureIndex",
+    title="Infrastructure index\n(modified 4-step scale)",
+    palette = "-viridis",
+    style="cat")+
+  tm_layout(legend.outside = T)+
+  tm_shape(hw_utm)+
+  tm_lines(col="red")+
+  tm_shape(outline)+
+  tm_borders(col = "black", lwd=2))
+```
+
+See Fig. \@ref(fig:HIF-region) for a closer look at the distribution of HIA classes across Norway.
+
+
 #### Validate
 
 I now have `r length(unique(HIA_muni$muni_HIF))` unique areas (for each main ecosystem) that I will, given
-there is data, extrapolate indicator values over.
+there is data, extrapolate indicator values over. But first I want to validate the assumption that the HIF 
+explains a considerable portion of the variation i the indicator values.
 
-###### Subset ETs
-
-I will subset the `alien_data` into the three ecosystems. Note that
-only for open wetland do we have good ecosystem delineation maps to base
-a spatial averaging on.
+I will subset the `alien_data` into the three ecosystems.
 
 ```{r}
-#make valid
+#make geometries valid 
 alien_data <- st_make_valid(alien_data)
 
 #subset
@@ -920,44 +953,6 @@ DT::datatable(all_stats) %>%
 ```
 
 
-
-#### Looking at the HIA
-
-Here is a view of the data zooming in on Trondheim
-
-```{r}
-myBB <- st_bbox(c(xmin=260520.12, xmax = 278587.56,
-                ymin = 7032142.5, ymax = 7045245.27),
-                crs = st_crs(HIA_muni))
-```
-
-Cropping the raster to the bbox
-
-```{r}
-HIA_trd <- sf::st_crop(HIA_muni, myBB)
-```
-
-Get map of major roads, for context
-
-```{r}
-hw_utm <- readRDS("data/cache/highways_trondheim.rds")
-```
-
-```{r, fig.cap="A closer look at the HIA designation over Trondheim"}
-(HIA_trd <- tm_shape(HIA_trd)+
-  tm_polygons(col = "infrastructureIndex",
-    title="Infrastructure index\n(modified 4-step scale)",
-    palette = "-viridis",
-    style="cat")+
-  tm_layout(legend.outside = T)+
-  tm_shape(hw_utm)+
-  tm_lines(col="red")+
-  tm_shape(outline)+
-  tm_borders(col = "black", lwd=2))
-```
-
-See Fig. \@ref(fig.HIF-region) for a closer look at the distribution of HIA classes across Norway.
-
 ### Aggregate and spread (extrapolate) {#spread-alien}
 
 I now want to find the mean indicator value for each HIA (i.e. to
@@ -1089,6 +1084,47 @@ tm_shape(alien_extr_trd_nf[alien_extr_trd_nf$eco=="semi_natural",])+
   tm_facets(by="municipalityNumber")
 ```
 
+### Exploring the indicator values 
+
+Most HIAs have good condition:
+
+```{r, fig.cap="Number of HIAs with >20 data points (sum of all three ecosystems)"}
+alien_extr %>%
+  filter(!is.na(w_mean)) %>%
+  ggplot()+
+  geom_histogram(aes(x = w_mean))+
+  theme_bw()+
+  labs(x = "Area weighted indicator value",
+       y = "Number of HIAs with >20 data points")
+```
+
+#### Data coverage
+
+Let's see how big proportion of Norway we ended up having data for. Ideally I would do this after masking the indicator maps with ecosystem delineations, 
+but I can also get a good feel for the data coverage like this as well.
+
+The area of Norway is 
+```{r}
+(total_area <- st_area(outline))
+```
+
+And here is the total and relative area of the indicator maps
+```{r relative-area, fig.cap="Relative area cover of the indicator maps for the alien species indicator (i.e. value 1 means that all HIAs had > 20 data points, and 0.2 means 20% of them did). If assuming the ecosystems are equally common where they are mapped and where hey are not, this measure of data coverage is representative of the real indicator coverage after maksing the maps with ecosystem delineations."}
+alien_extr %>%
+  filter(!is.na(w_mean)) %>%
+  mutate(m2 = st_area(.)) %>%
+  group_by(eco) %>%
+  summarise(sum_area = sum(m2)) %>%
+  add_column(total_area = total_area) %>%
+  mutate(relative_area = sum_area/total_area) %>%
+  ggplot()+
+  geom_bar(aes(x = eco, y = relative_area),
+           stat = "identity")+
+  theme_bw()
+```
+
+Figure \@ref(fig:relative-area) shows us that this indicator will provide indicator values for about 20% of the semi-natural ecosystem, and considerably less for the other two ecosystems. The data coverage is very sensitive to the threshold for minimum data points, set to >20 in this case. Also, with more nature type data accumulating over time, the data coverage will increase. Therefore this indicator is worth while, and is seen as considerably better than the alternative to discard the entire data set.
+
 ## Next steps
 
 The next steps now are to
@@ -1098,6 +1134,8 @@ The next steps now are to
 2. Rasterize the extrapolated indicator map, using the ET map as a template 
 
 3. and mask it using the perfectly aligned ET map.
+
+4. Then, look at [Median Summer Temperature] for how to aggregate spatially tp accounting areas (regions)
 
 
 This workflow should be synchronized with the [slitasje](#slitasje-og-kjørespor) indicator.
