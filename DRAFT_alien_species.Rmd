@@ -1125,6 +1125,63 @@ alien_extr %>%
 
 Figure \@ref(fig:relative-area) shows us that this indicator will provide indicator values for about 20% of the semi-natural ecosystem, and considerably less for the other two ecosystems. The data coverage is very sensitive to the threshold for minimum data points, set to >20 in this case. Also, with more nature type data accumulating over time, the data coverage will increase. Therefore this indicator is worth while, and is seen as considerably better than the alternative to discard the entire data set.
 
+#### Effect of latitude
+
+Alien species tend to invade from the south. Let us see if there is an effect of latitude.
+
+Extracting x and y coordinates
+
+```{r}
+temp <- alien_extr %>%
+  filter(!is.na(w_mean)) %>%
+  st_centroid() %>%
+  st_coordinates()
+
+temp2 <- alien_extr %>%
+  filter(!is.na(w_mean))  %>%
+  cbind(temp)
+```
+
+
+```{r lat-effect, fig.cap="Effect of latitude on the alien species indicator values. The blue line is a loess smoother (span=0.75)."}
+temp2 %>%
+  ggplot(aes(x = X, y = w_mean))+
+  geom_point()+
+  theme_bw()+
+  geom_smooth(linewidth=2,
+              method="loess",
+              span=0.75)+
+  labs(x = "Latitude (UTM with offset)",
+       y = "Alien species indicator value\n(area weighted)")+
+  facet_wrap(~eco)
+
+```
+
+```{r, eval=F, include=F}
+# Here is the same analysis, but at the polygon scale (it's a bit more messy)
+temp <- alien_data %>%
+  st_centroid() %>%
+  st_coordinates()
+
+temp2 <- alien_data %>%
+  cbind(temp)
+
+temp2 %>%
+  ggplot(aes(x = X, y = i_2020))+
+  geom_point()+
+  theme_bw()+
+  geom_smooth(linewidth=2,
+              method="loess",
+              span=0.75)+
+  labs(x = "Latitude (EPSG:25833)",
+       y = "Alien species indicator value")+
+  facet_wrap(~hovedøkosystem)
+
+```
+
+There is a quite clear association here between latitude and the on-site effect of alien species.
+
+
 ## Next steps
 
 The next steps now are to
