@@ -1188,7 +1188,7 @@ The next steps now are to
 This workflow should be synchronized with the [slitasje](#slitasje-og-kjørespor) indicator. I will attempt a little proof of concept below.
 
 
-## Masking with an ecosystem delineation - example
+## Masking with an ecosystem delineation - example {#masking-example}
 
 Let's try steps 2 and 3 on a reduced data set. I'll work with wetlands in Gran municipality.
 
