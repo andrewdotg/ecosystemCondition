@@ -21,9 +21,7 @@ library(DT)
 library(units)
 library(eaTools)
 library(tibble)
-#library(ggplot2)
-#library(tidyr)
-#library(dplyr)
+library(stars)
 knitr::opts_chunk$set(echo = TRUE)
 
 # Set up conditional file paths
@@ -900,8 +898,7 @@ Here is a similar figure, looking at the relative frequency of indicator level o
 
 ```{r, eval=F}
 corrCheck <- st_intersection(alien_data, HIA)
-#saveRDS(corrCheck, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck_alienSpecies.rds")
-saveRDS(corrCheck, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck_alienSpecies.rds")
+saveRDS(corrCheck, paste0(pData, "cache/corrCheck_alienSpecies.rds")
 ```
 
 ```{r, include=F}
@@ -1108,7 +1105,7 @@ alien_extr %>%
   group_by(eco) %>%
   summarise(sum_area = sum(m2)) %>%
   add_column(total_area = total_area) %>%
-  mutate(relative_area = sum_area/total_area) %>%
+  mutate(relative_area = units::drop_units(sum_area/total_area)) %>%
   ggplot()+
   geom_bar(aes(x = eco, y = relative_area),
            stat = "identity")+
@@ -1136,7 +1133,7 @@ temp2 <- alien_extr %>%
 ```
 
 
-```{r lat-effect, fig.cap="Effect of latitude on the alien species indicator values. The blue line is a loess smoother (span=0.75)."}
+```{r lat-effect, fig.cap="Effect of latitude on the alien species indicator values. The blue line is a loess smoother (span=0.75).", message=FALSE}
 temp2 %>%
   ggplot(aes(x = X, y = w_mean))+
   geom_point()+
@@ -1179,7 +1176,7 @@ There is a quite clear association here between latitude and the on-site effect 
 
 The next steps now are to
 
-1. Prepare ecosystem delineation maps in EPSG25833 and perfectly aligned to a master grid
+1. Prepare ecosystem delineation maps in EPSG:25833 and perfectly aligned to a master grid
 
 2. Rasterize the extrapolated indicator map, using the ET map as a template 
 
@@ -1256,21 +1253,21 @@ gran_outline <- muni %>%
   filter(kommunenummer == "3446")
 ```
 
-```{r, fig.cap="Indictor values (alien species, extrapolated and area weighted values) in Gran municipality"}
+```{r, fig.cap="Indictor values (alien species, extrapolated and area weighted values) in Gran municipality. Note that the pixelation is very small (10 x 10 m), and that the larger squares are remnants from the HIA map which was 1 x 1 km resolution."}
 tm_shape(st_downsample(gran_rast, 10))+
   tm_raster(col="w_mean")+
   tm_shape(gran_outline)+
   tm_borders(col="red")
 ```
 
-Then i mask
+Then i mask to remove areas that are not actually watlands.
 
 ```{r}
 gran_rast_masked <- gran_rast
 gran_rast_masked[mire_gran == 0] <- NA
 ```
 
-```{r, fig.cap="Indictor values (alien species, extrapolated and area weighted values) in Gran municipality"}
+```{r, fig.cap="Stratified, area weighted indictor values (alien species) in Gran municipality masked by a wetland ecosystem delimination map."}
 tm_shape(st_downsample(gran_rast_masked, 10))+
   tm_raster(col="w_mean",
             palette = "red")+
