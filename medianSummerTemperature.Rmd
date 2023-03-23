@@ -15,9 +15,7 @@ March 2023
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
-#library(tidyverse) # cant update to v2 on server
-library(dplyr)
-library(ggplot2)
+library(tidyverse) # cant update to v2 on server
 library(stars)
 library(sf)
 library(tmap)
@@ -27,20 +25,17 @@ library(microbenchmark)
 library(tictoc)
 library(ncmeta)
 library(parallel)
-library(readr)
 library(exactextractr)
-library(tidyr)
 library(data.table)
 library(terra)
 dir <- substr(getwd(), 1,2)
-
 ```
 
 ```{r, echo=F}
-Ecosystem <- "All" # e.g. "Skog og fjell"
-Egenskap  <- "Abiotiske egenskaper" # e.g. "Primærproduksjon"
-ECT       <- "Physical state characteristics" # e.g. "Structural state characteristic"
-Contact   <- "Anders L. Kolstad" # e.g. "Anders Kolstad"
+Ecosystem <- "All" 
+Egenskap  <- "Abiotiske egenskaper"
+ECT       <- "Physical state characteristics" 
+Contact   <- "Anders L. Kolstad" 
 ```
 
 ```{r, echo=F}
@@ -190,12 +185,11 @@ nor <- sf::st_read("data/outlineOfNorway_EPSG25833.shp")
 
 Remove marine areas from regions
 
-```{r}
+```{r, warning=F}
 reg <- st_intersection(reg, nor)
 ```
 
 ```{r, fig.cap="Five accounting areas (regions) in Norway."}
-
 tm_shape(reg) +
   tm_polygons(col="region")
 
@@ -206,12 +200,6 @@ tm_shape(reg) +
 Coming soon ....
 
 The climate indicators need to be masked with ecosystem type maps. This step is part of this chapter.
-
-
-
-
-
-
 
 ### Conceptual workflow
 
@@ -316,16 +304,21 @@ stopCluster(cl)
 
 ```
 
-This takes about 20 sec per file/year, or 22 min on total. That is not too bad. About 6000 raster are read into memory. Here's a test for the effect of splitting over more cores.
-
+This takes about 20 sec per file/year, or 22 min on total. That is not too bad. About 6000 rasters are read into memory. Here's a test for the effect of splitting over more cores.
 
 ```{r, eval=F}
-write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp.tiff")
+write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff")
+```
+
+```{r, eval=F}
+# a backup caching in case tiff causes problems down the line
+saveRDS(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.rds")
+
 ```
 
 
 ```{r, include=F}
-summer_median_temp <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer.tiff",
+real_temp_summer <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff",
                                  proxy=F)
 ```
 
@@ -333,7 +326,7 @@ summer_median_temp <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstan
 Note that GTiff automatically renames the third dimension *band* and also renames the attribute. I can rename them.
 
 ```{r}
-summer_median_temp <- summer_median_temp %>% 
+summer_median_temp <- real_temp_summer %>% 
   st_set_dimensions(names = c("x", "y", "v_YEAR")) %>%
   setNames("temperature")
 ```
@@ -341,7 +334,7 @@ summer_median_temp <- summer_median_temp %>%
 
 ```{r, fig.cap="Showing three random slices of the year dimension."}
 ggplot()+
-  geom_stars(data = summer_median_temp[,,,c(1,11,22)], downsample = c(10, 10, 0)) +
+  geom_stars(data = summer_median_temp[,,,c(1,11,66)], downsample = c(10, 10, 0)) +
   coord_equal() +
   theme_void() +
   scale_fill_viridis_c(option = "D") +  
@@ -373,6 +366,11 @@ st_get_dimension_values(summer_median_temp_ref, "v_YEAR")
 
 And then we calculate the median and sd like above
 
+```{r}
+median_sd <- function(x) { c(median = median(x), sd = sd(x))}
+```
+
+<!-- RUN AGAIN -->
 ```{r, eval=FALSE}
 system.time({
 cl <- makeCluster(10L)
@@ -394,10 +392,10 @@ saveRDS(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand
 ```
 
 ```{r, eval=T, include=F}
-summer_median_temp_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_ref.RData")
+summer_median_temp_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")
 ```
 
-Pivot and turn dimension into attributes, and rename attribute:
+Pivot and turn dimension into attributes, and rename attributes:
 
 ```{r, eval=T}
 summer_median_temp_ref_long <- summer_median_temp_ref %>% 
@@ -421,7 +419,7 @@ I need to combine the variables and the ref values in one data cube
 
 ```{r}
 y_var <- summer_median_temp %>%
-  split(3) %>%
+  split("v_YEAR") %>%
   c(summer_median_temp_ref_long)
 ```
 
