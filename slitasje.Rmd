@@ -16,11 +16,8 @@ library(ggpubr)
 library(DT)
 library(units)
 library(eaTools)
-#library(tidyverse)
+library(tidyverse)
 library(tibble)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 
 # Set up conditional file paths
@@ -248,7 +245,7 @@ naturetypes <- sf::st_read(dsn = path) %>%
   filter(NiN_variable_code %in% myVars)
 ```
 
-```{r fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation.", fig.height=10, fig.width=4}
+```{r fig.cap="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation.", fig.height=10}
 ggplot(data = naturetypes, aes(x = naturtype, fill = hovedøkosystem))+
   geom_bar()+
   coord_flip()+
@@ -266,6 +263,11 @@ Column names starting with a number is problematic, so adding a prefix
 ```{r}
 naturetypes$NiN_variable_code <- paste0("var_", naturetypes$NiN_variable_code)
 ```
+
+```{r, fig.cap="Distribution of data points over time."}
+barplot(table(naturetypes$kartleggingsår))
+```
+
 
 Now I need to create a single row per locality with a new variable which
 is a product/function of the four variables "7SE", "7TK", "PRTK" and
@@ -1073,7 +1075,7 @@ saveRDS(corrCheck, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/da
 corrCheck <- readRDS(paste0(pData, "cache/corrCheck.rds"))
 ```
 
-```{r slitasje-precentageplot, fig.height=12, fig.width=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
+```{r slitasje-precentageplot, fig.height=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
 ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
   geom_bar(position="fill")+
   theme_bw(base_size = 12)+
