@@ -1,8 +1,3 @@
----
-title: "Alien species"
-output:
-  html_document
----
 # Alien species {#alien-species}
 
 *Author and date:* 
@@ -504,7 +499,7 @@ alien_data <- dplyr::bind_rows(select(ano,
                                   SHAPE))
 ```
 
-###### Points to polygons {#ANO-points-to-poly}
+###### Points to polygons {#ANO-points-to-poly2}
 
 The ANO data is point data and the nature type data is *multipolygon*:
 ```{r}
@@ -703,7 +698,7 @@ alien_data$i_2020 <- eaTools::ea_normalise(data = alien_data,
                       )
 ```
 
-### Homogeneous impact areas {#HIA}
+### Homogeneous impact areas {#HIA-alien}
 
 I want to use the [Homogeneous Impact Areas](#HIA) (HIA) to define
 smaller regions into which I can extrapolate the indicator values. This
