@@ -61,9 +61,21 @@ st_crs(grid_5km)
 #>   wkt:
 #> PROJCRS["ETRS89 / UTM zone 33N",
 #>     BASEGEOGCRS["ETRS89",
-#>         DATUM["European Terrestrial Reference System 1989",
+#>         ENSEMBLE["European Terrestrial Reference System 1989 ensemble",
+#>             MEMBER["European Terrestrial Reference Frame 1989"],
+#>             MEMBER["European Terrestrial Reference Frame 1990"],
+#>             MEMBER["European Terrestrial Reference Frame 1991"],
+#>             MEMBER["European Terrestrial Reference Frame 1992"],
+#>             MEMBER["European Terrestrial Reference Frame 1993"],
+#>             MEMBER["European Terrestrial Reference Frame 1994"],
+#>             MEMBER["European Terrestrial Reference Frame 1996"],
+#>             MEMBER["European Terrestrial Reference Frame 1997"],
+#>             MEMBER["European Terrestrial Reference Frame 2000"],
+#>             MEMBER["European Terrestrial Reference Frame 2005"],
+#>             MEMBER["European Terrestrial Reference Frame 2014"],
 #>             ELLIPSOID["GRS 1980",6378137,298.257222101,
-#>                 LENGTHUNIT["metre",1]]],
+#>                 LENGTHUNIT["metre",1]],
+#>             ENSEMBLEACCURACY[0.1]],
 #>         PRIMEM["Greenwich",0,
 #>             ANGLEUNIT["degree",0.0174532925199433]],
 #>         ID["EPSG",4258]],
@@ -93,9 +105,9 @@ st_crs(grid_5km)
 #>             ORDER[2],
 #>             LENGTHUNIT["metre",1]],
 #>     USAGE[
-#>         SCOPE["unknown"],
-#>         AREA["Europe - 12°E to 18°E and ETRS89 by country"],
-#>         BBOX[46.4,12,84.01,18.01]],
+#>         SCOPE["Engineering survey, topographic mapping."],
+#>         AREA["Europe between 12°E and 18°E: Austria; Denmark - offshore and offshore; Germany - onshore and offshore; Norway including Svalbard - onshore and offshore."],
+#>         BBOX[46.4,12,84.42,18]],
 #>     ID["EPSG",25833]]
 ```
 

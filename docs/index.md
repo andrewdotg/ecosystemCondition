@@ -1,7 +1,7 @@
 ---
 title: "Indicators for Ecosystem Condition in Norway"
 author: "Anders L. Kolstad"
-date: "2023-03-07"
+date: "2023-03-24"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
