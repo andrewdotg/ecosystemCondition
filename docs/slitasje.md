@@ -2,7 +2,11 @@
 
 # Slitasje og kjørespor
 
-*Author and date:* Anders L. Kolstad
+*Author and date:* 
+
+Anders L. Kolstad
+
+March 2023
 
 
 
@@ -16,7 +20,11 @@
 <hr/>
 
 ## Introduction
-This indicator represent human cause terrain damage from hiking or off-road vehicle traffic. The data come from a combination non-random field surveys and area-representative surveys. Therefore extra care is taken not to over-extrapolate, and we use local reference area in the form of _homogeneous impact areas_. 
+This indicator represent human caused damage or **disturbance to soils and vegetation**, typically from things like recreational activities and off-road vehicle traffic. The data come from a combination non-random field surveys and area-representative surveys. Disturbance to soils and vegetation is recorded in the various data sets are NiN variables 7SE and 7TK, or as the similar, but more fine-scaled variable, PRSL and PRTK. Effects from domestic animal is not included in the definition of these variables, and the upper reference value is therefore set to 0% disturbance. 
+
+Since the data is not sampled in a systematic or random way, we must take extra care not to over-extrapolate in space. We delineate _homogeneous impact areas_ (HIA) based on four classes of increasing infrastructure, and we say that the field data is representative inside the HIA and region (_five regions in Norway_) where it was recorded. We then calculate an area weighted mean (and error) indicator value for each HIA and region combination, as long as there is more than 150 data points for a give combination of HIA and region.     
+
+Here is a general workflow for the calculation of the indicator.
 
 1.  Import [Nature type data](#NTM) data set (incl. GRUK) and [ANO data
     set](#ANO-import)
@@ -42,10 +50,11 @@ This indicator represent human cause terrain damage from hiking or off-road vehi
 9.  Confirm relationship between infrastructure index and indicator
     values to justify the extrapolation
 
-10. Sample 1000 random points from an ecosystem delineation and extract
-    indicator values and sd at those points.
+10. TO DO: Prepare ecosystem delineation maps and us ethese to mask the extrapolated indicator maps
 
-11. Export indicator maps and regional extrapolated maps
+11. Spatial aggregation of indicator values and uncertainties to accounting areas
+
+12. Export indicator maps and regional extrapolated maps
 
 ## About the underlying data
 
@@ -67,18 +76,17 @@ becomes available early the following year.
 ### Original units
 
 The variables are recorded on a coarse four-step ordinal scale (Fig.
-\@ref(fig:four-step)).
+\@ref(fig:four-step)) or eigth-step scale.
 
 ### Temporal coverage
 
-The data goes back to 2018, but is because of data shortage, it is
-bulked into one time step. I then use the mean date for the raw data,
+The data goes back to 2018. I therefore bulk all the data from 2018 to 2022 into one time step. I then use the mean date for the raw data,
 and define the variable as belonging to the year 2020 (read more
 [here](#scaled-slitasje-variable)).
 
 ### Aditional comments about the dataset
 
-For a run through of the data set, see [here](#naturtype).
+For a run through of the nature type data set, see [here](#naturtype).
 
 ## Ecosystem characteristic
 
@@ -87,7 +95,7 @@ For a run through of the data set, see [here](#naturtype).
 The indicator is tagged to the *Økologisk egenskap* called
 **Primærproduksjon** (Primary productivity). This is tentative, and
 perhaps *abiotiske forhold* is more suited. But the thought behind the
-choise is that *sliatsje* affect the potential for primary productivity.
+choice is that *slitasje* affect the potential for primary productivity.
 
 ### UN standard
 
@@ -123,8 +131,11 @@ value is 100%. Note that 100% _slitasje_ does not mean that all the area
 must be scarred or damaged, but that all hypothetical quadrats around a
 point is affected (the variable is frequency-driven, and not
 amount-driven). The threshold for good ecosystem condition is 10%
-damage. This is on the conservative side. Perhaps is should be set
-somewhat higher, like 20 or 30%.
+damage. Perhaps is should be set somewhat higher, like 20 or 30%.
+The indicator value could be interpretted differently at the polygon
+vs at the landscape scale. At the polygon scale, 10% damage may seem 
+like not that much, whilst at the landscape scale, 10% seems more serious.
+This final threshold value should be debated and illustrated with examples.
 
 Read about the normalisation [here](##scaled-slitasje-variable).
 
@@ -132,7 +143,10 @@ Read about the normalisation [here](##scaled-slitasje-variable).
 
 Uncertainties/errors are estimated for aggregated indicator values by
 bootstrapping individual indicator values 1000 times and calculating a
-distribution of area weighted means. When aggregating a second time,
+distribution of area weighted means. See the documentation for `eaTools::ea_spread` [here](https://ninanor.github.io/eaTools/reference/ea_spread.html). 
+This uncertainty is different from 
+the spatial variation which we could get more straight forward without 
+bootstrapping. When aggregating a second time,
 from homogeneous impact areas to accounting areas, we assume a normal
 distribution around the indicator values, with the already mentioned
 errors, and sample _n_ times from these and combine the resamples into an
@@ -155,69 +169,74 @@ This indicator uses the data set
 [here](https://kartkatalog.geonorge.no/metadata/naturtyper-miljoedirektoratets-instruks/eb48dd19-03da-41e1-afd9-7ebc3079265c).
 See also [here](#naturtype) for a detailed description of the data set.
 
-<!-- Importing the full data set can be done like this, but because it can -->
-
-<!-- take a few seconds due to its size, I will cache the data on the P -->
-
-<!-- server after subsetting. -->
-
-
-```r
-naturetypes <- sf::st_read(dsn = paste0(pData, "Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb"))
-```
-
 We also have a separate [summary file](##exp-natureType-summary) where
-the nature types are manually mapped to the correct NiN-main types. We
-can use this to find the nature types associated with the NiN main types
+the nature types are manually mapped the NiN variables and to the correct NiN-main types. We can use this to find the nature types associated with the NiN main types
 that we are interested in.
 
 
 ```r
-naturetypes_summary <- readRDS("data/naturetypes/natureType_summary.rds")
+naturetypes_summary_import <- readRDS("data/naturetypes/natureType_summary.rds")
 ```
 
-We are only interested in a few NiN main types and their mapping units
-(see [here](#naturtype) for justification)
+We are only interested in a mapping units that include our target variables.
 
 
 ```r
-main_NiN_types <- c("T12",
-          "T18",
-          "T21",
-          "T31",
-          "T33",
-          "T34",
-          "V1",
-          "V3")
+myVars <- c('7TK', '7SE', 'PRTK', 'PRSL')
 ```
+
 
 
 ```r
-naturetypes_summary <- naturetypes_summary[naturetypes_summary$NiN_mainType %in% main_NiN_types,]
+naturetypes_summary <- naturetypes_summary_import %>%
+  rowwise() %>%
+  mutate(keepers = sum(c_across(
+    all_of(myVars))>0, na.rm=T)) %>%
+  filter(keepers > 0) %>%
+  select(Nature_type, NiN_mainType, Year)
 ```
 
-Sub-setting the main data file:
+This deleted 17 nature types and left us with these:
 
 
 ```r
-naturetypes <- naturetypes[naturetypes$naturtype %in% naturetypes_summary$Nature_type,]
+DT::datatable(naturetypes_summary)
 ```
 
-Fix duplicated name for an ecosystem
+```{=html}
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-cdbaec22b41f524127cb" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-cdbaec22b41f524127cb">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37"],["Slåttemyr","Eng-aktig sterkt endret fastmark","Sørlig kaldkilde","Åpen flomfastmark","Høgereligende og nordlig nedbørsmyr","Øyblandingsmyr","Strandeng","Nakent tørkeutsatt kalkberg","Kystlynghei","Sørlig slåttemyr","Konsentrisk høymyr","Boreal hei","Sanddynemark","Semi-naturlig strandeng","Rik åpen jordvannsmyr i mellomboreal sone","Sørlig nedbørsmyr","Atlantisk høymyr","Terrengdekkende myr","Åpen grunnlendt kalkrik mark i boreonemoral sone","Rik åpen sørlig jordvannsmyr","Aktiv skredmark","Semi-naturlig myr","Silt og leirskred","Eksentrisk høymyr","Øvre sandstrand uten pionervegetasjon","Kalkrik helofyttsump","Fuglefjell-eng og fugletopp","Isinnfrysingsmark","Åpen grunnlendt kalkrik mark i sørboreal sone","Sørlig etablert sanddynemark","Rik åpen jordvannsmyr i nordboreal og lavalpin sone","Fossepåvirket berg","Fosse-eng","Svært tørkeutsatt sørlig kalkberg","Kanthøymyr","Platåhøymyr","Palsmyr"],["V9","T41","V4","T18","V3","V1","T12","T1","T34","V9","V3","T31","T21","T33","V1","V3","V3","V3","T2","V1","T17","V9","T17","V3","T29","L4","T8","T20","T2","T21","V1","T1","T15","T1","V3","V3","V3"],["2018, 2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2022","2018, 2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2018, 2019, 2020, 2021, 2022","2019, 2020, 2021","2018, 2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2019, 2020, 2021, 2022","2021, 2022"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Nature_type<\/th>\n      <th>NiN_mainType<\/th>\n      <th>Year<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+```
 
+Importing and sub-setting the main data file, fix duplicate _hovedøkosystem_, calculate area, split one column in two, make numeric, and select target variables:
 
 ```r
-naturetypes$hovedøkosystem[naturetypes$hovedøkosystem=="Naturlig åpne områder i lavlandet"] <- "Naturlig åpne områder under skoggrensa"
+naturetypes <- sf::st_read(dsn = path) %>%
+  filter(naturtype %in% naturetypes_summary$Nature_type) %>%
+  mutate(hovedøkosystem = recode(hovedøkosystem,
+                                 "naturligÅpneOmråderUnderSkoggrensa" = "naturligÅpneOmråderILavlandet"),
+         area = st_area(.)) %>%
+  separate_rows(ninBeskrivelsesvariable, sep=",") %>%
+  separate(col = ninBeskrivelsesvariable,
+           into = c("NiN_variable_code", "NiN_variable_value"),
+           sep = "_",
+           remove=F) %>%
+  mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
+  filter(NiN_variable_code %in% myVars)
+#> Reading layer `Naturtyper_nin_0000_norge' from data source 
+#>   `/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/Naturtyper_nin_0000_norge_25833_FILEGDB/Naturtyper_nin_0000_norge_25833_FILEGDB.gdb' 
+#>   using driver `OpenFileGDB'
+#> Simple feature collection with 117427 features and 36 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -74953.52 ymin: 6448986 xmax: 1075081 ymax: 7921284
+#> Projected CRS: ETRS89 / UTM zone 33N
+#> Warning: There was 1 warning in `stopifnot()`.
+#> ℹ In argument: `NiN_variable_value =
+#>   as.numeric(NiN_variable_value)`.
+#> Caused by warning:
+#> ! NAs introduced by coercion
 ```
-
-Export subsetted data set
-
-
-```r
-saveRDS(naturetypes, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/rds/naturtyper.rds")
-```
-
-
 
 
 ```r
@@ -234,50 +253,9 @@ ggplot(data = naturetypes, aes(x = naturtype, fill = hovedøkosystem))+
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-11-1.png" alt="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation." width="672" />
-<p class="caption">(\#fig:unnamed-chunk-11)An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation.</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-8-1.png" alt="An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-8)An overview of the naturetypes for which we will calculate the indicator. Colours refer to the main ecosystem affiliation.</p>
 </div>
-
-Calculate area for each polygon.
-
-
-```r
-naturetypes$area <- sf::st_area(naturetypes)
-```
-
-The NiN variables are combined into a single field which we need to spit
-apart.
-
-
-```r
-naturetypes <- tidyr::separate_rows(naturetypes,
-                                    ninbeskrivelsesvariabler,
-                                    sep=",") %>%
-  separate(col = ninbeskrivelsesvariabler,
-           into = c("NiN_variable_code", "NiN_variable_value"),
-           sep = "_",
-           remove=F
-           )
-```
-
-Convert the value column to numeric. Ignore NA's.
-
-
-```r
-naturetypes$NiN_variable_value <- as.numeric(naturetypes$NiN_variable_value)
-#> Warning: NAs introduced by coercion
-```
-
-Keep only the four relevant variables.
-
-
-```r
-myVars <- c(
-  #"7FA",     #treated separately in a different indicator
-  "7SE", "7TK", "PRTK", "PRSL")
-naturetypes <- filter(naturetypes,
-                      NiN_variable_code %in% myVars)
-```
 
 Column names starting with a number is problematic, so adding a prefix
 
@@ -286,27 +264,20 @@ Column names starting with a number is problematic, so adding a prefix
 naturetypes$NiN_variable_code <- paste0("var_", naturetypes$NiN_variable_code)
 ```
 
-Now I need to create a single row per locality with a new variable which
-is a product/function of the four variables "7SE", "7TK", "PRTK" and
-"PRSL". I will create a new data table where I calculate the new
-variable which I then paste back into the sf object.
-
 
 ```r
-naturetypes_wide <- pivot_wider(naturetypes,
-                                names_from = "NiN_variable_code",
-                                values_from = "NiN_variable_value",
-                                id_cols = "identifikasjon_lokalid")
-naturetypes_wide <- as.data.frame(naturetypes_wide)
-head(naturetypes_wide)
-#>   identifikasjon_lokalid var_7SE var_7TK var_PRTK var_PRSL
-#> 1        NINFP1810016162       0      NA       NA       NA
-#> 2        NINFP2010000946      NA       0       NA       NA
-#> 3        NINFP2110041452      NA       0       NA       NA
-#> 4        NINFP2010029659      NA       0       NA       NA
-#> 5        NINFP1810043949       0      NA       NA       NA
-#> 6        NINFP2010006882       2      NA        0       NA
+barplot(table(naturetypes$kartleggingsår))
 ```
+
+<div class="figure">
+<img src="slitasje_files/figure-html/unnamed-chunk-10-1.png" alt="Distribution of data points over time." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-10)Distribution of data points over time.</p>
+</div>
+
+
+Now I need to create a single row per locality with a new variable which
+is a product/function of the four variables "7SE", "7TK", "PRTK" and
+"PRSL". I want to base this indicator on whichever of the variables have the highest value (worst condition). Therefore I first convert the ordinal scale to a continuous scale, using the median value of each ordinal step.
 
 The variables use slightly different scales. PRSL and PRTK use this 8
 step scale:
@@ -333,176 +304,117 @@ knitr::include_graphics("images/ninAR4b.PNG")
 <p class="caption">(\#fig:four-step)Four step condition scale</p>
 </div>
 
-I want to base this indicator on whichever of the variables have the
-highest value (worst condition). This table shows that a locality may
-have been assessed with both a PR variable and a NiN variable:
+I here transfer these ordinal variables over to a continuous scale.
 
 
 ```r
-table(naturetypes_wide$var_7SE, naturetypes_wide$var_PRTK)
-#>    
-#>        0    1    2    3    4    5    6    7
-#>   0 2228  201   84   33   12    9    2    1
-#>   1  418  271   70   34    8    7    1    0
-#>   2   25    7    7    5    5    1    1    0
-#>   3    9    0    1    1    0    0    1    0
+naturetypes <- naturetypes %>%
+  mutate(NiN_variable_value = case_when(
+    NiN_variable_code %in% c("var_7TK", "var_7SE") ~ 
+      case_match(NiN_variable_value,
+             0 ~ 0,
+             1 ~ mean(c(0, 1/16))*100,
+             2 ~ mean(c(1/16, 1/2))*100,
+             3 ~ 75),
+    NiN_variable_code %in% c('var_PRTK', 'var_PRSL') ~ 
+      case_match(NiN_variable_value,
+             0 ~ 0,
+             1 ~ 1.5,
+             2 ~ mean(c(3, 6.25)),
+             3 ~ mean(c(6.25, 12.5)),
+             4 ~ mean(c(12.5, 25)),
+             5 ~ mean(c(25, 50)),
+             6 ~ mean(c(50, 75)),
+             7 ~ mean(c(75, 100)))
+    )
+  )
 ```
 
-Therefore I need to reconcile these scales. The only way I can think of
-is to decrease the resolution of the PR variables to the ar4b scale.
-This is of course a shame to loose this detail.
 
-A locality will never have values for both 7SE and PRSL
+I will create a new data table where I calculate the new
+variable which I then paste back into the sf object.
 
 
 ```r
-table(naturetypes_wide$var_7SE, naturetypes_wide$var_PRSL)
-#>    
-#>     0 1 2 3 4 5 6 7
-#>   0 0 0 0 0 0 0 0 0
-#>   1 0 0 0 0 0 0 0 0
-#>   2 0 0 0 0 0 0 0 0
-#>   3 0 0 0 0 0 0 0 0
+naturetypes_wide <- pivot_wider(naturetypes,
+                                names_from = "NiN_variable_code",
+                                values_from = "NiN_variable_value",
+                                id_cols = "identifikasjon_lokalId")
+naturetypes_wide <- as.data.frame(naturetypes_wide)
+head(naturetypes_wide, 10)
+#>    identifikasjon_lokalId var_PRSL var_7TK var_7SE var_PRTK
+#> 1         NINFP2210087853      0.0       0      NA       NA
+#> 2         NINFP2210087857      0.0       0      NA       NA
+#> 3         NINFP1910012022       NA      NA   0.000       NA
+#> 4         NINFP1910005432      1.5      NA      NA       NA
+#> 5         NINFP2210089748       NA       0   0.000       NA
+#> 6         NINFP2210096062       NA      NA   0.000      0.0
+#> 7         NINFP1910029434       NA      NA   3.125      1.5
+#> 8         NINFP2010029112       NA       0   0.000       NA
+#> 9         NINFP2010029325       NA       0   0.000       NA
+#> 10        NINFP1910057556       NA      NA   0.000       NA
 ```
 
-nor 7TK and PRTK
+First I will combine 7TK and PRTK, and also 7SE and PRSL
 
 
 ```r
-table(naturetypes_wide$var_7TK, naturetypes_wide$var_PRTK)
-#>    
-#>     0 1 2 3 4 5 6 7
-#>   0 0 0 0 0 0 0 0 0
-#>   1 0 0 0 0 0 0 0 0
-#>   2 0 0 0 0 0 0 0 0
-#>   3 0 0 0 0 0 0 0 0
+naturetypes_wide <- naturetypes_wide %>%
+  mutate(TK = if_else(
+    is.na(var_PRTK), var_7TK, var_PRTK),
+    SE = if_else(
+      is.na(var_PRSL), var_7SE, var_PRSL)
+    )
 ```
 
 
-```r
-naturetypes_wide$var_7TK <-  ifelse(is.na(naturetypes_wide$var_7TK),
-                              ifelse(naturetypes_wide$var_PRTK == 0, 0,
-                                ifelse(naturetypes_wide$var_PRTK < 3, 1,
-                                  ifelse(naturetypes_wide$var_PRTK < 6, 2, 3))),
-                            naturetypes_wide$var_7TK)
-```
-
-Checking that I successfully combined classes 1+2, 3+4+5 and 6+7.
-
-
-```r
-table(naturetypes_wide$var_7TK, naturetypes_wide$var_PRTK,
-      deparse.level = 2)
-#>                         naturetypes_wide$var_PRTK
-#> naturetypes_wide$var_7TK    0    1    2    3    4    5    6
-#>                        0 2680    0    0    0    0    0    0
-#>                        1    0  479  162    0    0    0    0
-#>                        2    0    0    0   73   25   17    0
-#>                        3    0    0    0    0    0    0    5
-#>                         naturetypes_wide$var_PRTK
-#> naturetypes_wide$var_7TK    7
-#>                        0    0
-#>                        1    0
-#>                        2    0
-#>                        3    1
-```
-
-That looks fine. Now doing the same for the other variable PRSL:
-
-
-```r
-naturetypes_wide$var_7SE <-  ifelse(is.na(naturetypes_wide$var_7SE),
-                              ifelse(naturetypes_wide$var_PRSL == 0, 0,
-                                ifelse(naturetypes_wide$var_PRSL < 3, 1,
-                                  ifelse(naturetypes_wide$var_PRSL < 6, 2, 3))),
-                            naturetypes_wide$var_7SE)
-```
-
-Remove the old PR variables.
-
-
-```r
-naturetypes_wide <- select(naturetypes_wide,
-                           -var_PRTK,
-                           -var_PRSL)
-```
-
-There are some very few cells with X's. These are NA's.
-
-
-```r
-naturetypes_wide$var_7SE[naturetypes_wide$var_7SE == "X"] <- NA
-naturetypes_wide$var_7TK[naturetypes_wide$var_7TK == "X"] <- NA
-
-naturetypes_wide$var_7SE <- as.numeric(naturetypes_wide$var_7SE)
-naturetypes_wide$var_7TK <- as.numeric(naturetypes_wide$var_7TK)
-```
-
-
-```r
-head(naturetypes_wide)
-#>   identifikasjon_lokalid var_7SE var_7TK
-#> 1        NINFP1810016162       0      NA
-#> 2        NINFP2010000946      NA       0
-#> 3        NINFP2110041452      NA       0
-#> 4        NINFP2010029659      NA       0
-#> 5        NINFP1810043949       0      NA
-#> 6        NINFP2010006882       2       0
-```
-
-
-```r
-anyDuplicated(naturetypes_wide$identifikasjon_lokalid)
-#> [1] 0
-```
-
-7SE has 7341
-NA's, and 7TK has
-5888.
+SE has 10064
+NA's, and TK has
+7007.
 
 
 ```r
 temp <- naturetypes_wide %>%
-  group_by(var_7SE) %>%
+  group_by(SE) %>%
   summarise(sum = n())
 
-ggplot(temp, aes(x = factor(var_7SE),
+ggplot(temp, aes(x = factor(SE),
                  y = sum))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "7SE score",
+  labs(x = "7SE or PRSL score",
        y = "Number of localities")
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-28-1.png" alt="7SE scores in the naturetype dataset" width="288" />
-<p class="caption">(\#fig:unnamed-chunk-28)7SE scores in the naturetype dataset</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-14-1.png" alt="7SE scores in the naturetype dataset" width="480" />
+<p class="caption">(\#fig:unnamed-chunk-14)7SE scores in the naturetype dataset</p>
 </div>
 
-The NA fraction is quite big. These are localities with 7TK recorded,
-but not 7SE.
+The NA fraction is quite big. These are localities with 7TK or PRTK recorded,
+but not 7SE or PRSL.
 
 
 ```r
 temp <- naturetypes_wide %>%
-  group_by(var_7TK) %>%
+  group_by(TK) %>%
   summarise(sum = n())
 
-ggplot(temp, aes(x = factor(var_7TK),
+ggplot(temp, aes(x = factor(TK),
                  y = sum))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "7TK score",
+  labs(x = "7TK og PRTK score",
        y = "Number of localities")
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-29-1.png" alt="7TK scores in the nature type dataset" width="288" />
-<p class="caption">(\#fig:unnamed-chunk-29)7TK scores in the nature type dataset</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-15-1.png" alt="7TK scores in the nature type dataset" width="480" />
+<p class="caption">(\#fig:unnamed-chunk-15)7TK scores in the nature type dataset</p>
 </div>
 
 Then I can combine these two variables into a composite variable called
@@ -510,11 +422,10 @@ Then I can combine these two variables into a composite variable called
 
 
 ```r
-naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
+naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("TK", "SE")], 1, max, na.rm=T)
 ```
 
-When both variables are NA, we get -Inf. There were nine cases of this
-(in 2023). Removing these now.
+When both variables are NA, we get -Inf. There were 13 cases of this. Removing these now.
 
 
 ```r
@@ -533,8 +444,9 @@ ggplot(temp, aes(x = factor(slitasje),
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "slitasje score",
-       y = "Number of localities")
+  labs(x = "Slitasje score converted to percentage",
+       y = "Number of localities") + 
+  theme(axis.text.x = element_text(angle=90, vjust=0.5))
 ```
 
 <div class="figure">
@@ -544,17 +456,18 @@ ggplot(temp, aes(x = factor(slitasje),
 
 It appears most localities are in good condition.
 
-I would also like to know how often 7TK was defining of the
-slitasje-indicator, and how often it was 7SE. I can do this by taking
-the difference
+I would also like to know, when both tk and SE was recordedm
+how often TK was defining of the slitasje-indicator, and how 
+often it was SE. I can do this by taking the difference.
 
 
 ```r
-diff <- naturetypes_wide$var_7SE - 
-        naturetypes_wide$var_7TK
 
-diff <- ifelse(diff == 0, "7TK and 7SE",
-               ifelse(diff <0, "7TK", "7SE"))
+
+diff <- naturetypes_wide$SE - naturetypes_wide$TK
+
+diff <- ifelse(diff == 0, "TK and SE",
+               ifelse(diff <0, "TK", "SE"))
 
 diff_tbl <- as.data.frame(table(diff))
 
@@ -568,17 +481,17 @@ ggplot(diff_tbl, aes(x = diff, y = Freq))+
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-32-1.png" alt="Counting the number of cases where 7TK or 7SE ws defining of the slitasje indicator score." width="288" />
-<p class="caption">(\#fig:unnamed-chunk-32)Counting the number of cases where 7TK or 7SE ws defining of the slitasje indicator score.</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-18-1.png" alt="Counting the number of cases where TK or SE was defining of the slitasje indicator score." width="288" />
+<p class="caption">(\#fig:unnamed-chunk-18)Counting the number of cases where TK or SE was defining of the slitasje indicator score.</p>
 </div>
 
-Looks like 7SE is more likely to be in a detrimental state.
+Looks like SE (= 7SE or PRSL) is more likely to be in a detrimental state.
 
 Now I will copy these slitasje-values into the sf object.
 
 
 ```r
-naturetypes$slitasje <- naturetypes_wide$slitasje[match(naturetypes$identifikasjon_lokalid, naturetypes_wide$identifikasjon_lokalid)]
+naturetypes$slitasje <- naturetypes_wide$slitasje[match(naturetypes$identifikasjon_lokalId, naturetypes_wide$identifikasjon_lokalId)]
 #nrow(naturetypes[is.na(naturetypes$slitasje),])  # 13 cases
 naturetypes <- naturetypes[!is.na(naturetypes$slitasje),]
 ```
@@ -609,7 +522,7 @@ areas only.
 | 7TK      | X       | X                     | \-                     |
 
 : Table showing which main ecosystems the two NiN variables 7SE and 7TK
-is recorded in withing the ANO dataset.
+is recorded in withing the ANO data set.
 
 It would be very nice to have 7SE recorded for naturally open areas.
 This variable is very relevant here.
@@ -664,7 +577,7 @@ was not recorded at all in 2019:
 ```r
 # Hard coding name change
 #unique(ano$hovedtype_250m2)[3]
-ano$hovedtype_250m2[ano$hovedtype_250m2==unique(ano$hovedtype_250m2)[3]] <- "Aapen jordvassmyr"
+#ano$hovedtype_250m2[ano$hovedtype_250m2==unique(ano$hovedtype_250m2)[3]] <- "Aapen jordvassmyr"
 ```
 
 
@@ -673,7 +586,7 @@ ano$hovedtype_250m2[ano$hovedtype_250m2==unique(ano$hovedtype_250m2)[3]] <- "Aap
 table(ano$hovedtype_250m2, ano$aar)
 #>                             
 #>                              2019 2021
-#>   Aapen jordvassmyr             0  416
+#>   Åpen jordvannsmyr             0  416
 #>   Boreal hei                    0    1
 #>   Fjellhei leside og tundra     0    3
 #>   Grøftet torvmark              0    5
@@ -709,8 +622,8 @@ plot(ano$andel_hovedoekosystem_punkt[order(ano$andel_hovedoekosystem_punkt)],
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-39-1.png" alt="Distribution of the ANO variable andel_hovedoekosystem_punkt for wetland localities." width="672" />
-<p class="caption">(\#fig:unnamed-chunk-39)Distribution of the ANO variable andel_hovedoekosystem_punkt for wetland localities.</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-25-1.png" alt="Distribution of the ANO variable andel_hovedoekosystem_punkt for wetland localities." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-25)Distribution of the ANO variable andel_hovedoekosystem_punkt for wetland localities.</p>
 </div>
 
 The zero in there is an obvious mistake.
@@ -735,8 +648,8 @@ ggplot(ano, aes(x = andel_hovedoekosystem_punkt))+
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-41-1.png" alt="Percentage cover of the Våtmark main ecosystem in the 250m2 circle" width="672" />
-<p class="caption">(\#fig:unnamed-chunk-41)Percentage cover of the Våtmark main ecosystem in the 250m2 circle</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-27-1.png" alt="Percentage cover of the Våtmark main ecosystem in the 250m2 circle" width="672" />
+<p class="caption">(\#fig:unnamed-chunk-27)Percentage cover of the Våtmark main ecosystem in the 250m2 circle</p>
 </div>
 
 We can see that people tend to record the variable in steps of 5%, and
@@ -810,11 +723,13 @@ barplot(table(ano$var_7SE), xlab="7SE scores")
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-48-1.png" alt="Distribution of 7TK and 7SE scores in the ANO data" width="672" />
-<p class="caption">(\#fig:unnamed-chunk-48)Distribution of 7TK and 7SE scores in the ANO data</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-34-1.png" alt="Distribution of 7TK and 7SE scores in the ANO data" width="672" />
+<p class="caption">(\#fig:unnamed-chunk-34)Distribution of 7TK and 7SE scores in the ANO data</p>
 </div>
 
-Combining these two variables into the indicator, same as for the nature
+The ANO sites seem to be in an even better condition than the localities in the naturtype data set.
+
+Combining these two variables 7TJ and 7SE into one, same as for the nature
 type data.
 
 
@@ -824,14 +739,27 @@ temp$slitasje <- apply(temp[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
 ano$slitasje <- temp$slitasje
 ```
 
+Then I extract the mid values for each ordinal range step, like I did previously for the nature type data set.
+
 
 ```r
-barplot(table(ano$slitasje), xlab="Sliatsje scores", ylab = "Number of localities")
+ano <- ano %>%
+  mutate(slitasje = case_match(slitasje,
+             0 ~ 0,
+             1 ~ mean(c(0, 1/16))*100,
+             2 ~ mean(c(1/16, 1/2))*100,
+             3 ~ 75))
+```
+
+
+
+```r
+barplot(table(ano$slitasje), xlab="% Slitasje", ylab = "Number of localities")
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-50-1.png" alt="Distribution of slitasje scores in the ANO data" width="576" />
-<p class="caption">(\#fig:unnamed-chunk-50)Distribution of slitasje scores in the ANO data</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-37-1.png" alt="Distribution of slitasje scores in the ANO data" width="576" />
+<p class="caption">(\#fig:unnamed-chunk-37)Distribution of slitasje scores in the ANO data</p>
 </div>
 
 ##### Combine Naturtype data and ANO {#combine-nt-ano}
@@ -870,7 +798,7 @@ slitasje_data <- dplyr::bind_rows(select(ano,
                                   slitasje,
                                   SHAPE), 
                            select(naturetypes,
-                                  identifikasjon_lokalid,
+                                  identifikasjon_lokalId,
                                   origin,
                                   hovedøkosystem,
                                   kartleggingsår,
@@ -907,6 +835,7 @@ slitasje_data_points$area2 <- st_area(slitasje_data_points)
 plot(slitasje_data_points$area, slitasje_data_points$area2,
      xlab = "Target area",
      ylab = "Area of the new polygons")
+abline(0,1)
 ```
 
 <div class="figure">
@@ -948,8 +877,8 @@ ggplot(temp, aes(x = Var1,
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-56-1.png" alt="Slitasje scores (ANO Naturetype (and GRUK) data combined). The score for a locality equals the highest (worst) score of the related variables 7TK, 7SE, PRSL and PRTK." width="672" />
-<p class="caption">(\#fig:unnamed-chunk-56)Slitasje scores (ANO Naturetype (and GRUK) data combined). The score for a locality equals the highest (worst) score of the related variables 7TK, 7SE, PRSL and PRTK.</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-43-1.png" alt="Slitasje scores (ANO Naturetype (and GRUK) data combined). The score for a locality equals the highest (worst) score of the related variables 7TK, 7SE, PRSL and PRTK." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-43)Slitasje scores (ANO Naturetype (and GRUK) data combined). The score for a locality equals the highest (worst) score of the related variables 7TK, 7SE, PRSL and PRTK.</p>
 </div>
 
 Let's see the proportion of data points (not area) origination from each
@@ -970,8 +899,8 @@ ggplot(temp, aes(x = Var1,
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-57-1.png" alt="Barplot show the contribution (number of localities) of different data sets to the slitasje indicator." width="384" />
-<p class="caption">(\#fig:unnamed-chunk-57)Barplot show the contribution (number of localities) of different data sets to the slitasje indicator.</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-44-1.png" alt="Barplot show the contribution (number of localities) of different data sets to the slitasje indicator." width="384" />
+<p class="caption">(\#fig:unnamed-chunk-44)Barplot show the contribution (number of localities) of different data sets to the slitasje indicator.</p>
 </div>
 
 So the ANO data is not very important here, but it can become more
@@ -1004,7 +933,7 @@ polygon level, then I could scale at that level. I think they are.
 However, the combined surveyed area is a very small fraction of the
 total area of Norway, so that only producing indicator values for the
 mapped areas leaves the indicator without much value for regional
-assessments. When we do regional assessments and calcualte regional
+assessments. When we do regional assessments and calculate regional
 indicator values, we cannot simply do an area weighting of the polygons
 in each region. This is because we don't want to assume that the
 polygons are representative far outside of the mapped area. But perhaps
@@ -1032,47 +961,13 @@ infrastructure index comes in. Here's the plan:
 
 #### Scaled variable {#scaled-slitasje-variable}
 
-The variable is ordinal, not continuous. See fig. \@ref(fig:eight-step).
-I could create another variable which was more like original range
-scale. Although not perfect, I will use the median value for each
-category. I.e. when the variable is recorded as 2 (meaning from 1/16th
-to 1/2), this is converted to 31.25%, i.e. in the middle between the two
-end points of the category.
-
-
-```r
-slitasje_data$slitasje_percentage <- slitasje_data$slitasje
-
-slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 1] <- ((1/16)/2)*100
-slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 2] <- (((1/2)/2)+(1/16))*100
-slitasje_data$slitasje_percentage[slitasje_data$slitasje_percentage == 3] <- (3/4)*100
-table(slitasje_data$slitasje_percentage)
-#> 
-#>     0 3.125 31.25    75 
-#> 19337  6466  1069   153
-```
-
-
-```r
-ggplot(slitasje_data, aes(x = slitasje,
-                          y = slitasje_percentage))+
-  geom_point(size=6)+
-  geom_line()+
-  theme_bw(base_size = 16)
-```
-
-<div class="figure">
-<img src="slitasje_files/figure-html/continuous-scale-1.png" alt="Showing the conversion from ordinal to (pseudo)continous cale for the slitasje variable" width="480" />
-<p class="caption">(\#fig:continuous-scale)Showing the conversion from ordinal to (pseudo)continous cale for the slitasje variable</p>
-</div>
-
 I will use the same reference levels/values for all of Norway:
 
 
 ```r
 upper <- 0
 lower <- 100
-threshold <- 10
+threshold <- 5
 ```
 
 This implies that it is impossible to detect or measure a state when it
@@ -1080,17 +975,19 @@ is in its most degraded form (100% disturbed). This is a problem with
 the original data resolution. But I will compensate somewhat for this by
 using a non-linear transformation.
 
-Also, the threshold value is set quite conservativly, and should be
+Also, the threshold value is set quite conservatively (I think), and should be
 discussed.
 
 I need to do a little trick and reverse the upper and lower reference
 values for the normalisation to work. This is a bug which can be fixed
 inside eaTools.
 
+<!-- THE BREAKPOINT IS AT 0.5 RATHER THAN 0.6. TEST CODE FROM HERE: https://ninanor.github.io/eaTools/articles/normalise-condition-variable.html -->
+
 
 ```r
 eaTools::ea_normalise(data = slitasje_data,
-                      vector = "slitasje_percentage",
+                      vector = "slitasje",
                       upper_reference_level = lower,
                       lower_reference_level = upper,
                       break_point = threshold,
@@ -1100,8 +997,8 @@ eaTools::ea_normalise(data = slitasje_data,
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/slitasje-normalise-1.png" alt="Performing a non-linear break-point type normalisation of the slitasje variable." width="480" />
-<p class="caption">(\#fig:slitasje-normalise)Performing a non-linear break-point type normalisation of the slitasje variable.</p>
+<img src="slitasje_files/figure-html/slitasje-normalise-1.png" alt="Performing a linear break-point type normalisation of the slitasje variable." width="480" />
+<p class="caption">(\#fig:slitasje-normalise)Performing a linear break-point type normalisation of the slitasje variable.</p>
 </div>
 
 This normalisation seems reasonable to me. I can save it as indicator
@@ -1111,7 +1008,7 @@ assign all the indicator value to the average year of the data.
 
 ```r
 mean(slitasje_data$kartleggingsår)
-#> [1] 2019.85
+#> [1] 2020.254
 ```
 
 Assigning the indicator to year 2020.
@@ -1119,7 +1016,7 @@ Assigning the indicator to year 2020.
 
 ```r
 slitasje_data$i_2020 <- eaTools::ea_normalise(data = slitasje_data,
-                      vector = "slitasje_percentage",
+                      vector = "slitasje",
                       upper_reference_level = lower,
                       lower_reference_level = upper,
                       break_point = threshold,
@@ -1152,7 +1049,7 @@ st_crs(HIA) == st_crs(regions)
 #> [1] TRUE
 ```
 
-Since the two layers are completely overlapping, we can get the
+Since the HIA map and the _region_ map are completely overlapping (HIA was masked using the region map), we can get the
 intersections
 
 
@@ -1181,15 +1078,26 @@ there is data, extrapolate indicator values over.
 
 ###### Subset ETs
 
-I will subset the `sliatsje_data` in the three ecosystems. Note that
+I will subset the `slitasje_data` into the three ecosystems. Note that
 only for open wetland do we have good ecosystem delineation maps to base
 a spatial averaging on.
 
 
 ```r
-wetlands <- slitasje_data[slitasje_data$hovedøkosystem == "Våtmark",]
-seminat <- slitasje_data[slitasje_data$hovedøkosystem == "Semi-naturlig mark",]
-natOpen <- slitasje_data[slitasje_data$hovedøkosystem == "Naturlig åpne områder under skoggrensa",]
+#Check spelling
+#unique(slitasje_data$hovedøkosystem)
+
+# Rename one level
+slitasje_data <- slitasje_data %>%
+  mutate(hovedøkosystem = recode(hovedøkosystem, "Våtmark" = "våtmark"))
+
+#make valid
+slitasje_data <- st_make_valid(slitasje_data)
+
+#subset
+wetlands <- slitasje_data[slitasje_data$hovedøkosystem == "våtmark",]
+seminat <- slitasje_data[slitasje_data$hovedøkosystem == "semi-naturligMark",]
+natOpen <- slitasje_data[slitasje_data$hovedøkosystem == "naturligÅpneOmråderILavlandet",]
 ```
 
 Creating some summary statistics.
@@ -1230,35 +1138,56 @@ all_stats <- all_stats %>%
   separate(region_HIF,
            into = c("region", "HIF"),
            sep = " ")
-saveRDS(all_stats, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/all_stats.rds")
+
+saveRDS(all_stats, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/all_stats.rds")
 ```
 
 
 
 
 ```r
+temp_plot <- all_stats %>%
+  mutate(HIF_NA = case_when(
+    n > 150 ~ HIF
+  ))
+
+myColour_list <- unique(temp_plot$myColour)
+names(myColour_list) <-   myColour_list
+
 ggarrange(
-ggplot(all_stats, aes(x = region, y = n, group = HIF, fill = HIF))+
-  geom_bar(position = "dodge", stat = "identity")+
-  theme_bw(base_size = 30)+
+ggplot(temp_plot, aes(x = region, y = n, group = HIF, fill = HIF_NA))+
+  geom_bar(position = "dodge", stat = "identity", col="black")+
+  theme_bw(base_size = 10)+
+  scale_fill_brewer(palette="Oranges")+
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
   facet_wrap(.~eco),
-ggplot(all_stats, aes(x = region, y = w_mean, group = HIF, fill = HIF))+
-  geom_bar(position = "dodge", stat = "identity")+
-  theme_bw(base_size = 30)+
+ggplot(temp_plot, aes(x = region, y = w_mean, group = HIF, fill = HIF_NA))+
+  geom_bar(position = "dodge", stat = "identity", col="black")+
+  theme_bw(base_size = 10)+
+  scale_fill_brewer(palette="Oranges")+
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
   facet_wrap(.~eco),
-ggplot(all_stats, aes(x = region, y = sd, group = HIF, fill = HIF))+
-  geom_bar(position = "dodge", stat = "identity")+
-  theme_bw(base_size = 30)+
+ggplot(temp_plot, aes(x = region, y = sd, group = HIF, fill = HIF_NA))+
+  geom_bar(position = "dodge", stat = "identity", col="black")+
+  theme_bw(base_size = 10)+
+  scale_fill_brewer(palette="Oranges")+
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
   facet_wrap(.~eco),
 ncol = 1)
 ```
 
-<img src="slitasje_files/figure-html/dense-stats-1.png" width="1152" />
+<div class="figure">
+<img src="slitasje_files/figure-html/dense-stats-1.png" alt="Barplot showing the number of data points, the area weighted indicator values and the sd for the slitasje indicator. Transparrent bars represents categories with less than 150 data points." width="672" />
+<p class="caption">(\#fig:dense-stats)Barplot showing the number of data points, the area weighted indicator values and the sd for the slitasje indicator. Transparrent bars represents categories with less than 150 data points.</p>
+</div>
 
-This rather dense figure needs to be looked at carefully. In the top row
+In the figure above, colors refer to Human Impact Factor (amount or frequency of infrastructure) 
+and NA means that there are less than 150 data points which we set as a threshold for evaluating the indicator values.
+
+In the top row
 we see that the sample size (number of polygons) varies between
 ecosystems. For naturally open ecosystems many polygons are from high
 infrastructure areas, not surprisingly, and there are few points for the
@@ -1266,23 +1195,52 @@ lowest impact class (zero such polygons in *Sørlandet* for example). We
 may therefore not be able to extrapolate indicator values for Naturally
 open areas in in *Sørlandet* with low levels of infrastructure. 
 
+In semi-natural areas and wetlands, we have very little data from HIF
+class 3.
+
 We can also from the middle row see the association between the indicator
 values (area weighted means) and the modified infrastructure index
-(HIF). We should then not put too much weight on the bars were there is
-little data (low n) and/or high standard error (sd, bottom row). For
-example, with Naturally open ecosystems, 
+(HIF). We should then not put any weight on the bars were there is
+little data (transparent bars). Then we se the general pattern that the indicator 
+value decreases with increasing HIF. But there are exceptions, like for Semi-natural areas
+in Vestlandet.
 
-Midt-Norge has the overall lowest errors, and there we also see the kind of relationship between
-the indicator and the pressure that we want to see (middle row). The
-pattern is repeated for all regions except Østlandet, but there we also
-see that HIF class 3 has very little data, and a high sd, and this could
-explain the discrepancy (but it doesn't support the general relationship
-either).
+Let us look at the indicator to pressure relationship across all ecosystems.
 
-In semi-natural areas and wetlands, we have very little data from HIF
-class 3, and the sd's are very big. The indicator-pressure relationship
-(middle row) looks the most messy for wetlands, but if ignoring HIF=3,
-the relationship looks much better.
+
+```r
+temp_plot %>%
+  filter(!is.na(HIF_NA)) %>%
+  ggplot(aes(x = HIF_NA, y = w_mean))+
+  geom_point(size=2, position = position_dodge2(.1))+
+  geom_violin(alpha=0)+
+  theme_bw()
+```
+
+<div class="figure">
+<img src="slitasje_files/figure-html/unnamed-chunk-58-1.png" alt="Indicator to pressure relationship across all ecosystems." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-58)Indicator to pressure relationship across all ecosystems.</p>
+</div>
+
+The pattern is not perfect, and there is quite some noise. But this is perhaps also expected.
+
+Let us look at the effect of sample size on the indicator uncertainty.
+
+
+```r
+temp_plot %>%
+  ggplot(aes(x = n, y = sd))+
+  geom_point(size=2, position = position_dodge2(.1))+
+  theme_bw()+
+    facet_wrap(.~eco)
+```
+
+<div class="figure">
+<img src="slitasje_files/figure-html/unnamed-chunk-59-1.png" alt="Smaple size against indicator uncertainty." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-59)Smaple size against indicator uncertainty.</p>
+</div>
+
+This shows that the uncertainty is inflated with sample sizes less than about 300-500.
 
 
 ```r
@@ -1292,11 +1250,11 @@ DT::datatable(all_stats)
 <div class="figure">
 
 ```{=html}
-<div id="htmlwidget-a9c12b454e7b89280161" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a9c12b454e7b89280161">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57"],["Midt-Norge","Midt-Norge","Midt-Norge","Midt-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Sørlandet","Sørlandet","Sørlandet","Vestlandet","Vestlandet","Vestlandet","Østlandet","Østlandet","Østlandet","Østlandet","Midt-Norge","Midt-Norge","Midt-Norge","Midt-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Sørlandet","Sørlandet","Sørlandet","Sørlandet","Vestlandet","Vestlandet","Vestlandet","Vestlandet","Østlandet","Østlandet","Østlandet","Østlandet","Midt-Norge","Midt-Norge","Midt-Norge","Midt-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Sørlandet","Sørlandet","Sørlandet","Vestlandet","Vestlandet","Vestlandet","Vestlandet","Østlandet","Østlandet","Østlandet","Østlandet"],["0","1","2","3","0","1","2","3","0","1","2","0","1","2","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","1","2","3","0","1","2","3","0","1","2","3"],[16209610.2496514,45211964.8453548,19001431.5479795,314264.320728865,2710516.30566649,28057586.3793119,11482738.8832706,74446.5055558359,682238.653932593,991130.005807994,639258.572024811,2061446.80986481,4113698.9600472,707027.318611489,360597.287192951,3648871.44361387,4840740.70355411,241299.262720714,44948060.4008877,96856583.9899553,58789668.5481242,934269.305415592,11176508.8484102,33165644.3405374,12492611.5090584,77338.3649934132,9801191.45542132,49074389.5673002,18985092.9403347,274888.843731315,46162298.3757948,139055884.807505,62652791.9416189,1207662.7515494,22154422.1541261,68413277.4075446,40894218.1413964,405932.011477834,37699.1660658609,646597.514736184,3304543.25624028,446486.861662487,1094972.34031724,5999683.45294895,5479983.27905379,5708.07357701473,91550.2052620611,651452.54491182,327258.116450034,10672.1948234461,149794.998156462,397484.430971355,39714.0997798119,7249.39994638925,496314.001076419,4333929.96598427,722559.569129946],[805,2193,1093,30,428,1523,656,10,79,135,41,241,527,160,95,363,266,10,737,2256,2081,67,335,967,645,9,123,678,593,49,414,1821,1710,116,228,864,1114,62,54,186,870,146,192,1142,982,2,22,246,150,14,78,190,20,8,120,874,162],[0.872093050799493,0.873271534924672,0.85546619631609,0.937380058752728,0.918592906669058,0.874614926379827,0.846198546107781,0.938921918548296,0.92786819040074,0.9483538959046,0.864009695445257,0.994907642007468,0.950445182523243,0.901920185670037,0.909232836966662,0.930443139234207,0.842920376356852,0.950568260791274,0.948172739050822,0.91742453225015,0.887598775015146,0.914710213638131,0.932396019365782,0.900305645306018,0.871915149122071,0.918656562711873,0.980544702892717,0.941952064567868,0.918111623268704,0.852610216643323,0.958267750996937,0.925421804986654,0.930472229599312,0.930804951001526,0.862327505264176,0.844934652526433,0.825240525002589,0.712653103937267,0.975116911486412,0.953686421493984,0.905755360357062,0.889014496816697,0.918889587842996,0.88046295847182,0.867024263545306,0.305555555555556,0.921482028431549,0.778725846288571,0.726054904477386,0.983058498854173,0.986997482315042,0.904637769237159,0.520928622658911,0.867898816179853,0.909756054150719,0.876533527801648,0.8864885770581],[0.951751207729469,0.898974641536201,0.886163210328352,0.891203703703704,0.930425752855659,0.894096082293719,0.88672933604336,0.8875,0.964398734177215,0.929269547325103,0.90210027100271,0.981990548639926,0.960981973434535,0.921440972222222,0.986184210526316,0.933444291398837,0.890664160401002,0.8875,0.970676918438112,0.94956350965327,0.920300736825244,0.946828358208955,0.974979270315091,0.952286567850167,0.951647286821705,0.881172839506173,0.99390243902439,0.978398475909538,0.953766160764474,0.825396825396825,0.970779656468062,0.955797333577399,0.955640838206628,0.936302681992337,0.929915935672515,0.879726080246914,0.855326152004788,0.806227598566308,0.986111111111111,0.924283154121864,0.923738825031929,0.931411719939117,0.9765625,0.933206849581631,0.923667684996606,0.305555555555556,0.931818181818182,0.798949864498645,0.736111111111111,0.973214285714286,0.949964387464387,0.925365497076023,0.855555555555556,0.953125,0.880439814814815,0.85173531655225,0.795524691358025],[0.00457283178475555,0.003768091090335,0.00527357022851347,0.032121223049415,0.00672619730759783,0.00421217286621883,0.00593726092175379,0.0297561824051545,0.00864916373140018,0.0135651815044588,0.0256352303004485,0.00587892462220306,0.00592765234509322,0.0141939378740475,0.0051451853630316,0.00764804859738178,0.0118533513842229,0.0283317538146108,0.00321581664577187,0.00229656772801088,0.00299658136809545,0.0104507737923793,0.00391754710067107,0.00392187797826285,0.00442234058166537,0.0744264520806323,0.00292880847531171,0.00273082441346138,0.00410381082399992,0.0356646571957463,0.00469959781614147,0.00255334335464343,0.00257082859793937,0.0112744261776116,0.00898487566342122,0.00621492692493641,0.00616298636119361,0.0321962790615114,0.0068514340508301,0.0121310834925019,0.00565461164276092,0.00934422794592941,0.00474003502795946,0.00486999110730789,0.00499017947842723,0,0.0192900005821471,0.0170009371454834,0.0235496918169475,0.0180923815418698,0.0173343614852224,0.0109609778691968,0.0428859909987562,0.0295052042954801,0.0194095444188372,0.00868069225901886,0.019537691298524],["wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>region<\/th>\n      <th>HIF<\/th>\n      <th>total_area<\/th>\n      <th>n<\/th>\n      <th>w_mean<\/th>\n      <th>mean<\/th>\n      <th>sd<\/th>\n      <th>eco<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6,7]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e979edc068a982bc309f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e979edc068a982bc309f">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59"],["Midt-Norge","Midt-Norge","Midt-Norge","Midt-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Sørlandet","Sørlandet","Sørlandet","Sørlandet","Vestlandet","Vestlandet","Vestlandet","Vestlandet","Østlandet","Østlandet","Østlandet","Østlandet","Midt-Norge","Midt-Norge","Midt-Norge","Midt-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Sørlandet","Sørlandet","Sørlandet","Sørlandet","Vestlandet","Vestlandet","Vestlandet","Vestlandet","Østlandet","Østlandet","Østlandet","Østlandet","Midt-Norge","Midt-Norge","Midt-Norge","Midt-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Sørlandet","Sørlandet","Sørlandet","Vestlandet","Vestlandet","Vestlandet","Vestlandet","Østlandet","Østlandet","Østlandet","Østlandet"],["0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","0","1","2","3","1","2","3","0","1","2","3","0","1","2","3"],[20425516.793161,55942079.0852367,25271797.033968,402403.654717704,4177429.11487822,39799602.0218486,21289663.1377251,119342.520216003,1199953.10537375,2555863.89072861,1316446.89966768,28747.3798501565,2429070.74019894,7091916.84858253,1976037.38284999,83419.9734570635,1338836.52571996,10667431.8327424,12151597.8760085,777759.443905594,45082128.9721422,105282331.371692,65698434.9289448,1458536.77645433,12119453.8140127,39689431.8549581,23764139.6700521,560734.383622149,12833361.1414629,55230811.320468,21059796.7186225,281368.955707136,62771221.3693583,171913529.764963,89577387.4688441,2762081.96649456,22722135.5559064,72301565.3418464,46433821.8958926,531602.555394967,38617.3295027119,1088104.72301855,4085898.43293656,551146.817578847,1145883.34854498,6747952.7632901,6810143.31086301,90891.4412507273,109835.996095306,882962.104436279,674506.417532786,13843.1727794531,198525.028855817,436639.782215109,47244.6292264749,17970.0303946844,671054.025118375,5315089.41465925,1026810.93562918],[1001,2507,1463,43,548,2503,1513,16,129,457,132,10,272,723,329,24,151,768,912,119,764,2361,2314,101,399,1323,1279,69,153,737,713,56,484,2239,2218,181,251,1104,1650,143,55,298,1098,189,223,1419,1422,52,39,385,254,18,111,246,34,11,216,1419,416],[0.771750910678313,0.7875186612059,0.793527794730975,0.865720748692812,0.831477335386509,0.801232017375005,0.745740593748365,0.791099692645648,0.906027687414072,0.911013644607549,0.798963551938973,1,0.957236019313803,0.880727771695884,0.825256022857242,0.791359885839299,0.788313328500717,0.791395245167583,0.750731099672693,0.923119549784727,0.902593418006151,0.83593202285124,0.80467219237372,0.807328459520766,0.873503412863498,0.83350830318046,0.831318829695963,0.951610294891564,0.94985520619026,0.888240984238651,0.853134247523411,0.729140255239416,0.9098194463842,0.869385864286768,0.885433805699666,0.916486246113373,0.737934602429538,0.722254276853415,0.706036226775658,0.630459416309339,0.951417060773914,0.95003102838554,0.84863012352793,0.810123844078759,0.844666568065667,0.814820273682474,0.803164434951812,0.753302327707886,0.838687587547142,0.645133805861738,0.642709425559455,0.933046230074286,0.969736857282128,0.834162035025874,0.545331235282478,0.893416505831439,0.872053422790955,0.826622204638684,0.810474925985478],[0.920985067564015,0.867491969852833,0.825670935712487,0.792117503059976,0.898993469074145,0.855201757890531,0.826648693776742,0.743125,0.95453488372093,0.933700909823794,0.861945773524721,1,0.946281927244582,0.933323505860086,0.90592225243961,0.835635964912281,0.896889159986058,0.858679070723684,0.816871537396122,0.871275984077842,0.948676632681179,0.90910575358345,0.862583814765955,0.849241792600313,0.955019126764279,0.91984425349087,0.921706514135221,0.946414950419527,0.984117647058824,0.955265300292794,0.900607145493467,0.773397556390977,0.953312309699869,0.930312286970217,0.924071353993641,0.907515266065717,0.877254141329419,0.820020022883295,0.779115789473684,0.738916083916084,0.972727272727273,0.917387848816673,0.891231665228645,0.857699805068226,0.95627802690583,0.904449946218612,0.883170478939966,0.845394736842105,0.857962213225371,0.683749145591251,0.664680895151264,0.916666666666667,0.935277382645804,0.854032948224219,0.826625386996904,0.931818181818182,0.864918372319688,0.815831200623122,0.732730263157895],[0.00521180430068777,0.00434945752819324,0.00602063114291312,0.0357420655181531,0.00788601096109206,0.0043498025604811,0.0057907664431112,0.0530979110767958,0.00965832014067245,0.0072080861750764,0.0181116104747688,0,0.00837811441658417,0.0056414016696469,0.00896478394465009,0.0450854963918842,0.0140911117320106,0.00740041633236665,0.00744264089345736,0.0171829338414869,0.00503700280784231,0.00364269206680451,0.00430006747608547,0.0217928162646461,0.00637942868020546,0.00453240639310002,0.00462555044884439,0.0172207735139846,0.00604208609205063,0.00471198160238452,0.00680508640195998,0.0365666211196643,0.00605252356670952,0.00328820222512962,0.00347028570681106,0.0126362557588608,0.0120587689199437,0.00661779589544552,0.00566362941182635,0.0225870247899212,0.0139374336521784,0.0107014488006716,0.00607389080650256,0.0135282003589769,0.00776844313926837,0.00526458585632371,0.00529260013803737,0.0321211661039465,0.0374330986359293,0.0147547583391982,0.0175217575275686,0.0362045873291141,0.0172631766042164,0.013918519872522,0.0378085287908935,0.0438071664018427,0.0159270768134006,0.00686810399276487,0.0135103015633108],["wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","wetland","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","semi-natural","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open","Naturally-open"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>region<\/th>\n      <th>HIF<\/th>\n      <th>total_area<\/th>\n      <th>n<\/th>\n      <th>w_mean<\/th>\n      <th>mean<\/th>\n      <th>sd<\/th>\n      <th>eco<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6,7]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 ```
 
-<p class="caption">(\#fig:unnamed-chunk-72)Summary statistics for the slitasje indicator.</p>
+<p class="caption">(\#fig:unnamed-chunk-60)Summary statistics for the slitasje indicator.</p>
 </div>
 
 In addition to looking at the area weighted means and its relationship
@@ -1307,24 +1265,25 @@ become useless, so I will present a relative frequency plot.
 
 ```r
 corrCheck <- st_intersection(slitasje_data, HIA_regions)
-saveRDS(corrCheck, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck.rds")
+saveRDS(corrCheck, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/corrCheck.rds")
 ```
 
 
 
 
 ```r
-ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(i_2020)))+
+ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
   geom_bar(position="fill")+
   theme_bw(base_size = 12)+
   guides(fill = guide_legend("Sliatsje indicator"))+
   ylab("Fraction of data points")+
   xlab("HIF")+
+  scale_fill_brewer(palette = "RdYlGn")+
   facet_grid(hovedøkosystem~region)
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/slitasje-precentageplot-1.png" alt="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values." width="1152" />
+<img src="slitasje_files/figure-html/slitasje-precentageplot-1.png" alt="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values." width="672" />
 <p class="caption">(\#fig:slitasje-precentageplot)Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values.</p>
 </div>
 
@@ -1333,66 +1292,6 @@ and justifies using the HIA+region intersections as local reference
 areas. Especially when down-weighting the importance of those
 groups/categories that have very little data.
 
-We can also calculate *Kendall tau b* coefficients, although I'm not
-complete sure this is valid when we have ordinal data with only four
-levels, since there will be a lot of ties.
-
-
-```r
-corrCheck_grouped <- as.data.frame(corrCheck) %>%
-  group_by(hovedøkosystem, region) %>%
-  summarise(cor = cor(i_2020, infrastructureIndex, method = "kendall"))
-#> `summarise()` has grouped output by 'hovedøkosystem'. You
-#> can override using the `.groups` argument.
-```
-
-
-```r
-ggplot(corrCheck_grouped, aes(x = hovedøkosystem, 
-                      y = cor))+
-  geom_bar(stat = "identity")+
-  facet_wrap(.~region)+
-  coord_flip()
-```
-
-<div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-76-1.png" alt="Pearson correlations between the indicator values at the polygons level and the HIF." width="672" />
-<p class="caption">(\#fig:unnamed-chunk-76)Pearson correlations between the indicator values at the polygons level and the HIF.</p>
-</div>
-
-
-```r
-corrCheck_eco <- corrCheck_grouped %>%
-  group_by(hovedøkosystem) %>%
-  summarise(cor = mean(cor))
-corrCheck_reg <- corrCheck_grouped %>%
-  group_by(region) %>%
-  summarise(cor = mean(cor))
-
-ggarrange(
-ggplot(corrCheck_eco, aes(x = hovedøkosystem, 
-                      y = cor))+
-  geom_bar(stat = "identity")+
-  coord_flip(),
-ggplot(corrCheck_reg, aes(x = region, 
-                      y = cor))+
-  geom_bar(stat = "identity")+
-  coord_flip(),
-ncol=1
-)
-```
-
-<div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-77-1.png" alt="Pearson correlations between indicator values and the HIF." width="672" />
-<p class="caption">(\#fig:unnamed-chunk-77)Pearson correlations between indicator values and the HIF.</p>
-</div>
-
-From the figures above it appears that the relationship is quite week in
-general. However, the sheer number of data points suggest that group
-differences will be very reliable. *Naturlig åpne områder* has the
-lowest correlation between the indicator and the homogeneous area
-classes, and of the five regions, *Nord-Norge* has the lowest
-correlation.
 
 #### Looking at the HIA
 
@@ -1436,8 +1335,8 @@ hw_utm <- readRDS("data/cache/highways_trondheim.rds")
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-81-1.png" alt="A closer look at the HIA designation over Trondheim" width="672" />
-<p class="caption">(\#fig:unnamed-chunk-81)A closer look at the HIA designation over Trondheim</p>
+<img src="slitasje_files/figure-html/unnamed-chunk-66-1.png" alt="A closer look at the HIA designation over Trondheim" width="672" />
+<p class="caption">(\#fig:unnamed-chunk-66)A closer look at the HIA designation over Trondheim</p>
 </div>
 
 Let's calculate the areas of these polygons and compare the HIF in the
@@ -1466,8 +1365,8 @@ ggplot(temp, aes(x = region, y = area, fill = factor(infrastructureIndex)))+
 <p class="caption">(\#fig:HIF-region)Stacked barplot showing the distribution of human impact factor across five regions in Norway.</p>
 </div>
 
-The figure above shows that Nord-Norge for example, has a lot of
-relatively untouched areas, and that Østlandet has the highest
+The figure above shows that _Nord-Norge_ for example, has a lot of
+relatively untouched areas, and that _Østlandet_ has the highest
 proportion of impacted areas. This is expected.
 
 ### Aggregate and spread (extrapolate) {#spread-slitasje}
@@ -1477,9 +1376,7 @@ aggregate) and to spread these out spatially to the entire HIA within
 each region (i.e. to extrapolate).
 
 I want to add a threshold so that we don't end up over extrapolating
-based on too few data points. From Fig. \@ref(fig:dense-stats) I
-conclude that we need at least 70 data points for the sd to stabilize. I
-will conservatively round this up to 100 data points.
+based on too few data points. I have previousl used 150 data pionts, and I think that was about right.
 
 
 ```r
@@ -1487,22 +1384,22 @@ wetlands_slitasje_extr <- ea_spread(indicator_data = wetlands,
                          indicator = i_2020,
                          regions = HIA_regions,
                          groups = region_HIF,
-                         threshold = 100)
+                         threshold = 150)
 
 seminat_slitasje_extr <- ea_spread(indicator_data = seminat,
                          indicator = i_2020,
                          regions = HIA_regions,
                          groups = region_HIF,
-                         threshold = 100)
+                         threshold = 150)
 
 natOpen_slitasje_extr <- ea_spread(indicator_data = natOpen,
                          indicator = i_2020,
                          regions = HIA_regions,
                          groups = region_HIF,
-                         threshold = 100)
-#saveRDS(wetlands_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
-#saveRDS(seminat_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_slitasje_extr.rds")
-#saveRDS(natOpen_slitasje_extr, "P:/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_slitasje_extr.rds")
+                         threshold = 150)
+#saveRDS(wetlands_slitasje_extr, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/wetlands_slitasje_extr.rds")
+#saveRDS(seminat_slitasje_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/seminat_slitasje_extr.rds")
+#saveRDS(natOpen_slitasje_extr,  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/natOpen_slitasje_extr.rds")
 ```
 
 
@@ -1566,147 +1463,52 @@ HIA_trd)
 ```
 
 <div class="figure">
-<img src="slitasje_files/figure-html/unnamed-chunk-87-1.png" alt="Slitasje indicator extrapolated over Trondheim" width="672" />
-<p class="caption">(\#fig:unnamed-chunk-87)Slitasje indicator extrapolated over Trondheim</p>
+<img src="slitasje_files/figure-html/extrapolated-slitasje-1.png" alt="Slitasje indicator extrapolated over Trondheim" width="672" />
+<p class="caption">(\#fig:extrapolated-slitasje)Slitasje indicator extrapolated over Trondheim</p>
 </div>
 
-There is some, but very little variation, both between the ecosystems
-and between the four HIF classes in the modified infrastructure index.
-Note however, that for wetland and semi-natural areas we did not
+Note that for wetland and semi-natural areas we did not
 extrapolate values for the most urban areas, and that for naturally open
 areas we did not extrapolate to the least affected areas.
-
+For the other regions we generally excluded more HIFs. 
 
 > *The maps above are easy to misunderstand, and they should therefor be
 > communicated with caution. They should be considered as temporary
 > files or as by-products.*
 
 
-Now, there are multiple way to proceed. We have
+The next step now is to
 
--   indicator maps (vector data), and we have
+1. Prepare ecosystem delineation maps in EPSG25833 and perfectly aligned to a master grid
 
--   total HIA areas, and we have the
+2. Rasterize the extrapolated indicator map, using the ET map as a template (see Fig. \@ref(fig:#masking-example))
 
--   extrapolated indicator maps (HIA maps with aggregated indicator
-    values and errors, also vector data).
+3. and mask it using the perfectly aligned ET map.
 
--   We also have, for wetlands, an ecosystem type (ET) map.
 
-Option 1:
-
-1.  crop (i.e. intersect) the extrapolated indicator maps to ecosystem
-    delineation maps, and then;
-
-2.  aggregate these for each region or accounting area.
-
-Step 1 above requires an st_interactions on two very large vector data
-sets with millions of polygons. This should be avoided.
-
-Option 2:
-
-1.  rasterize the extrapolated indicator map, using the ET map as a
-    template, and
-
-2.  mask it using the perfectly aligned ET map.
-
-This might be faster.
-
-Option 3:
+A faster way could be to:
 
 1.  Draw *n* random point samples from the ET map, and
 
 2.  extract indicator values at those points (from the extrapolated
     indicator map (a stars object)).
 
-This is perhaps even faster again. I will try the last option, even
-though it will not provide spatially explicit indicator values for the
-entire ecosystem delineation, like option 2 does. Perhaps I will revisit
-option 2 later.
+... but his will not provide spatially explicit indicator values for the
+entire ecosystem delineation.
 
 ### Ecosystem map
 
-Importing the wetland map.
-
-This is a quite heavy operation and should be done on a server.
-
-
-```r
-mireET <- sf::st_read("/data/R/Kladd/Myr/Myrmodell.gdb")
-```
-
-This doesn't take that long.
-
-
-```r
-mireET <- st_transform(mireET, 25833)
-```
-
-This take about 10 min. Not sure I need it.
-
-
-```r
-mireET <- st_make_valid(mireET)
-```
-
-This takes a long!! time, and should be AVOIDED.
-
-
-```r
-wetlands_slitasje_extr_cropped <- sf::st_intersection(wetlands_slitasje_extr, mireET)
-```
-
-Instead I will draw some random point samples.
-
-
-```r
-wetland_points <- st_sample(mireET, 10000)
-```
-
-And intersect this with the extrapolated indicator values.
-
-
-```r
-wetland_points_match <- st_intersection(wetlands_slitasje_extr, wetland_points)
-```
-
-And extract the values
-
-
-```r
-wetland_points_extracted <- st_intersection(wetlands_slitasje_extr, wetland_points)
-```
-
-If we went for option 2, we could instead do something like this, and
-
-create an empty grid over Norway, 50 x 50 m resolution
-
-<!--# This we should perhaps do once, in a separate misc chapter, and make available for all chapters -->
-
-
-```r
-grd = st_as_stars(st_bbox(wetlands_slitasje_extr), dx = 50, dy = 50, values = NA_real_)
-```
-
-and then rasterize the indicator
-
-
-```r
-wetlands_slitasje_extr_rast <- st_rasterize(wetlands_slitasje_extr, grd)
-```
-
-To get a perfect alignment with the ET map, we should change `grd` with
-the ET raster map.
-
-Then we can use starts filtering with `[ .. ]` to mask out the areas
-that do not belong to the ET.
+See [here](https://github.com/NINAnor/ecosystemCondition/issues/34).
 
 ### Aggregate to region
 
 We need to aggreate the ET occurence and their indicator values, to a
-regional delineation. This functionality will be developed in `eaTools`.
-We need to produce distributions for the indicator valeus for each ET
-occurrence (or groups of them) and resample the distributions wiht an
+regional delineation. This functionality can be developed in `eaTools`,
+but will in any case build around `exactextratr::exact_extract()`.
+
+To carry the errors, we can for example
+produce distributions for the indicator values for each ET
+occurrence (or groups of them) and resample the distributions with an
 area weighting.
 
 ### Uncertainty
@@ -1722,22 +1524,22 @@ For the finest resolution indicator map I will not include columns for
 uncertainty (because this will only be estimated at the aggregated
 level), or reference levels (because there is no spatial variation).
 
-But I will also export a map of the indicator where we extrapolate the
-indicator values to the homogeneous areas. This map should be
-interpreted with caution, since they seem to provide explicit indicator
+I can also export a map of the indicator where we extrapolate the
+indicator values to the homogeneous areas (e.g. Fig. \@ref(fig:extrapolated-slitasje) . This map should be
+interpreted with caution, since they appear as providing explicit indicator
 values for areas where there is no data. This map is mainly for
 aggregation purposes. I will mark this map with the prefix
-*homogeneous-areas*. I can also export this same mappen after masking it
-with the ET map, and this output must come with the same discalimers.
+*homogeneous-areas*. I will also export this same map after masking it
+with the ET map, and this output must come with the same disclaimers.
 
 Finally I will export a map of the five accounting areas with
-wall-to-wall indicator value and errors. This map can also contain data
+wall-to-wall indicator value and errors (e.g. Fig \@ref(fig:wall-to-wall-summer-temp-indicator)). This map can also contain data
 covering other ETs. Otherwise the maps would not we visually
 interpretative.
 
 ### Slitasje in wetlands
 
-Prepare export
+This is how I plan to export the final product.
 
 
 ```r
