@@ -1,4 +1,4 @@
-# Median Summer Temperature
+# Median Summer Temperature {#median-summer-temp}
 
 <br />
 
@@ -15,7 +15,7 @@ March 2023
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse) # cant update to v2 on server
+library(tidyverse)
 library(stars)
 library(sf)
 library(tmap)
@@ -29,6 +29,9 @@ library(exactextractr)
 library(data.table)
 library(terra)
 dir <- substr(getwd(), 1,2)
+pData <- ifelse(dir == "C:", 
+  "P:/41201785_okologisk_tilstand_2022_2023/data/",
+  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/")
 ```
 
 ```{r, echo=F}
@@ -310,15 +313,9 @@ This takes about 20 sec per file/year, or 22 min on total. That is not too bad. 
 write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff")
 ```
 
-```{r, eval=F}
-# a backup caching in case tiff causes problems down the line
-saveRDS(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.rds")
-
-```
-
 
 ```{r, include=F}
-real_temp_summer <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff",
+real_temp_summer <- read_stars(paste0(pData, "climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff"),
                                  proxy=F)
 ```
 
@@ -370,7 +367,6 @@ And then we calculate the median and sd like above
 median_sd <- function(x) { c(median = median(x), sd = sd(x))}
 ```
 
-<!-- RUN AGAIN -->
 ```{r, eval=FALSE}
 system.time({
 cl <- makeCluster(10L)
@@ -388,18 +384,19 @@ stopCluster(cl)
 
 
 ```{r, eval=F}
-saveRDS(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")
+write_stars(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.tiff")
 ```
 
 ```{r, eval=T, include=F}
-summer_median_temp_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")
+summer_median_temp_ref <- read_stars(paste0(pData, "climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.tiff"),
+                                     proxy=F)
 ```
 
 Pivot and turn dimension into attributes, and rename attributes:
 
 ```{r, eval=T}
 summer_median_temp_ref_long <- summer_median_temp_ref %>% 
-  split("median_sd") %>%
+  split("band") %>%
   setNames(c("reference_upper", "sd"))
 ```
 
@@ -468,10 +465,13 @@ y_var_norm <- y_var %>%
 ```{r, eval=F}
 gc()
 saveRDS(y_var_norm, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_normalised.RData")
+
+# Tiff dont allow for multiple attributes:
+#write_stars(y_var_norm, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_normalised.tiff")
 ```
 
 ```{r, include=FALSE}
-y_var_norm <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData")
+y_var_norm <- readRDS(paste0(pData, "climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData"))
 ```
 
 ```{r, fig.cap="Example showing median summer tempretur in 1970, the upper and lwoer reference temperture, i.e. median and 5 SD units of the temperature between  1961-1990, and finally, the scaled indicator values."}

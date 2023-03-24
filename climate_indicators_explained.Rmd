@@ -15,9 +15,7 @@ March 2023
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
-#library(tidyverse) # cant update to v2 on server
-library(dplyr)
-library(ggplot2)
+library(tidyverse) 
 library(stars)
 library(sf)
 library(tmap)
@@ -27,13 +25,13 @@ library(microbenchmark)
 library(tictoc)
 library(ncmeta)
 library(parallel)
-library(readr)
 library(exactextractr)
-library(tidyr)
 library(data.table)
 library(terra)
 dir <- substr(getwd(), 1,2)
-
+pData <- ifelse(dir == "C:", 
+  "P:/41201785_okologisk_tilstand_2022_2023/data/",
+  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/")
 ```
 
 ```{r, echo=F}
@@ -110,8 +108,8 @@ The reference condition for climate variables is defined as the normal period 19
 
 -   Lower reference values (two-directional) = 5 standard deviation units for the climate variable during the reference period (implies linear scaling).
 
-
 The choice to use 2 SD units as the threshold values is a subjective choice in many ways, and not founded in any empirical or known relationship between the indicators and ecosystem integrity. The value comes from the common practice of calling something _extreme weather_ when it is outside 2 SD units of the current running average. So, if the indicator value today is <0.6 it implies that the mean for that variable over the last year would have been referred to as _extreme_ if it had occurred between 1961 and 1990. This is I think a conservative threshold, since one would/could call it _extreme_ if only one year is outside the 2SD range, and having the mean of 5 years being outside this range is _really_ extreme.
+
 
 ## Uncertainties
 
@@ -349,10 +347,8 @@ reg <- st_intersection(reg, nor)
 ```
 
 ```{r, fig.cap="Five accounting areas (regions) in Norway."}
-
 tm_shape(reg) +
   tm_polygons(col="region")
-
 ```
 
 #### Ecosystem map
@@ -361,7 +357,7 @@ Coming soon ....
 
 The climate indicators need to be masked with ecosystem type maps. This step is part of this chapter.
 
-## --------------------------------------------------
+
 
 ### Conceptual workflow
 
@@ -397,11 +393,11 @@ The general, the conceptual workflow is like this:
 
 6.  Make trend figure and spatially aggregated maps,
 
-### 1. Collate variable data series
+### Collate variable data series
 
 I include a for loop for importing the .nc files at the end.
 
-#### Filter data by dates
+### Filter data by dates
 
 Say we want to calculate the mean summer temperature. We then want to exclude the data for the times that is not withing our definition of summer.
 
@@ -446,7 +442,7 @@ st_get_dimension_values(x_aug, "time")
 
 *Later I discover that \`dplyr::filter\` work after reading the whole object to file, and therefor it is too slow for our use. I therefore filter data a different way further down.*
 
-#### Aggregate across time within a year
+### Aggregate across time within a year
 
 For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. Many climate indicators will need this functionality. There are two ways, either using `st_apply` or using `aggregate`.
 
@@ -719,14 +715,11 @@ The RStudio server has 48 cores. More parallel cores is probably on average fast
 #write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff")
 ```
 
-These files are about 500 MB, but the tiff file reads in a lot quicker then the rds file, so from now on I'll just export as tiff. *(This could perhaps have been solved with a `gc()`,. Later I save as RData with no problems).*
+These files are about 500 MB, but the tiff file reads in a lot quicker then the rds file, so from now on I'll just export as tiff. *(This could perhaps have been solved with a `gc()`. Later I tried saving as RData with no speed issues problems, but then I had a problem with RData files seemingly becoming corrupted over time - stars objects saved as RData files would not bind together using `c.stars()` with other matching stars object and I think this could be related to a time stamp in the RData format. So, stick to tiff).*
 
 ```{r}
-summer_median_temp <- read_stars("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff",
+summer_median_temp <- read_stars(paste0(pData, "climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff"),
                                  proxy=F)
-# This is too slow:
-# readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data/summer_median_temp.rds")
-# but it could be that RData works better 
 ```
 
 ```{r, eval=T}
@@ -767,7 +760,7 @@ ggplot()+
   facet_wrap(~v_YEAR)
 ```
 
-### 2. Calculate reference values
+### Calculate reference values
 
 #### Aggregate across reference years
 
@@ -879,20 +872,22 @@ stopCluster(cl)
 This is also something I can export.
 
 ```{r, eval=F}
-# write_stars can only export a single attribute 
-#write_stars(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.tiff")
+# Note that write_stars can only export a single attribute, but we have put the 'attributes' as dimensions, and these will be read in as 'band' when importing tiff.
+write_stars(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.tiff")
 
-saveRDS(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")
+# I initially saved as RData, like this, but ran into problems later when trying to bind stars objects using c.stars(). It appears RData becomes corrutpt in a sense, over time, perhaps due to some time stamp. If I recreated the object in the global environment and saved as RDatam I could read it in and work with it, but the next day it would not work again.
+#saveRDS(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")
 ```
 
 ```{r, eval=T, include=F}
-summer_median_temp_ref <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")
+summer_median_temp_ref <- read_stars(paste0(pData, "climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.tiff"),
+                                     proxy=F)
 ```
 
 Pivot and turn dimension into attributes:
 
 ```{r, eval=T}
-summer_median_temp_ref_long <- summer_median_temp_ref %>% split("median_sd")
+summer_median_temp_ref_long <- summer_median_temp_ref %>% split("band")
 ```
 
 The attribute name is *mean*. We can change this to something more meaningful.
@@ -920,10 +915,9 @@ I need to combine the variables and the ref values in one data cube
 y_var <- summer_median_temp %>%
   split(3) %>%
   c(summer_median_temp_ref_long)
-
 ```
 
-#### Normalise variable
+### Normalise variable
 
 ```{r}
 # select the columns to normalise
@@ -967,13 +961,15 @@ y_var_norm <- y_var %>%
 |--------|--------|---------|
 | 14.803 | 2.717  | 17.512  |
 
+Writing to file, this time as RData (could use rds) because tiff don't allow multiple attributes, and because we don't need to use `c.stars()` in this object.
+
 ```{r, eval=F}
 gc()
 saveRDS(y_var_norm, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_normalised.RData")
 ```
 
 ```{r, include=FALSE}
-y_var_norm <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData")
+y_var_norm <- readRDS(paste0(pData, "climate_indicators/aggregated_climate_time_series/temp_median_summer_normalised.RData"))
 ```
 
 ```{r, fig.cap="Example showing median summer tempretur in 1970, the upper and lwoer reference temperture, i.e. median and 5 SD units of the temperature between  1961-1990, and finally, the scaled indicator values."}
@@ -1033,7 +1029,7 @@ ggplot() +
 
 The *real* indicator values should be means over 5 year periods. Calculating a running mean for all time steps is too time consuming. Therefore, the scaled, regional indicator values will be calculated for distinct time steps. The time series can perhaps best be presented with yearly resolution.
 
-#### Plot time series as line graphs
+### Plot time series as line graphs
 
 We could also plot a time series as a series of maps, but then we need to average over these 5 year time periods first. We can get to that later.
 
