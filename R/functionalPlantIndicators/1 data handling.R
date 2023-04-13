@@ -682,11 +682,10 @@ unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) &
 
 #### matching with NiN ecosystem types - wetlands ####
 # NB! beware of rogue spaces in the 'Nature_type' & 'Sub_Type' variables, e.g. "Spring_Forest "
-NiN.wetland <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type=="Mire","ID"]),colnames(ind.dat)[19:23])]   # Continentality, Light, Moisture, Soil_reaction_pH, Nitrogen
+NiN.wetland <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type=="Mire","ID"]),colnames(ind.dat)[15:18])]   # Light, Moisture, Soil_reaction_pH, Nitrogen
 NiN.wetland[1,]
 names(NiN.wetland)
 
-#NiN.wetland <- NiN.wetland[,c(1:41,46:48,59:69)]
 cbind(colnames(NiN.wetland),
       c("",
         'V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
@@ -702,30 +701,30 @@ cbind(colnames(NiN.wetland),
         'V2-C1a','V2-C1b',
         'V2-C2a','V2-C2b',
         'V2-C3a','V2-C3b',
-        "V4-C4","V4-C5",
         "V4-C2","V4-C3",
+        "","",
         'V8-C1','V8-C2','V8-C3',
         rep("",10),
-        rep("",5)
+        rep("",4)
       )
 )
 
-NiN.wetland <- NiN.wetland[,c(1:43,46:48,59:63)]
-colnames(NiN.wetland)[2:46] <- c('V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
-                              'V1-C1a','V1-C1b','V1-C1c','V1-C1d','V1-C1e',
-                              'V1-C2a','V1-C2b','V1-C2c','V1-C2d',
-                              'V1-C3a','V1-C3b','V1-C3c','V1-C3d',
-                              'V1-C4a','V1-C4b','V1-C4c','V1-C4d',
-                              'V1-C4e','V1-C4f','V1-C4g','V1-C4h',
-                              'V3-C2','V1-C5',
-                              'V1-C6a','V1-C6b',
-                              'V1-C7a','V1-C7b',
-                              'V1-C8a','V1-C8b',
-                              'V2-C1a','V2-C1b',
-                              'V2-C2a','V2-C2b',
-                              'V2-C3a','V2-C3b',
-                              'V4-C2','V4-C3',
-                              'V8-C1','V8-C2','V8-C3'
+NiN.wetland <- NiN.wetland[,c(1:43,46:48,59:62)]
+colnames(NiN.wetland)[2:46] <- c( 'V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
+                                  'V1-C1a','V1-C1b','V1-C1c','V1-C1d','V1-C1e',
+                                  'V1-C2a','V1-C2b','V1-C2c','V1-C2d',
+                                  'V1-C3a','V1-C3b','V1-C3c','V1-C3d',
+                                  'V1-C4a','V1-C4b','V1-C4c','V1-C4d',
+                                  'V1-C4e','V1-C4f','V1-C4g','V1-C4h',
+                                  'V3-C2','V1-C5',
+                                  'V1-C6a','V1-C6b',
+                                  'V1-C7a','V1-C7b',
+                                  'V1-C8a','V1-C8b',
+                                  'V2-C1a','V2-C1b',
+                                  'V2-C2a','V2-C2b',
+                                  'V2-C3a','V2-C3b',
+                                  'V4-C2','V4-C3',
+                                  'V8-C1','V8-C2','V8-C3'
 )
 head(NiN.wetland)
 

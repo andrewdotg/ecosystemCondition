@@ -1,5 +1,5 @@
 ---
-title: "Template for indicator documentation"
+title: "Functional pant indicators - wetland, indicator documentation"
 output:
   html_document
 ---
@@ -7,7 +7,7 @@ output:
 <!-- This is a template for how to document the indicator analyses. 
 
 Make a copy of this file and store it in the root folder (same as where this template is stored) folder. 
-Name te file DRAFT_myIndicatorName.Rmd. 
+Name the file DRAFT_myIndicatorName.Rmd. 
 
 Because this is a stand-alone Rmd file inside a bookdown project, in order to knit the file for preview purposes,
 you need to type rmarkdown::render("template.Rmd") in the console, 
@@ -36,7 +36,7 @@ Notice the degree of annotation.
 -->
 
 
-<!-- Replace 'indicator name' with yor own indicator name  -->
+<!-- Replace 'indicator name' with your own indicator name  -->
 # Functional plant indicators (Moisture, Light, pH, Nitrogen)
 
 <br />
@@ -77,7 +77,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, echo=F}
 Ecosystem <- "våtmark"
 Egenskap  <- c("Primærproduksjon","Abiotiske forhold")
-ECT       <- "" # e.g. "Structural state characteristic"
+ECT       <- "Functional state characteristic"
 Contact   <- "Joachim Töpper"
 ```
 
@@ -150,7 +150,7 @@ knitr::kable(metaData)
 
 ANO data
 
-```{r}
+```{r, echo = F}
 st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
 ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
                    layer="ANO_Art")
@@ -161,23 +161,29 @@ head(ANO.geo)
 ```
 
 Plant indicators from Tyler et al. 2021
-```{r}
+```{r, echo = F}
 ## Tyler indicator data
 ind.dat <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
                         sep = '\t', header=T, quote = '')
-head(ind.datr)
+head(ind.dat)
 
 ```
 
 Generalized species lists NiN
-```{r}
+```{r, echo = F}
 load("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators//reference from NiN/Eco_State.RData")
 str(Eco_State)
 ```
 
-#### Plant indicator data - data handling
-```{r}
+#### Data handling
+- Checking for errors
+- Checking species nomenclature in the different species lists to make species and indicator data possible to merge
+- Merging indicator data with monitoring data and indicator data with reference data
+(not shown here, but documented in the code)
 
+```{r, include = F}
+
+### Plant indicator data
 names(ind.dat)
 names(ind.dat)[1] <- 'species'
 ind.dat$species <- as.factor(ind.dat$species)
@@ -187,7 +193,8 @@ ind.dat[,'species.orig'] <- ind.dat[,'species'] # make a backup of the original 
 ind.dat[,'species'] <- word(ind.dat[,'species'], 1,2) # trimming away sub-species & co, and descriptor info
 
 # the trimming above leaves some duplicates that need to be taken care of
-ind.dat[duplicated(ind.dat[,'species']),"species"] ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
 ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
 ind.dat <- ind.dat %>% filter( !(species.orig %in% list("Ammophila arenaria x Calamagrostis epigejos",
                                                             "Anemone nemorosa x ranunculoides",
@@ -246,11 +253,10 @@ summary(ind.dat$species)
 
 head(ind.dat)
 
-```
 
 
-#### ANO monitoring data - data handling
-```{r}
+### ANO monitoring data
+
 head(ANO.sp)
 head(ANO.geo)
 
@@ -421,11 +427,8 @@ summary(ANO.sp.ind)
 head(ANO.sp.ind)
 rm(ANO.sp)
 
-```
 
-#### NiN reference data - data handling
-
-```{r}
+### NiN reference data - data handling
 
 ## generalized species lists from NiN
 str(Eco_State)
@@ -567,11 +570,10 @@ unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) & NiN.sp.ind$spgr %in% list("a1a","
 
 ## matching with NiN ecosystem types - for wetlands
 # NB! beware of rogue spaces in the 'Nature_type' & 'Sub_Type' variables, e.g. "Spring_Forest "
-NiN.wetland <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type=="Mire","ID"]),colnames(ind.dat)[19:23])]   # Continentality, Light, Moisture, Soil_reaction_pH, Nitrogen
+NiN.wetland <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type=="Mire","ID"]),colnames(ind.dat)[15:18])]   # Light, Moisture, Soil_reaction_pH, Nitrogen
 NiN.wetland[1,]
 names(NiN.wetland)
 
-#NiN.wetland <- NiN.wetland[,c(1:41,46:48,59:69)]
 cbind(colnames(NiN.wetland),
       c("",
         'V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
@@ -587,15 +589,15 @@ cbind(colnames(NiN.wetland),
         'V2-C1a','V2-C1b',
         'V2-C2a','V2-C2b',
         'V2-C3a','V2-C3b',
-        "V4-C4","V4-C5",
         "V4-C2","V4-C3",
+        "","",
         'V8-C1','V8-C2','V8-C3',
         rep("",10),
-        rep("",5)
+        rep("",4)
       )
 )
 
-NiN.wetland <- NiN.wetland[,c(1:43,46:48,59:63)]
+NiN.wetland <- NiN.wetland[,c(1:43,46:48,59:62)]
 colnames(NiN.wetland)[2:46] <- c('V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
                               'V1-C1a','V1-C1b','V1-C1c','V1-C1d','V1-C1e',
                               'V1-C2a','V1-C2b','V1-C2c','V1-C2d',
@@ -626,11 +628,17 @@ for (i in 2:46) {
   NiN.wetland.cov[,i] <- coverscale[,2][ match(NiN.wetland[,i], 0:6 ) ]
 }
 
-summary(NiN.wetland)
-summary(NiN.wetland.cov)
+NiN.wetland.cov$sp <- as.factor(NiN.wetland.cov$sp)
+```
+leaving us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov)
+
+```{r}
+#summary(NiN.wetland)
+head(ANO.sp.ind)
+head(NiN.wetland.cov)
 ```
 For each ecosystem type with a NiN species list, we can calculate a community weighted mean (CWM) for the relevant functional plant indicators.
-For wetland ecosystem we are testing "Continentality", "Light", "Moisture", "Soil_reaction_pH", and "Nitrogen". In order to get distributions of CWMs rather than one single value (for comparison with the empirical testing data) the NiN lists can be bootstrapped.
+For wetland ecosystem we are testing "Light", "Moisture", "Soil_reaction_pH", and "Nitrogen". In order to get distributions of CWMs rather than one single value (for comparison with the empirical testing data) the NiN lists can be bootstrapped.
 
 ##### bootstrap function for frequency abundance
 - function to calculate community weighted means of selected indicator values (ind)
@@ -641,7 +649,7 @@ For wetland ecosystem we are testing "Continentality", "Light", "Moisture", "Soi
 - in every bootstrap iteration the abundance of the sampled species can be 
 - randomly changed by +/-1 if wished (var.abun)
 
-```{r}
+```{r, echo = F}
 indBoot.freq <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
   
   ind.b <- matrix(nrow=iter,ncol=length(colnames(abun)))
@@ -692,9 +700,8 @@ indBoot.freq <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
         } else {ind.list[[k]][i,j] <- NA}
         
       }
-      #      su <- sum(ind.list[["CC"]][i,j],ind.list[["SS"]][i,j],ind.list[["RR"]][i,j])
-      #      print(paste(i,"",j,su))   
-      print(paste(i,"",j)) 
+ 
+#      print(paste(i,"",j)) 
     }
     
   }
@@ -704,11 +711,17 @@ indBoot.freq <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
 
 Running the bootstraps
 
-```{r}
+```{r, echo = T, eval = F}
 colnames(NiN.wetland)
-
-wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:51],
-                          iter=1000,obl=1,rat=2/3,var.abun=F)
+# 1st column is the species
+# 2nd-46th column is the abundances of sp in different ecosystem types
+# 47th-51st column is the indicator values of the respective sp
+# we choose 1000 iterations
+# species with abundance 1 (i.e. 100%, must be included in each sample)
+# each sample resamples 2/3 of the number of species
+# the abundance of the resampled species may vary (see bootstrap function for details)
+wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:50],
+                          iter=1000,obl=1,rat=2/3,var.abun=T)
 
 # fixing NaNs
 for (i in 1:length(wetland.ref.cov) ) {
@@ -718,7 +731,14 @@ for (i in 1:length(wetland.ref.cov) ) {
     wetland.ref.cov[[i]][,j] <- v
   }
 }
+```
 
+```{r, include = F}
+load("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/ref_lists_wetland.RData")
+```
+
+```{r}
+head(wetland.ref.cov[[1]])
 ```
 
 This results in a list with a slot for every selected indicator, and in every slot there's as many columns as there are NiN species lists and as many row as there were iterations in the bootstrap.
@@ -728,150 +748,35 @@ Median = reference values
 0.025 and 0.975 quantiles = lower and upper limit values
 min and max of the respective indicator's scale = min/max values
 
-```{r}
+```{r, echo = F}
 
 # every NiN-type is represented by one 'generalisert artsliste'
-# some NiN-types are represented by two species lists
+# some NiN-types are represented by two such species lists
 # in some cases two NiN-types are represented by the same species list
-head(wetland.ref[[1]])
-wetland.ref[[1]][0,]
+head(wetland.ref.cov[[1]])
+wetland.ref.cov[[1]][0,]
 
 # checking the actual NiN-types in the wetland lists
-wetland.NiNtypes <- colnames(wetland.ref[["Continentality"]])
+wetland.NiNtypes <- colnames(wetland.ref.cov[["Light"]])
 wetland.NiNtypes <- substr(wetland.NiNtypes,1,5)
-wetland.NiNtypes2 <- wetland.NiNtypes[-x]
-unique(wetland.NiNtypes2)
+unique(wetland.NiNtypes)
 
-# 5 indicator-value indicators: Tyler's Continentality, Light, Moisture, Soil_reaction_pH, "Nitrogen"
-indEll.n=5
+# 4 indicator-value indicators: Tyler's Light, Moisture, Soil_reaction_pH, "Nitrogen"
+indEll.n=4
 # creating a table to hold:
 # Tyler: the 0.5 quantile (median), 0.05 quantile and  0.95 quantile for each NiN-type
 # for every nature type (nrows)
 tab <- matrix(ncol=3*indEll.n, nrow=length(unique(wetland.NiNtypes)) ) # 43 basic ecosystem types
 # coercing the values into the table
 # NiN-types where each type is represented by one species list (including when one species list represents two NiN-types)
-x <- c(26,27,39:43)
+names(wetland.ref.cov[["Light"]])
+x <- c(27,28,41:45)
 
 for (i in 1:length(x) ) {
-  tab[i,1:3] <- quantile(as.matrix(wetland.ref[["Continentality"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,4:6] <- quantile(as.matrix(wetland.ref[["Light"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,7:9] <- quantile(as.matrix(wetland.ref[["Moisture"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,10:12] <- quantile(as.matrix(wetland.ref[["Soil_reaction_pH"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,13:15] <- quantile(as.matrix(wetland.ref[["Nitrogen"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-
-}
-
-tab <- as.data.frame(tab)
-tab$NiN <- NA
-tab$NiN[1:length(x)] <- names(wetland.ref[[1]])[x]
-
-# NiN-types represented by several species lists
-grep(pattern=unique(wetland.NiNtypes2)[1], x=wetland.NiNtypes) # finds columns in e.g. colnames(wetland.ref[["Continentality"]]) that match the first NiN-type
-
-
-for (i in 1:length(unique(wetland.NiNtypes2)) ) {
-  tab[length(x)+i,1:3] <- quantile(as.matrix(wetland.ref[["Continentality"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,4:6] <- quantile(as.matrix(wetland.ref[["Light"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,7:9] <- quantile(as.matrix(wetland.ref[["Moisture"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,10:12] <- quantile(as.matrix(wetland.ref[["Soil_reaction_pH"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,13:15] <- quantile(as.matrix(wetland.ref[["Nitrogen"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab$NiN[length(x)+i] <- unique(wetland.NiNtypes2)[i]
-  
-}
-
-tab
-
-# making it a proper data frame
-round(tab[,1:9],digits=2)
-
-colnames(tab) <- c("Cont_q2.5","Cont_q50","Cont_q97.5",
-                   "Light_q2.5","Light_q50","Light_q97.5",
-                   "Moist_q2.5","Moist_q50","Moist_q97.5",
-                   "pH_q2.5","pH_q50","pH_q97.5",
-                   "Nitrogen_q2.5","Nitrogen_q50","Nitrogen_q97.5",
-                   "NiN")
-summary(tab)
-tab$NiN <- gsub("C", "C-", tab$NiN) # add extra hyphon after C for NiN-types
-tab
-
-
-# restructuring into separate indicators for lower (q2.5) and higher (q97.5) than reference value (=median, q50)
-y.Cont <- numeric(length=nrow(tab)*2)
-y.Cont[((1:dim(tab)[1])*2)-1] <- tab$Cont_q2.5 
-y.Cont[((1:dim(tab)[1])*2)] <- tab$Cont_q97.5 
-
-y.Light <- numeric(length=nrow(tab)*2)
-y.Light[((1:dim(tab)[1])*2)-1] <- tab$Light_q2.5 
-y.Light[((1:dim(tab)[1])*2)] <- tab$Light_q97.5 
-
-y.Moist <- numeric(length=nrow(tab)*2)
-y.Moist[((1:dim(tab)[1])*2)-1] <- tab$Moist_q2.5 
-y.Moist[((1:dim(tab)[1])*2)] <- tab$Moist_q97.5 
-
-y.pH <- numeric(length=nrow(tab)*2)
-y.pH[((1:dim(tab)[1])*2)-1] <- tab$pH_q2.5 
-y.pH[((1:dim(tab)[1])*2)] <- tab$pH_q97.5 
-
-y.Nitrogen <- numeric(length=nrow(tab)*2)
-y.Nitrogen[((1:dim(tab)[1])*2)-1] <- tab$Nitrogen_q2.5 
-y.Nitrogen[((1:dim(tab)[1])*2)] <- tab$Nitrogen_q97.5 
-
-# creating final objects holding the reference and limit values for all indicators
-
-# ref object for indicators
-wetland.ref.val <- data.frame(N1=rep('wetland',(nrow(tab)*2*indEll.n)),
-                        hoved=c(rep('NA',(nrow(tab)*2*indEll.n))),
-                        grunn=c(rep(rep(tab$NiN,each=2),indEll.n)),
-                        county=rep('all',(nrow(tab)*2*indEll.n)),
-                        region=rep('all',(nrow(tab)*2*indEll.n)),
-                        Ind=c(rep(c('Cont1','Cont2'),nrow(tab)),
-                              rep(c('Light1','Light2'),nrow(tab)),
-                              rep(c('Moist1','Moist2'),nrow(tab)),
-                              rep(c('pH1','pH2'),nrow(tab)),
-                              rep(c('Nitrogen1','Nitrogen2'),nrow(tab))
-                        ),
-                        Rv=c(rep(tab$Cont_q50,each=2),
-                             rep(tab$Light_q50,each=2),
-                             rep(tab$Moist_q50,each=2),
-                             rep(tab$pH_q50,each=2),
-                             rep(tab$Nitrogen_q50,each=2)
-                        ),
-                        Gv=c(y.Cont,y.Light,y.Moist,y.pH,y.Nitrogen),
-                        maxmin=c(rep(c(1,9),nrow(tab)), # 9 levels of continentality
-                                 rep(c(1,7),nrow(tab)), # 7 levels of light
-                                 rep(c(1,12),nrow(tab)), # 12 levels of moisture
-                                 rep(c(1,8),nrow(tab)), # 8 levels of soil reaction pH
-                                 rep(c(1,9),nrow(tab))  # 9 levels of nitrogen
-)
-)
-
-wetland.ref.val
-wetland.ref.val$grunn <- as.factor(wetland.ref.val$grunn)
-summary(wetland.ref.val)
-
-
-
-
-
-
-## doing the same for wetland.ref.cov
-# 5 indicator-value indicators: Tyler's Continentality, Light, Moisture, Soil_reaction_pH, "Nitrogen"
-indEll.n=5
-# creating a table to hold:
-# Tyler: the 0.5 quantile (median), 0.05 quantile and  0.95 quantile for each NiN-type
-# for every nature type (nrows)
-tab <- matrix(ncol=3*indEll.n, nrow=length(unique(wetland.NiNtypes)) ) # 43 basic ecosystem types
-# coercing the values into the table
-# NiN-types where each type is represented by one species list (including when one species list represents two NiN-types)
-x <- c(26,27,39:43)
-
-for (i in 1:length(x) ) {
-  tab[i,1:3] <- quantile(as.matrix(wetland.ref.cov[["Continentality"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,4:6] <- quantile(as.matrix(wetland.ref.cov[["Light"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,7:9] <- quantile(as.matrix(wetland.ref.cov[["Moisture"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,10:12] <- quantile(as.matrix(wetland.ref.cov[["Soil_reaction_pH"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,13:15] <- quantile(as.matrix(wetland.ref.cov[["Nitrogen"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  
+  tab[i,1:3] <- quantile(as.matrix(wetland.ref.cov[["Light"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,4:6] <- quantile(as.matrix(wetland.ref.cov[["Moisture"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,7:9] <- quantile(as.matrix(wetland.ref.cov[["Soil_reaction_pH"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,10:12] <- quantile(as.matrix(wetland.ref.cov[["Nitrogen"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
 }
 
 tab <- as.data.frame(tab)
@@ -879,15 +784,16 @@ tab$NiN <- NA
 tab$NiN[1:length(x)] <- names(wetland.ref.cov[[1]])[x]
 
 # NiN-types represented by several species lists
+wetland.NiNtypes2 <- wetland.NiNtypes[-x]
+unique(wetland.NiNtypes2)
 grep(pattern=unique(wetland.NiNtypes2)[1], x=wetland.NiNtypes) # finds columns in e.g. colnames(wetland.ref.cov[["Continentality"]]) that match the first NiN-type
 
 
 for (i in 1:length(unique(wetland.NiNtypes2)) ) {
-  tab[length(x)+i,1:3] <- quantile(as.matrix(wetland.ref.cov[["Continentality"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,4:6] <- quantile(as.matrix(wetland.ref.cov[["Light"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,7:9] <- quantile(as.matrix(wetland.ref.cov[["Moisture"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,10:12] <- quantile(as.matrix(wetland.ref.cov[["Soil_reaction_pH"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,13:15] <- quantile(as.matrix(wetland.ref.cov[["Nitrogen"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[length(x)+i,1:3] <- quantile(as.matrix(wetland.ref.cov[["Light"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[length(x)+i,4:6] <- quantile(as.matrix(wetland.ref.cov[["Moisture"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[length(x)+i,7:9] <- quantile(as.matrix(wetland.ref.cov[["Soil_reaction_pH"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[length(x)+i,10:12] <- quantile(as.matrix(wetland.ref.cov[["Nitrogen"]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
   tab$NiN[length(x)+i] <- unique(wetland.NiNtypes2)[i]
   
 }
@@ -895,10 +801,9 @@ for (i in 1:length(unique(wetland.NiNtypes2)) ) {
 tab
 
 # making it a proper data frame
-round(tab[,1:9],digits=2)
+round(tab[,1:12],digits=2)
 
-colnames(tab) <- c("Cont_q2.5","Cont_q50","Cont_q97.5",
-                   "Light_q2.5","Light_q50","Light_q97.5",
+colnames(tab) <- c("Light_q2.5","Light_q50","Light_q97.5",
                    "Moist_q2.5","Moist_q50","Moist_q97.5",
                    "pH_q2.5","pH_q50","pH_q97.5",
                    "Nitrogen_q2.5","Nitrogen_q50","Nitrogen_q97.5",
@@ -910,10 +815,6 @@ tab
 
 
 # restructuring into separate indicators for lower (q2.5) and higher (q97.5) than reference value (=median, q50)
-y.Cont <- numeric(length=nrow(tab)*2)
-y.Cont[((1:dim(tab)[1])*2)-1] <- tab$Cont_q2.5 
-y.Cont[((1:dim(tab)[1])*2)] <- tab$Cont_q97.5 
-
 y.Light <- numeric(length=nrow(tab)*2)
 y.Light[((1:dim(tab)[1])*2)-1] <- tab$Light_q2.5 
 y.Light[((1:dim(tab)[1])*2)] <- tab$Light_q97.5 
@@ -938,21 +839,18 @@ wetland.ref.cov.val <- data.frame(N1=rep('wetland',(nrow(tab)*2*indEll.n)),
                               grunn=c(rep(rep(tab$NiN,each=2),indEll.n)),
                               county=rep('all',(nrow(tab)*2*indEll.n)),
                               region=rep('all',(nrow(tab)*2*indEll.n)),
-                              Ind=c(rep(c('Cont1','Cont2'),nrow(tab)),
-                                    rep(c('Light1','Light2'),nrow(tab)),
+                              Ind=c(rep(c('Light1','Light2'),nrow(tab)),
                                     rep(c('Moist1','Moist2'),nrow(tab)),
                                     rep(c('pH1','pH2'),nrow(tab)),
                                     rep(c('Nitrogen1','Nitrogen2'),nrow(tab))
                               ),
-                              Rv=c(rep(tab$Cont_q50,each=2),
-                                   rep(tab$Light_q50,each=2),
+                              Rv=c(rep(tab$Light_q50,each=2),
                                    rep(tab$Moist_q50,each=2),
                                    rep(tab$pH_q50,each=2),
                                    rep(tab$Nitrogen_q50,each=2)
                               ),
-                              Gv=c(y.Cont,y.Light,y.Moist,y.pH,y.Nitrogen),
-                              maxmin=c(rep(c(1,9),nrow(tab)), # 9 levels of continentality
-                                       rep(c(1,7),nrow(tab)), # 7 levels of light
+                              Gv=c(y.Light,y.Moist,y.pH,y.Nitrogen),
+                              maxmin=c(rep(c(1,7),nrow(tab)), # 7 levels of light
                                        rep(c(1,12),nrow(tab)), # 12 levels of moisture
                                        rep(c(1,8),nrow(tab)), # 8 levels of soil reaction pH
                                        rep(c(1,9),nrow(tab))  # 9 levels of nitrogen
@@ -961,21 +859,19 @@ wetland.ref.cov.val <- data.frame(N1=rep('wetland',(nrow(tab)*2*indEll.n)),
 
 wetland.ref.cov.val
 wetland.ref.cov.val$grunn <- as.factor(wetland.ref.cov.val$grunn)
+wetland.ref.cov.val$Ind <- as.factor(wetland.ref.cov.val$Ind)
 summary(wetland.ref.cov.val)
-
-
-
-#write.table(wetland.ref, file='output/ref_for_scaling/mount_ref_ANO.txt',quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
-
-
 
 
 ```
 
+```{r}
+head(wetland.ref.cov.val)
+```
 
 Once testing data (ANO), and reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO-community data and scale them against the scaling values from the reference distribution.
 
-
+Here is the scaling function (with and without truncation at 1)
 ```{r}
 
 #### scaled values ####
@@ -1038,17 +934,20 @@ scal.2 <- function() {
   return(x)
   
 }
+```
 
+We then can prepare a list of dataframes to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021)
+```{r, echo = T, eval = F}
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
-unique(substr(wetland.ref.val$grunn,1,2)) # NiN types in reference
+unique(substr(wetland.ref.cov.val$grunn,1,2)) # NiN types in reference
 #### creating dataframe to hold the results for wetlands ####
 # all ANO points
 nrow(ANO.geo)
 # all wetland ANO points
 nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13"),])
 # all wetland ANO points with a NiN-type represented in the reference
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% unique(substr(wetland.ref.val$grunn,1,2)),])
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% unique(substr(wetland.ref.cov.val$grunn,1,2)),])
 # ok, we'll be losing 70 (our of 1349) that are not covered by the reference
 ANO.wetland <- ANO.geo[ANO.geo$hovedtype_rute %in% list("V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13"),]
 
@@ -1125,43 +1024,15 @@ for (i in 1:nrow(ANO.wetland) ) {  #
 
 
     # if the ANO.hovedtype exists in the reference
-    if (ANO.wetland$hovedtype_rute[i] %in% unique(substr(wetland.ref.val$grunn,1,2)) ) {
+    if (ANO.wetland$hovedtype_rute[i] %in% unique(substr(wetland.ref.cov.val$grunn,1,2)) ) {
       
       # if there is any species present in current ANO point  
       if ( length(ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),'Species']) > 0 ) {
         
-        
-          # Continentality
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Continentality','kartleggingsenhet_1m2')]
-          results.wetland[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Continentality),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Continentality'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
-            # coercing x into results.wetland dataframe
-            results.wetland[['scaled']][i,'Cont1'] <- scal() 
-            results.wetland[['non-truncated']][i,'Cont1'] <- scal.2() 
-            results.wetland[['original']][i,'Cont1'] <- val 
-            
-            # upper part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Cont2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
-            # coercing x into results.wetland dataframe
-            results.wetland[['scaled']][i,'Cont2'] <- scal() 
-            results.wetland[['non-truncated']][i,'Cont2'] <- scal.2() 
-            results.wetland[['original']][i,'Cont2'] <- val
-          }
-          
-          
+
           
           # Light
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Light','kartleggingsenhet_1m2')]
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Light')]
           results.wetland[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Light),]
           
@@ -1169,18 +1040,18 @@ for (i in 1:nrow(ANO.wetland) ) {  #
             
             val <- sum(dat[,'art_dekning'] * dat[,'Light'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
             # coercing x into results.wetland dataframe
             results.wetland[['scaled']][i,'Light1'] <- scal() 
             results.wetland[['non-truncated']][i,'Light1'] <- scal.2() 
             results.wetland[['original']][i,'Light1'] <- val 
             
             # upper part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
             # coercing x into results.wetland dataframe
             results.wetland[['scaled']][i,'Light2'] <- scal() 
             results.wetland[['non-truncated']][i,'Light2'] <- scal.2() 
@@ -1189,7 +1060,7 @@ for (i in 1:nrow(ANO.wetland) ) {  #
           
           
           # Moisture
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Moisture','kartleggingsenhet_1m2')]
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Moisture')]
           results.wetland[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Moisture),]
           
@@ -1197,18 +1068,18 @@ for (i in 1:nrow(ANO.wetland) ) {  #
             
             val <- sum(dat[,'art_dekning'] * dat[,'Moisture'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
             # coercing x into results.wetland dataframe
             results.wetland[['scaled']][i,'Moist1'] <- scal() 
             results.wetland[['non-truncated']][i,'Moist1'] <- scal.2() 
             results.wetland[['original']][i,'Moist1'] <- val 
             
             # upper part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
             # coercing x into results.wetland dataframe
             results.wetland[['scaled']][i,'Moist2'] <- scal() 
             results.wetland[['non-truncated']][i,'Moist2'] <- scal.2() 
@@ -1217,7 +1088,7 @@ for (i in 1:nrow(ANO.wetland) ) {  #
           
           
           # Soil_reaction_pH
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Soil_reaction_pH','kartleggingsenhet_1m2')]
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Soil_reaction_pH')]
           results.wetland[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Soil_reaction_pH),]
           
@@ -1225,18 +1096,18 @@ for (i in 1:nrow(ANO.wetland) ) {  #
             
             val <- sum(dat[,'art_dekning'] * dat[,'Soil_reaction_pH'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
             # coercing x into results.wetland dataframe
             results.wetland[['scaled']][i,'pH1'] <- scal() 
             results.wetland[['non-truncated']][i,'pH1'] <- scal.2() 
             results.wetland[['original']][i,'pH1'] <- val 
             
             # upper part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
             # coercing x into results.wetland dataframe
             results.wetland[['scaled']][i,'pH2'] <- scal() 
             results.wetland[['non-truncated']][i,'pH2'] <- scal.2() 
@@ -1245,7 +1116,7 @@ for (i in 1:nrow(ANO.wetland) ) {  #
           
           
           # Nitrogen
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Nitrogen','kartleggingsenhet_1m2')]
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Nitrogen')]
           results.wetland[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Nitrogen),]
           
@@ -1253,18 +1124,18 @@ for (i in 1:nrow(ANO.wetland) ) {  #
             
             val <- sum(dat[,'art_dekning'] * dat[,'Nitrogen'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
             # coercing x into results.wetland dataframe
             results.wetland[['scaled']][i,'Nitrogen1'] <- scal() 
             results.wetland[['non-truncated']][i,'Nitrogen1'] <- scal.2() 
             results.wetland[['original']][i,'Nitrogen1'] <- val 
             
             # upper part of distribution
-            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Rv']
-            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'Gv']
-            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' & wetland.ref.cov.val$grunn==as.character(unique(dat$kartleggingsenhet_1m2)),'maxmin']
+            ref <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' & wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
             # coercing x into results.wetland dataframe
             results.wetland[['scaled']][i,'Nitrogen2'] <- scal() 
             results.wetland[['non-truncated']][i,'Nitrogen2'] <- scal.2() 
@@ -1279,29 +1150,30 @@ for (i in 1:nrow(ANO.wetland) ) {  #
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }
 
-summary(results.wetland[['original']])
-summary(results.wetland[['scaled']])
+# for using both sides of the plant indicators
+results.wetland[['2-sided']] <- results.wetland[['non-truncated']]
 
-# for using both sides of the Ellenberg indicator
-results.wetland[['2-sided_Ellenberg']] <- results.wetland[['non-truncated']]
+# remove values >1 for 2-sided indicators
+results.wetland[['2-sided']]$Light1[results.wetland[['2-sided']]$Light1>1] <- NA
+results.wetland[['2-sided']]$Light2[results.wetland[['2-sided']]$Light2>1] <- NA
 
-# remove values >1 for Ellenberg
-results.wetland[['2-sided_Ellenberg']]$Cont1[results.wetland[['2-sided_Ellenberg']]$Cont1>1] <- NA
-results.wetland[['2-sided_Ellenberg']]$Cont2[results.wetland[['2-sided_Ellenberg']]$Cont2>1] <- NA
+results.wetland[['2-sided']]$Moist1[results.wetland[['2-sided']]$Moist1>1] <- NA
+results.wetland[['2-sided']]$Moist2[results.wetland[['2-sided']]$Moist2>1] <- NA
 
-results.wetland[['2-sided_Ellenberg']]$Light1[results.wetland[['2-sided_Ellenberg']]$Light1>1] <- NA
-results.wetland[['2-sided_Ellenberg']]$Light2[results.wetland[['2-sided_Ellenberg']]$Light2>1] <- NA
+results.wetland[['2-sided']]$pH1[results.wetland[['2-sided']]$pH1>1] <- NA
+results.wetland[['2-sided']]$pH2[results.wetland[['2-sided']]$pH2>1] <- NA
 
-results.wetland[['2-sided_Ellenberg']]$Moist1[results.wetland[['2-sided_Ellenberg']]$Moist1>1] <- NA
-results.wetland[['2-sided_Ellenberg']]$Moist2[results.wetland[['2-sided_Ellenberg']]$Moist2>1] <- NA
+results.wetland[['2-sided']]$Nitrogen1[results.wetland[['2-sided']]$Nitrogen1>1] <- NA
+results.wetland[['2-sided']]$Nitrogen2[results.wetland[['2-sided']]$Nitrogen2>1] <- NA
 
-results.wetland[['2-sided_Ellenberg']]$pH1[results.wetland[['2-sided_Ellenberg']]$pH1>1] <- NA
-results.wetland[['2-sided_Ellenberg']]$pH2[results.wetland[['2-sided_Ellenberg']]$pH2>1] <- NA
+```
 
-results.wetland[['2-sided_Ellenberg']]$Nitrogen1[results.wetland[['2-sided_Ellenberg']]$Nitrogen1>1] <- NA
-results.wetland[['2-sided_Ellenberg']]$Nitrogen2[results.wetland[['2-sided_Ellenberg']]$Nitrogen2>1] <- NA
+```{r, include = F}
+load("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/results.wetland.RData")
+```
 
-
+```{r}
+head(results.wetland[['2-sided']])
 ```
 
 

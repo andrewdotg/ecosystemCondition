@@ -1,3 +1,23 @@
+#### scaled values by NiN-hovedtype ####
+res <- results.wetland[['2-sided']]
+levels(res$hovedtype_rute)
+levels(res$hovedtype_rute) <- c("V1",NA,NA,NA,"V2","V3","V4",NA,"V8",NA)
+x11()
+par(mfrow=c(2,4))
+with(res, plot(hovedtype_rute,Light1) )
+with(res, plot(hovedtype_rute,Moist1) )
+with(res, plot(hovedtype_rute,pH1) )
+with(res, plot(hovedtype_rute,Nitrogen1) )
+with(res, plot(hovedtype_rute,Light2) )
+with(res, plot(hovedtype_rute,Moist2) )
+with(res, plot(hovedtype_rute,pH2) )
+with(res, plot(hovedtype_rute,Nitrogen2) )
+
+
+
+
+
+
 #### distribution comparison, reference vs. data ####
 summary(results.wetland[['original']]$kartleggingsenhet_1m2) #V1-C1 & V1-C5 are the most abundant ecosystem types
 
