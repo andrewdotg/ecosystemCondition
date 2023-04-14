@@ -1,5 +1,24 @@
 #### scaled values by NiN-hovedtype ####
 res <- results.wetland[['2-sided']]
+
+res2 <- 
+  res %>% 
+  pivot_longer(
+    cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
+    names_to = "fp_ind",
+    values_to = "scaled_value",
+    values_drop_na = TRUE
+  )
+head(res2)
+
+ggplot(res2, aes(x=hovedtype_rute, y=scaled_value, fill=fp_ind)) + 
+  geom_boxplot()
+
+ggplot(res2, aes(x=hovedtype_rute, y=scaled_value, fill=fp_ind)) + 
+  geom_boxplot() +
+  facet_wrap(~fp_ind)
+
+
 levels(res$hovedtype_rute)
 levels(res$hovedtype_rute) <- c("V1",NA,NA,NA,"V2","V3","V4",NA,"V8",NA)
 x11()
@@ -12,6 +31,8 @@ with(res, plot(hovedtype_rute,Light2) )
 with(res, plot(hovedtype_rute,Moist2) )
 with(res, plot(hovedtype_rute,pH2) )
 with(res, plot(hovedtype_rute,Nitrogen2) )
+
+
 
 
 
