@@ -1,3 +1,36 @@
+#### some data handling again ####
+
+res.wetland <- results.wetland[['2-sided']]
+
+
+# add geometry
+
+
+res.wetland <-
+  res.wetland %>% 
+  pivot_longer(
+    cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
+    names_to = "fp_ind",
+    values_to = "scaled_value",
+    values_drop_na = FALSE
+  )
+
+res.wetland <- 
+  res.wetland %>% add_column(original = results.wetland[['original']] %>% 
+                               pivot_longer(
+                                 cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
+                                 names_to = NULL,
+                                 values_to = "original",
+                                 values_drop_na = FALSE
+                               ) %>%
+                               pull(original)
+  )
+
+
+
+
+head(res.wetland[,70:75])
+
 #### scaled values by NiN-hovedtype ####
 res <- results.wetland[['2-sided']]
 
@@ -15,9 +48,17 @@ ggplot(res2, aes(x=hovedtype_rute, y=scaled_value, fill=fp_ind)) +
   geom_boxplot()
 
 ggplot(res2, aes(x=hovedtype_rute, y=scaled_value, fill=fp_ind)) + 
-  geom_boxplot() +
-  facet_wrap(~fp_ind)
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin() +
+  geom_boxplot(width=0.2, color="grey") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4)
 
+
+geom_point(
+    data = filter(Example_data, Species_loc_n == 1), 
+    aes(color = Location), 
+    show.legend = FALSE
+  ) +
 
 levels(res$hovedtype_rute)
 levels(res$hovedtype_rute) <- c("V1",NA,NA,NA,"V2","V3","V4",NA,"V8",NA)

@@ -1175,7 +1175,33 @@ load("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCo
 ```{r}
 head(results.wetland[['2-sided']])
 ```
+#### Scaled value analyses
 
+```{r}
+### scaled values by NiN-hovedtype
+res <- results.wetland[['2-sided']]
+
+res2 <- 
+  res %>% 
+  pivot_longer(
+    cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
+    names_to = "fp_ind",
+    values_to = "scaled_value",
+    values_drop_na = TRUE
+  )
+head(res2)
+
+ggplot(res2, aes(x=hovedtype_rute, y=scaled_value, fill=fp_ind)) + 
+  geom_boxplot()
+
+ggplot(res2, aes(x=hovedtype_rute, y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin() +
+  geom_boxplot(width=0.2, color="grey") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4)
+
+
+```
 
 #### CONTINUE HERE ####
 

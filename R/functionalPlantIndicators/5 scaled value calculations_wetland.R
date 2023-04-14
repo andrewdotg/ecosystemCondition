@@ -329,6 +329,9 @@ hist(results.wetland[['2-sided']]$Nitrogen2,breaks=40)
 
 
 
+
+
+
 write.table(results.wetland[['scaled']], file='output/scaled data/results.wetland_scaled.txt',
             quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 write.table(results.wetland[['non-truncated']], file='output/scaled data/results.wetland_non-truncated.txt',
