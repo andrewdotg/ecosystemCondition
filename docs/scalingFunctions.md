@@ -4,7 +4,7 @@
 
 Author. Anders L. Kolstad
 
-Date: 2023-03-07
+Date: 2023-04-14
 
 **Superseeded :** *The functionality explained here is moved over to the [eaTools](https://github.com/NINAnor/eaTools) package. Please see the documentation there for updated examples.*
 
@@ -50,6 +50,9 @@ ggplot(temp,
   scale_fill_gradient(low = low, high = high)
 #> Warning: `stat(x)` was deprecated in ggplot2 3.4.0.
 #> ℹ Please use `after_stat(x)` instead.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where
+#> this warning was generated.
 #> Picking joint bandwidth of 1.22
 ```
 
@@ -110,6 +113,9 @@ ggplot(dat)+
 #> Warning: Using `size` aesthetic for lines was deprecated in ggplot2
 #> 3.4.0.
 #> ℹ Please use `linewidth` instead.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where
+#> this warning was generated.
 ```
 
 <img src="scalingFunctions_files/figure-html/unnamed-chunk-8-1.png" width="672" />
