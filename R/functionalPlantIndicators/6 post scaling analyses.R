@@ -1,20 +1,59 @@
-#### some data handling again ####
-
+#### plotting scaled values by main ecosystem type ####
+## continuing with 2-sided
 res.wetland <- results.wetland[['2-sided']]
 
-
-# add geometry
-
-
+# make long version of the scaled value part
 res.wetland <-
   res.wetland %>% 
   pivot_longer(
     cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
     names_to = "fp_ind",
     values_to = "scaled_value",
-    values_drop_na = FALSE
+    values_drop_na = TRUE
   )
 
+
+# summarizing the indicator scores
+res.wetland %>%
+  group_by(fp_ind) %>%
+  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE))
+
+
+# making the plot
+ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin() +
+#  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4) + 
+  xlab("Main ecosystem type") + 
+  ylab("Scaled indicator value") 
+
+
+
+
+
+
+
+
+
+
+
+
+#### getting scaled AND original values ####
+res.wetland <- results.wetland[['2-sided']]
+
+# make long version of the scaled value part
+res.wetland <-
+  res.wetland %>% 
+  pivot_longer(
+    cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
+    names_to = "fp_ind",
+    values_to = "scaled_value",
+    values_drop_na = TRUE
+  )
+
+# add original values as well
 res.wetland <- 
   res.wetland %>% add_column(original = results.wetland[['original']] %>% 
                                pivot_longer(
@@ -26,52 +65,50 @@ res.wetland <-
                                pull(original)
   )
 
+head(res.wetland[,70:76])
+
+
+#### scaled value maps ####
+# keep wide format and add geometry again
+res.wetland <- results.wetland[['2-sided']]
+st_geometry(res.wetland) <- st_geometry(ANO.wetland)
+
+
+nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
+  st_as_sf()
+
+
+## scaled value maps
+# Moist1 (lower indicator)
+tm_shape(nor) +
+  tm_fill('GID_0', labels="", title="") + #tm_borders() +
+  tm_shape(res.wetland) +
+  tm_dots('Moist1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
+  tm_layout(main.title = "Moisture index (lower), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
+                labels = c("0.4", "...", "...", 
+                           "...", "1", "NA"),
+                title = "index values")
+
+# Moist2 (upper indicator)
+tm_shape(nor) +
+  tm_fill('GID_0', labels="", title="") + #tm_borders() +
+  tm_shape(res.wetland) +
+  tm_dots('Moist2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
+  tm_layout(main.title = "Moisture index (upper), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
+                labels = c("0.4", "...", "...", 
+                           "...", "1", "NA"),
+                title = "index values")
 
 
 
-head(res.wetland[,70:75])
-
-#### scaled values by NiN-hovedtype ####
-res <- results.wetland[['2-sided']]
-
-res2 <- 
-  res %>% 
-  pivot_longer(
-    cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
-    names_to = "fp_ind",
-    values_to = "scaled_value",
-    values_drop_na = TRUE
-  )
-head(res2)
-
-ggplot(res2, aes(x=hovedtype_rute, y=scaled_value, fill=fp_ind)) + 
-  geom_boxplot()
-
-ggplot(res2, aes(x=hovedtype_rute, y=scaled_value, fill=fp_ind)) + 
-  geom_hline(yintercept=0.6, linetype="dashed") + 
-  geom_violin() +
-  geom_boxplot(width=0.2, color="grey") +
-  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4)
 
 
-geom_point(
-    data = filter(Example_data, Species_loc_n == 1), 
-    aes(color = Location), 
-    show.legend = FALSE
-  ) +
 
-levels(res$hovedtype_rute)
-levels(res$hovedtype_rute) <- c("V1",NA,NA,NA,"V2","V3","V4",NA,"V8",NA)
-x11()
-par(mfrow=c(2,4))
-with(res, plot(hovedtype_rute,Light1) )
-with(res, plot(hovedtype_rute,Moist1) )
-with(res, plot(hovedtype_rute,pH1) )
-with(res, plot(hovedtype_rute,Nitrogen1) )
-with(res, plot(hovedtype_rute,Light2) )
-with(res, plot(hovedtype_rute,Moist2) )
-with(res, plot(hovedtype_rute,pH2) )
-with(res, plot(hovedtype_rute,Nitrogen2) )
+
 
 
 
@@ -154,59 +191,3 @@ summary( betareg(Moist1 ~ tresjikt_dekning, data=df[!is.na(df$Moist1),]) )
 #       type='l', col='red', lwd=2)
 
 
-#### maps ####
-# libraries
-library(tidyverse)
-library(dplyr)
-library(broom)
-library(sf)
-library(RColorBrewer)
-library("gridExtra") 
-library(ggridges)
-library(ggplot2)
-library(tmap)
-library(knitr)
-library(raster)
-library(stars)
-st_geometry(results.wetland[['2-sided_Ellenberg']]) <- st_geometry(ANO.wetland)
-st_geometry(results.wetland[['original']]) <- st_geometry(ANO.wetland)
-
-
-nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
-  st_as_sf()
-
-# Moisture value map
-tm_shape(nor) +
-  tm_fill('GID_0', labels="", title="") + #tm_borders() +
-  tm_shape(results.wetland[['original']]) +
-  tm_dots('Moist1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, ,legend.show = FALSE) + 
-  tm_layout(main.title = "Moisture values, wetland",legend.position = c("right", "bottom")) + 
-  tm_add_legend(type = "fill", 
-                col = tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE),
-                labels = c("4", "...", "...", 
-                           "...", "...", "...", "10"),
-                title = "Moisture values")
-
-# scaled value maps
-tm_shape(nor) +
-  tm_fill('GID_0', labels="", title="") + #tm_borders() +
-  tm_shape(results.wetland[['2-sided_Ellenberg']]) +
-  tm_dots('Moist1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Moisture index (lower), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
-  tm_add_legend(type = "fill", 
-                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
-                labels = c("0.4", "...", "...", 
-                           "...", "1", "NA"),
-                title = "index values")
-
-
-tm_shape(nor) +
-  tm_fill('GID_0', labels="", title="") + #tm_borders() +
-  tm_shape(results.wetland[['2-sided_Ellenberg']]) +
-  tm_dots('Moist2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Moisture index (upper), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
-  tm_add_legend(type = "fill", 
-                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
-                labels = c("0.4", "...", "...", 
-                           "...", "1", "NA"),
-                title = "index values")
