@@ -12,7 +12,7 @@ Anders Kolstad
 
 
 ```
-#> [1] "2023-03-24"
+#> [1] "2023-04-14"
 ```
 
 
@@ -222,7 +222,7 @@ Importing a shape file with the regional delineation.
 ```r
 reg <- st_read("data/regions.shp")
 #> Reading layer `regions' from data source 
-#>   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/regions.shp' 
+#>   `/data/scratch/Matt_bookdown__debug/ecosystemCondition/data/regions.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 5 features and 2 fields
 #> Geometry type: POLYGON

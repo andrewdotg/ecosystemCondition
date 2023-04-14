@@ -11,10 +11,12 @@
 <meta property="og:title" content="Chapter 2 Median Summer Temperature | Indicators for Ecosystem Condition in Norway">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://ninanor.github.io/ecosystemCondition/index.html/median-summer-temp.html">
+<meta property="og:image" content="https://ninanor.github.io/ecosystemCondition/index.html/images/Picture1.png">
 <meta property="og:description" content="Author and date: Anders L. Kolstad March 2023  Ecosystem Økologisk.egenskap ECT.class All Abiotiske egenskaper Physical state characteristics   2.1 Introduction This chapters describes the...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 2 Median Summer Temperature | Indicators for Ecosystem Condition in Norway">
 <meta name="twitter:description" content="Author and date: Anders L. Kolstad March 2023  Ecosystem Økologisk.egenskap ECT.class All Abiotiske egenskaper Physical state characteristics   2.1 Introduction This chapters describes the...">
+<meta name="twitter:image" content="https://ninanor.github.io/ecosystemCondition/index.html/images/Picture1.png">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.4.2/transition.js"></script><script src="libs/bs3compat-0.4.2/tabs.js"></script><script src="libs/bs3compat-0.4.2/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -238,7 +240,7 @@
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">"data/regions.shp"</span>, options <span class="op">=</span> <span class="st">"ENCODING=UTF8"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; options:        ENCODING=UTF8 </span></span>
 <span><span class="co">#&gt; Reading layer `regions' from data source </span></span>
-<span><span class="co">#&gt;   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/regions.shp' </span></span>
+<span><span class="co">#&gt;   `/data/scratch/Matt_bookdown__debug/ecosystemCondition/data/regions.shp' </span></span>
 <span><span class="co">#&gt;   using driver `ESRI Shapefile'</span></span>
 <span><span class="co">#&gt; Simple feature collection with 5 features and 2 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POLYGON</span></span>
@@ -250,7 +252,7 @@
 <div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nor</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">"data/outlineOfNorway_EPSG25833.shp"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reading layer `outlineOfNorway_EPSG25833' from data source </span></span>
-<span><span class="co">#&gt;   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' </span></span>
+<span><span class="co">#&gt;   `/data/scratch/Matt_bookdown__debug/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' </span></span>
 <span><span class="co">#&gt;   using driver `ESRI Shapefile'</span></span>
 <span><span class="co">#&gt; Simple feature collection with 1 feature and 2 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
@@ -736,7 +738,7 @@ Figure 2.3: Times series for median summer temperature centered on the median va
 <span><span class="co">#&gt;  8 Nord-Norge 2013-2017           4     0.641 0.127 </span></span>
 <span><span class="co">#&gt;  9 Nord-Norge 2018-2022           5     0.625 0.110 </span></span>
 <span><span class="co">#&gt; 10 Nord-Norge pre 2003            1     0.625 0.194 </span></span>
-<span><span class="co">#&gt; # … with 15 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 15 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">i_aggregatedToPeriods</span><span class="op">$</span><span class="va">period</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">i_aggregatedToPeriods</span><span class="op">$</span><span class="va">period_rank</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
@@ -855,7 +857,7 @@ Figure 2.5: Summer tempreature indicator values for five accounting areas in Nor
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-03-24.</p>
+    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-04-14.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

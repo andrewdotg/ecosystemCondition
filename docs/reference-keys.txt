@@ -83,6 +83,7 @@ fig:unnamed-chunk-75
 fig:unnamed-chunk-83
 fig:unnamed-chunk-85
 fig:unnamed-chunk-87
+license
 slitasje-og-kjørespor
 introduction
 about-the-underlying-data
