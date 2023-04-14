@@ -84,7 +84,7 @@ To cite this book please use the following citation:
 
 Kolstad, A.L., Topper, J. Grainger, M.J., Sandvik, H. Indicators for Ecosystem Condition in Norway. https://ninanor.github.io/ecosystemCondition/index.html.doi [TBA]
 
-## License
+## License {.unnumbered}
 
 The book is licensed under a [CC By 4.0 licence](https://creativecommons.org/licenses/by/4.0/) which means that you can share and adapt the material
 for any purpose. However, you must give appropriate credit, provide a link to the license, and indicate if changes were made. You can not add additional restrictions on the material even when adapted. 
