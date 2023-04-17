@@ -70,19 +70,26 @@ head(res.wetland[,70:76])
 
 #### scaled value maps ####
 # keep wide format and add geometry again
-res.wetland <- results.wetland[['2-sided']]
-st_geometry(res.wetland) <- st_geometry(ANO.wetland)
-
+res.wetland2 <- results.wetland[['2-sided']]
+st_geometry(res.wetland2) <- st_geometry(ANO.wetland)
 
 nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
-  st_as_sf()
+  st_as_sf() %>%
+  st_transform(crs = crs(ANO.geo))
+reg <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/regioner/regNorway_wgs84 - MERGED.shp")%>%
+  st_as_sf() %>%
+  st_transform(crs = crs(ANO.geo))
+# change region names to something R-friendly
+reg$region
+reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway")
 
+regnor <- st_intersection(reg,nor)
 
 ## scaled value maps
 # Moist1 (lower indicator)
-tm_shape(nor) +
-  tm_fill('GID_0', labels="", title="") + #tm_borders() +
-  tm_shape(res.wetland) +
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="") + tm_borders() +
+  tm_shape(res.wetland2) +
   tm_dots('Moist1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
   tm_layout(main.title = "Moisture index (lower), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
@@ -92,9 +99,9 @@ tm_shape(nor) +
                 title = "index values")
 
 # Moist2 (upper indicator)
-tm_shape(nor) +
-  tm_fill('GID_0', labels="", title="") + #tm_borders() +
-  tm_shape(res.wetland) +
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="") + tm_borders() +
+  tm_shape(res.wetland2) +
   tm_dots('Moist2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
   tm_layout(main.title = "Moisture index (upper), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
@@ -105,10 +112,179 @@ tm_shape(nor) +
 
 
 
+# let's look at things by region
+res.wetland2 = st_join(res.wetland2, regnor, left = TRUE)
+colnames(res.wetland2)
+
+res.wetland2 %>% 
+  group_by(as.factor(region)) %>% 
+  dplyr::summarise(Light1.reg.mean = mean(Light1,na.rm=T))
+
+res.wetland2 %>% 
+  group_by(as.factor(region)) %>% 
+  dplyr::summarise(Light2.reg.mean = mean(Light2,na.rm=T))
+  
 
 
+res.wetland2 %>% 
+  group_by(as.factor(region)) %>% 
+  mutate(Light1.reg.mean = mean(Light1,na.rm=T)) %>%
+  mutate(Light2.reg.mean = mean(Light1,na.rm=T)) %>%
+  mutate(Moist1.reg.mean = mean(Moist1,na.rm=T)) %>%
+  mutate(Moist2.reg.mean = mean(Moist1,na.rm=T)) %>%
+  mutate(pH1.reg.mean = mean(pH1,na.rm=T)) %>%
+  mutate(pH2.reg.mean = mean(pH1,na.rm=T)) %>%
+  mutate(Nitrogen1.reg.mean = mean(Nitrogen1,na.rm=T)) %>%
+  mutate(Nitrogen2.reg.mean = mean(Nitrogen2,na.rm=T))
+  
 
 
+regnor <- regnor %>%
+  mutate(Light1.reg.mean = c(mean(res.wetland2$Light1[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             mean(res.wetland2$Light1[res.wetland2$region=="Central Norway"],na.rm=T),
+                             mean(res.wetland2$Light1[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             mean(res.wetland2$Light1[res.wetland2$region=="Western Norway"],na.rm=T),
+                             mean(res.wetland2$Light1[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Light2.reg.mean = c(mean(res.wetland2$Light2[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             mean(res.wetland2$Light2[res.wetland2$region=="Central Norway"],na.rm=T),
+                             mean(res.wetland2$Light2[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             mean(res.wetland2$Light2[res.wetland2$region=="Western Norway"],na.rm=T),
+                             mean(res.wetland2$Light2[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Moist1.reg.mean = c(mean(res.wetland2$Moist1[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             mean(res.wetland2$Moist1[res.wetland2$region=="Central Norway"],na.rm=T),
+                             mean(res.wetland2$Moist1[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             mean(res.wetland2$Moist1[res.wetland2$region=="Western Norway"],na.rm=T),
+                             mean(res.wetland2$Moist1[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Moist2.reg.mean = c(mean(res.wetland2$Moist2[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             mean(res.wetland2$Moist2[res.wetland2$region=="Central Norway"],na.rm=T),
+                             mean(res.wetland2$Moist2[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             mean(res.wetland2$Moist2[res.wetland2$region=="Western Norway"],na.rm=T),
+                             mean(res.wetland2$Moist2[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         pH1.reg.mean = c(mean(res.wetland2$pH1[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             mean(res.wetland2$pH1[res.wetland2$region=="Central Norway"],na.rm=T),
+                             mean(res.wetland2$pH1[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             mean(res.wetland2$pH1[res.wetland2$region=="Western Norway"],na.rm=T),
+                             mean(res.wetland2$pH1[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         pH2.reg.mean = c(mean(res.wetland2$pH2[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             mean(res.wetland2$pH2[res.wetland2$region=="Central Norway"],na.rm=T),
+                             mean(res.wetland2$pH2[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             mean(res.wetland2$pH2[res.wetland2$region=="Western Norway"],na.rm=T),
+                             mean(res.wetland2$pH2[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Nitrogen1.reg.mean = c(mean(res.wetland2$Nitrogen1[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             mean(res.wetland2$Nitrogen1[res.wetland2$region=="Central Norway"],na.rm=T),
+                             mean(res.wetland2$Nitrogen1[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             mean(res.wetland2$Nitrogen1[res.wetland2$region=="Western Norway"],na.rm=T),
+                             mean(res.wetland2$Nitrogen1[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Nitrogen2.reg.mean = c(mean(res.wetland2$Nitrogen2[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             mean(res.wetland2$Nitrogen2[res.wetland2$region=="Central Norway"],na.rm=T),
+                             mean(res.wetland2$Nitrogen2[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             mean(res.wetland2$Nitrogen2[res.wetland2$region=="Western Norway"],na.rm=T),
+                             mean(res.wetland2$Nitrogen2[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         
+         Light1.reg.sd = c(sd(res.wetland2$Light1[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             sd(res.wetland2$Light1[res.wetland2$region=="Central Norway"],na.rm=T),
+                             sd(res.wetland2$Light1[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             sd(res.wetland2$Light1[res.wetland2$region=="Western Norway"],na.rm=T),
+                             sd(res.wetland2$Light1[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Light2.reg.sd = c(sd(res.wetland2$Light2[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             sd(res.wetland2$Light2[res.wetland2$region=="Central Norway"],na.rm=T),
+                             sd(res.wetland2$Light2[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             sd(res.wetland2$Light2[res.wetland2$region=="Western Norway"],na.rm=T),
+                             sd(res.wetland2$Light2[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Moist1.reg.sd = c(sd(res.wetland2$Moist1[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             sd(res.wetland2$Moist1[res.wetland2$region=="Central Norway"],na.rm=T),
+                             sd(res.wetland2$Moist1[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             sd(res.wetland2$Moist1[res.wetland2$region=="Western Norway"],na.rm=T),
+                             sd(res.wetland2$Moist1[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Moist2.reg.sd = c(sd(res.wetland2$Moist2[res.wetland2$region=="Northern Norway"],na.rm=T),
+                             sd(res.wetland2$Moist2[res.wetland2$region=="Central Norway"],na.rm=T),
+                             sd(res.wetland2$Moist2[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                             sd(res.wetland2$Moist2[res.wetland2$region=="Western Norway"],na.rm=T),
+                             sd(res.wetland2$Moist2[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         pH1.reg.sd = c(sd(res.wetland2$pH1[res.wetland2$region=="Northern Norway"],na.rm=T),
+                          sd(res.wetland2$pH1[res.wetland2$region=="Central Norway"],na.rm=T),
+                          sd(res.wetland2$pH1[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                          sd(res.wetland2$pH1[res.wetland2$region=="Western Norway"],na.rm=T),
+                          sd(res.wetland2$pH1[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         pH2.reg.sd = c(sd(res.wetland2$pH2[res.wetland2$region=="Northern Norway"],na.rm=T),
+                          sd(res.wetland2$pH2[res.wetland2$region=="Central Norway"],na.rm=T),
+                          sd(res.wetland2$pH2[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                          sd(res.wetland2$pH2[res.wetland2$region=="Western Norway"],na.rm=T),
+                          sd(res.wetland2$pH2[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Nitrogen1.reg.sd = c(sd(res.wetland2$Nitrogen1[res.wetland2$region=="Northern Norway"],na.rm=T),
+                                sd(res.wetland2$Nitrogen1[res.wetland2$region=="Central Norway"],na.rm=T),
+                                sd(res.wetland2$Nitrogen1[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                                sd(res.wetland2$Nitrogen1[res.wetland2$region=="Western Norway"],na.rm=T),
+                                sd(res.wetland2$Nitrogen1[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         Nitrogen2.reg.sd = c(sd(res.wetland2$Nitrogen2[res.wetland2$region=="Northern Norway"],na.rm=T),
+                                sd(res.wetland2$Nitrogen2[res.wetland2$region=="Central Norway"],na.rm=T),
+                                sd(res.wetland2$Nitrogen2[res.wetland2$region=="Eastern Norway"],na.rm=T),
+                                sd(res.wetland2$Nitrogen2[res.wetland2$region=="Western Norway"],na.rm=T),
+                                sd(res.wetland2$Nitrogen2[res.wetland2$region=="Southern Norway"],na.rm=T)),
+         
+         Light1.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$Light1),]),
+                             nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$Light1),]),
+                             nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$Light1),]),
+                             nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$Light1),]),
+                             nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$Light1),])),
+         Light2.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$Light2),]),
+                             nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$Light2),]),
+                             nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$Light2),]),
+                             nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$Light2),]),
+                             nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$Light2),])),
+         Moist1.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$Moist1),]),
+                             nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$Moist1),]),
+                             nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$Moist1),]),
+                             nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$Moist1),]),
+                             nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$Moist1),])),
+         Moist2.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$Moist2),]),
+                             nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$Moist2),]),
+                             nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$Moist2),]),
+                             nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$Moist2),]),
+                             nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$Moist2),])),
+         pH1.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$pH1),]),
+                          nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$pH1),]),
+                          nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$pH1),]),
+                          nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$pH1),]),
+                          nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$pH1),])),
+         pH2.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$pH2),]),
+                          nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$pH2),]),
+                          nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$pH2),]),
+                          nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$pH2),]),
+                          nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$pH2),])),
+         Nitrogen1.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$Nitrogen1),]),
+                                nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$Nitrogen1),]),
+                                nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$Nitrogen1),]),
+                                nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$Nitrogen1),]),
+                                nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$Nitrogen1),])),
+         Nitrogen2.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$Nitrogen2),]),
+                                nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$Nitrogen2),]),
+                                nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$Nitrogen2),]),
+                                nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$Nitrogen2),]),
+                                nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$Nitrogen2),]))
+         )
+  
+  
+
+## scaled value maps
+# pH1 (lower indicator)
+tm_shape(regnor) +
+  tm_polygons(col="pH1.reg.mean", title="pH (lower)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE)))
+
+# Moist2 (upper indicator)
+tm_shape(regnor) +
+  tm_polygons(col="Light1.reg.mean", title="Light (upper)", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE))
+
+  
+  tm_fill('GID_0', labels="", title="") + tm_borders() +
+  tm_shape(res.wetland) +
+  tm_dots('Moist2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
+  tm_layout(main.title = "Moisture index (upper), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
+                labels = c("0.4", "...", "...", 
+                           "...", "1", "NA"),
+                title = "index values")
 
 
 
