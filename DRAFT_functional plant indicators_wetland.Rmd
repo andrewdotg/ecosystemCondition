@@ -99,51 +99,71 @@ knitr::kable(metaData)
 <!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
 
 ## Introduction
-Functional plant indicators can be used to describe the functional signature of plant communities. The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at. For instance, using an indicator for moisture on would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity.
+Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture on would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). This plant functional type indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021).
 
 ## About the underlying data
-<!-- Text here -->
+In the 'plant functional indicator' project for wetlands, We use three sets of data for building indicators for ecological condition
+- as testing data we use plant community data from the ANO monitoring scheme (cf. Tingstad et al. 2019)
+- as reference data we use generalized species lists from the Norwegian categorization system for eco-diversity (NiN) (cf. Halvorsen et al. 2020)
+- Swedish plant indicator data for light, moisture, pH, and nitrogen from Tyler et al. (2021)
+
+(1) ANO monitoring data:
+ANO stands for 'areal-representativ naturovervåking', i.e. 'area representative nature monitoring'. Within a 5-year cycle, 1000 sites are  randomly distributed across mainland Norway. Each ANO site spans a 500 x 500 m grid cell and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the wetland-analysis in this document, we only use the plots which were classified as on of the wetland ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
+In the analysis in this document, we use the data available on Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054), which comprises data from the first three ANO-years, 2019-2021, and a total of 8887 plots in 498 sites.
+
+(2) NiN reference data:
+The generalized species lists underlying the ecosystem categorization in NiN represent expert-compiled species lists based on empirical evidence from the literature and expert knowledge of the systems and their species. In these lists, every species is assigned an abundance value on a 6-step scale, with each step representing a range for the 'expected combination of frequency and cover' of occurrence (1 > 1/32, 2 = 1/32 - 1/8 , 3 = 1/8 - 3/8, 4 = 3/8 - 4/5, 5 = 3/8 - 4/5 + dominance, 6 = 4/5 -1 ). For the purpose of this project these steps are simplified to maximum 'expected combination of frequency and cover', whereby steps 4 & 5 are assigned 0.6 and 0.8, respectively, in order to distinguish between them.
+
+(3) The Swedish plant indicator set published by Tyler et al. (2021) contains a large collection of plant indicators based on the Swedish flora, which is well representative of the Norwegian flora as well. From this set, we decided to include indicator data for light, moisture, pH, and nitrogen for wetlands as these are thought to be subject to potential change due to shrub-/tree encroachment, drainage, and pollution.
 
 
 ### Representativity in time and space
-<!-- Text here -->
+For wetlands, the ANO data contain 1351 plots in 330 sites, in principle distributed randomly across the country. As wetlands occur more often in certain regions of Norway than in others the amount of plots and sites is not equal among the five regions ecological condition is assessed for (Northern Norway, Central Norway, Eastern Norway, Western Norway, Southern Norway). The in total 1351 plots are distributed across regions in the following way:
 
-### Original units
-<!-- Text here -->
-
+Northern Norway: 416
+Central Norway:  362
+Eastern Norway:  295
+Western Norway:  151
+Southern Norway: 127
 
 ### Temporal coverage
-<!-- Text here -->
+The evaluation data cover the first three years, 2019-2021, of the first 5-year-cycle in the ANO monitoring scheme. Thus there is no actual time series to these data and the indicator evaluation does therefore not include any temporal analyses.
 
-
-### Aditional comments about the dataset
-<!-- Text here -->
-
-
-## Ecosystem characteristic
-### Norwegian standard
-<!-- Text here -->
-
-### <!-- Text here -->
-<!-- Text here. Note that there are two parallell systems for defining ecosystem properties - one Norwegian and one international (SEEA EA). See man/SEEA EA examples.pdf for help -->
 
 ## Collinearities with other indicators
 <!-- Text here -->
 
 ## Reference state and values
 ### Reference state
-<!-- Text here -->
+The reference state is defined via the functional signature of the generalized species lists in NiN (see also Töpper et al. 2018). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for ecosystem sub-types (grunntyper or kartleggingsenheter at a 1:5000 mapping scale) within the main wetland types in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
 
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
-<!-- Text here -->
+In this analysis, we derive scaling values from statistical (non-parametric here) distributions (see Jakobsson et al. 2010). For each ecosystem sub-type and plant functional indicator, the reference value is defined as the median value of the indicator value distribution. As in most cases the distributions naturally are two-sided (but see the Heat-requirement indicator in the mountain assessment for an example of a one-sided plant functional indicator, Fremstad et al. 2022), and deviation from the optimal state thus may occur in both direction (e.g. indicating too low or too high pH) we need to define two threshold values for good ecological condition as well as both a minimum and maximum value. In line with previous assessments of ecological condition for Norwegian forests and mountains, we define a lower and an upper threshold value via the 95% confidence interval of the reference distribution, i.e. its 0.025 and 0.975 quantiles. The minimum and maximum values are given by the minimum and maximum of the possible indicator values for each respective plant functional indicator. For details on the scaling principles in IBECA, please see Töpper & Jakobsson 2021.
 
 
 ## Uncertainties
-<!-- Text here -->
+We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area.
+
 
 ## References
-<!-- Text here -->
+Diekmann, M. 2003. Species indicator values as an important tool in applied plant ecology - a review. Basic and Applied Ecology 4: 493-506, doi:10.1078/1439-1791-00185
+
+Framstad, E., Kolstad, A. L., Nybø, S., Töpper, J. & Vandvik, V. 2022. The condition of forest and mountain ecosystems in Norway. Assessment by the IBECA method. NINA Report 2100. Norwegian Institute for Nature Research.
+
+Halvorsen, R., Skarpaas, O., Bryn, A., Bratli, H., Erikstad, L., Simensen, T., & Lieungh, E. (2020). Towards a systematics of ecodiversity: The EcoSyst framework. Global Ecology and Biogeography, 29(11), 1887-1906. doi:10.1111/geb.13164
+
+Jakobsson, S., Töpper, J.P., Evju, M., Framstad, E., Lyngstad, A., Pedersen, B., Sickel, H., Sverdrup-Thygeson, A., Vandvik. V., Velle, L.G., Aarrestad, P.A. & Nybø, S. 2020. Setting reference levels and limits for good ecological condition in terrestrial ecosystems. Insights from a case study based on the IBECA approach. Ecological Indicators 116: 106492.
+
+Jakobsson, S., Evju, M., Framstad, E., Imbert, A., Lyngstad, A., Sickel, H., Sverdrup-Thygeson, A., Töpper, J., Vandvik, V., Velle, L.G., Aarrestad, P.A. & Nybø, S. 2021. An index-based assessment of ecological condition and its links to international frameworks. Ecological Indicators 124: 107252.
+
+Tingstad, L., Evju, M., Sickel, H., & Töpper, J. 2019. Utvikling av nasjonal arealrepresentativ naturovervåking (ANO). Forslag til gjennomføring, protokoller og kostnadsvurderinger med utgangspunkt i erfaringer fra uttesting i Trøndelag. NINA Rapport 1642.
+
+Töpper, J. & Jakobsson, S. 2021. The Index-Based Ecological Condition Assessment (IBECA) - Technical protocol, version 1.0. NINA Report 1967. Norwegian Institute for Nature Research.
+
+Töpper, J., Velle, L.G. & Vandvik, V. 2018. Developing a method for assessment of ecological state based on indicator values after Ellenberg and Grime (revised edition). NINA Report 1529b. Norwegian Institute for Nature Research.
+
+Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indicator and traits values for Swedish vascular plants. Ecological In-dicators, 120. doi:10.1016/j.ecolind.2020.106923
 
 
 ## Analyses
@@ -161,7 +181,7 @@ head(ANO.sp)
 head(ANO.geo)
 ```
 
-Plant indicators from Tyler et al. 2021
+Plant indicators from Tyler et al. (2021)
 ```{r, echo = F}
 ## Tyler indicator data
 ind.dat <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
@@ -645,10 +665,9 @@ For wetland ecosystem we are testing "Light", "Moisture", "Soil_reaction_pH", an
 - function to calculate community weighted means of selected indicator values (ind)
 - for species lists (sp) with given abundances in percent (or on a scale from 0 to 1) in one or more 'sites' (abun)
 - with a given number of iterations (iter),
-- with species given a certain minimum abundance ocurring in all bootstraps (obl), and
-- with a given resampling ratio of the original species list (rat)
-- in every bootstrap iteration the abundance of the sampled species can be 
-- randomly changed by +/-1 if wished (var.abun)
+- with species given a certain minimum abundance occurring in all bootstraps (obl), and
+- with a given re-sampling ratio of the original species list (rat)
+- in every bootstrap iteration the abundance of the sampled species can be randomly changed by a limited amount if wished by introducing a re-sampling of abundance values from adjacent abundance steps with a certain probability (var.abun)
 
 ```{r, echo = F}
 indBoot.freq <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
@@ -667,8 +686,8 @@ indBoot.freq <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
   for (j in 1:length(colnames(abun)) ) {
     
     dat <- cbind(sp,abun[,j],ind)
-    dat <- dat[dat[,2]>0,]            # only species that are present in the ecoystem
-    dat <- dat[!is.na(dat[,3]),]      # only species that have Ellenberg values
+    dat <- dat[dat[,2]>0,]            # only species that are present in the ecosystem
+    dat <- dat[!is.na(dat[,3]),]      # only species that have indicator values
     
     for (i in 1:iter) {
       
@@ -716,11 +735,11 @@ Running the bootstraps
 colnames(NiN.wetland)
 # 1st column is the species
 # 2nd-46th column is the abundances of sp in different ecosystem types
-# 47th-51st column is the indicator values of the respective sp
+# 47th-50th column is the indicator values of the respective species
 # we choose 1000 iterations
-# species with abundance 1 (i.e. 100%, must be included in each sample)
-# each sample resamples 2/3 of the number of species
-# the abundance of the resampled species may vary (see bootstrap function for details)
+# species with abundance 1 (i.e. a max of 100%, must be included in each sample)
+# each sample re-samples 2/3 of the number of species
+# the abundance of the re-sampled species may vary (see bootstrap function for details)
 wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:50],
                           iter=1000,obl=1,rat=2/3,var.abun=T)
 
@@ -742,8 +761,8 @@ load("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCo
 head(wetland.ref.cov[[1]])
 ```
 
-This results in a list with a slot for every selected indicator, and in every slot there's as many columns as there are NiN species lists and as many row as there were iterations in the bootstrap.
-Next, we need to derive scaling values from these bootstrap-lists (the columns) for every mapping unit in NiN. Here we define things in the following way:
+This results in an R-list with a slot for every selected indicator, and in every slot there's a data frame with as many columns as there are NiN species lists and as many rows as there were iterations in the bootstrap.
+Next, we need to derive scaling values from these bootstrap-lists (the columns) for every mapping unit in NiN. Here, we define things in the following way:
 
 Median = reference values
 0.025 and 0.975 quantiles = lower and upper limit values
@@ -870,9 +889,9 @@ summary(wetland.ref.cov.val)
 head(wetland.ref.cov.val)
 ```
 
-Once testing data (ANO), and reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO-community data and scale them against the scaling values from the reference distribution.
+Once testing data (ANO), and the scaling values from the reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO-community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO-plot's CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper indicators for each plant functional indicator type. An ANO plot can only have a scaled value in either the lower or the upper indicator (the other one will be 'NA'), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.
 
-Here is the scaling function (with and without truncation at 1)
+Here is the scaling function
 ```{r}
 
 #### scaled values ####
@@ -909,35 +928,9 @@ scal <- function() {
   
 }
 
-## scaling function without truncation
-scal.2 <- function() {
-  # place to hold the result
-  x <- numeric()
-  if (maxmin < ref) {
-    # values >= the reference value estimated from the linear relationship for lim < x < ref (line below)
-    if (val >= ref) {x <- (l.s + (val-lim) * ( (r.s-l.s) / (ref-lim) ) )}
-    # values < the reference value and >= the limit value can be deducted from the linear relationship between these two
-    if (val < ref & val >= lim) {x <- (l.s + (val-lim) * ( (r.s-l.s) / (ref-lim) ) )}
-    # values < the limit value and > maxmin can be deducted from the linear relationship between these two
-    if (val < lim & val > maxmin) {x <- (a.s + (val-maxmin) * ( (l.s-a.s) / (lim-maxmin) ) )}
-    # value equal or lower than maxmin
-    if (val <= maxmin) {x <-0}
-  } else {
-    # values <= the reference value estimated from the linear relationship for lim < x < ref (line below)
-    if (val <= ref) {x <- ( r.s - ( (r.s - l.s) * (val - ref) / (lim - ref) ) )}
-    # values > the reference value and <= the limit value can be deducted from the linear relationship between these two
-    if (val > ref & val <= lim) {x <- ( r.s - ( (r.s - l.s) * (val - ref) / (lim - ref) ) )}
-    # values > the limit value and < maxmin can be deducted from the linear relationship between these two
-    if (val > lim & val < maxmin) {x <- ( l.s - (l.s * (val - lim) / (maxmin - lim) ) )}
-    # value equal og larger than maxmin
-    if (val >= maxmin) {x <-0}
-  }
-  return(x)
-  
-}
 ```
 
-We then can prepare a list of dataframes to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021)
+We then can prepare a list of data frames to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021)
 ```{r, echo = T, eval = F}
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
@@ -1178,7 +1171,9 @@ head(results.wetland[['2-sided']])
 ```
 #### Scaled value analyses
 
-```{r}
+We can calculate simple summary statistics like means, standard deviations, and number of observations (note that there is both a lower and an upper indicator for each of the four plant functional indicators)
+
+```{r, message = FALSE}
 #### plotting scaled values by main ecosystem type ####
 ## continuing with 2-sided
 res.wetland <- results.wetland[['2-sided']]
@@ -1193,12 +1188,15 @@ res.wetland <-
     values_drop_na = TRUE
   )
 
-
 # summarizing the indicator scores
 res.wetland %>%
   group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE))
+  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE), SD = sd(scaled_value, na.rm=TRUE), N = length(scaled_value))
 
+```
+
+And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
+```{r}
 
 # making the plot
 ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
@@ -1212,7 +1210,7 @@ ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) 
 ```
 
 We can also show the results as a map, for instance for pH1 (the lower pH indicator), either by directly plotting the data onto the map...
-```{r}
+```{r, message = FALSE}
 #### scaled value maps ####
 # keep wide format and add geometry again
 res.wetland2 <- results.wetland[['2-sided']]

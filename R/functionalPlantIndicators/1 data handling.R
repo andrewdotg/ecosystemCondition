@@ -731,7 +731,7 @@ head(NiN.wetland)
 
 # translating the abundance classes into %-cover
 coverscale <- data.frame(orig=0:6,
-                         cov=c(0,1/32,1/8,3/8,0.6,4/5,1)
+                         cov=c(0, 1/32 ,1/8, 3/8, 0.6, 4/5, 1)
 )
 
 NiN.wetland.cov <- NiN.wetland

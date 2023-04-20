@@ -293,21 +293,28 @@ tm_shape(regnor) +
 tm_shape(regnor) +
   tm_polygons(col="Light1.reg.mean", title="Light (upper)", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE))
 
-  
-  tm_fill('GID_0', labels="", title="") + tm_borders() +
-  tm_shape(res.wetland) +
-  tm_dots('Moist2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Moisture index (upper), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
-  tm_add_legend(type = "fill", 
-                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
-                labels = c("0.4", "...", "...", 
-                           "...", "1", "NA"),
-                title = "index values")
 
 
 
+#### how many observations are there? ####
+# total ANO
+length(unique(ANO.geo$ano_flate_id))
+length(unique(ANO.geo$ano_punkt_id))
+# total wetland
+length(unique(res.wetland2$ano_flate_id))
+length(unique(res.wetland2$ano_punkt_id))
+# by region
+length(unique(res.wetland2$ano_flate_id[res.wetland2$region=="Northern Norway"]))
+length(unique(res.wetland2$ano_flate_id[res.wetland2$region=="Central Norway"]))
+length(unique(res.wetland2$ano_flate_id[res.wetland2$region=="Eastern Norway"]))
+length(unique(res.wetland2$ano_flate_id[res.wetland2$region=="Western Norway"]))
+length(unique(res.wetland2$ano_flate_id[res.wetland2$region=="Southern Norway"]))
 
-
+length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Northern Norway"]))
+length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Central Norway"]))
+length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Eastern Norway"]))
+length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Western Norway"]))
+length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Southern Norway"]))
 
 
 
