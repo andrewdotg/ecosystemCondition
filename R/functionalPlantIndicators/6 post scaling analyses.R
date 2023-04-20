@@ -86,28 +86,46 @@ reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Nor
 regnor <- st_intersection(reg,nor)
 
 ## scaled value maps
+
+# pH1 (lower indicator)
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(res.wetland2) +
+  tm_dots('pH1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
+  tm_layout(main.title = "pH (lower), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
+                labels = c("0.0 - 0.2", "0.2 - 0.4", "0.4 - 0.6", 
+                           "0.6 - 0.8", "0.8 - 1.0", "NA"),
+                title = "index values")
+
+
+
 # Moist1 (lower indicator)
 tm_shape(regnor) +
-  tm_fill('GID_0', labels="", title="") + tm_borders() +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
   tm_shape(res.wetland2) +
   tm_dots('Moist1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
   tm_layout(main.title = "Moisture index (lower), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
-                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
-                labels = c("0.4", "...", "...", 
-                           "...", "1", "NA"),
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE),'grey'),
+                labels = c("0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
+                           "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
                 title = "index values")
 
 # Moist2 (upper indicator)
 tm_shape(regnor) +
-  tm_fill('GID_0', labels="", title="") + tm_borders() +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
   tm_shape(res.wetland2) +
   tm_dots('Moist2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Moisture index (upper), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_layout(main.title = "Moisture index (lower), wetland",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
-                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
-                labels = c("0.4", "...", "...", 
-                           "...", "1", "NA"),
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE),'grey'),
+                labels = c("0.3 - 0.4", "0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
+                           "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
                 title = "index values")
 
 
