@@ -73,12 +73,22 @@ head(res.wetland[,70:76])
 res.wetland2 <- results.wetland[['2-sided']]
 st_geometry(res.wetland2) <- st_geometry(ANO.wetland)
 
-nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
+#nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
+#  st_as_sf() %>%
+#  st_transform(crs = crs(ANO.geo))
+
+nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
   st_as_sf() %>%
   st_transform(crs = crs(ANO.geo))
-reg <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/regioner/regNorway_wgs84 - MERGED.shp")%>%
+
+#reg <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/regioner/regNorway_wgs84 - MERGED.shp")%>%
+#  st_as_sf() %>%
+#  st_transform(crs = crs(ANO.geo))
+
+reg <- st_read("data/regions.shp")%>%
   st_as_sf() %>%
   st_transform(crs = crs(ANO.geo))
+
 # change region names to something R-friendly
 reg$region
 reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway")

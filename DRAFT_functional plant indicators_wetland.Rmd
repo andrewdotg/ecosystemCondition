@@ -54,8 +54,8 @@ Sys.Date()
 ```{r setup, include=FALSE}
 library(sf)
 library(tidyr)
-library(dplyr)
 library(plyr)
+library(dplyr)
 library(stringr)
 library(tidyverse)
 library(readxl)
@@ -931,7 +931,7 @@ scal <- function() {
 ```
 
 We then can prepare a list of data frames to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021)
-```{r, echo = T, eval = F}
+```{r, include=FALSE}
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
 unique(substr(wetland.ref.cov.val$grunn,1,2)) # NiN types in reference
@@ -1004,7 +1004,9 @@ results.wetland[['original']]$hovedtype_rute    <- as.factor(results.wetland[['o
 
 # roll out
 results.wetland[['scaled']] <- results.wetland[['non-truncated']] <- results.wetland[['original']]
+```
 
+```{r, echo = T, eval = F}
 
 #### calculating scaled and non-truncated values for the indicators based on the dataset ####
 for (i in 1:nrow(ANO.wetland) ) {  #
@@ -1171,6 +1173,7 @@ head(results.wetland[['2-sided']])
 ```
 #### Scaled value analyses
 
+### Simple summary statistics
 We can calculate simple summary statistics like means, standard deviations, and number of observations (note that there is both a lower and an upper indicator for each of the four plant functional indicators)
 
 ```{r, message = FALSE}
@@ -1195,8 +1198,9 @@ res.wetland %>%
 
 ```
 
+### Ecosystem sub-types
 And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
-```{r}
+```{r, message=FALSE}
 
 # making the plot
 ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
@@ -1209,6 +1213,7 @@ ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) 
   ylab("Scaled indicator value") 
 ```
 
+### Indicator index maps
 We can also show the results as a map, for instance for pH1 (the lower pH indicator), either by directly plotting the data onto the map...
 ```{r, message = FALSE}
 #### scaled value maps ####
@@ -1216,12 +1221,22 @@ We can also show the results as a map, for instance for pH1 (the lower pH indica
 res.wetland2 <- results.wetland[['2-sided']]
 st_geometry(res.wetland2) <- st_geometry(ANO.wetland)
 
-nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
+#nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
+#  st_as_sf() %>%
+#  st_transform(crs = crs(ANO.geo))
+
+nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
   st_as_sf() %>%
   st_transform(crs = crs(ANO.geo))
-reg <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/regioner/regNorway_wgs84 - MERGED.shp")%>%
+
+#reg <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/regioner/regNorway_wgs84 - MERGED.shp")%>%
+#  st_as_sf() %>%
+#  st_transform(crs = crs(ANO.geo))
+
+reg <- st_read("data/regions.shp")%>%
   st_as_sf() %>%
   st_transform(crs = crs(ANO.geo))
+
 # change region names to something R-friendly
 reg$region
 reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway")
@@ -1246,6 +1261,8 @@ tm_shape(regnor) +
 
 ```
 ...but here the colors and values of the data points on the map are hard to make out.
+
+### Regions
 Alternatively we can calculate and show the region-wise means and standard deviations
 ```{r}
 
@@ -1279,26 +1296,6 @@ tm_shape(regnor) +
 
 
 
-#### CONTINUE HERE ####
-
-
-#### Regions
-<!-- In case you need to map the indicator value to regions, you can do that here. Remove this chapter if not relevant. -->
-Importing a shape file with the regional delineation. 
-```{r}
-#reg <- sf::st_read("data/regions.shp")
-#st_crs(reg)
-```
-
-### Scaled indicator values
-<!-- Text and analyses here -->
-
-### Uncertainty
-<!-- Text here -->
-
-
-## Prepare export
-<!-- Text here -->
 
 
 ### Eksport file (final product)
