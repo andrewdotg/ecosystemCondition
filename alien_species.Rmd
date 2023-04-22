@@ -1,10 +1,4 @@
 
----
-title: "Alien species"
-output:
-  html_document
----
-
 # Alien species {#alien-species}
 
 *Author and date:* 
