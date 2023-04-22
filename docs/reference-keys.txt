@@ -83,7 +83,6 @@ fig:unnamed-chunk-75
 fig:unnamed-chunk-83
 fig:unnamed-chunk-85
 fig:unnamed-chunk-87
-license
 slitasje-og-kjørespor
 introduction
 about-the-underlying-data
@@ -156,7 +155,7 @@ original-units-2
 temporal-coverage-2
 aditional-comments-about-the-dataset-1
 ecosystem-characteristic-2
-norwegain-standard-1
+norwegian-standard-1
 un-standard-1
 collinearities-with-other-indicators-2
 reference-condition-and-values-2
@@ -170,12 +169,10 @@ NTM2
 gruk-1
 ANO-import2
 combine-nt-ano2
-ANO-points-to-poly2
 distribution-of-7fa-scores
 outline-of-norway-and-regions-1
 scale-alien-ind
 scaled-alien-variable
-HIA-alien
 validate-1
 spread-alien
 exploring-the-indicator-values
@@ -191,7 +188,7 @@ original-units-3
 temporal-coverage-3
 aditional-comments-about-the-dataset-2
 ecosystem-characteristic-3
-norwegian-standard-1
+norwegian-standard-2
 seea-ect
 collinearities-with-other-indicators-3
 reference-state-and-values
@@ -318,7 +315,7 @@ original-units-4
 temporal-coverage-4
 additional-comments-about-the-data-set-1
 ecosystem-characteristic-4
-norwegian-standard-2
+norwegian-standard-3
 seea-ea-1
 collinearities-with-other-indicators-4
 reference-condition-and-values-3
