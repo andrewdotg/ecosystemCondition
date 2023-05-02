@@ -7,7 +7,7 @@ library(stringr)
 library(tidyverse)
 library(readxl)
 
-#### download from kartkatalogen to P-drive ####
+#### download ANO data from kartkatalogen to P-drive ####
 # url <- "https://nedlasting.miljodirektoratet.no/naturovervaking/naturovervaking_eksport.gdb.zip"
 download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", mode="w") 
 unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", 
@@ -30,7 +30,7 @@ head(ANO.sp)
 head(ANO.geo)
 
 
-## ASO data
+## ASO data from 2022
 excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx")
 
 ASO.sp <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx", 
@@ -218,6 +218,12 @@ ANO.sp$Species <- str_to_title(ANO.sp$Species) # make first letter capital
 #ANO.sp$Species <- gsub("_", " ", ANO.sp$Species) # replace underscore with space
 ANO.sp$Species <- gsub("( .*)","\\L\\1",ANO.sp$Species,perl=TRUE) # make capital letters after hyphon to lowercase
 ANO.sp$Species <- gsub("( .*)","\\L\\1",ANO.sp$Species,perl=TRUE) # make capital letters after space to lowercase
+unique(as.factor(ANO.sp$Species))
+ANO.sp$Species <- gsub("�\u0097", "", ANO.sp$Species) # remove �\0097
+unique(as.factor(ANO.sp$Species))
+# removal does not work
+# \u0097 stands for the special x, so these species are all hybrids that won't find a match with ind.dat anyways -> can be ignored
+
 
 ## merge species data with indicators
 ANO.sp.ind <- merge(x=ANO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
@@ -228,16 +234,6 @@ summary(ANO.sp.ind)
 
 # checking which species didn't find a match
 unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
-#unique(ANO.sp.ind[!is.na(ANO.sp.ind$Moisture),'Species'])
-
-ANO.sp.ind[ANO.sp.ind$Species=="Taraxacum officinale",]
-ind.dat[ind.dat$species=="Picea sitchensis",]
-ind.Grime[ind.Grime$species=="Picea sitchensis",]
-ind.Tyler[ind.Tyler$species=="Picea sitchensis",]
-ANO.sp[ANO.sp$Species=="Picea sitchensis",]
-
-
-
 
 
 ANO.sp <- ANO.sp %>% 
@@ -334,6 +330,7 @@ ASO.geo <- st_as_sf(x = ASO.geo,
                         coords = c("x", "y"),
                         crs = "+proj=longlat +datum=WGS84 +ellps=WGS84")
 
+colnames(ASO.geo)
 colnames(ASO.geo)[c(6,7,8,10,16,18,23,24)] <- c("Omradenummer_flatenummer","Eng_ID","ASO_ID","NiN_grunntype",
                                   "Beitetrykk",
                                   "Slatteintensitet",
@@ -344,6 +341,7 @@ colnames(ASO.geo)[c(6,7,8,10,16,18,23,24)] <- c("Omradenummer_flatenummer","Eng_
 ## fixing variable names and issues in ASO.sp
 head(as.data.frame(ASO.sp))
 
+colnames(ASO.sp)
 colnames(ASO.sp)[8] <- "art_dekning"
 
 # fix species names
@@ -452,6 +450,7 @@ summary(ASO.sp.ind)
 unique(ASO.sp.ind[is.na(ASO.sp.ind$Light & 
                           is.na(ASO.sp.ind$Nitrogen)),'Species'])
 
+# the rest can be omitted
 
 
 ## adding information on ecosystem and condition variables to species data
