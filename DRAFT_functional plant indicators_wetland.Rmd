@@ -1,42 +1,4 @@
----
-title: "Functional pant indicators - wetland, indicator documentation"
-output:
-  html_document
----
-
-<!-- This is a template for how to document the indicator analyses. 
-
-Make a copy of this file and store it in the root folder (same as where this template is stored) folder. 
-Name the file DRAFT_myIndicatorName.Rmd. 
-
-Because this is a stand-alone Rmd file inside a bookdown project, in order to knit the file for preview purposes,
-you need to type rmarkdown::render("template.Rmd") in the console, 
-as the the usual Ctrl + Alt + k will not work. 
-
-Make sure also to not change the order, or modify the headers, unless you really need to. This is because it
-easier to read the web page as a whole of the indicators are presented using the same layout. 
-
-When the analyses is complete, Anders Kolstad, or someone else, will perform a rapid code review, making sure 
-the analysis is repeatable by someone else. Be therefore very careful to annotate 
-and comment on every step in the analysis. When completed, Anders will make a copy
-of the working file and put it in the same project root folder, but removing the 'DRAFT_' part of the name. 
-After modifying it slightly (mainly removing the top YAML header and updating the rmd_files argument in '_bookdown.yml') 
-the output will become available on the website (https://ninanor.github.io/ecosystemCondition/). -->
-
-
-<!-- Examples: 
-
-For an example, see 'indicators/breareal-workingFile.Rmd' 
-and the subsequent 'breareal.Rmd' 
-which again, when rendered, produces this:
-https://ninanor.github.io/ecosystemCondition/areal-av-isbreer.html
-
-Notice the degree of annotation.
-
--->
-
-
-<!-- Replace 'indicator name' with your own indicator name  -->
+# Functional plant indicators - wetland {#Functional-plant-indicators-wetland}
 # Functional plant indicators (Moisture, Light, pH, Nitrogen)
 
 <br />
@@ -44,9 +6,7 @@ Notice the degree of annotation.
 _Author and date:_
 Joachim Töpper
 
-```{r}
-Sys.Date()
-```
+May 2023
 
 <br />
 
@@ -67,7 +27,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-<!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
 ```{r, echo=F}
 Ecosystem <- "våtmark"
 Egenskap  <- c("Primærproduksjon","Abiotiske forhold")
@@ -86,10 +45,6 @@ knitr::kable(metaData)
 <br />
 <br />
 <hr />
-
-
-
-<!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
 
 ## Introduction
 Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional type indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021).
@@ -656,7 +611,6 @@ NiN.wetland.cov$sp <- as.factor(NiN.wetland.cov$sp)
 leaving us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov)
 
 ```{r}
-#summary(NiN.wetland)
 head(ANO.sp.ind)
 head(NiN.wetland.cov)
 ```
@@ -1207,7 +1161,7 @@ res.wetland %>%
 
 ### Ecosystem sub-types
 And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
-```{r, message=FALSE}
+```{r,echo=FALSE,message=FALSE, warning=FALSE}
 
 # making the plot
 ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
@@ -1222,7 +1176,7 @@ ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) 
 
 ### Indicator index maps
 We can also show the results as a map, for instance for pH1 (the lower pH indicator), either by directly plotting the data onto the map...
-```{r, message = FALSE}
+```{r, echo=FALSE, warning=FALSE,message = FALSE}
 #### scaled value maps ####
 # keep wide format and add geometry again
 res.wetland2 <- results.wetland[['2-sided']]
