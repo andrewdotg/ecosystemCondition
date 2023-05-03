@@ -53,22 +53,15 @@ Sys.Date()
 <!-- Load all you dependencies here -->
 ```{r setup, include=FALSE}
 library(sf)
-library(tidyr)
 library(plyr)
-library(dplyr)
-library(stringr)
 library(tidyverse)
-library(readxl)
-library(broom)
 library(RColorBrewer)
 library("gridExtra") 
 library(ggridges)
-library(ggplot2)
 library(tmap)
 library(tmaptools)
 library(raster)
 library(stars)
-
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -173,28 +166,36 @@ Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indic
 ANO data
 
 ```{r, echo = F}
-st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
-ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-                   layer="ANO_Art")
-ANO.geo <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-                  layer="ANO_SurveyPoint")
-head(ANO.sp)
-head(ANO.geo)
+# Add data from cache
+ANO.sp<-readRDS(paste0(here::here(),"/data/cache/ANO.sp.RDS"))
+ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
+
+# st_layers(dsn = "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
+# ANO.sp <- st_read("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
+#                    layer="ANO_Art")
+# ANO.geo <- st_read("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
+#                   layer="ANO_SurveyPoint")
+# head(ANO.sp)
+# head(ANO.geo)
 ```
 
 Plant indicators from Tyler et al. (2021)
 ```{r, echo = F}
 ## Tyler indicator data
-ind.dat <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
-                        sep = '\t', header=T, quote = '')
-head(ind.dat)
+## data from cache
+ind.dat <-readRDS(paste0(here::here(),"/data/cache/ind.dat.RDS"))
+# ind.dat <- read.table("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
+#                         sep = '\t', header=T, quote = '')
+# head(ind.dat)
 
 ```
 
 Generalized species lists NiN
 ```{r, echo = F}
-load("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators//reference from NiN/Eco_State.RData")
-str(Eco_State)
+# data from cache
+Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
+# load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/functional plant indicators/reference from NiN/Eco_State.RData")
+# str(Eco_State)
 ```
 
 #### Data handling
@@ -755,7 +756,9 @@ for (i in 1:length(wetland.ref.cov) ) {
 ```
 
 ```{r, include = F}
-load("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/ref_lists_wetland.RData")
+# Data from cache
+wetland.ref.cov<-readRDS(paste0(here::here(), "/data/cache/wetland.ref.cov.RDS"))
+#load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_wetland.RData")
 ```
 
 ```{r}
@@ -1166,7 +1169,10 @@ results.wetland[['2-sided']]$Nitrogen2[results.wetland[['2-sided']]$Nitrogen2>1]
 ```
 
 ```{r, include = F}
-load("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/results.wetland.RData")
+# Use cache data
+results.wetland<-readRDS(paste0(here::here(),"/data/cache/results.wetland.RDS"))
+
+#load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.wetland.RData")
 ```
 
 ```{r}
