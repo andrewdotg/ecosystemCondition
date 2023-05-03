@@ -35,17 +35,17 @@ for (i in 1:length(seminat.ref.cov) ) {
 #### checking NiN-types with several species lists ####
 str(seminat.ref.cov)
 
-indID <- colnames(ind.dat[,c("Continentality", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen")])
+indID <- colnames(ind.dat[,c("Light", "Moisture", "Soil_reaction_pH", "Nitrogen","Phosphorus","Grazing_mowing","Soil_disturbance")])
 NiNID <- colnames(seminat.ref.cov[[1]])
 
 for (i in indID) {
   
-  dirOutput <- "C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition_PP&FPI/R/functionalPlantIndicators/testoutput"
+  dirOutput <- "C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/testoutput"
   setwd(dirOutput)
   name <- paste('seminat',i,'.jpg',sep='')
   jpeg(filename=name,width=8000,height=4000,res=300)
   
-  par(mfrow=c(5,9))
+  par(mfrow=c(5,7))
   for (j in NiNID) {
     plot(density(seminat.ref.cov[[i]][,j],na.rm=T),main=j,xlim=c(-2,10))
   }
