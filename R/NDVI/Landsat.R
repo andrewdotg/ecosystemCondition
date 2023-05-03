@@ -9,9 +9,22 @@ library(data.table)
 library(tidyverse)
 library(sf)
 
+# Set up conditional file paths
+dir <- substr(getwd(), 1,2)
+
+path <- ifelse(dir == "C:", 
+               "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
+               "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
+
+pData <- ifelse(dir == "C:", 
+                 "P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat",
+                 "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat")
+ 
+ 
+
 #############Import NiN data
 
-nin <- st_read("R:\\GeoSpatialData\\Habitats_biotopes\\Norway_Miljodirektoratet_Naturtyper_nin\\Original\\versjon20221231\\Natur_Naturtyper_nin_norge_med_svalbard_25833\\Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")%>%
+nin <- st_read(path)%>%
   mutate(hovedøkosystem = recode(hovedøkosystem, 
                                  "Våtmark" = 'Våtmark',
                                  "Skog" = "Skog",
@@ -31,10 +44,23 @@ nin <- st_read("R:\\GeoSpatialData\\Habitats_biotopes\\Norway_Miljodirektoratet_
 
 
 ##############Import Landsat NDVI Data
-df <-
-  list.files("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_Landsat\\", pattern = "*.csv") %>%
-  map_df(~fread(.))
-df
+
+## Fread doesn't like the weird path to the server version of the P drive
+## hence this horrendous work around (there must be an easier way than this but I kept hitting dead-ends)
+files=list.files(pData, pattern = "*.csv", full.names = TRUE)
+
+df_list<-list()# initialise a list of dataframes
+# read in a dataframe in each slot of the df_list
+for (i in files){
+  name <- gsub("-",".",i)
+  name <- gsub(".csv","",name)  
+  i <- paste(i,sep="")
+  df_list[[i]]=assign(name,read.csv(i, header=TRUE))
+}  
+  
+df<-bind_rows(df_list, .id = "column_label")
 
 ##########join NiN and NDVI data
 LandsatNDVI <- full_join(nin, df, by="id")
+
+## Not saved LandsatNDVI to the data/cache as it is huge
