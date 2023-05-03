@@ -5,7 +5,7 @@ seminat.ref <- indBoot(sp=NiN.seminat[,1],abun=NiN.seminat[,2:35],ind=NiN.semina
 
 
 seminat.ref.cov <- indBoot.freq(sp=NiN.seminat.cov[,1],abun=NiN.seminat.cov[,2:35],ind=NiN.seminat.cov[,36:42],
-                                iter=1000,obl=1,rat=2/3,var.abun=T)
+                                iter=1000,obl=1,rat=1/3,var.abun=T)
 
 ### saving backups
 #seminat.ref.backup <- seminat.ref
@@ -60,8 +60,9 @@ for (i in indID) {
 
 
 #### storing reference lists ####
-#rm(list= ls()[!(ls() %in% c('forest.ind.list','mire.ind.list','semiNat.ind.list','heath.ind.list','seminat.ref','ind.dat'))])
-#rm(list= ls()[!(ls() %in% c('seminat.ref.backup','seminat.ref','seminat.ref.cov.backup','seminat.ref.cov', 'ANO.sp.ind', 'NiN.seminat.cov','ind.dat'))])
-settings <- "iter=1000,obl=1,rat=2/3,var.abun=T"
+#rm(list= ls()[!(ls() %in% c('seminat.ref.cov.backup','seminat.ref.cov', 'ANO.sp.ind', 'ANO.geo', 'ASO.sp.ind', 'ASO.geo', 'NiN.seminat.cov','ind.dat'))])
+settings <- "iter=1000,obl=1,rat=1/3,var.abun=T"
 rm(list= ls()[!(ls() %in% c('seminat.ref.cov', 'seminat.ref.cov.backup','settings'))])
 save.image("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/ref_lists_seminat.RData")
+
+load("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/ref_lists_seminat.RData")
