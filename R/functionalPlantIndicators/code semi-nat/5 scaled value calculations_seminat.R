@@ -457,3 +457,5 @@ write.table(results.seminat[['2-sided']], file='P:/41201785_okologisk_tilstand_2
 
 rm(list= ls()[!(ls() %in% c('results.seminat','settings'))])
 save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.RData")
+
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.RData")

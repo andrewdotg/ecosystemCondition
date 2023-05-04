@@ -51,6 +51,8 @@ for (i in indID) {
   }
   dev.off()
 }
+# resetting working directory
+setwd("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition")
 
 ## omit V1-C1a & V1-C8a
 #str(seminat.ref.cov)
