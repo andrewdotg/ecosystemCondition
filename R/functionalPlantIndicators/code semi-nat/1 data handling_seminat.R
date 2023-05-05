@@ -333,11 +333,56 @@ ASO.geo <- st_as_sf(x = ASO.geo,
                         crs = "+proj=longlat +datum=WGS84 +ellps=WGS84")
 
 colnames(ASO.geo)
-colnames(ASO.geo)[c(6,7,8,10,16,18,23,24)] <- c("Omradenummer_flatenummer","Eng_ID","ASO_ID","NiN_grunntype",
-                                  "Beitetrykk",
-                                  "Slatteintensitet",
-                                  "tungekjoretoy",
-                                  "slitasje")
+colnames(ASO.geo)[c(6,7,8,10,14,16,18,23,24)] <- c("Omradenummer_flatenummer","Eng_ID","ASO_ID","NiN_grunntype",
+                                                   "bruksintensitet",
+                                                   "beitetrykk",
+                                                   "slatteintensitet",
+                                                   "tungekjoretoy",
+                                                   "slitasje")
+
+
+## fix NiN-variables
+# remove variable code in the data
+ASO.geo$bruksintensitet
+ASO.geo$bruksintensitet <- gsub("7JB-BA_", "", ASO.geo$bruksintensitet) 
+unique(ASO.geo$bruksintensitet)
+ASO.geo$bruksintensitet <- gsub("X", "NA", ASO.geo$bruksintensitet)
+unique(ASO.geo$bruksintensitet)
+ASO.geo$bruksintensitet <- as.numeric(ASO.geo$bruksintensitet)
+unique(ASO.geo$bruksintensitet)
+
+ASO.geo$beitetrykk
+ASO.geo$beitetrykk <- gsub("7JB-BT_", "", ASO.geo$beitetrykk) 
+unique(ASO.geo$beitetrykk)
+ASO.geo$beitetrykk <- gsub("X", "NA", ASO.geo$beitetrykk)
+unique(ASO.geo$beitetrykk)
+ASO.geo$beitetrykk <- as.numeric(ASO.geo$beitetrykk)
+unique(ASO.geo$beitetrykk)
+
+ASO.geo$slatteintensitet
+ASO.geo$slatteintensitet <- gsub("7JB-SI_", "", ASO.geo$slatteintensitet) 
+unique(ASO.geo$slatteintensitet)
+ASO.geo$slatteintensitet <- gsub("X", "NA", ASO.geo$slatteintensitet)
+unique(ASO.geo$slatteintensitet)
+ASO.geo$slatteintensitet <- as.numeric(ASO.geo$slatteintensitet)
+unique(ASO.geo$slatteintensitet)
+
+ASO.geo$tungekjoretoy
+ASO.geo$tungekjoretoy <- gsub("MDirPRTK_", "", ASO.geo$tungekjoretoy) 
+unique(ASO.geo$tungekjoretoy)
+ASO.geo$tungekjoretoy <- gsub("X", "NA", ASO.geo$tungekjoretoy)
+unique(ASO.geo$tungekjoretoy)
+ASO.geo$tungekjoretoy <- as.numeric(ASO.geo$tungekjoretoy)
+unique(ASO.geo$tungekjoretoy)
+
+ASO.geo$slitasje
+ASO.geo$slitasje <- gsub("MDirPRSE_", "", ASO.geo$slitasje) 
+unique(ASO.geo$slitasje)
+ASO.geo$slitasje <- gsub("X", "NA", ASO.geo$slitasje)
+unique(ASO.geo$slitasje)
+ASO.geo$slitasje <- as.numeric(ASO.geo$slitasje)
+unique(ASO.geo$slitasje)
+
 
 
 ## fixing variable names and issues in ASO.sp

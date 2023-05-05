@@ -504,11 +504,13 @@ regnor <- regnor %>%
 ## scaled value maps
 # Light1 (lower indicator)
 tm_shape(regnor) +
-  tm_polygons(col="Light1.reg.mean", title="Light (lower)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE)))
+  tm_polygons(col="Light1.reg.mean", title="Light (lower)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Light1.reg.n",col="black",bg.color="grey")
 
 # Grazing_mowing1 (lower indicator)
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.reg.mean", title="Grazing_mowing (lower)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE)))
+  tm_polygons(col="Grazing_mowing1.reg.mean", title="Grazing_mowing (lower)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Grazing_mowing1.reg.n",col="black",bg.color="grey")
 
 
 
@@ -957,3 +959,13 @@ points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.A
        rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-20",]$original)),
        col="red")
 
+
+
+#### relating scaled values to NiN condition variables ####
+ggplot(res.seminat, aes(x=bruksintensitet, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.seminat.ASO, aes(x="Aktuell bruksintensitet (7JB-BA)", y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
