@@ -1,11 +1,11 @@
 #### running bootstraps - wetlands ####
 colnames(NiN.wetland)
-wetland.ref <- indBoot(sp=NiN.wetland[,1],abun=NiN.wetland[,2:46],ind=NiN.wetland[,47:51],
-                          iter=1000,obl=6,rat=2/3,var.abun=T)
+wetland.ref <- indBoot(sp=NiN.wetland[,1],abun=NiN.wetland[,2:46],ind=NiN.wetland[,47:50],
+                       iter=1000,obl=6,rat=2/3,var.abun=T)
 
 
-wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:51],
-                          iter=1000,obl=1,rat=2/3,var.abun=F)
+wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:50],
+                                iter=1000,obl=1,rat=2/3,var.abun=F)
 
 ### saving backups
 #wetland.ref.backup <- wetland.ref
@@ -61,8 +61,7 @@ for (i in indID) {
 
 #### storing reference lists ####
 #rm(list= ls()[!(ls() %in% c('forest.ind.list','mire.ind.list','semiNat.ind.list','heath.ind.list','wetland.ref','ind.dat'))])
-#rm(list= ls()[!(ls() %in% c('wetland.ref.backup','wetland.ref','wetland.ref.cov.backup','wetland.ref.cov','ind.dat'))])
-
-# settings <- "iter=10000,obl=6,rat=1/3,var.abun=T"
-#save.image("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/projects/?kol tilst fjell 2021/input/reference/reference list/ref_lists_mount211123_10000.RData")
-
+#rm(list= ls()[!(ls() %in% c('wetland.ref.backup','wetland.ref','wetland.ref.cov.backup','wetland.ref.cov', 'ANO.sp.ind', 'NiN.wetland.cov','ind.dat'))])
+settings <- "iter=1000,obl=1,rat=2/3,var.abun=T"
+rm(list= ls()[!(ls() %in% c('wetland.ref.cov', 'wetland.ref.cov.backup','settings'))])
+save.image("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/ref_lists_wetland.RData")
