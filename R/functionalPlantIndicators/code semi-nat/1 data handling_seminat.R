@@ -475,9 +475,6 @@ head(ASO.sp.ind)
 
 
 
-#### continue here ###
-
-
 #### data handling - reference data ####
 # generalized species lists from NiN
 str(Eco_State)
@@ -644,7 +641,7 @@ cbind(colnames(NiN.seminat),
         rep('',7),
         'T32-C1C2','T32-C3C4',
         'T32-C5C20a',
-        'T32_C7C8',
+        'T32-C7C8',
         'T32-C5C20b',
         'T32-C9a',
         'T32-C9b',
@@ -674,7 +671,7 @@ colnames(NiN.seminat)[2:44] <- c( 'T34-C1',
                                   rep(NA,7),
                                   'T32-C1C2','T32-C3C4',
                                   'T32-C5C20a',
-                                  'T32_C7C8',
+                                  'T32-C7C8',
                                   'T32-C5C20b',
                                   'T32-C9a',
                                   'T32-C9b',
@@ -708,3 +705,8 @@ for (i in 2:35) {
 summary(NiN.seminat)
 summary(NiN.seminat.cov)
 
+
+
+save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")
+
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")

@@ -62,6 +62,8 @@ scal.2 <- function() {
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
 unique(substr(seminat.ref.cov.val$grunn,1,2)) # NiN types in reference
+levels(as.factor(ANO.geo$kartleggingsenhet_1m2)) # NiN types in data
+levels(seminat.ref.cov.val$grunn) # NiN types in reference
 #### creating dataframe to hold the results for seminats ####
 # all ANO points
 nrow(ANO.geo)

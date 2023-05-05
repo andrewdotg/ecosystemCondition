@@ -16,54 +16,6 @@ res.seminat <-
              "Soil_disturbance1","Soil_disturbance2"),
     names_to = "fp_ind",
     values_to = "scaled_value",
-    values_drop_na = TRUE
-  )
-
-
-# summarizing the indicator scores
-res.seminat %>%
-  group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE))
-
-
-# making the plot
-ggplot(res.seminat, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
-  geom_hline(yintercept=0.6, linetype="dashed") + 
-  geom_violin() +
-#  geom_boxplot(width=0.2, color="grey") +
-  geom_point(size=0.7, shape=16, color="grey") +
-  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
-                                     "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
-  xlab("Main ecosystem type") + 
-  ylab("Scaled indicator value") 
-
-
-
-
-
-
-
-
-
-
-
-
-#### getting scaled AND original values ####
-res.seminat <- results.seminat[['2-sided']]
-
-# make long version of the scaled value part
-res.seminat <-
-  res.seminat %>% 
-  pivot_longer(
-    cols = c("Light1","Light2",
-             "Moist1","Moist2",
-             "pH1","pH2",
-             "Nitrogen1","Nitrogen2",
-             "Phosphorus1","Phosphorus2",
-             "Grazing_mowing1","Grazing_mowing2",
-             "Soil_disturbance1","Soil_disturbance2"),
-    names_to = "fp_ind",
-    values_to = "scaled_value",
     values_drop_na = FALSE
   )
 
@@ -86,6 +38,96 @@ res.seminat <-
   )
 
 head(res.seminat[,70:76])
+
+
+# summarizing the indicator scores
+res.seminat %>%
+  group_by(fp_ind) %>%
+  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE))
+
+
+# making the plot
+ggplot(res.seminat, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color=NA) +
+#  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                     "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
+  xlab("Main ecosystem type") + 
+  ylab("Scaled indicator value (ANO data)") 
+
+
+
+
+# similarly for ASO
+res.seminat.ASO <- results.seminat.ASO[['2-sided']]
+colnames(res.seminat.ASO)
+
+# make long version of the scaled value part
+res.seminat.ASO <-
+  res.seminat.ASO %>% 
+  pivot_longer(
+    cols = c("Light1","Light2",
+             "Moist1","Moist2",
+             "pH1","pH2",
+             "Nitrogen1","Nitrogen2",
+             "Phosphorus1","Phosphorus2",
+             "Grazing_mowing1","Grazing_mowing2",
+             "Soil_disturbance1","Soil_disturbance2"),
+    names_to = "fp_ind",
+    values_to = "scaled_value",
+    values_drop_na = FALSE
+  )
+
+# add original values as well
+res.seminat.ASO <- 
+  res.seminat.ASO %>% add_column(original = results.seminat.ASO[['original']] %>% 
+                               pivot_longer(
+                                 cols = c("Light1","Light2",
+                                          "Moist1","Moist2",
+                                          "pH1","pH2",
+                                          "Nitrogen1","Nitrogen2",
+                                          "Phosphorus1","Phosphorus2",
+                                          "Grazing_mowing1","Grazing_mowing2",
+                                          "Soil_disturbance1","Soil_disturbance2"),
+                                 names_to = NULL,
+                                 values_to = "original",
+                                 values_drop_na = FALSE
+                               ) %>%
+                               pull(original)
+  )
+
+head(res.seminat.ASO[,70:76])
+
+
+# summarizing the indicator scores
+res.seminat.ASO %>%
+  group_by(fp_ind) %>%
+  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE))
+
+
+# making the plot
+res.seminat.ASO$NiN_grunntype2 <- substring(res.seminat.ASO$NiN_grunntype,5)
+ggplot(res.seminat.ASO, aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color = NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                     "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
+  xlab("T32 (semi-natural meadow) basic ecosystem type") + 
+  ylab("Scaled indicator value (ASO data)") 
+
+
+
+
+
+
+
+
+
+
 
 
 #### scaled value maps ####
@@ -123,7 +165,7 @@ tm_shape(regnor) +
   tm_borders() +
   tm_shape(res.seminat2) +
   tm_dots('Light1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "pH (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_layout(main.title = "Light index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
                 col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
                 labels = c("0.0 - 0.2", "0.2 - 0.4", "0.4 - 0.6", 
@@ -138,7 +180,7 @@ tm_shape(regnor) +
   tm_borders() +
   tm_shape(res.seminat2) +
   tm_dots('Grazing_mowing1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Moisture index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_layout(main.title = "Grazing_mowing index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
                 col = c(tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE),'grey'),
                 labels = c("0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
@@ -151,12 +193,61 @@ tm_shape(regnor) +
   tm_borders() +
   tm_shape(res.seminat2) +
   tm_dots('pH1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Moisture index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_layout(main.title = "pH index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
                 col = c(tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE),'grey'),
                 labels = c("0.3 - 0.4", "0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
                            "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
                 title = "index values")
+
+
+
+## similarly for ASO
+# keep wide format and add geometry again
+res.seminat.ASO2 <- results.seminat.ASO[['2-sided']]
+st_geometry(res.seminat.ASO2) <- st_geometry(ASO.geo)
+
+#nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
+#  st_as_sf() %>%
+#  st_transform(crs = crs(ANO.geo))
+
+nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
+  st_as_sf() %>%
+  st_transform(crs = st_crs(ANO.geo))
+
+#reg <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/regioner/regNorway_wgs84 - MERGED.shp")%>%
+#  st_as_sf() %>%
+#  st_transform(crs = crs(ANO.geo))
+
+reg <- st_read("data/regions.shp")%>%
+  st_as_sf() %>%
+  st_transform(crs = st_crs(ANO.geo))
+
+# change region names to something R-friendly
+reg$region
+reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway")
+
+regnor <- st_intersection(reg,nor)
+
+## scaled value maps
+
+# Light1 (lower indicator)
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(res.seminat.ASO2) +
+  tm_dots('Light1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
+  tm_layout(main.title = "Light index (lower), seminat.ASO",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
+                labels = c("0.0 - 0.2", "0.2 - 0.4", "0.4 - 0.6", 
+                           "0.6 - 0.8", "0.8 - 1.0", "NA"),
+                title = "index values")
+
+# very few spots on the map with only 2022 data from ASO
+# continue with ANO only
+
+
 
 
 
@@ -766,7 +857,103 @@ legend("topleft", legend=c("reference","field data"), pch=c(NULL,1), lty=1, col=
 
 
 
+## similarly for ASO, here with just Grazing_mowing
+summary(res.seminat.ASO$NiN_grunntype)
+length(levels(res.seminat.ASO$NiN_grunntype))
+# 12 NiN-types, of which C-13 and C-2 have 0 observations -> so, 10 NiN-Types to plot
+colnames(seminat.ref.cov[['Grazing_mowing']])
+
+### Grazing_mowing
+x11()
+par(mfrow=c(3,4))
+# T32-C-1
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C1C2"]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C1',xlab='Grazing_mowing value')
+points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-1",]$original,na.rm=T),
+       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-1",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-1",]$original)),
+       col="red")
+
+# T32-C-3
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C3C4"]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C3',xlab='Grazing_mowing value')
+points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-3",]$original,na.rm=T),
+       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-3",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-3",]$original)),
+       col="red")
+
+# T32-C-4
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C3C4"]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C4',xlab='Grazing_mowing value')
+points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-4",]$original,na.rm=T),
+       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-4",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-4",]$original)),
+       col="red")
+
+# T32-C-5
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C5',xlab='Grazing_mowing value')
+points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-5",]$original,na.rm=T),
+       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-5",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-5",]$original)),
+       col="red")
+
+# T32-C-6
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C21C6a","T32-C21C6b")]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C6',xlab='Grazing_mowing value')
+points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-6",]$original,na.rm=T),
+       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-6",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-6",]$original)),
+       col="red")
+
+# T32-C-7
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C7C8")]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C7',xlab='Grazing_mowing value')
+#points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-7",]$original,na.rm=T),
+#       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-7",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-7",]$original)),
+       col="red")
+
+# T32-C-8
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C7C8")]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C8',xlab='Grazing_mowing value')
+points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-8",]$original,na.rm=T),
+       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-8",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-8",]$original)),
+       col="red")
+
+# T32-C-9
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C9a","T32-C9b")]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C9',xlab='Grazing_mowing value')
+#points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-9",]$original,na.rm=T),
+#       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-9",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-9",]$original)),
+       col="red")
+
+# T32-C-10
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C10a","T32-C10b")]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C10',xlab='Grazing_mowing value')
+#points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-10",]$original,na.rm=T),
+#       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-10",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-10",]$original)),
+       col="red")
 
 
-
+# T32-C-20
+plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
+     xlim=c(1,8), type="l", main='T32-C20',xlab='Grazing_mowing value')
+points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-20",]$original,na.rm=T),
+       type="l", col="red")
+points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-20",]$original,
+       rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Grazing_mowing1" & res.seminat.ASO$NiN_grunntype=="T32-C-20",]$original)),
+       col="red")
 

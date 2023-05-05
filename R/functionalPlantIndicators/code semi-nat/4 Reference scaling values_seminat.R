@@ -69,9 +69,9 @@ tab
 
 # when species lists represent several NiN-types
 tab <- rbind(tab,tab[c(3:5,8,10,16,18),])
-tab$NiN[c(3:5,8,10,16,18,21:27)] <- c("T32-C1","T32-C3","T32_C7","T45-C1",
+tab$NiN[c(3:5,8,10,16,18,21:27)] <- c("T32-C1","T32-C3","T32-C7","T45-C1",
                                       "V10-C1","T32-C5","T32-C21","T32-C2",
-                                      "T32-C4","T32_C8","T45-C2","V10-C2",
+                                      "T32-C4","T32-C8","T45-C2","V10-C2",
                                       "T32-C20","T32-C6")
 tab
 
