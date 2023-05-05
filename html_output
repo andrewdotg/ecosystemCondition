@@ -1,0 +1,1212 @@
+<!-- This is a template for how to document the indicator analyses. 
+
+Make a copy of this file and store it in the root folder (same as where this template is stored) folder. 
+Name the file DRAFT_myIndicatorName.Rmd. 
+
+Because this is a stand-alone Rmd file inside a bookdown project, in order to knit the file for preview purposes,
+you need to type rmarkdown::render("template.Rmd") in the console, 
+as the the usual Ctrl + Alt + k will not work. 
+
+Make sure also to not change the order, or modify the headers, unless you really need to. This is because it
+easier to read the web page as a whole of the indicators are presented using the same layout. 
+
+When the analyses is complete, Anders Kolstad, or someone else, will perform a rapid code review, making sure 
+the analysis is repeatable by someone else. Be therefore very careful to annotate 
+and comment on every step in the analysis. When completed, Anders will make a copy
+of the working file and put it in the same project root folder, but removing the 'DRAFT_' part of the name. 
+After modifying it slightly (mainly removing the top YAML header and updating the rmd_files argument in '_bookdown.yml') 
+the output will become available on the website (https://ninanor.github.io/ecosystemCondition/). -->
+<!-- Examples: 
+
+For an example, see 'indicators/breareal-workingFile.Rmd' 
+and the subsequent 'breareal.Rmd' 
+which again, when rendered, produces this:
+https://ninanor.github.io/ecosystemCondition/areal-av-isbreer.html
+
+Notice the degree of annotation.
+
+-->
+<!-- Replace 'indicator name' with your own indicator name  -->
+<h1>Functional plant indicators (Moisture, Light, pH, Nitrogen)</h1>
+<br />
+<p><em>Author and date:</em>
+Joachim Töpper</p>
+<pre><code class="language-{r}">Sys.Date()
+</code></pre>
+<br />
+<!-- Load all you dependencies here -->
+<pre><code class="language-{r">library(sf)
+library(plyr)
+library(tidyverse)
+library(RColorBrewer)
+library(&quot;gridExtra&quot;) 
+library(ggridges)
+library(tmap)
+library(tmaptools)
+library(raster)
+library(stars)
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+</code></pre>
+<!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
+<pre><code class="language-{r,">Ecosystem &lt;- &quot;våtmark&quot;
+Egenskap  &lt;- c(&quot;Primærproduksjon&quot;,&quot;Abiotiske forhold&quot;)
+ECT       &lt;- &quot;Functional state characteristic&quot;
+Contact   &lt;- &quot;Joachim Töpper&quot;
+</code></pre>
+<pre><code class="language-{r,">metaData &lt;- data.frame(Ecosystem,
+                       &quot;Økologisk egenskap&quot; = Egenskap,
+                       &quot;ECT class&quot; = ECT)
+knitr::kable(metaData)
+</code></pre>
+<!-- Don't remove these three html lines -->
+<br />
+<br />
+<hr />
+<!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
+<h2>Introduction</h2>
+<p>Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from ‘generalized species lists’ underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional type indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper &amp; Jakobsson 2021).</p>
+<h2>About the underlying data</h2>
+<p>In the ‘plant functional indicator’ project for wetlands, we use three sets of data for building indicators for ecological condition:</p>
+<ul>
+<li>as test data we use plant community data from the ANO monitoring scheme (cf. Tingstad et al. 2019)</li>
+<li>as reference data we use generalized species lists from the Norwegian categorization system for eco-diversity (NiN) (cf. Halvorsen et al. 2020)</li>
+<li>Swedish plant indicator data for light, moisture, pH, and nitrogen from Tyler et al. (2021)</li>
+</ul>
+<p>(1) ANO monitoring data:
+ANO stands for ‘areal-representativ naturovervåking’, i.e. ‘area representative nature monitoring’. 1000 sites are randomly distributed across mainland Norway and visitied within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the wetland-analysis in this document, we only use the plots which were classified as one of the wetland ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
+In the analysis in this document, we use the data available on Miljødirektoratets kartkatalog (<a href="https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054">https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054</a>), which comprises data from the first three ANO-years, 2019-2021, and a total of 8887 plots in 498 sites.</p>
+<p>(2) NiN reference data:
+The generalized species lists underlying the ecosystem categorization in NiN represent expert-compiled species lists based on empirical evidence from the literature and expert knowledge of the systems and their species. In these lists, every species is assigned an abundance value on a 6-step scale, with each step representing a range for the ‘expected combination of frequency and cover’ of occurrence (1: &lt; 1/32, 2: 1/32 - ⅛ , 3: ⅛ - ⅜, 4: ⅜ - ⅘, 5: ⅜ - ⅘ + dominance, 6: &gt; ⅘). For the purpose of this project, these steps are simplified to maximum ‘expected combination of frequency and cover’, whereby steps 4 &amp; 5 are assigned 0.6 and 0.8, respectively, in order to distinguish between them.</p>
+<p>(3) The Swedish plant indicator set published by Tyler et al. (2021) contains a large collection of plant indicators based on the Swedish flora, which is well representative of the Norwegian flora as well. From this set, we decided to include indicator data for light, moisture, pH, and nitrogen for wetlands as these are thought to be subject to potential change due to shrub/tree encroachment, drainage, and pollution.</p>
+<h3>Representativity in time and space</h3>
+<p>For wetlands, the ANO data contain 1351 plots in 330 sites, in principle distributed randomly across the country. As wetlands occur more often in certain regions of Norway than in others, the amount of plots and sites is not equal among Norway’s five regions. The 1351 plots are distributed across regions in the following way:</p>
+<ul>
+<li>Northern Norway: 416</li>
+<li>Central Norway:  362</li>
+<li>Eastern Norway:  295</li>
+<li>Western Norway:  151</li>
+<li>Southern Norway: 127</li>
+</ul>
+<h3>Temporal coverage</h3>
+<p>The evaluation data cover the first three years, 2019-2021, of the first 5-year-cycle in the ANO monitoring scheme. Thus there is no actual time series to these data, and the indicator evaluation does therefore not include any temporal analyses.</p>
+<h2>Collinearities with other indicators</h2>
+<!-- Text here -->
+<h2>Reference state and values</h2>
+<h3>Reference state</h3>
+<p>The reference state is defined via the functional signature of the generalized species lists in NiN (see also Töpper et al. 2018). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for ecosystem sub-types (“grunntyper” or “kartleggingsenheter” at a 1:5000 mapping scale) within the main wetland types in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).</p>
+<h3>Reference values, thresholds for defining <em>good ecological condition</em>, minimum and/or maximum values</h3>
+<p>In this analysis, we derive scaling values from statistical (here, non-parametric) distributions (see Jakobsson et al. 2010). For each ecosystem sub-type and plant functional indicator, the reference value is defined as the median value of the indicator value distribution. As in most cases the distributions naturally are two-sided (but see the Heat-requirement indicator in the mountain assessment for an example of a one-sided plant functional indicator, Fremstad et al. 2022), and deviation from the optimal state thus may occur in both direction (e.g. indicating too low or too high pH), we need to define two threshold values for good ecological condition as well as both a minimum and maximum value. In line with previous assessments of ecological condition for Norwegian forests and mountains, we define a lower and an upper threshold value via the 95% confidence interval of the reference distribution, i.e. its 0.025 and 0.975 quantiles. The minimum and maximum values are given by the minimum and maximum of the possible indicator values for each respective plant functional indicator. For details on the scaling principles in IBECA, please see Töpper &amp; Jakobsson (2021).</p>
+<h2>Uncertainties</h2>
+<p>We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area.</p>
+<h2>References</h2>
+<p>Diekmann, M. 2003. Species indicator values as an important tool in applied plant ecology - a review. Basic and Applied Ecology 4: 493-506, doi:10.1078/1439-1791-00185</p>
+<p>Framstad, E., Kolstad, A. L., Nybø, S., Töpper, J. &amp; Vandvik, V. 2022. The condition of forest and mountain ecosystems in Norway. Assessment by the IBECA method. NINA Report 2100. Norwegian Institute for Nature Research.</p>
+<p>Halvorsen, R., Skarpaas, O., Bryn, A., Bratli, H., Erikstad, L., Simensen, T., &amp; Lieungh, E. (2020). Towards a systematics of ecodiversity: The EcoSyst framework. Global Ecology and Biogeography, 29(11), 1887-1906. doi:10.1111/geb.13164</p>
+<p>Jakobsson, S., Töpper, J.P., Evju, M., Framstad, E., Lyngstad, A., Pedersen, B., Sickel, H., Sverdrup-Thygeson, A., Vandvik. V., Velle, L.G., Aarrestad, P.A. &amp; Nybø, S. 2020. Setting reference levels and limits for good ecological condition in terrestrial ecosystems. Insights from a case study based on the IBECA approach. Ecological Indicators 116: 106492.</p>
+<p>Jakobsson, S., Evju, M., Framstad, E., Imbert, A., Lyngstad, A., Sickel, H., Sverdrup-Thygeson, A., Töpper, J., Vandvik, V., Velle, L.G., Aarrestad, P.A. &amp; Nybø, S. 2021. An index-based assessment of ecological condition and its links to international frameworks. Ecological Indicators 124: 107252.</p>
+<p>Tingstad, L., Evju, M., Sickel, H., &amp; Töpper, J. 2019. Utvikling av nasjonal arealrepresentativ naturovervåking (ANO). Forslag til gjennomføring, protokoller og kostnadsvurderinger med utgangspunkt i erfaringer fra uttesting i Trøndelag. NINA Rapport 1642.</p>
+<p>Töpper, J. &amp; Jakobsson, S. 2021. The Index-Based Ecological Condition Assessment (IBECA) - Technical protocol, version 1.0. NINA Report 1967. Norwegian Institute for Nature Research.</p>
+<p>Töpper, J., Velle, L.G. &amp; Vandvik, V. 2018. Developing a method for assessment of ecological state based on indicator values after Ellenberg and Grime (revised edition). NINA Report 1529b. Norwegian Institute for Nature Research.</p>
+<p>Tyler, T., Herbertsson, L., Olofsson, J., &amp; Olsson, P. A. 2021. Ecological indicator and traits values for Swedish vascular plants. Ecological In-dicators, 120. doi:10.1016/j.ecolind.2020.106923</p>
+<h2>Analyses</h2>
+<h3>Data sets</h3>
+<p>ANO data</p>
+<pre><code class="language-{r,"># Add data from cache
+ANO.sp&lt;-readRDS(paste0(here::here(),&quot;/data/cache/ANO.sp.RDS&quot;))
+ANO.geo&lt;-readRDS(paste0(here::here(),&quot;/data/cache/ANO.geo.RDS&quot;))
+
+# st_layers(dsn = &quot;/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb&quot;)
+# ANO.sp &lt;- st_read(&quot;/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb&quot;,
+#                    layer=&quot;ANO_Art&quot;)
+# ANO.geo &lt;- st_read(&quot;/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb&quot;,
+#                   layer=&quot;ANO_SurveyPoint&quot;)
+# head(ANO.sp)
+# head(ANO.geo)
+</code></pre>
+<p>Plant indicators from Tyler et al. (2021)</p>
+<pre><code class="language-{r,">## Tyler indicator data
+## data from cache
+ind.dat &lt;-readRDS(paste0(here::here(),&quot;/data/cache/ind.dat.RDS&quot;))
+# ind.dat &lt;- read.table(&quot;/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt&quot;,
+#                         sep = '\t', header=T, quote = '')
+# head(ind.dat)
+
+</code></pre>
+<p>Generalized species lists NiN</p>
+<pre><code class="language-{r,"># data from cache
+Eco_State&lt;-readRDS(paste0(here::here(),&quot;/data/cache/Eco_State.RDS&quot;))
+# load(&quot;/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/functional plant indicators/reference from NiN/Eco_State.RData&quot;)
+# str(Eco_State)
+</code></pre>
+<h4>Data handling</h4>
+<ul>
+<li>Checking for errors</li>
+<li>Checking species nomenclature in the different species lists to make species and indicator data possible to merge</li>
+<li>Merging indicator data with monitoring data and indicator data with reference data
+(not shown here, but documented in the code)</li>
+</ul>
+<pre><code class="language-{r,">
+### Plant indicator data
+names(ind.dat)
+names(ind.dat)[1] &lt;- 'species'
+ind.dat$species &lt;- as.factor(ind.dat$species)
+summary(ind.dat$species)
+ind.dat &lt;- ind.dat[!is.na(ind.dat$species),] # removing species-NAs
+ind.dat[,'species.orig'] &lt;- ind.dat[,'species'] # make a backup of the original species variable
+ind.dat[,'species'] &lt;- word(ind.dat[,'species'], 1,2) # trimming away sub-species &amp; co, and descriptor info
+
+# the trimming above leaves some duplicates that need to be taken care of
+ind.dat[duplicated(ind.dat[,'species']),&quot;species&quot;]
+ind.dat.dup &lt;- ind.dat[duplicated(ind.dat[,'species']),&quot;species&quot;]
+ind.dat[ind.dat$species %in% ind.dat.dup,c(&quot;Light&quot;,&quot;Moisture&quot;,&quot;Soil_reaction_pH&quot;,&quot;Nitrogen&quot;,&quot;species.orig&quot;,&quot;species&quot;)]
+ind.dat &lt;- ind.dat %&gt;% filter( !(species.orig %in% list(&quot;Ammophila arenaria x Calamagrostis epigejos&quot;,
+                                                            &quot;Anemone nemorosa x ranunculoides&quot;,
+                                                            &quot;Armeria maritima ssp. elongata&quot;,
+                                                            &quot;Asplenium trichomanes ssp. quadrivalens&quot;,
+                                                            &quot;Calystegia sepium ssp. spectabilis&quot;,
+                                                            &quot;Campanula glomerata 'Superba'&quot;,
+                                                            &quot;Dactylorhiza maculata ssp. fuchsii&quot;,
+                                                            &quot;Erigeron acris ssp. droebachensis&quot;,
+                                                            &quot;Erigeron acris ssp. politus&quot;,
+                                                            &quot;Erysimum cheiranthoides L. ssp. alatum&quot;,
+                                                            &quot;Euphrasia nemorosa x stricta var. brevipila&quot;,
+                                                            &quot;Galium mollugo x verum&quot;,
+                                                            &quot;Geum rivale x urbanum&quot;,
+                                                            &quot;Hylotelephium telephium (ssp. maximum)&quot;,
+                                                            &quot;Juncus alpinoarticulatus ssp. rariflorus&quot;,
+                                                            &quot;Lamiastrum galeobdolon ssp. argentatum&quot;,
+                                                            &quot;Lathyrus latifolius ssp. heterophyllus&quot;,
+                                                            &quot;Medicago sativa ssp. falcata&quot;,
+                                                            &quot;Medicago sativa ssp. x varia&quot;,
+                                                            &quot;Monotropa hypopitys ssp. hypophegea&quot;,
+                                                            &quot;Ononis spinosa ssp. hircina&quot;,
+                                                            &quot;Ononis spinosa ssp. procurrens&quot;,
+                                                            &quot;Pilosella aurantiaca ssp. decolorans&quot;,
+                                                            &quot;Pilosella aurantiaca ssp. dimorpha&quot;,
+                                                            &quot;Pilosella cymosa ssp. gotlandica&quot;,
+                                                            &quot;Pilosella cymosa ssp. praealta&quot;,
+                                                            &quot;Pilosella officinarum ssp. peleteranum&quot;,
+                                                            &quot;Poa x jemtlandica (Almq.) K. Richt.&quot;,
+                                                            &quot;Poa x herjedalica Harry Sm.&quot;,
+                                                            &quot;Ranunculus peltatus ssp. baudotii&quot;,
+                                                            &quot;Sagittaria natans x sagittifolia&quot;,
+                                                            &quot;Salix repens ssp. rosmarinifolia&quot;,
+                                                            &quot;Stellaria nemorum L. ssp. montana&quot;,
+                                                            &quot;Trichophorum cespitosum ssp. germanicum&quot;)
+) )
+
+# checking duplicates again
+ind.dat[duplicated(ind.dat[,'species']),&quot;species&quot;]
+ind.dat.dup &lt;- ind.dat[duplicated(ind.dat[,'species']),&quot;species&quot;]
+ind.dat[ind.dat$species %in% ind.dat.dup,c(&quot;Light&quot;,&quot;Moisture&quot;,&quot;Soil_reaction_pH&quot;,&quot;Nitrogen&quot;,&quot;species.orig&quot;,&quot;species&quot;)]
+# getting rid of sect. for Hieracium
+ind.dat &lt;- ind.dat %&gt;% mutate(species=gsub(&quot;sect. &quot;,&quot;&quot;,species.orig))
+ind.dat[,'species'] &lt;- word(ind.dat[,'species'], 1,2)
+
+ind.dat[duplicated(ind.dat[,'species']),&quot;species&quot;]
+ind.dat.dup &lt;- ind.dat[duplicated(ind.dat[,'species']),&quot;species&quot;]
+ind.dat[ind.dat$species %in% ind.dat.dup,c(&quot;Light&quot;,&quot;Moisture&quot;,&quot;Soil_reaction_pH&quot;,&quot;Nitrogen&quot;,&quot;species.orig&quot;,&quot;species&quot;)]
+# only hybrids left -&gt; get rid of these
+ind.dat &lt;- ind.dat[!duplicated(ind.dat[,'species']),]
+ind.dat[duplicated(ind.dat[,'species']),&quot;species&quot;]
+
+ind.dat$species &lt;- as.factor(ind.dat$species)
+summary(ind.dat$species)
+# no duplicates left
+
+head(ind.dat)
+
+
+
+### ANO monitoring data
+
+head(ANO.sp)
+head(ANO.geo)
+
+## fix NiN information
+ANO.geo$hovedtype_rute &lt;- substr(ANO.geo$kartleggingsenhet_1m2,1,3) # take the 3 first characters
+ANO.geo$hovedtype_rute &lt;- gsub(&quot;-&quot;, &quot;&quot;, ANO.geo$hovedtype_rute) # remove hyphen
+unique(as.factor(ANO.geo$hovedtype_rute))
+
+## fix NiN-variables
+colnames(ANO.geo)
+colnames(ANO.geo)[42:47] &lt;- c(&quot;groeftingsintensitet&quot;,
+                              &quot;bruksintensitet&quot;,
+                              &quot;beitetrykk&quot;,
+                              &quot;slatteintensitet&quot;,
+                              &quot;tungekjoretoy&quot;,
+                              &quot;slitasje&quot;)
+head(ANO.geo)
+
+# remove variable code in the data
+ANO.geo$groeftingsintensitet &lt;- gsub(&quot;7GR-GI_&quot;, &quot;&quot;, ANO.geo$groeftingsintensitet) 
+unique(ANO.geo$groeftingsintensitet)
+ANO.geo$groeftingsintensitet &lt;- gsub(&quot;X&quot;, &quot;NA&quot;, ANO.geo$groeftingsintensitet)
+unique(ANO.geo$groeftingsintensitet)
+ANO.geo$groeftingsintensitet &lt;- as.numeric(ANO.geo$groeftingsintensitet)
+unique(ANO.geo$groeftingsintensitet)
+
+ANO.geo$bruksintensitet &lt;- gsub(&quot;7JB-BA_&quot;, &quot;&quot;, ANO.geo$bruksintensitet) 
+unique(ANO.geo$bruksintensitet)
+ANO.geo$bruksintensitet &lt;- gsub(&quot;X&quot;, &quot;NA&quot;, ANO.geo$bruksintensitet)
+unique(ANO.geo$bruksintensitet)
+ANO.geo$bruksintensitet &lt;- as.numeric(ANO.geo$bruksintensitet)
+unique(ANO.geo$bruksintensitet)
+
+ANO.geo$beitetrykk &lt;- gsub(&quot;7JB-BT_&quot;, &quot;&quot;, ANO.geo$beitetrykk) 
+unique(ANO.geo$beitetrykk)
+ANO.geo$beitetrykk &lt;- gsub(&quot;X&quot;, &quot;NA&quot;, ANO.geo$beitetrykk)
+unique(ANO.geo$beitetrykk)
+ANO.geo$beitetrykk &lt;- as.numeric(ANO.geo$beitetrykk)
+unique(ANO.geo$beitetrykk)
+
+ANO.geo$slatteintensitet &lt;- gsub(&quot;7JB-SI_&quot;, &quot;&quot;, ANO.geo$slatteintensitet) 
+unique(ANO.geo$slatteintensitet)
+ANO.geo$slatteintensitet &lt;- gsub(&quot;X&quot;, &quot;NA&quot;, ANO.geo$slatteintensitet)
+unique(ANO.geo$slatteintensitet)
+ANO.geo$slatteintensitet &lt;- as.numeric(ANO.geo$slatteintensitet)
+unique(ANO.geo$slatteintensitet)
+
+ANO.geo$tungekjoretoy &lt;- gsub(&quot;7TK_&quot;, &quot;&quot;, ANO.geo$tungekjoretoy) 
+unique(ANO.geo$tungekjoretoy)
+ANO.geo$tungekjoretoy &lt;- gsub(&quot;X&quot;, &quot;NA&quot;, ANO.geo$tungekjoretoy)
+unique(ANO.geo$tungekjoretoy)
+ANO.geo$tungekjoretoy &lt;- as.numeric(ANO.geo$tungekjoretoy)
+unique(ANO.geo$tungekjoretoy)
+
+ANO.geo$slitasje &lt;- gsub(&quot;7SE_&quot;, &quot;&quot;, ANO.geo$slitasje) 
+unique(ANO.geo$slitasje)
+ANO.geo$slitasje &lt;- gsub(&quot;X&quot;, &quot;NA&quot;, ANO.geo$slitasje)
+unique(ANO.geo$slitasje)
+ANO.geo$slitasje &lt;- as.numeric(ANO.geo$slitasje)
+unique(ANO.geo$slitasje)
+
+## check that every point is present only once
+length(levels(as.factor(ANO.geo$ano_flate_id)))
+length(levels(as.factor(ANO.geo$ano_punkt_id)))
+summary(as.factor(ANO.geo$ano_punkt_id))
+# there's many double presences, probably some wrong registrations of point numbers,
+# but also double registrations (e.g. ANO0159_55)
+# CHECK THIS when preparing ecosystem-datasets for scaling
+
+
+
+
+# fix species names
+ANO.sp$Species &lt;- ANO.sp$art_navn
+unique(as.factor(ANO.sp$Species))
+ANO.sp[,'Species'] &lt;- word(ANO.sp[,'Species'], 1,2) # lose subspecies
+ANO.sp$Species &lt;- str_to_title(ANO.sp$Species) # make first letter capital
+ANO.sp$Species &lt;- gsub(&quot;( .*)&quot;,&quot;\\L\\1&quot;,ANO.sp$Species,perl=TRUE) # make capital letters after hyphen to lowercase
+ANO.sp$Species &lt;- gsub(&quot;( .*)&quot;,&quot;\\L\\1&quot;,ANO.sp$Species,perl=TRUE) # make capital letters after space to lowercase
+
+## merge species data with indicators
+ANO.sp.ind &lt;- merge(x=ANO.sp[,c(&quot;Species&quot;, &quot;art_dekning&quot;, &quot;ParentGlobalID&quot;)], 
+                y= ind.dat[,c(&quot;species&quot;, &quot;Light&quot;, &quot;Moisture&quot;, &quot;Soil_reaction_pH&quot;, &quot;Nitrogen&quot;)],
+                by.x=&quot;Species&quot;, by.y=&quot;species&quot;, all.x=T)
+summary(ANO.sp.ind)
+
+
+## checking which species didn't find a match
+unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
+
+# fix species name issues
+ind.dat &lt;- ind.dat %&gt;% 
+  mutate(species=str_replace(species,&quot;Aconitum lycoctonum&quot;, &quot;Aconitum septentrionale&quot;)) %&gt;% 
+  mutate(species=str_replace(species,&quot;Carex simpliciuscula&quot;, &quot;Kobresia simpliciuscula&quot;)) %&gt;%
+  mutate(species=str_replace(species,&quot;Carex myosuroides&quot;, &quot;Kobresia myosuroides&quot;)) %&gt;%
+  mutate(species=str_replace(species,&quot;Clinopodium acinos&quot;, &quot;Acinos arvensis&quot;)) %&gt;%
+  mutate(species=str_replace(species,&quot;Artemisia rupestris&quot;, &quot;Artemisia norvegica&quot;)) %&gt;%
+  mutate(species=str_replace(species,&quot;Cherleria biflora&quot;, &quot;Minuartia biflora&quot;))
+
+ANO.sp &lt;- ANO.sp %&gt;% 
+  mutate(Species=str_replace(Species,&quot;Arctous alpinus&quot;, &quot;Arctous alpina&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Betula tortuosa&quot;, &quot;Betula pubescens&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Blysmopsis rufa&quot;, &quot;Blysmus rufus&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Cardamine nymanii&quot;, &quot;Cardamine pratensis&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Carex adelostoma&quot;, &quot;Carex buxbaumii&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Carex leersii&quot;, &quot;Carex echinata&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Carex paupercula&quot;, &quot;Carex magellanica&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Carex simpliciuscula&quot;, &quot;Kobresia simpliciuscula&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Carex viridula&quot;, &quot;Carex flava&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Chamaepericlymenum suecicum&quot;, &quot;Cornus suecia&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Cicerbita alpina&quot;, &quot;Lactuca alpina&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Empetrum hermaphroditum&quot;, &quot;Empetrum nigrum&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Festuca prolifera&quot;, &quot;Festuca rubra&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Galium album&quot;, &quot;Galium mollugo&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Galium elongatum&quot;, &quot;Galium palustre&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Helictotrichon pratense&quot;, &quot;Avenula pratensis&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Helictotrichon pubescens&quot;, &quot;Avenula pubescens&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium alpina&quot;, &quot;Hieracium Alpina&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium alpinum&quot;, &quot;Hieracium Alpina&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium hieracium&quot;, &quot;Hieracium Hieracium&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium hieracioides&quot;, &quot;Hieracium umbellatum&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium murorum&quot;, &quot;Hieracium Vulgata&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium oreadea&quot;, &quot;Hieracium Oreadea&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium prenanthoidea&quot;, &quot;Hieracium Prenanthoidea&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium vulgata&quot;, &quot;Hieracium Vulgata&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium pilosella&quot;, &quot;Pilosella officinarum&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hieracium vulgatum&quot;, &quot;Hieracium umbellatum&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hierochloã« alpina&quot;, &quot;Hierochloë alpina&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hierochloã« hirta&quot;, &quot;Hierochloë hirta&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Hierochloã« odorata&quot;, &quot;Hierochloë odorata&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Listera cordata&quot;, &quot;Neottia cordata&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Leontodon autumnalis&quot;, &quot;Scorzoneroides autumnalis&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Loiseleuria procumbens&quot;, &quot;Kalmia procumbens&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Mycelis muralis&quot;, &quot;Lactuca muralis&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Omalotheca supina&quot;, &quot;Gnaphalium supinum&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Omalotheca norvegica&quot;, &quot;Gnaphalium norvegicum&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Omalotheca sylvatica&quot;, &quot;Gnaphalium sylvaticum&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Oreopteris limbosperma&quot;, &quot;Thelypteris limbosperma&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Oxycoccus microcarpus&quot;, &quot;Vaccinium microcarpum&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Oxycoccus palustris&quot;, &quot;Vaccinium oxycoccos&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Phalaris minor&quot;, &quot;Phalaris arundinacea&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Pinus unicinata&quot;, &quot;Pinus mugo&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Poa alpigena&quot;, &quot;Poa pratensis&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Poa angustifolia&quot;, &quot;Poa pratensis&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Pyrola grandiflora&quot;, &quot;Pyrola rotundifolia&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Rumex alpestris&quot;, &quot;Rumex acetosa&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Syringa emodi&quot;, &quot;Syringa vulgaris&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Taraxacum crocea&quot;, &quot;Taraxacum officinale&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Taraxacum croceum&quot;, &quot;Taraxacum officinale&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Trientalis europaea&quot;, &quot;Lysimachia europaea&quot;)) %&gt;%
+  mutate(Species=str_replace(Species,&quot;Trifolium pallidum&quot;, &quot;Trifolium pratense&quot;))
+
+## merge species data with indicators
+ANO.sp.ind &lt;- merge(x=ANO.sp[,c(&quot;Species&quot;, &quot;art_dekning&quot;, &quot;ParentGlobalID&quot;)], 
+                    y= ind.dat[,c(&quot;species&quot;, &quot;Light&quot;, &quot;Moisture&quot;, &quot;Soil_reaction_pH&quot;, &quot;Nitrogen&quot;)],
+                    by.x=&quot;Species&quot;, by.y=&quot;species&quot;, all.x=T)
+summary(ANO.sp.ind)
+# checking which species didn't find a match
+unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
+# don't find synonyms for these in the ind lists
+
+## trimming away the points without information on NiN, species or cover
+ANO.sp.ind &lt;- ANO.sp.ind[!is.na(ANO.sp.ind$Species),]
+ANO.sp.ind &lt;- ANO.sp.ind[!is.na(ANO.sp.ind$art_dekning),]
+
+
+summary(ANO.sp.ind)
+head(ANO.sp.ind)
+rm(ANO.sp)
+
+
+### NiN reference data - data handling
+
+## generalized species lists from NiN
+str(Eco_State)
+
+# species
+Eco_State$Concept_Data$Species$Species_List$species
+# environments
+t(Eco_State$Concept_Data$Env$Env_Data)
+# abundances
+t(Eco_State$Concept_Data$Species$Species_Data)
+
+## transposing abundance data
+NiN.sp &lt;- t(Eco_State$Concept_Data$Species$Species_Data)
+NiN.sp &lt;- as.data.frame(NiN.sp)
+NiN.sp$sp &lt;- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$species))
+# only genus and species name
+NiN.sp$sp &lt;- word(NiN.sp$sp, 1,2)
+NiN.sp$spgr &lt;- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$art.code))
+# if relevant, trimming to desired species groups (for forests e.g. removing trees)
+#NiN.sp &lt;- NiN.sp[NiN.sp$spgr!=&quot;a1a&quot;,]
+
+## environment data
+NiN.env &lt;- Eco_State$Concept_Data$Env$Env_Data
+
+## merging with indicator values
+NiN.sp.ind &lt;- merge(NiN.sp,ind.dat, by.x=&quot;sp&quot;, by.y=&quot;species&quot;, all.x=T)
+summary(NiN.sp.ind)
+
+NiN.sp.ind[NiN.sp.ind==999] &lt;- NA
+
+## checking which species didn't find a match
+unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) &amp; NiN.sp.ind$spgr %in% list(&quot;a1a&quot;,&quot;a1b&quot;,&quot;a1c&quot;),'sp'])
+
+## fix species name issues
+ind.dat &lt;- ind.dat %&gt;% 
+  mutate(species=str_replace(species,&quot;Aconitum lycoctonum&quot;, &quot;Aconitum septentrionale&quot;)) %&gt;% 
+  mutate(species=str_replace(species,&quot;Carex simpliciuscula&quot;, &quot;Kobresia simpliciuscula&quot;)) %&gt;%
+  mutate(species=str_replace(species,&quot;Carex myosuroides&quot;, &quot;Kobresia myosuroides&quot;)) %&gt;%
+  mutate(species=str_replace(species,&quot;Clinopodium acinos&quot;, &quot;Acinos arvensis&quot;)) %&gt;%
+  mutate(species=str_replace(species,&quot;Artemisia rupestris&quot;, &quot;Artemisia norvegica&quot;)) %&gt;%
+  mutate(species=str_replace(species,&quot;Cherleria biflora&quot;, &quot;Minuartia biflora&quot;))
+
+NiN.sp &lt;- NiN.sp %&gt;% 
+  mutate(sp=str_replace(sp,&quot;Aconitum lycoctonum&quot;, &quot;Aconitum septentrionale&quot;)) %&gt;% 
+  mutate(sp=str_replace(sp,&quot;Anagallis minima&quot;, &quot;Lysimachia minima&quot;)) %&gt;% 
+  mutate(sp=str_replace(sp,&quot;Arctous alpinus&quot;, &quot;Arctous alpina&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Betula tortuosa&quot;, &quot;Betula pubescens&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Blysmopsis rufa&quot;, &quot;Blysmus rufus&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Cardamine nymanii&quot;, &quot;Cardamine pratensis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Carex adelostoma&quot;, &quot;Carex buxbaumii&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Carex leersii&quot;, &quot;Carex echinata&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Carex paupercula&quot;, &quot;Carex magellanica&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Carex simpliciuscula&quot;, &quot;Kobresia simpliciuscula&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Carex _vacillans&quot;, &quot;Carex vacillans&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Carex viridula&quot;, &quot;Carex flava&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Chamaepericlymenum suecicum&quot;, &quot;Cornus suecia&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Cornus suecia&quot;, &quot;Cornus suecica&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Cicerbita alpina&quot;, &quot;Lactuca alpina&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Dactylorhiza sphagnicola&quot;, &quot;Dactylorhiza majalis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Diphasiastrum complanatum&quot;, &quot;Lycopodium complanatum&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Elymus alaskanus&quot;, &quot;Elymus kronokensis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Empetrum hermaphroditum&quot;, &quot;Empetrum nigrum&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Erigeron eriocephalus&quot;, &quot;Erigeron uniflorus&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Festuca prolifera&quot;, &quot;Festuca rubra&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Galium album&quot;, &quot;Galium mollugo&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Galium elongatum&quot;, &quot;Galium palustre&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Glaux maritima&quot;, &quot;Lysimachia maritima&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Helictotrichon pratense&quot;, &quot;Avenula pratensis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Helictotrichon pubescens&quot;, &quot;Avenula pubescens&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium alpina&quot;, &quot;Hieracium Alpina&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium alpinum&quot;, &quot;Hieracium Alpina&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium aurantiacum&quot;, &quot;Pilosella aurantiaca&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium hieracium&quot;, &quot;Hieracium Hieracium&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium hieracioides&quot;, &quot;Hieracium umbellatum&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium lactucella&quot;, &quot;Pilosella lactucella&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium murorum&quot;, &quot;Hieracium Vulgata&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium oreadea&quot;, &quot;Hieracium Oreadea&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium prenanthoidea&quot;, &quot;Hieracium Prenanthoidea&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium vulgata&quot;, &quot;Hieracium Vulgata&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium pilosella&quot;, &quot;Pilosella officinarum&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hieracium vulgatum&quot;, &quot;Hieracium umbellatum&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hierochloã« alpina&quot;, &quot;Hierochloë alpina&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hierochloã« hirta&quot;, &quot;Hierochloë hirta&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hierochloã« odorata&quot;, &quot;Hierochloë odorata&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Huperzia appressa&quot;, &quot;Huperzia selago&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Hylotelephium maximum&quot;, &quot;Hylotelephium telephium&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Lappula myosotis&quot;, &quot;Lappula squarrosa&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Lepidotheca suaveolens&quot;, &quot;Matricaria discoidea&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Listera cordata&quot;, &quot;Neottia cordata&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Leontodon autumnalis&quot;, &quot;Scorzoneroides autumnalis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Loiseleuria procumbens&quot;, &quot;Kalmia procumbens&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Logfia arvensis&quot;, &quot;Filago arvensis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Mentha _verticillata&quot;, &quot;Mentha verticillata&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Minuartia rubella&quot;, &quot;Sabulina rubella&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Minuartia stricta&quot;, &quot;Sabulina stricta&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Mycelis muralis&quot;, &quot;Lactuca muralis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Omalotheca supina&quot;, &quot;Gnaphalium supinum&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Omalotheca norvegica&quot;, &quot;Gnaphalium norvegicum&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Omalotheca sylvatica&quot;, &quot;Gnaphalium sylvaticum&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Ononis arvensis&quot;, &quot;Ononis spinosa&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Oreopteris limbosperma&quot;, &quot;Thelypteris limbosperma&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Oxycoccus microcarpus&quot;, &quot;Vaccinium microcarpum&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Oxycoccus palustris&quot;, &quot;Vaccinium oxycoccos&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Phalaris minor&quot;, &quot;Phalaris arundinacea&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Phalaroides arundinacea&quot;, &quot;Phalaris arundinacea&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Pinus unicinata&quot;, &quot;Pinus mugo&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Platanthera montana&quot;, &quot;Platanthera chlorantha&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Poa alpigena&quot;, &quot;Poa pratensis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Poa angustifolia&quot;, &quot;Poa pratensis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Poa laxa&quot;, &quot;Poa flexuosa&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Poa _herjedalica&quot;, &quot;Poa herjedalica&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Poa _jemtlandica&quot;, &quot;Poa jemtlandica&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Poa lindebergii&quot;, &quot;Poa arctica&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Pyrola grandiflora&quot;, &quot;Pyrola rotundifolia&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Rhamnus catharticus&quot;, &quot;Rhamnus cathartica&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Rumex alpestris&quot;, &quot;Rumex acetosa&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Salix _fragilis&quot;, &quot;Salix fragilis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Saxifraga _opdalensis&quot;, &quot;Saxifraga opdalensis&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Spergularia salina&quot;, &quot;Spergularia marina&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Syringa emodi&quot;, &quot;Syringa vulgaris&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Taraxacum crocea&quot;, &quot;Taraxacum officinale&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Taraxacum croceum&quot;, &quot;Taraxacum officinale&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Taraxacum erythrospermum&quot;, &quot;Taraxacum officinale&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Taraxacum hamatum&quot;, &quot;Taraxacum officinale&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Trientalis europaea&quot;, &quot;Lysimachia europaea&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Trifolium pallidum&quot;, &quot;Trifolium pratense&quot;)) %&gt;%
+  mutate(sp=str_replace(sp,&quot;Vicia orobus&quot;, &quot;Vicia cassubica&quot;))
+
+
+## merge species data with indicators
+NiN.sp.ind &lt;- merge(NiN.sp,ind.dat, by.x=&quot;sp&quot;, by.y=&quot;species&quot;, all.x=T)
+summary(NiN.sp.ind)
+
+NiN.sp.ind[NiN.sp.ind==999] &lt;- NA
+
+# checking which species didn't find a match
+unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) &amp; NiN.sp.ind$spgr %in% list(&quot;a1a&quot;,&quot;a1b&quot;,&quot;a1c&quot;),'sp'])
+# ok now
+
+## matching with NiN ecosystem types - for wetlands
+# NB! beware of rogue spaces in the 'Nature_type' &amp; 'Sub_Type' variables, e.g. &quot;Spring_Forest &quot;
+NiN.wetland &lt;- NiN.sp.ind[,c(&quot;sp&quot;,paste(NiN.env[NiN.env$Nature_Type==&quot;Mire&quot;,&quot;ID&quot;]),colnames(ind.dat)[15:18])]   # Light, Moisture, Soil_reaction_pH, Nitrogen
+NiN.wetland[1,]
+names(NiN.wetland)
+
+cbind(colnames(NiN.wetland),
+      c(&quot;&quot;,
+        'V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
+        'V1-C1a','V1-C1b','V1-C1c','V1-C1d','V1-C1e',
+        'V1-C2a','V1-C2b','V1-C2c','V1-C2d',
+        'V1-C3a','V1-C3b','V1-C3c','V1-C3d',
+        'V1-C4a','V1-C4b','V1-C4c','V1-C4d',
+        'V1-C4e','V1-C4f','V1-C4g','V1-C4h',
+        'V3-C2','V1-C5',
+        'V1-C6a','V1-C6b',
+        'V1-C7a','V1-C7b',
+        'V1-C8a','V1-C8b',
+        'V2-C1a','V2-C1b',
+        'V2-C2a','V2-C2b',
+        'V2-C3a','V2-C3b',
+        &quot;V4-C2&quot;,&quot;V4-C3&quot;,
+        &quot;&quot;,&quot;&quot;,
+        'V8-C1','V8-C2','V8-C3',
+        rep(&quot;&quot;,10),
+        rep(&quot;&quot;,4)
+      )
+)
+
+NiN.wetland &lt;- NiN.wetland[,c(1:43,46:48,59:62)]
+colnames(NiN.wetland)[2:46] &lt;- c('V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
+                              'V1-C1a','V1-C1b','V1-C1c','V1-C1d','V1-C1e',
+                              'V1-C2a','V1-C2b','V1-C2c','V1-C2d',
+                              'V1-C3a','V1-C3b','V1-C3c','V1-C3d',
+                              'V1-C4a','V1-C4b','V1-C4c','V1-C4d',
+                              'V1-C4e','V1-C4f','V1-C4g','V1-C4h',
+                              'V3-C2','V1-C5',
+                              'V1-C6a','V1-C6b',
+                              'V1-C7a','V1-C7b',
+                              'V1-C8a','V1-C8b',
+                              'V2-C1a','V2-C1b',
+                              'V2-C2a','V2-C2b',
+                              'V2-C3a','V2-C3b',
+                              'V4-C2','V4-C3',
+                              'V8-C1','V8-C2','V8-C3'
+)
+head(NiN.wetland)
+
+
+# translating the abundance classes into %-cover
+coverscale &lt;- data.frame(orig=0:6,
+                         cov=c(0,1/32,1/8,3/8,0.6,4/5,1)
+)
+
+NiN.wetland.cov &lt;- NiN.wetland
+colnames(NiN.wetland.cov)
+for (i in 2:46) {
+  NiN.wetland.cov[,i] &lt;- coverscale[,2][ match(NiN.wetland[,i], 0:6 ) ]
+}
+
+NiN.wetland.cov$sp &lt;- as.factor(NiN.wetland.cov$sp)
+</code></pre>
+<p>leaving us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov)</p>
+<pre><code class="language-{r}">#summary(NiN.wetland)
+head(ANO.sp.ind)
+head(NiN.wetland.cov)
+</code></pre>
+<p>For each ecosystem type with a NiN species list, we can calculate a community weighted mean (CWM) for the relevant functional plant indicators.
+For wetland ecosystem we are testing “Light”, “Moisture”, “Soil_reaction_pH”, and “Nitrogen”. In order to get distributions of CWMs rather than one single value (for comparison with the empirical testing data) the NiN lists can be bootstrapped.</p>
+<h5>bootstrap function for frequency abundance</h5>
+<ul>
+<li>function to calculate community weighted means of selected indicator values (ind)</li>
+<li>for species lists (sp) with given abundances in percent (or on a scale from 0 to 1) in one or more ‘sites’ (abun)</li>
+<li>with a given number of iterations (iter),</li>
+<li>with species given a certain minimum abundance occurring in all bootstraps (obl), and</li>
+<li>with a given re-sampling ratio of the original species list (rat)</li>
+<li>in every bootstrap iteration the abundance of the sampled species can be randomly changed by a limited amount if wished by introducing a re-sampling of abundance values from adjacent abundance steps with a certain probability (var.abun)</li>
+</ul>
+<pre><code class="language-{r,">indBoot.freq &lt;- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
+  
+  ind.b &lt;- matrix(nrow=iter,ncol=length(colnames(abun)))
+  colnames(ind.b) &lt;- colnames(abun)
+  ind.b &lt;- as.data.frame(ind.b)  
+  
+  ind &lt;- as.data.frame(ind)
+  ind.list &lt;- as.list(1:length(colnames(ind)))
+  names(ind.list) &lt;- colnames(ind)
+  
+  for (k in 1:length(colnames(ind)) ) {
+    ind.list[[k]] &lt;- ind.b }
+  
+  for (j in 1:length(colnames(abun)) ) {
+    
+    dat &lt;- cbind(sp,abun[,j],ind)
+    dat &lt;- dat[dat[,2]&gt;0,]            # only species that are present in the ecosystem
+    dat &lt;- dat[!is.na(dat[,3]),]      # only species that have indicator values
+    
+    for (i in 1:iter) {
+      
+      speciesSample &lt;- sample(dat$sp[dat[,2] &lt; obl], size=round( (length(dat$sp)-length(dat$sp[dat[,2]&gt;=obl])) *rat,0), replace=F)  
+      dat.b &lt;- rbind(dat[dat[,2] &gt;= obl,],
+                     dat[match(speciesSample,dat$sp),]
+      )
+      
+      if (var.abun==T) {
+        for (m in 1:nrow(coverscale[-1,]) ) {
+          xxx &lt;- dat.b[dat.b[,2]==coverscale[-1,][m,2],2]
+          if ( m==1 ) { dat.b[dat.b[,2]==coverscale[-1,][m,2],2] &lt;- sample( c(0.01,coverscale[2:7,2]), prob = c(0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0) ,size=length(xxx),replace=T) }
+          if ( m==2 ) { dat.b[dat.b[,2]==coverscale[-1,][m,2],2] &lt;- sample( c(0.01,coverscale[2:7,2]), prob = c(0.2, 0.3, 0.5, 0.0, 0.0, 0.0, 0.0) ,size=length(xxx),replace=T) }
+          if ( m==3 ) { dat.b[dat.b[,2]==coverscale[-1,][m,2],2] &lt;- sample( c(0.01,coverscale[2:7,2]), prob = c(0.0, 0.2, 0.3, 0.5, 0.0, 0.0, 0.0) ,size=length(xxx),replace=T) }
+          if ( m==4 ) { dat.b[dat.b[,2]==coverscale[-1,][m,2],2] &lt;- sample( c(0.01,coverscale[2:7,2]), prob = c(0.0, 0.0, 0.2, 0.3, 0.5, 0.0, 0.0) ,size=length(xxx),replace=T) }
+          if ( m==5 ) { dat.b[dat.b[,2]==coverscale[-1,][m,2],2] &lt;- sample( c(0.01,coverscale[2:7,2]), prob = c(0.0, 0.0, 0.0, 0.2, 0.3, 0.5, 0.0) ,size=length(xxx),replace=T) }
+          if ( m==6 ) { dat.b[dat.b[,2]==coverscale[-1,][m,2],2] &lt;- sample( c(0.01,coverscale[2:7,2]), prob = c(0.0, 0.0, 0.0, 0.0, 0.2, 0.3, 0.5) ,size=length(xxx),replace=T) }
+        }
+        dat.b[!is.na(dat.b[,2]) &amp; dat.b[,2]&lt;=(0),2] &lt;- 0.01
+        dat.b[!is.na(dat.b[,2]) &amp; dat.b[,2]&gt;1,2] &lt;- 1
+      }
+      
+      for (k in 1:length(colnames(ind))) {
+        
+        if ( nrow(dat.b)&gt;2 ) {
+          
+          ind.b &lt;- sum(dat.b[!is.na(dat.b[,2+k]),2] * dat.b[!is.na(dat.b[,2+k]),2+k] , na.rm=T) / sum(dat.b[!is.na(dat.b[,2+k]),2],na.rm=T)
+          ind.list[[k]][i,j] &lt;- ind.b
+          
+        } else {ind.list[[k]][i,j] &lt;- NA}
+        
+      }
+ 
+#      print(paste(i,&quot;&quot;,j)) 
+    }
+    
+  }
+  return(ind.list)
+}
+</code></pre>
+<p>Running the bootstraps</p>
+<pre><code class="language-{r,">colnames(NiN.wetland)
+# 1st column is the species
+# 2nd-46th column is the abundances of sp in different ecosystem types
+# 47th-50th column is the indicator values of the respective species
+# we choose 1000 iterations
+# species with abundance 1 (i.e. a max of 100%, must be included in each sample)
+# each sample re-samples 2/3 of the number of species
+# the abundance of the re-sampled species may vary (see bootstrap function for details)
+wetland.ref.cov &lt;- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:50],
+                          iter=1000,obl=1,rat=2/3,var.abun=T)
+
+# fixing NaNs
+for (i in 1:length(wetland.ref.cov) ) {
+  for (j in 1:ncol(wetland.ref.cov[[i]]) ) {
+    v &lt;- wetland.ref.cov[[i]][,j]
+    v[is.nan(v)] &lt;- NA
+    wetland.ref.cov[[i]][,j] &lt;- v
+  }
+}
+</code></pre>
+<pre><code class="language-{r,"># Data from cache
+wetland.ref.cov&lt;-readRDS(paste0(here::here(), &quot;/data/cache/wetland.ref.cov.RDS&quot;))
+#load(&quot;/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_wetland.RData&quot;)
+</code></pre>
+<pre><code class="language-{r}">head(wetland.ref.cov[[1]])
+</code></pre>
+<p>This results in an R-list with a slot for every selected indicator, and in every slot there’s a data frame with as many columns as there are NiN species lists and as many rows as there were iterations in the bootstrap.
+Next, we need to derive scaling values from these bootstrap-lists (the columns) for every mapping unit in NiN. Here, we define things in the following way:</p>
+<ul>
+<li>Median = reference values</li>
+<li>0.025 and 0.975 quantiles = lower and upper limit values</li>
+<li>min and max of the respective indicator’s scale = min/max values</li>
+</ul>
+<pre><code class="language-{r,">
+# every NiN-type is represented by one 'generalisert artsliste'
+# some NiN-types are represented by two such species lists
+# in some cases two NiN-types are represented by the same species list
+head(wetland.ref.cov[[1]])
+wetland.ref.cov[[1]][0,]
+
+# checking the actual NiN-types in the wetland lists
+wetland.NiNtypes &lt;- colnames(wetland.ref.cov[[&quot;Light&quot;]])
+wetland.NiNtypes &lt;- substr(wetland.NiNtypes,1,5)
+unique(wetland.NiNtypes)
+
+# 4 indicator-value indicators: Tyler's Light, Moisture, Soil_reaction_pH, &quot;Nitrogen&quot;
+indEll.n=4
+# creating a table to hold:
+# Tyler: the 0.5 quantile (median), 0.05 quantile and  0.95 quantile for each NiN-type
+# for every nature type (nrows)
+tab &lt;- matrix(ncol=3*indEll.n, nrow=length(unique(wetland.NiNtypes)) ) # 43 basic ecosystem types
+# coercing the values into the table
+# NiN-types where each type is represented by one species list (including when one species list represents two NiN-types)
+names(wetland.ref.cov[[&quot;Light&quot;]])
+x &lt;- c(27,28,41:45)
+
+for (i in 1:length(x) ) {
+  tab[i,1:3] &lt;- quantile(as.matrix(wetland.ref.cov[[&quot;Light&quot;]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,4:6] &lt;- quantile(as.matrix(wetland.ref.cov[[&quot;Moisture&quot;]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,7:9] &lt;- quantile(as.matrix(wetland.ref.cov[[&quot;Soil_reaction_pH&quot;]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,10:12] &lt;- quantile(as.matrix(wetland.ref.cov[[&quot;Nitrogen&quot;]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+}
+
+tab &lt;- as.data.frame(tab)
+tab$NiN &lt;- NA
+tab$NiN[1:length(x)] &lt;- names(wetland.ref.cov[[1]])[x]
+
+# NiN-types represented by several species lists
+wetland.NiNtypes2 &lt;- wetland.NiNtypes[-x]
+unique(wetland.NiNtypes2)
+grep(pattern=unique(wetland.NiNtypes2)[1], x=wetland.NiNtypes) # finds columns in e.g. colnames(wetland.ref.cov[[&quot;Continentality&quot;]]) that match the first NiN-type
+
+
+for (i in 1:length(unique(wetland.NiNtypes2)) ) {
+  tab[length(x)+i,1:3] &lt;- quantile(as.matrix(wetland.ref.cov[[&quot;Light&quot;]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[length(x)+i,4:6] &lt;- quantile(as.matrix(wetland.ref.cov[[&quot;Moisture&quot;]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[length(x)+i,7:9] &lt;- quantile(as.matrix(wetland.ref.cov[[&quot;Soil_reaction_pH&quot;]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[length(x)+i,10:12] &lt;- quantile(as.matrix(wetland.ref.cov[[&quot;Nitrogen&quot;]][,grep(pattern=unique(wetland.NiNtypes2)[i], x=wetland.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab$NiN[length(x)+i] &lt;- unique(wetland.NiNtypes2)[i]
+  
+}
+
+tab
+
+# making it a proper data frame
+round(tab[,1:12],digits=2)
+
+colnames(tab) &lt;- c(&quot;Light_q2.5&quot;,&quot;Light_q50&quot;,&quot;Light_q97.5&quot;,
+                   &quot;Moist_q2.5&quot;,&quot;Moist_q50&quot;,&quot;Moist_q97.5&quot;,
+                   &quot;pH_q2.5&quot;,&quot;pH_q50&quot;,&quot;pH_q97.5&quot;,
+                   &quot;Nitrogen_q2.5&quot;,&quot;Nitrogen_q50&quot;,&quot;Nitrogen_q97.5&quot;,
+                   &quot;NiN&quot;)
+summary(tab)
+tab$NiN &lt;- gsub(&quot;C&quot;, &quot;C-&quot;, tab$NiN) # add extra hyphon after C for NiN-types
+tab
+
+
+
+# restructuring into separate indicators for lower (q2.5) and higher (q97.5) than reference value (=median, q50)
+y.Light &lt;- numeric(length=nrow(tab)*2)
+y.Light[((1:dim(tab)[1])*2)-1] &lt;- tab$Light_q2.5 
+y.Light[((1:dim(tab)[1])*2)] &lt;- tab$Light_q97.5 
+
+y.Moist &lt;- numeric(length=nrow(tab)*2)
+y.Moist[((1:dim(tab)[1])*2)-1] &lt;- tab$Moist_q2.5 
+y.Moist[((1:dim(tab)[1])*2)] &lt;- tab$Moist_q97.5 
+
+y.pH &lt;- numeric(length=nrow(tab)*2)
+y.pH[((1:dim(tab)[1])*2)-1] &lt;- tab$pH_q2.5 
+y.pH[((1:dim(tab)[1])*2)] &lt;- tab$pH_q97.5 
+
+y.Nitrogen &lt;- numeric(length=nrow(tab)*2)
+y.Nitrogen[((1:dim(tab)[1])*2)-1] &lt;- tab$Nitrogen_q2.5 
+y.Nitrogen[((1:dim(tab)[1])*2)] &lt;- tab$Nitrogen_q97.5 
+
+# creating final objects holding the reference and limit values for all indicators
+
+# ref object for indicators
+wetland.ref.cov.val &lt;- data.frame(N1=rep('wetland',(nrow(tab)*2*indEll.n)),
+                              hoved=c(rep('NA',(nrow(tab)*2*indEll.n))),
+                              grunn=c(rep(rep(tab$NiN,each=2),indEll.n)),
+                              county=rep('all',(nrow(tab)*2*indEll.n)),
+                              region=rep('all',(nrow(tab)*2*indEll.n)),
+                              Ind=c(rep(c('Light1','Light2'),nrow(tab)),
+                                    rep(c('Moist1','Moist2'),nrow(tab)),
+                                    rep(c('pH1','pH2'),nrow(tab)),
+                                    rep(c('Nitrogen1','Nitrogen2'),nrow(tab))
+                              ),
+                              Rv=c(rep(tab$Light_q50,each=2),
+                                   rep(tab$Moist_q50,each=2),
+                                   rep(tab$pH_q50,each=2),
+                                   rep(tab$Nitrogen_q50,each=2)
+                              ),
+                              Gv=c(y.Light,y.Moist,y.pH,y.Nitrogen),
+                              maxmin=c(rep(c(1,7),nrow(tab)), # 7 levels of light
+                                       rep(c(1,12),nrow(tab)), # 12 levels of moisture
+                                       rep(c(1,8),nrow(tab)), # 8 levels of soil reaction pH
+                                       rep(c(1,9),nrow(tab))  # 9 levels of nitrogen
+                              )
+)
+
+wetland.ref.cov.val
+wetland.ref.cov.val$grunn &lt;- as.factor(wetland.ref.cov.val$grunn)
+wetland.ref.cov.val$Ind &lt;- as.factor(wetland.ref.cov.val$Ind)
+summary(wetland.ref.cov.val)
+
+
+</code></pre>
+<pre><code class="language-{r}">head(wetland.ref.cov.val)
+</code></pre>
+<p>Once test data (ANO) and the scaling values from the reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO plot’s CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper indicators for each plant functional indicator type. An ANO plot can only have a scaled value in either the lower or the upper indicator (the other one will be ‘NA’), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.</p>
+<p>Here is the scaling function</p>
+<pre><code class="language-{r}">
+#### scaled values ####
+r.s &lt;- 1    # reference value
+l.s &lt;- 0.6  # limit value
+a.s &lt;- 0    # abscence of indicator, or indicator at maximum
+
+#### function for calculating scaled values for measured value ####
+
+## scaling function including truncation
+scal &lt;- function() {
+  # place to hold the result
+   x &lt;- numeric()
+  if (maxmin &lt; ref) {
+    # values &gt;= the reference value equal 1
+    if (val &gt;= ref) {x &lt;- 1}
+    # values &lt; the reference value and &gt;= the limit value can be deducted from the linear relationship between these two
+    if (val &lt; ref &amp; val &gt;= lim) {x &lt;- (l.s + (val-lim) * ( (r.s-l.s) / (ref-lim) ) )}
+    # values &lt; the limit value and &gt; maxmin can be deducted from the linear relationship between these two
+    if (val &lt; lim &amp; val &gt; maxmin) {x &lt;- (a.s + (val-maxmin) * ( (l.s-a.s) / (lim-maxmin) ) )}
+    # value equals or lower than maxmin
+    if (val &lt;= maxmin) {x &lt;-0}
+  } else {
+    # values &lt;= the reference value equal 1
+    if (val &lt;= ref) {x &lt;- 1}
+    # values &gt; the reference value and &lt;= the limit value can be deducted from the linear relationship between these two
+    if (val &gt; ref &amp; val &lt;= lim) {x &lt;- ( r.s - ( (r.s - l.s) * (val - ref) / (lim - ref) ) )}
+    # values &gt; the limit value and &lt; maxmin can be deducted from the linear relationship between these two
+    if (val &gt; lim) {x &lt;- ( l.s - (l.s * (val - lim) / (maxmin - lim) ) )}
+    # value equals or larger than maxmin
+    if (val &gt;= maxmin) {x &lt;-0}
+  }
+  return(x)
+  
+}
+
+</code></pre>
+<p>We then can prepare a list of data frames to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021)</p>
+<pre><code class="language-{r,">
+unique(ANO.geo$hovedtype_rute) # NiN types in data
+unique(substr(wetland.ref.cov.val$grunn,1,2)) # NiN types in reference
+#### creating dataframe to hold the results for wetlands ####
+# all ANO points
+nrow(ANO.geo)
+# all wetland ANO points
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list(&quot;V1&quot;,&quot;V2&quot;,&quot;V3&quot;,&quot;V4&quot;,&quot;V5&quot;,&quot;V6&quot;,&quot;V7&quot;,&quot;V8&quot;,&quot;V9&quot;,&quot;V10&quot;,&quot;V11&quot;,&quot;V12&quot;,&quot;V13&quot;),])
+# all wetland ANO points with a NiN-type represented in the reference
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% unique(substr(wetland.ref.cov.val$grunn,1,2)),])
+# ok, we'll be losing 70 (our of 1349) that are not covered by the reference
+ANO.wetland &lt;- ANO.geo[ANO.geo$hovedtype_rute %in% list(&quot;V1&quot;,&quot;V2&quot;,&quot;V3&quot;,&quot;V4&quot;,&quot;V5&quot;,&quot;V6&quot;,&quot;V7&quot;,&quot;V8&quot;,&quot;V9&quot;,&quot;V10&quot;,&quot;V11&quot;,&quot;V12&quot;,&quot;V13&quot;),]
+
+head(ANO.wetland)
+# update row-numbers
+row.names(ANO.wetland) &lt;- 1:nrow(ANO.wetland)
+head(ANO.wetland)
+dim(ANO.wetland)
+colnames(ANO.wetland)
+
+length(levels(as.factor(ANO.wetland$ano_flate_id)))
+length(levels(as.factor(ANO.wetland$ano_punkt_id)))
+summary(as.factor(ANO.wetland$ano_punkt_id))
+# four points that are double
+ANO.wetland[ANO.wetland$ano_punkt_id==&quot;ANO0159_55&quot;,] # double registration, said so in comment. -&gt; choose row 207 over 206
+ANO.wetland &lt;- ANO.wetland[-206,]
+row.names(ANO.wetland) &lt;- 1:nrow(ANO.wetland) # update row-numbers
+ANO.wetland[ANO.wetland$ano_punkt_id==&quot;ANO0283_22&quot;,] # 2019 &amp; 2021. Lot of NA's in 2019 -&gt; omit 2019
+ANO.wetland &lt;- ANO.wetland[-156,]
+row.names(ANO.wetland) &lt;- 1:nrow(ANO.wetland) # update row-numbers
+ANO.wetland[ANO.wetland$ano_punkt_id==&quot;ANO0363_24&quot;,]
+ANO.wetland[ANO.wetland$ano_flate_id==&quot;ANO0363&quot;,&quot;ano_punkt_id&quot;] # point-ID 15 is missing, but 24 is double. Likely that registrations are valid, but wrong point-ID.  -&gt; keep both, call the second obs the one that's missing
+ANO.wetland[311,&quot;ano_punkt_id&quot;] &lt;- &quot;ANO0363_15&quot;
+ANO.wetland[ANO.wetland$ano_punkt_id==&quot;ANO1550_64&quot;,] # point-ID 66 is missing, but 64 is double. Likely that registrations are valid, but wrong point-ID.  -&gt; keep both
+ANO.wetland[ANO.wetland$ano_flate_id==&quot;ANO1550&quot;,&quot;ano_punkt_id&quot;] # point-ID 66 is missing, but 64 is double. Likely that registrations are valid, but wrong point-ID.  -&gt; keep both
+ANO.wetland[1273,&quot;ano_punkt_id&quot;] &lt;- &quot;ANO1550_66&quot;
+
+unique(ANO.wetland$hovedoekosystem_punkt)
+unique(ANO.wetland$hovedtype_rute)
+unique(ANO.wetland$kartleggingsenhet_1m2)
+ANO.wetland$hovedtype_rute &lt;- factor(ANO.wetland$hovedtype_rute)
+ANO.wetland$kartleggingsenhet_1m2 &lt;- factor(ANO.wetland$kartleggingsenhet_1m2)
+summary(ANO.wetland$Hovedtype_rute)
+summary(ANO.wetland$Kartleggingsenhet_rute)
+
+results.wetland &lt;- list()
+ind &lt;- unique(wetland.ref.cov.val$Ind)
+# choose columns for site description
+colnames(ANO.wetland)
+results.wetland[['original']] &lt;- ANO.wetland
+# drop geometry
+st_geometry(results.wetland[['original']]) &lt;- NULL
+results.wetland[['original']]
+
+# add columns for indicators
+nvar.site &lt;- ncol(results.wetland[['original']])
+for (i in 1:length(ind) ) {results.wetland[['original']][,i+nvar.site] &lt;- NA}
+colnames(results.wetland[['original']])[(nvar.site+1):(length(ind)+nvar.site)] &lt;- paste(ind)
+for (i in (nvar.site+1):(length(ind)+nvar.site) ) {results.wetland[['original']][,i] &lt;- as.numeric(results.wetland[['original']][,i])}
+summary(results.wetland[['original']])
+#results.wetland[['original']]$Region &lt;- as.factor(results.wetland[['original']]$Region)
+results.wetland[['original']]$GlobalID &lt;- as.factor(results.wetland[['original']]$GlobalID)
+results.wetland[['original']]$ano_flate_id &lt;- as.factor(results.wetland[['original']]$ano_flate_id)
+results.wetland[['original']]$ano_punkt_id &lt;- as.factor(results.wetland[['original']]$ano_punkt_id)
+results.wetland[['original']]$hovedoekosystem_punkt &lt;- as.factor(results.wetland[['original']]$hovedoekosystem_punkt)
+#results.wetland[['original']]$Hovedoekosystem_rute  &lt;- as.factor(results.wetland[['original']]$Hovedoekosystem_rute )
+results.wetland[['original']]$kartleggingsenhet_1m2 &lt;- as.factor(results.wetland[['original']]$kartleggingsenhet_1m2)
+results.wetland[['original']]$hovedtype_rute    &lt;- as.factor(results.wetland[['original']]$hovedtype_rute)
+
+
+# roll out
+results.wetland[['scaled']] &lt;- results.wetland[['non-truncated']] &lt;- results.wetland[['original']]
+</code></pre>
+<pre><code class="language-{r,">
+#### calculating scaled and non-truncated values for the indicators based on the dataset ####
+for (i in 1:nrow(ANO.wetland) ) {  #
+  tryCatch({
+    print(i)
+    print(paste(ANO.wetland$ano_flate_id[i]))
+    print(paste(ANO.wetland$ano_punkt_id[i]))
+#    ANO.wetland$Hovedoekosystem_sirkel[i]
+#    ANO.wetland$Hovedoekosystem_rute[i]
+
+
+
+    # if the ANO.hovedtype exists in the reference
+    if (ANO.wetland$hovedtype_rute[i] %in% unique(substr(wetland.ref.cov.val$grunn,1,2)) ) {
+      
+      # if there is any species present in current ANO point  
+      if ( length(ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),'Species']) &gt; 0 ) {
+        
+
+          
+          # Light
+          dat &lt;- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Light')]
+          results.wetland[['original']][i,'richness'] &lt;- nrow(dat)
+          dat &lt;- dat[!is.na(dat$Light),]
+          
+          if ( nrow(dat)&gt;0 ) {
+            
+            val &lt;- sum(dat[,'art_dekning'] * dat[,'Light'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+            # lower part of distribution
+            ref &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Rv']
+            lim &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Gv']
+            maxmin &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'Light1'] &lt;- scal() 
+            results.wetland[['non-truncated']][i,'Light1'] &lt;- scal.2() 
+            results.wetland[['original']][i,'Light1'] &lt;- val 
+            
+            # upper part of distribution
+            ref &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Rv']
+            lim &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Gv']
+            maxmin &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Light2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'Light2'] &lt;- scal() 
+            results.wetland[['non-truncated']][i,'Light2'] &lt;- scal.2() 
+            results.wetland[['original']][i,'Light2'] &lt;- val
+          }
+          
+          
+          # Moisture
+          dat &lt;- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Moisture')]
+          results.wetland[['original']][i,'richness'] &lt;- nrow(dat)
+          dat &lt;- dat[!is.na(dat$Moisture),]
+          
+          if ( nrow(dat)&gt;0 ) {
+            
+            val &lt;- sum(dat[,'art_dekning'] * dat[,'Moisture'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+            # lower part of distribution
+            ref &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Rv']
+            lim &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Gv']
+            maxmin &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'Moist1'] &lt;- scal() 
+            results.wetland[['non-truncated']][i,'Moist1'] &lt;- scal.2() 
+            results.wetland[['original']][i,'Moist1'] &lt;- val 
+            
+            # upper part of distribution
+            ref &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Rv']
+            lim &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Gv']
+            maxmin &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Moist2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'Moist2'] &lt;- scal() 
+            results.wetland[['non-truncated']][i,'Moist2'] &lt;- scal.2() 
+            results.wetland[['original']][i,'Moist2'] &lt;- val
+          }
+          
+          
+          # Soil_reaction_pH
+          dat &lt;- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Soil_reaction_pH')]
+          results.wetland[['original']][i,'richness'] &lt;- nrow(dat)
+          dat &lt;- dat[!is.na(dat$Soil_reaction_pH),]
+          
+          if ( nrow(dat)&gt;0 ) {
+            
+            val &lt;- sum(dat[,'art_dekning'] * dat[,'Soil_reaction_pH'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+            # lower part of distribution
+            ref &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Rv']
+            lim &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Gv']
+            maxmin &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'pH1'] &lt;- scal() 
+            results.wetland[['non-truncated']][i,'pH1'] &lt;- scal.2() 
+            results.wetland[['original']][i,'pH1'] &lt;- val 
+            
+            # upper part of distribution
+            ref &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Rv']
+            lim &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Gv']
+            maxmin &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='pH2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'pH2'] &lt;- scal() 
+            results.wetland[['non-truncated']][i,'pH2'] &lt;- scal.2() 
+            results.wetland[['original']][i,'pH2'] &lt;- val
+          }
+          
+          
+          # Nitrogen
+          dat &lt;- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.wetland$GlobalID[i]),c('art_dekning','Nitrogen')]
+          results.wetland[['original']][i,'richness'] &lt;- nrow(dat)
+          dat &lt;- dat[!is.na(dat$Nitrogen),]
+          
+          if ( nrow(dat)&gt;0 ) {
+            
+            val &lt;- sum(dat[,'art_dekning'] * dat[,'Nitrogen'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+            # lower part of distribution
+            ref &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Rv']
+            lim &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Gv']
+            maxmin &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen1' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'Nitrogen1'] &lt;- scal() 
+            results.wetland[['non-truncated']][i,'Nitrogen1'] &lt;- scal.2() 
+            results.wetland[['original']][i,'Nitrogen1'] &lt;- val 
+            
+            # upper part of distribution
+            ref &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Rv']
+            lim &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'Gv']
+            maxmin &lt;- wetland.ref.cov.val[wetland.ref.cov.val$Ind=='Nitrogen2' &amp; wetland.ref.cov.val$grunn==as.character(results.wetland[['original']][i,&quot;kartleggingsenhet_1m2&quot;]),'maxmin']
+            # coercing x into results.wetland dataframe
+            results.wetland[['scaled']][i,'Nitrogen2'] &lt;- scal() 
+            results.wetland[['non-truncated']][i,'Nitrogen2'] &lt;- scal.2() 
+            results.wetland[['original']][i,'Nitrogen2'] &lt;- val
+          }
+          
+        }
+      }
+      
+
+    
+  }, error=function(e){cat(&quot;ERROR :&quot;,conditionMessage(e), &quot;\n&quot;)})
+}
+
+# for using both sides of the plant indicators
+results.wetland[['2-sided']] &lt;- results.wetland[['non-truncated']]
+
+# remove values &gt;1 for 2-sided indicators
+results.wetland[['2-sided']]$Light1[results.wetland[['2-sided']]$Light1&gt;1] &lt;- NA
+results.wetland[['2-sided']]$Light2[results.wetland[['2-sided']]$Light2&gt;1] &lt;- NA
+
+results.wetland[['2-sided']]$Moist1[results.wetland[['2-sided']]$Moist1&gt;1] &lt;- NA
+results.wetland[['2-sided']]$Moist2[results.wetland[['2-sided']]$Moist2&gt;1] &lt;- NA
+
+results.wetland[['2-sided']]$pH1[results.wetland[['2-sided']]$pH1&gt;1] &lt;- NA
+results.wetland[['2-sided']]$pH2[results.wetland[['2-sided']]$pH2&gt;1] &lt;- NA
+
+results.wetland[['2-sided']]$Nitrogen1[results.wetland[['2-sided']]$Nitrogen1&gt;1] &lt;- NA
+results.wetland[['2-sided']]$Nitrogen2[results.wetland[['2-sided']]$Nitrogen2&gt;1] &lt;- NA
+
+</code></pre>
+<pre><code class="language-{r,"># Use cache data
+results.wetland&lt;-readRDS(paste0(here::here(),&quot;/data/cache/results.wetland.RDS&quot;))
+
+#load(&quot;/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.wetland.RData&quot;)
+</code></pre>
+<pre><code class="language-{r}">head(results.wetland[['2-sided']])
+</code></pre>
+<h4>Scaled value analyses</h4>
+<h3>Simple summary statistics</h3>
+<p>We can calculate simple summary statistics like means, standard deviations, and number of observations (note that there is both a lower and an upper indicator for each of the four plant functional indicators)</p>
+<pre><code class="language-{r,">#### plotting scaled values by main ecosystem type ####
+## continuing with 2-sided
+res.wetland &lt;- results.wetland[['2-sided']]
+
+# make long version of the scaled value part
+res.wetland &lt;-
+  res.wetland %&gt;% 
+  pivot_longer(
+    cols = c(&quot;Light1&quot;,&quot;Light2&quot;,&quot;Moist1&quot;,&quot;Moist2&quot;,&quot;pH1&quot;,&quot;pH2&quot;,&quot;Nitrogen1&quot;,&quot;Nitrogen2&quot;),
+    names_to = &quot;fp_ind&quot;,
+    values_to = &quot;scaled_value&quot;,
+    values_drop_na = TRUE
+  )
+
+# summarizing the indicator scores
+res.wetland %&gt;%
+  group_by(fp_ind) %&gt;%
+  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE), SD = sd(scaled_value, na.rm=TRUE), N = length(scaled_value))
+
+</code></pre>
+<h3>Ecosystem sub-types</h3>
+<p>And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type</p>
+<pre><code class="language-{r,">
+# making the plot
+ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype=&quot;dashed&quot;) + 
+  geom_violin() +
+#  geom_boxplot(width=0.2, color=&quot;grey&quot;) +
+  geom_point(size=0.7, shape=16, color=&quot;grey&quot;) +
+  facet_wrap(~factor(fp_ind,levels=c(&quot;Light1&quot;,&quot;Moist1&quot;,&quot;pH1&quot;,&quot;Nitrogen1&quot;,&quot;Light2&quot;,&quot;Moist2&quot;,&quot;pH2&quot;,&quot;Nitrogen2&quot;)), ncol = 4) + 
+  xlab(&quot;Main ecosystem type&quot;) + 
+  ylab(&quot;Scaled indicator value&quot;) 
+</code></pre>
+<h3>Indicator index maps</h3>
+<p>We can also show the results as a map, for instance for pH1 (the lower pH indicator), either by directly plotting the data onto the map…</p>
+<pre><code class="language-{r,">#### scaled value maps ####
+# keep wide format and add geometry again
+res.wetland2 &lt;- results.wetland[['2-sided']]
+st_geometry(res.wetland2) &lt;- st_geometry(ANO.wetland)
+
+#nor &lt;- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%&gt;%
+#  st_as_sf() %&gt;%
+#  st_transform(crs = crs(ANO.geo))
+
+nor &lt;- st_read(&quot;data/outlineOfNorway_EPSG25833.shp&quot;)%&gt;%
+  st_as_sf() %&gt;%
+  st_transform(crs = crs(ANO.geo))
+
+#reg &lt;- st_read(&quot;P:/41201785_okologisk_tilstand_2022_2023/data/regioner/regNorway_wgs84 - MERGED.shp&quot;)%&gt;%
+#  st_as_sf() %&gt;%
+#  st_transform(crs = crs(ANO.geo))
+
+reg &lt;- st_read(&quot;data/regions.shp&quot;)%&gt;%
+  st_as_sf() %&gt;%
+  st_transform(crs = crs(ANO.geo))
+
+# change region names to something R-friendly
+reg$region
+reg$region &lt;- c(&quot;Northern Norway&quot;,&quot;Central Norway&quot;,&quot;Eastern Norway&quot;,&quot;Western Norway&quot;,&quot;Southern Norway&quot;)
+
+regnor &lt;- st_intersection(reg,nor)
+
+
+## scaled value maps
+# pH1 (lower indicator)
+tm_shape(regnor) +
+  tm_fill('GID_0', labels=&quot;&quot;, title=&quot;&quot;, legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(res.wetland2) +
+  tm_dots('pH1',midpoint=NA, palette=tmaptools::get_brewer_pal(&quot;YlOrRd&quot;, 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
+  tm_layout(main.title = &quot;pH (lower), wetland&quot;,legend.position = c(&quot;right&quot;, &quot;bottom&quot;), main.title.size=1.2) + 
+  tm_add_legend(type = &quot;fill&quot;, 
+                col = c(tmaptools::get_brewer_pal(&quot;YlOrRd&quot;, 5, plot = FALSE),'grey'),
+                labels = c(&quot;0.0 - 0.2&quot;, &quot;0.2 - 0.4&quot;, &quot;0.4 - 0.6&quot;, 
+                           &quot;0.6 - 0.8&quot;, &quot;0.8 - 1.0&quot;, &quot;NA&quot;),
+                title = &quot;index values&quot;)
+
+
+</code></pre>
+<p>…but here the colors and values of the data points on the map are hard to make out.</p>
+<h3>Regions</h3>
+<p>Alternatively we can calculate and show the region-wise means and standard deviations</p>
+<pre><code class="language-{r}">
+res.wetland2 = st_join(res.wetland2, regnor, left = TRUE)
+
+regnor &lt;- regnor %&gt;%
+  mutate(
+    pH1.reg.mean = c(mean(res.wetland2$pH1[res.wetland2$region==&quot;Northern Norway&quot;],na.rm=T),
+                             mean(res.wetland2$pH1[res.wetland2$region==&quot;Central Norway&quot;],na.rm=T),
+                             mean(res.wetland2$pH1[res.wetland2$region==&quot;Eastern Norway&quot;],na.rm=T),
+                             mean(res.wetland2$pH1[res.wetland2$region==&quot;Western Norway&quot;],na.rm=T),
+                             mean(res.wetland2$pH1[res.wetland2$region==&quot;Southern Norway&quot;],na.rm=T)),
+    pH1.reg.sd = c(sd(res.wetland2$pH1[res.wetland2$region==&quot;Northern Norway&quot;],na.rm=T),
+                          sd(res.wetland2$pH1[res.wetland2$region==&quot;Central Norway&quot;],na.rm=T),
+                          sd(res.wetland2$pH1[res.wetland2$region==&quot;Eastern Norway&quot;],na.rm=T),
+                          sd(res.wetland2$pH1[res.wetland2$region==&quot;Western Norway&quot;],na.rm=T),
+                          sd(res.wetland2$pH1[res.wetland2$region==&quot;Southern Norway&quot;],na.rm=T))
+    )
+
+
+## scaled value maps for pH1 (lower indicator)
+# mean
+tm_shape(regnor) +
+  tm_polygons(col=&quot;pH1.reg.mean&quot;, title=&quot;pH (lower), mean&quot;, style=&quot;quantile&quot;, palette=rev(get_brewer_pal(palette=&quot;OrRd&quot;, n=5, plot=FALSE)))
+
+# sd
+tm_shape(regnor) +
+  tm_polygons(col=&quot;pH1.reg.sd&quot;, title=&quot;pH (lower), sd&quot;, style=&quot;quantile&quot;, palette=get_brewer_pal(palette=&quot;OrRd&quot;, n=5, plot=FALSE))
+
+</code></pre>
+<h3>Eksport file (final product)</h3>
+<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
+
