@@ -540,6 +540,7 @@ NiN.sp$sp <- word(NiN.sp$sp, 1,2)
 NiN.sp$spgr <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$art.code))
 levels(NiN.sp$spgr)
 # trimming to desired species groups (for åpen systems eg. removing trees ("a1a") )
+# here we remove trees as they represent a driver for vegetation change in the field layer
 NiN.sp <- NiN.sp[NiN.sp$spgr!="a1a",]
 
 # environment data
@@ -668,7 +669,7 @@ unique(NiN.sp.ind[is.na(NiN.sp.ind$Light) & is.na(NiN.sp.ind$Nitrogen) &
 #### matching with NiN ecosystem types - semi-natural types ####
 # NB! beware of rogue spaces in the 'Nature_type' & 'Sub_Type' variables, e.g. "Spring_Forest "
 levels(NiN.env$Nature_Type)
-NiN.seminat <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type %in% list("Semi_Natural ","Coastal_Heath"),"ID"]),colnames(ind.dat)[c(15:19,21,22)])]   # Light, Moisture, Soil_reaction_pH, Nitrogen, Grazing_mowing, Soil_disturbance
+NiN.seminat <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type %in% list("Semi_Natural ","Coastal_Heath"),"ID"]),colnames(ind.dat)[c(15:19,21,22)])]   # Light, Moisture, Soil_reaction_pH, Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance
 
 NiN.seminat[1,]
 names(NiN.seminat)

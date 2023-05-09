@@ -87,6 +87,8 @@ ASO.geo$NiN_grunntype <- as.factor(ASO.geo$NiN_grunntype)
 summary(ASO.geo$NiN_grunntype)
 # 230 out of 381 ASO-meadows are not T32
 # for anything that is not T32 no data were registered, these won't be processed further
+# which leaves us with 151 ASO-meadows we can expect a result for
+
 
 results.seminat.ASO <- list()
 ind <- unique(seminat.ref.cov.val$Ind)

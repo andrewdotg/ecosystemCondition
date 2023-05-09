@@ -61,14 +61,14 @@ scal.2 <- function() {
 
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
-unique(substr(seminat.ref.cov.val$grunn,1,2)) # NiN types in reference
+unique(substr(seminat.ref.cov.val$grunn,1,3)) # NiN types in reference
 levels(as.factor(ANO.geo$kartleggingsenhet_1m2)) # NiN types in data
 levels(seminat.ref.cov.val$grunn) # NiN types in reference
 #### creating dataframe to hold the results for seminats ####
 # all ANO points
 nrow(ANO.geo)
-# all seminat ANO points (incl. T41 and T45)
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T31","T32","T34","T40","T41","T45","V10"),])
+# all seminat ANO points (incl. T40 and T41)
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T31","T32","T34","T40","T41","V10"),])
 # all seminat ANO points with a NiN-type represented in the reference
 nrow(ANO.geo[ANO.geo$hovedtype_rute %in% unique(substr(seminat.ref.cov.val$grunn,1,3)),])
 nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T32"),])
@@ -79,9 +79,7 @@ nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T40"),])
 # ok, we'll be losing 258 T31 and 10 T40, as T31 and T40 are not covered by reference data
 # which leaves us with 329 points, of which...
 nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T41"),])
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T45"),])
 # 29 points are T41 (heavily altered meadows appearing as semi-natural after decades of extensive use)
-# 96 points are T45 (intensive and regular soil manipulation)
 # we omit T45
 nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("V10"),])
 # 6 points are semi-natural wetlands
@@ -451,13 +449,13 @@ hist(results.seminat[['2-sided']]$Soil_disturbance2,breaks=40)
 #            quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 #write.table(results.seminat[['non-truncated']], file='output/scaled data/results.seminat_non-truncated.txt',
 #            quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
-write.table(results.seminat[['original']], file='P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat_original.txt',
+write.table(results.seminat[['original']], file='P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat_original.ANO.txt',
             quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
-write.table(results.seminat[['2-sided']], file='P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat_2-sided.txt',
+write.table(results.seminat[['2-sided']], file='P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat_2-sided.ANO.txt',
             quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 
 
-rm(list= ls()[!(ls() %in% c('results.seminat','settings'))])
-save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.RData")
+rm(list= ls()[!(ls() %in% c('ANO.seminat','results.seminat','settings'))])
+save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ANO.RData")
 
-load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.RData")
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ANO.RData")

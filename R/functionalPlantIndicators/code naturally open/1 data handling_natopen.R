@@ -23,17 +23,47 @@ st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_e
 ## ANO
 st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
 ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-                   layer="ANO_Art")
+                  layer="ANO_Art")
 ANO.geo <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-                  layer="ANO_SurveyPoint")
+                   layer="ANO_SurveyPoint")
 head(ANO.sp)
 head(ANO.geo)
 
+## GRUK
+excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx")
+GRUK.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
+                             sheet = 2)
+GRUK.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
+                           sheet = 3)
+
+# condition evaluation for 2021 data
+excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls")
+
+GRUK2021.condition <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls", 
+                                 sheet = 1)
+
+head(GRUK.variables)
+head(GRUK.species)
+head(GRUK2021.condition)
+
+
+
+
+
+## ASO data
+
+
+
+
 
 ## Tyler indicator data
-ind.dat <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
+ind.Tyler <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
                         sep = '\t', header=T, quote = '')
-head(ind.dat)
+head(ind.Tyler)
+
+## Grime CSR-values
+ind.Grime <- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Grime CSR.csv",sep=";",dec=",", header=T)
+head(ind.Grime)
 
 ## generalized species lists NiN
 load("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators//reference from NiN/Eco_State.RData")
@@ -41,26 +71,43 @@ str(Eco_State)
 
 #### data handling - functional indicator data ####
 # trimming away sub-species & co, and descriptor info
-names(ind.dat)[1] <- 'species'
-ind.dat$species <- as.factor(ind.dat$species)
-summary(ind.dat$species)
-ind.dat <- ind.dat[!is.na(ind.dat$species),]
-ind.dat[,'species.orig'] <- ind.dat[,'species']
-ind.dat[,'species'] <- word(ind.dat[,'species'], 1,2)
+ind.Grime[,'species.orig'] <- ind.Grime[,'species']
+ind.Grime[,'species'] <- word(ind.Grime[,'species'], 1,2)
+names(ind.Tyler)[1] <- 'species'
+ind.Tyler$species <- as.factor(ind.Tyler$species)
+summary(ind.Tyler$species)
+ind.Tyler <- ind.Tyler[!is.na(ind.Tyler$species),]
+ind.Tyler[,'species.orig'] <- ind.Tyler[,'species']
+ind.Tyler[,'species'] <- word(ind.Tyler[,'species'], 1,2)
+
+# dealing with 'duplicates'
+ind.Grime[duplicated(ind.Grime[,'species']),"species"]
+ind.Grime.dup <- ind.Grime[duplicated(ind.Grime[,'species']),c("species")]
+ind.Grime[ind.Grime$species %in% ind.Grime.dup,]
+# getting rid of the duplicates
+ind.Grime <- ind.Grime %>% filter( !(species.orig %in% list("Carex viridula brachyrrhyncha",
+                                                            "Dactylorhiza fuchsii praetermissa",
+                                                            "Medicago sativa varia",
+                                                            "Montia fontana chondrosperma",
+                                                            "Papaver dubium lecoqii",
+                                                            "Sanguisorba minor muricata")
+) )
+ind.Grime[duplicated(ind.Grime[,'species']),"species"]
 
 
-names(ind.dat)[1] <- 'species'
-ind.dat$species <- as.factor(ind.dat$species)
-summary(ind.dat$species)
-ind.dat <- ind.dat[!is.na(ind.dat$species),]
-ind.dat[,'species.orig'] <- ind.dat[,'species']
-ind.dat[,'species'] <- word(ind.dat[,'species'], 1,2)
-#ind.dat2 <- ind.dat
-#ind.dat <- ind.dat2
-ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
-ind.dat <- ind.dat %>% filter( !(species.orig %in% list("Ammophila arenaria x Calamagrostis epigejos",
+
+names(ind.Tyler)[1] <- 'species'
+ind.Tyler$species <- as.factor(ind.Tyler$species)
+summary(ind.Tyler$species)
+ind.Tyler <- ind.Tyler[!is.na(ind.Tyler$species),]
+ind.Tyler[,'species.orig'] <- ind.Tyler[,'species']
+ind.Tyler[,'species'] <- word(ind.Tyler[,'species'], 1,2)
+#ind.Tyler2 <- ind.Tyler
+ind.Tyler <- ind.Tyler2
+ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+ind.Tyler <- ind.Tyler %>% filter( !(species.orig %in% list("Ammophila arenaria x Calamagrostis epigejos",
                                                             "Anemone nemorosa x ranunculoides",
                                                             "Armeria maritima ssp. elongata",
                                                             "Asplenium trichomanes ssp. quadrivalens",
@@ -95,24 +142,28 @@ ind.dat <- ind.dat %>% filter( !(species.orig %in% list("Ammophila arenaria x Ca
                                                             "Stellaria nemorum L. ssp. montana",
                                                             "Trichophorum cespitosum ssp. germanicum")
 ) )
-ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
 # getting rid of sect. for Hieracium
-ind.dat <- ind.dat %>% mutate(species=gsub("sect. ","",species.orig))
-ind.dat[,'species'] <- word(ind.dat[,'species'], 1,2)
+ind.Tyler <- ind.Tyler %>% mutate(species=gsub("sect. ","",species.orig))
+ind.Tyler[,'species'] <- word(ind.Tyler[,'species'], 1,2)
 
-ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
 # only hybrids left -> get rid of these
-ind.dat <- ind.dat[!duplicated(ind.dat[,'species']),]
-ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.Tyler <- ind.Tyler[!duplicated(ind.Tyler[,'species']),]
+ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
 
-ind.dat$species <- as.factor(ind.dat$species)
-summary(ind.dat$species)
+ind.Tyler$species <- as.factor(ind.Tyler$species)
+summary(ind.Tyler$species)
 # no duplicates left
 
+# merge indicator data
+ind.dat <- merge(ind.Grime,ind.Tyler, by="species", all=T)
+summary(ind.dat)
+ind.dat[duplicated(ind.dat[,'species']),"species"]
 ind.dat$species <- as.factor(ind.dat$species)
 summary(ind.dat$species)
 head(ind.dat)
@@ -203,8 +254,8 @@ ANO.sp$Species <- gsub("( .*)","\\L\\1",ANO.sp$Species,perl=TRUE) # make capital
 
 ## merge species data with indicators
 ANO.sp.ind <- merge(x=ANO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                y= ind.dat[,c("species","Light", "Moisture", "Soil_reaction_pH", "Nitrogen")],
-                by.x="Species", by.y="species", all.x=T)
+                    y= ind.dat[,c("species","CC", "SS", "RR","Continentality", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                    by.x="Species", by.y="species", all.x=T)
 summary(ANO.sp.ind)
 
 
@@ -214,7 +265,8 @@ unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
 
 ANO.sp.ind[ANO.sp.ind$Species=="Taraxacum officinale",]
 ind.dat[ind.dat$species=="Picea sitchensis",]
-ind.dat[ind.dat$species=="Picea sitchensis",]
+ind.Grime[ind.Grime$species=="Picea sitchensis",]
+ind.Tyler[ind.Tyler$species=="Picea sitchensis",]
 ANO.sp[ANO.sp$Species=="Picea sitchensis",]
 
 # fix species name issues
@@ -283,7 +335,7 @@ ANO.sp <- ANO.sp %>%
 
 ## merge species data with indicators
 ANO.sp.ind <- merge(x=ANO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                    y= ind.dat[,c("species","Light", "Moisture", "Soil_reaction_pH", "Nitrogen")],
+                    y= ind.dat[,c("species","CC", "SS", "RR","Continentality","Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
                     by.x="Species", by.y="species", all.x=T)
 summary(ANO.sp.ind)
 # checking which species didn't find a match
@@ -292,10 +344,10 @@ unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
 
 ## adding information on ecosystem and condition variables
 ANO.sp.ind <- merge(x=ANO.sp.ind, 
-                y=ANO.geo[,c("GlobalID","ano_flate_id","ano_punkt_id","ssb_id","aar",
-                             "hovedoekosystem_punkt","hovedtype_rute","kartleggingsenhet_1m2",
-                             "vedplanter_total_dekning","busker_dekning","tresjikt_dekning","roesslyng_dekning")], 
-            by.x="ParentGlobalID", by.y="GlobalID", all.x=T)
+                    y=ANO.geo[,c("GlobalID","ano_flate_id","ano_punkt_id","ssb_id","aar",
+                                 "hovedoekosystem_punkt","hovedtype_rute","kartleggingsenhet_1m2",
+                                 "vedplanter_total_dekning","busker_dekning","tresjikt_dekning","roesslyng_dekning")], 
+                    by.x="ParentGlobalID", by.y="GlobalID", all.x=T)
 # trimming away the points without information on NiN, species or cover
 ANO.sp.ind <- ANO.sp.ind[!is.na(ANO.sp.ind$Species),]
 ANO.sp.ind <- ANO.sp.ind[!is.na(ANO.sp.ind$art_dekning),]
@@ -310,6 +362,183 @@ unique(as.factor(ANO.sp.ind$kartleggingsenhet_1m2))
 summary(ANO.sp.ind)
 head(ANO.sp.ind)
 
+
+
+
+#### data handling - GRUK data ####
+head(GRUK.variables)
+head(GRUK.species)
+head(GRUK2021.condition)
+
+colnames(GRUK.species)[5] <- "art_dekning"
+
+# fix species names
+GRUK.species <- as.data.frame(GRUK.species)
+
+GRUK.species$Species <- GRUK.species$Navn
+unique(as.factor(GRUK.species$Species))
+GRUK.species$Species <- sub(".*?_", "", GRUK.species$Species) # lose the Norwegian name in the front
+GRUK.species$Species <- gsub("_", " ", GRUK.species$Species) # replace underscore with space
+GRUK.species$Species <- str_to_title(GRUK.species$Species) # make first letter capital
+GRUK.species$Species <- gsub("( .*)","\\L\\1",GRUK.species$Species,perl=TRUE) # make capital letters after hyphon to lowercase
+GRUK.species$Species <- gsub("( .*)","\\L\\1",GRUK.species$Species,perl=TRUE) # make capital letters after space to lowercase
+GRUK.species[,'Species'] <- word(GRUK.species[,'Species'], 1,2) # lose subspecies
+
+
+
+
+## merge species data with indicators
+GRUK.species.ind <- merge(x=GRUK.species[,c("Species", "art_dekning", "ParentGlobalID")], 
+                          y= ind.dat[,c("species","CC", "SS", "RR", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                          by.x="Species", by.y="species", all.x=T)
+summary(GRUK.species.ind)
+
+
+# checking which species didn't find a match
+unique(GRUK.species.ind[is.na(GRUK.species.ind$Moisture & 
+                                is.na(GRUK.species.ind$RR)),'Species'])
+
+
+
+# fix species name issues
+ind.dat <- ind.dat %>% 
+  #  mutate(species=str_replace(species,"Aconitum lycoctonum", "Aconitum septentrionale")) %>% 
+  #  mutate(species=str_replace(species,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
+  #  mutate(species=str_replace(species,"Carex myosuroides", "Kobresia myosuroides")) %>%
+  #  mutate(species=str_replace(species,"Clinopodium acinos", "Acinos arvensis")) %>%
+  #  mutate(species=str_replace(species,"Artemisia rupestris", "Artemisia norvegica")) %>%
+  mutate(species=str_replace(species,"Rosa vosagica", "Rosa vosagiaca"))
+
+
+
+GRUK.species <- GRUK.species %>% 
+  mutate(Species=str_replace(Species,"Arabis wahlenbergii", "Arabis hirsuta")) %>%
+  #  mutate(Species=str_replace(Species,"Arctous alpinus", "Arctous alpina")) %>%
+  #  mutate(Species=str_replace(Species,"Betula tortuosa", "Betula pubescens")) %>%
+  #  mutate(Species=str_replace(Species,"Blysmopsis rufa", "Blysmus rufus")) %>%
+  #  mutate(Species=str_replace(Species,"Cardamine nymanii", "Cardamine pratensis")) %>%
+  #  mutate(Species=str_replace(Species,"Carex adelostoma", "Carex buxbaumii")) %>%
+  #  mutate(Species=str_replace(Species,"Carex leersii", "Carex echinata")) %>%
+  mutate(Species=str_replace(Species,"Carex paupercula", "Carex magellanica")) %>%
+  #  mutate(Species=str_replace(Species,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
+  mutate(Species=str_replace(Species,"Carex viridula", "Carex flava")) %>%
+  #  mutate(Species=str_replace(Species,"Chamaepericlymenum suecicum", "Cornus suecia")) %>%
+  #  mutate(Species=str_replace(Species,"Cicerbita alpina", "Lactuca alpina")) %>%
+  mutate(Species=str_replace(Species,"Cotoneaster scandinavicus", "Cotoneaster integerrimus")) %>%
+  mutate(Species=str_replace(Species,"Cotoneaster symondsii", "Cotoneaster integrifolius")) %>%
+  mutate(Species=str_replace(Species,"Cyanus montanus", "Centaurea montana")) %>%
+  #  mutate(Species=str_replace(Species,"Empetrum hermaphroditum", "Empetrum nigrum")) %>%
+  mutate(Species=str_replace(Species,"Erysimum virgatum", "Erysimum strictum")) %>%
+  #  mutate(Species=str_replace(Species,"Festuca prolifera", "Festuca rubra")) %>%
+  mutate(Species=str_replace(Species,"Festuca trachyphylla", "Festuca brevipila")) %>%
+  mutate(Species=str_replace(Species,"Galium album", "Galium mollugo")) %>%
+  #  mutate(Species=str_replace(Species,"Galium elongatum", "Galium palustre")) %>%
+  mutate(Species=str_replace(Species,"Helictotrichon pratense", "Avenula pratensis")) %>%
+  mutate(Species=str_replace(Species,"Helictotrichon pubescens", "Avenula pubescens")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium alpina", "Hieracium Alpina")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium alpinum", "Hieracium Alpina")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium hieracium", "Hieracium Hieracium")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium hieracioides", "Hieracium umbellatum")) %>%
+  mutate(Species=str_replace(Species,"Hieracium murorum", "Hieracium Vulgata")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium oreadea", "Hieracium Oreadea")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium prenanthoidea", "Hieracium Prenanthoidea")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium vulgata", "Hieracium Vulgata")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium pilosella", "Pilosella officinarum")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium vulgatum", "Hieracium umbellatum")) %>%
+  #  mutate(Species=str_replace(Species,"Hierochloã« alpina", "Hierochloë alpina")) %>%
+  #  mutate(Species=str_replace(Species,"Hierochloã« hirta", "Hierochloë hirta")) %>%
+  #  mutate(Species=str_replace(Species,"Hierochloã« odorata", "Hierochloë odorata")) %>%
+  mutate(Species=str_replace(Species,"Hylotelephium maximum", "Sedum telephium")) %>%
+  #  mutate(Species=str_replace(Species,"Listera cordata", "Neottia cordata")) %>%
+  #  mutate(Species=str_replace(Species,"Leontodon autumnalis", "Scorzoneroides autumnalis")) %>%
+  mutate(Species=str_replace(Species,"Lepidotheca suaveolens", "Matricaria discoidea")) %>%
+  #  mutate(Species=str_replace(Species,"Loiseleuria procumbens", "Kalmia procumbens")) %>%
+  mutate(Species=str_replace(Species,"Malus ×domestica", "Malus domestica")) %>%
+  #  mutate(Species=str_replace(Species,"Mycelis muralis", "Lactuca muralis")) %>%
+  #  mutate(Species=str_replace(Species,"Omalotheca supina", "Gnaphalium supinum")) %>%
+  #  mutate(Species=str_replace(Species,"Omalotheca norvegica", "Gnaphalium norvegicum")) %>%
+  #  mutate(Species=str_replace(Species,"Omalotheca sylvatica", "Gnaphalium sylvaticum")) %>%
+  #  mutate(Species=str_replace(Species,"Oreopteris limbosperma", "Thelypteris limbosperma")) %>%
+  #  mutate(Species=str_replace(Species,"Oxycoccus microcarpus", "Vaccinium microcarpum")) %>%
+  #  mutate(Species=str_replace(Species,"Oxycoccus palustris", "Vaccinium oxycoccos")) %>%
+  #  mutate(Species=str_replace(Species,"Phalaris minor", "Phalaris arundinacea")) %>%
+  #  mutate(Species=str_replace(Species,"Pinus unicinata", "Pinus mugo")) %>%
+  #  mutate(Species=str_replace(Species,"Poa alpigena", "Poa pratensis")) %>%
+  mutate(Species=str_replace(Species,"Poa angustifolia", "Poa pratensis")) %>%
+  mutate(Species=str_replace(Species,"Poa humilis", "Poa pratensis")) %>%
+  #  mutate(Species=str_replace(Species,"Pyrola grandiflora", "Pyrola rotundifolia")) %>%
+  mutate(Species=str_replace(Species,"Rosa dumalis", "Rosa vosagiaca")) %>%
+  #  mutate(Species=str_replace(Species,"Rumex alpestris", "Rumex acetosa")) %>%
+  #  mutate(Species=str_replace(Species,"Syringa emodi", "Syringa vulgaris")) %>%
+  #  mutate(Species=str_replace(Species,"Taraxacum crocea", "Taraxacum officinale")) %>%
+  #  mutate(Species=str_replace(Species,"Taraxacum croceum", "Taraxacum officinale")) %>%
+  #  mutate(Species=str_replace(Species,"Trientalis europaea", "Lysimachia europaea")) %>%
+  mutate(Species=str_replace(Species,"Trifolium pallidum", "Trifolium pratense"))
+
+## merge species data with indicators
+GRUK.species.ind <- merge(x=GRUK.species[,c("Species", "art_dekning", "ParentGlobalID")], 
+                          y= ind.dat[,c("species","CC", "SS", "RR", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                          by.x="Species", by.y="species", all.x=T)
+summary(GRUK.species.ind)
+# checking which species didn't find a match
+unique(GRUK.species.ind[is.na(GRUK.species.ind$Moisture & 
+                                is.na(GRUK.species.ind$RR)),'Species'])
+
+
+### merge GRUK.variables and GRUK2021.condition
+GRUK.variables <- as.data.frame(GRUK.variables)
+GRUK2021.condition <- as.data.frame(GRUK2021.condition)
+
+head(GRUK.variables)
+head(GRUK2021.condition)
+
+## fixing site-ID in the condition-data
+GRUK2021.condition$Flate_ID <- GRUK2021.condition$områdenavn
+unique(as.factor(GRUK2021.condition$Flate_ID))
+GRUK2021.condition$Flate_ID <- gsub("_", " ", GRUK2021.condition$Flate_ID) # replace underscore with space
+unique(as.factor(GRUK2021.condition$Flate_ID))
+GRUK2021.condition$Flate_ID <- sub(" .*", "", GRUK2021.condition$Flate_ID) # remove everything after space
+unique(as.factor(GRUK2021.condition$Flate_ID))
+
+#GRUK2021.condition$Flate_ID <- gsub(" ", "-", GRUK2021.condition$Flate_ID) # replace space with hyphon
+#GRUK2021.condition$Flate_ID <- gsub("[^0-9\\-]", "", GRUK2021.condition$Flate_ID) # remove all non-numerics except '-'
+#GRUK2021.condition$Flate_ID <- gsub("--", "-", GRUK2021.condition$Flate_ID) # remove double hyphons
+#GRUK2021.condition$Flate_ID <- substr(GRUK2021.condition$Flate_ID, 1, nchar(GRUK2021.condition$Flate_ID)-1) # remove the last character ('-' for all)
+
+
+colnames(GRUK.variables)
+colnames(GRUK2021.condition)
+
+GRUK.variables <- merge(x=GRUK.variables, 
+                        y=GRUK2021.condition[,c("tilstandsvurdering","tilstandsgrunn","artsmangfoldvurdering","lokalitetskvalitet","Flate_ID")], 
+                        by.x="Flate_ID", by.y="Flate_ID", all.x=T)
+
+
+
+## adding information on ecosystem and condition variables to species data
+GRUK.species.ind <- merge(x=GRUK.species.ind, 
+                          y=GRUK.variables[,c("GlobalID","year","Flate_ID","Punkt_ID",
+                                              "Total dekning % av karplanter registert","Dekning % av karplanter i feltsjikt","Dekning % av moser",
+                                              "Dekning % av lav","Dekning % av strø","Dekning % av bar jord/grus/stein/berg",
+                                              "Kartleggingsenhet",
+                                              "Spor etter ferdsel med tunge kjøretøy (%)","Spor etter slitasje og slitasjebetinget erosjon (%)","Dekning % av nakent berg","Menneskeskapte objekter i sirkelen?",
+                                              "Total dekning % av vedplanter i feltsjikt","Dekning % av busker i busksjikt","Dekning % av tresjikt","Dekning % av problemarter","Total dekning % av fremmede arter",
+                                              "x","y")], 
+                          by.x="ParentGlobalID", by.y="GlobalID", all.x=T)
+# trimming away the points without information on NiN, species or cover
+GRUK.species.ind <- GRUK.species.ind[!is.na(GRUK.species.ind$Species),]
+GRUK.species.ind <- GRUK.species.ind[!is.na(GRUK.species.ind$art_dekning),]
+
+#rm(GRUK.species)
+#rm(GRUK.variables)
+
+
+summary(GRUK.species.ind)
+head(GRUK.species.ind)
+
+
+
+#### data handling - ASO data ... NOT DONE YET ####
 
 
 
@@ -453,7 +682,7 @@ NiN.sp.ind[NiN.sp.ind==999] <- NA
 
 # checking which species didn't find a match
 unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) & 
-                    is.na(NiN.sp.ind$Nitrogen) & 
+                    is.na(NiN.sp.ind$RR) & 
                     NiN.sp.ind$spgr %in% list("a1a","a1b","a1c")
                   ,'sp'])
 # ok now
@@ -524,6 +753,6 @@ summary(NiN.wetland.cov)
 
 
 
-save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_wetland.RData")
+save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")
 
-load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_wetland.RData")
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")
