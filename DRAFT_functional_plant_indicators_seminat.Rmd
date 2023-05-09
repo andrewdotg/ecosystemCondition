@@ -11,6 +11,7 @@ May 2023
 
 <!-- Load all you dependencies here -->
 ```{r setup, include=FALSE}
+library(readxl)
 library(sf)
 library(plyr)
 library(tidyverse)
@@ -914,7 +915,7 @@ for (i in 1:length(seminat.ref.cov) ) {
 ```
 
 ```{r, include = F}
-load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_seminat.RData")
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_seminat.RData")
 ```
 
 ```{r}
@@ -1092,7 +1093,7 @@ summary(seminat.ref.cov.val)
 ```
 
 ```{r}
-head(wetland.ref.cov.val)
+head(seminat.ref.cov.val)
 ```
 
 Once test data (ANO) and the scaling values from the reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO plot's CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper condition indicators for each  functional plant indicator. An ANO plot can only have a scaled value in either the lower or the upper indicator (the other one will be 'NA'), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.
@@ -1790,9 +1791,9 @@ results.seminat.ASO[['2-sided']]$Soil_disturbance2[results.seminat.ASO[['2-sided
 
 
 ```{r, include = F}
-load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ANO.RData")
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ANO.RData")
 
-load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO.RData")
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO.RData")
 ```
 
 ```{r}
@@ -1845,7 +1846,7 @@ res.seminat <-
 
 # similarly for ASO
 res.seminat.ASO <- results.seminat.ASO[['2-sided']]
-colnames(res.seminat.ASO)
+#colnames(res.seminat.ASO)
 
 # make long version of the scaled value part
 res.seminat.ASO <-
@@ -1957,7 +1958,7 @@ reg <- st_read("data/regions.shp")%>%
   st_transform(crs = st_crs(ANO.geo))
 
 # change region names to something R-friendly
-reg$region
+#reg$region
 reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway")
 
 regnor <- st_intersection(reg,nor)
@@ -1997,7 +1998,65 @@ tm_shape(regnor) +
 ...but here the colors and values of the data points on the map are hard to make out.
 
 ### Regions
-Alternatively we can calculate and show the region-wise means and standard deviations.
+Alternatively we can calculate and show the region-wise means and their related standard errors. But note that calculating a simple mean would be inappropriate for these data. This is because 
+(i) the scaled data are bound between 0 and 1, and thus follow a beta-distribution rather than a Gaussian one
+(ii) both the ANO and the ASO datasets have a nested structure
+
+Therefore, we need to (i) use a beta-model, that (ii) can account for the nested structure of the data.
+Here, we apply the following function using either glmmTMB null-model with a beta-distribution, logit link, and the nesting as a random intercept, or a simple betareg null-model with logit link if the nesting is not extensive enough for a mixed model.
+```{r}
+library(betareg)
+library(glmmTMB)
+
+expit <- function(L) exp(L) / (1+exp(L)) # since the beta-models use a logit link, we need to calculate the estimates back to the identity scale
+
+# the function performs a glmmTMB if there's >= 5 random levels in the nesting structure
+# if that is not the case, then the function performs a betareg if theres >= 2 observations
+# if that is not the case either, then the function returns the value of the single observation with NA standard error
+
+indmean.beta <- function(df) {
+
+  st_geometry(df) <- NULL
+  colnames(df) <- c("y","ran")
+  
+  if ( nrow(df[!is.na(df[,1]),]) >= 2 ) {
+    
+    if ( length(unique(df[!is.na(df[,1]),2])) >=5 ) {
+      
+      mod1 <- glmmTMB(y ~ 1 +(1|ran), family=beta_family(), data=df)
+      
+      return(c(
+        expit(summary( mod1 )$coefficients$cond[1]),
+        expit( summary( mod1 )$coefficients$cond[1] + 
+                 summary( mod1 )$coefficients$cond[2] )-
+          expit( summary( mod1 )$coefficients$cond[1] ),
+        nrow(df[!is.na(df$y),])
+      ))
+      
+    } else {
+      
+      mod2 <- betareg(y ~ 1, data=df)
+      
+      return(c(
+        expit(summary( mod2 )$coefficients$mean[1]),
+        expit( summary( mod2 )$coefficients$mean[1] + 
+                 summary( mod2 )$coefficients$mean[2] )-
+          expit( summary( mod2 )$coefficients$mean[1] ),
+        nrow(df[!is.na(df$y),])
+      ))
+      
+    }
+    
+  } else {
+    
+    return(c(df$y,NA,1))
+    
+  }
+
+}
+
+```
+
 ```{r}
 
 res.seminat2 = st_join(res.seminat2, regnor, left = TRUE)
@@ -2005,60 +2064,66 @@ res.seminat.ASO2 = st_join(res.seminat.ASO2, regnor, left = TRUE)
 
 regnor <- regnor %>%
   mutate(
-    Grazing_mowing1.reg.mean = c(mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-    Grazing_mowing1.reg.sd = c(sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                          sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Central Norway"],na.rm=T),
-                          sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                          sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Western Norway"],na.rm=T),
-                          sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-             Grazing_mowing1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                          nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                          nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                          nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                          nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Grazing_mowing1),]))
-    )
+    Grazing_mowing1.reg.mean = c(indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
+                                 ),
+    Grazing_mowing1.reg.se = c(indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat2[res.seminat2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat2[res.seminat2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat2[res.seminat2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat2[res.seminat2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
+                               ),
+    Grazing_mowing1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
+                              nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
+                              nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
+                              nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
+                              nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Grazing_mowing1),])
+                              )
+  )
 
 # and adding the values for ASO
 regnor <- regnor %>%
   mutate(
-    Nitrogen2.ASO.reg.mean = c(mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-    Nitrogen2.ASO.reg.sd = c(sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                          sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                          sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                          sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                          sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-             Nitrogen2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]))
-    )
+    Nitrogen2.ASO.reg.mean = c(indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
+                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
+                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
+                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
+                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1]
+                               ),
+    Nitrogen2.ASO.reg.se = c(indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
+                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
+                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
+                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
+                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2]
+                             ),
+    Nitrogen2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
+                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
+                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
+                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
+                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]))
+  )
+
 
 
 ## scaled value maps for Grazing_mowing1 (lower indicator), ANO
 # mean
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.reg.mean", title="pH (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_polygons(col="Grazing_mowing1.reg.mean", title="Grazing_mowing (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Grazing_mowing1.reg.n",col="black",bg.color="grey")
 ```
 Mean index value by region for the upper Grazing_mowing indicator (i.e. index shows deviations towards less grazing or mowing). Numbers in grey fields show the number of observations in the respective region.
 
 ```{r}
-# sd
+# se
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.reg.sd", title="pH (lower), sd", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
+  tm_polygons(col="Grazing_mowing1.reg.se", title="Grazing_mowing (lower), SE", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
   tm_text("Grazing_mowing1.reg.n",col="black",bg.color="grey")
 
 ```
-Standard deviation to the mean index value by region for the lower Grazing_mowing indicator. Numbers in grey fields show the number of observations in the respective region.
+Standard error to the mean index value by region for the lower Grazing_mowing indicator. Numbers in grey fields show the number of observations in the respective region.
 
 And here are the corresponding maps for the upper Nitrogen indicator in the ASO data:
 ```{r}
@@ -2071,13 +2136,13 @@ tm_shape(regnor) +
 Mean index value by region for the upper Nitrogen indicator (i.e. index shows deviations towards increased Nitrogen availability). Numbers in grey fields show the number of observations in the respective region.
 
 ```{r}
-# sd
+# se
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.ASO.reg.sd", title="Nitrogen (upper), sd", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
+  tm_polygons(col="Nitrogen2.ASO.reg.se", title="Nitrogen (upper), SE", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
   tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
 
 ```
-Standard deviation to the mean index value by region for the upper Nitrogen indicator. Numbers in grey fields show the number of observations in the respective region.
+Standard error to the mean index value by region for the upper Nitrogen indicator. Numbers in grey fields show the number of observations in the respective region.
 
 
 ### unscaled values vs. reference
@@ -2085,13 +2150,13 @@ We can also compare the unscaled values to the reference distribution in order t
 
 Grazing_mowing, ANO:
 ```{r}
-summary(res.seminat$kartleggingsenhet_1m2)
-length(unique(res.seminat$kartleggingsenhet_1m2))
+#summary(res.seminat$kartleggingsenhet_1m2)
+#length(unique(res.seminat$kartleggingsenhet_1m2))
 # 19 NiN-types, of which T41-C-1 has 0 observations, and T32 & T34 as main types don't have a reference -> so, 16 NiN-Types to plot
-colnames(seminat.ref.cov[['Light']])
+#colnames(seminat.ref.cov[['Light']])
 
 ### Grazing_mowing
-par(mfrow=c(4,4))
+par(mfrow=c(2,4))
 ## T32s
 # T32-C-1
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C1C2"]) ,na.rm=T),
@@ -2165,6 +2230,8 @@ points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggi
        rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original)),
        col="red")
 
+
+par(mfrow=c(2,4))
 # T32-C-15
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C15")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C15',xlab='Grazing_mowing value')
@@ -2248,10 +2315,10 @@ legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c(
 Nitrogen, ASO
 ```{r}
 
-summary(res.seminat.ASO$NiN_grunntype)
-length(levels(res.seminat.ASO$NiN_grunntype))
+#summary(res.seminat.ASO$NiN_grunntype)
+#length(levels(res.seminat.ASO$NiN_grunntype))
 # 12 NiN-types, of which C-13 and C-2 have 0 observations -> so, 10 NiN-Types to plot
-colnames(seminat.ref.cov[['Nitrogen']])
+#colnames(seminat.ref.cov[['Nitrogen']])
 
 
 
@@ -2352,7 +2419,7 @@ points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Nitrogen2" & res.seminat.ASO$NiN
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
 ```
-THe figure shows that deviations mainly occur in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
+The figure shows that deviations mainly occur in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
