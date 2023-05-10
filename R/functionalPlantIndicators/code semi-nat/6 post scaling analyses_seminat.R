@@ -9,12 +9,12 @@ load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for m
 
 #### plotting scaled values by main ecosystem type ####
 ## continuing with 2-sided
-res.seminat <- results.seminat[['2-sided']]
-colnames(res.seminat)
+res.seminat.ANO <- results.seminat.ANO[['2-sided']]
+colnames(res.seminat.ANO)
 
 # make long version of the scaled value part
-res.seminat <-
-  res.seminat %>% 
+res.seminat.ANO <-
+  res.seminat.ANO %>% 
   pivot_longer(
     cols = c("Light1","Light2",
              "Moist1","Moist2",
@@ -29,8 +29,8 @@ res.seminat <-
   )
 
 # add original values as well
-res.seminat <- 
-  res.seminat %>% add_column(original = results.seminat[['original']] %>% 
+res.seminat.ANO <- 
+  res.seminat.ANO %>% add_column(original = results.seminat.ANO[['original']] %>% 
                                pivot_longer(
                                  cols = c("Light1","Light2",
                                           "Moist1","Moist2",
@@ -46,7 +46,7 @@ res.seminat <-
                                pull(original)
   )
 
-head(res.seminat[,70:76])
+head(res.seminat.ANO[,70:76])
 
 
 # similarly for ASO
@@ -92,7 +92,7 @@ head(res.seminat.ASO[,70:76])
 
 
 # making the plot, ANO
-ggplot(res.seminat, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+ggplot(res.seminat.ANO, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color=NA) +
 #  geom_boxplot(width=0.2, color="grey") +
@@ -122,14 +122,14 @@ ggplot(res.seminat.ASO, aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_in
 
 #### scaled value maps ####
 # keep wide format and add geometry again
-res.seminat2 <- results.seminat[['2-sided']]
-st_geometry(res.seminat2) <- st_geometry(ANO.seminat)
+res.seminat.ANO2 <- results.seminat.ANO[['2-sided']]
+st_geometry(res.seminat.ANO2) <- st_geometry(ANO.seminat)
 
 ## similarly for ASO
 # keep wide format and add geometry again
 res.seminat.ASO2 <- results.seminat.ASO[['2-sided']]
 st_geometry(res.seminat.ASO2) <- st_geometry(ASO.geo)
-res.seminat.ASO2 <- res.seminat.ASO2 %>% st_transform(crs = st_crs(res.seminat2))
+res.seminat.ASO2 <- res.seminat.ASO2 %>% st_transform(crs = st_crs(res.seminat.ANO2))
 
 
 #nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
@@ -160,7 +160,7 @@ regnor <- st_intersection(reg,nor)
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
-  tm_shape(res.seminat2) +
+  tm_shape(res.seminat.ANO2) +
   tm_dots('Light1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
   tm_layout(main.title = "Light index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
@@ -175,7 +175,7 @@ tm_shape(regnor) +
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
-  tm_shape(res.seminat2) +
+  tm_shape(res.seminat.ANO2) +
   tm_dots('Grazing_mowing1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
   tm_layout(main.title = "Grazing_mowing index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
@@ -188,7 +188,7 @@ tm_shape(regnor) +
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
-  tm_shape(res.seminat2) +
+  tm_shape(res.seminat.ANO2) +
   tm_dots('pH1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
   tm_layout(main.title = "pH index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
@@ -214,18 +214,18 @@ tm_shape(regnor) +
                 title = "index values")
 
 # very few spots on the map with only 2022 data from ASO
-# continue with ANO only
-
-
 
 
 
 # let's look at things by region
-res.seminat2 = st_join(res.seminat2, regnor, left = TRUE)
-colnames(res.seminat2)
+res.seminat.ANO2 = st_join(res.seminat.ANO2, regnor, left = TRUE)
+colnames(res.seminat.ANO2)
+
+res.seminat.ASO2 = st_join(res.seminat.ASO2, regnor, left = TRUE)
+colnames(res.seminat.ASO2)
 
 # simple means, inappropriate for 0-1 bound data
-res.seminat2 %>% 
+res.seminat.ANO2 %>% 
   group_by(as.factor(region)) %>% 
   mutate(Light1.reg.mean = mean(Light1,na.rm=T)) %>%
   mutate(Light2.reg.mean = mean(Light1,na.rm=T)) %>%
@@ -316,7 +316,7 @@ indmean.beta <- function(df) {
 
 
 
-indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])
+indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])
 
 indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("Grazing_mowing1","Omradenummer_flatenummer")])
 
@@ -324,23 +324,23 @@ indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("G
 
 regnor <- regnor %>%
   mutate(
-    Grazing_mowing1.reg.mean = c(indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
+    Grazing_mowing1.ANO.reg.mean = c(indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
     ),
-    Grazing_mowing1.reg.se = c(indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat2[res.seminat2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat2[res.seminat2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat2[res.seminat2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat2[res.seminat2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
+    Grazing_mowing1.ANO.reg.se = c(indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
     ),
-    Grazing_mowing1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                              nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                              nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                              nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                              nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Grazing_mowing1),])
+    Grazing_mowing1.ANO.reg.n = c(nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),])
     )
   )
 
@@ -368,23 +368,23 @@ regnor <- regnor %>%
 
 # Grazing_mowing1 (lower indicator), mean
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.reg.mean", title="Grazing_mowing (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Grazing_mowing1.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="Grazing_mowing1.ANO.reg.mean", title="Grazing_mowing (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Grazing_mowing1.ANO.reg.n",col="black",bg.color="grey")
 
 # Grazing_mowing1 (lower indicator), se
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.reg.se", title="Grazing_mowing (lower)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Grazing_mowing1.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="Grazing_mowing1.ANO.reg.se", title="Grazing_mowing (lower)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Grazing_mowing1.ANO.reg.n",col="black",bg.color="grey")
 
 #ASO
 # Nitrogen2 (upper indicator), mean
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.reg.mean", title="Nitrogen (upper)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Nitrogen2.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="Nitrogen2.ASO.reg.mean", title="Nitrogen (upper)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
 # Nitrogen2 (lower indicator), se
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.reg.se", title="Nitrogen (upper)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Nitrogen2.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="Nitrogen2.ASO.reg.se", title="Nitrogen (upper)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
 
 
 
@@ -395,20 +395,20 @@ tm_shape(regnor) +
 length(unique(ANO.geo$ano_flate_id))
 length(unique(ANO.geo$ano_punkt_id))
 # total seminat
-length(unique(res.seminat2$ano_flate_id))
-length(unique(res.seminat2$ano_punkt_id))
+length(unique(res.seminat.ANO2$ano_flate_id))
+length(unique(res.seminat.ANO2$ano_punkt_id))
 # by region
-length(unique(res.seminat2$ano_flate_id[res.seminat2$region=="Northern Norway"]))
-length(unique(res.seminat2$ano_flate_id[res.seminat2$region=="Central Norway"]))
-length(unique(res.seminat2$ano_flate_id[res.seminat2$region=="Eastern Norway"]))
-length(unique(res.seminat2$ano_flate_id[res.seminat2$region=="Western Norway"]))
-length(unique(res.seminat2$ano_flate_id[res.seminat2$region=="Southern Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Northern Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Central Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Eastern Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Western Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Southern Norway"]))
 
-length(unique(res.seminat2$ano_punkt_id[res.seminat2$region=="Northern Norway"]))
-length(unique(res.seminat2$ano_punkt_id[res.seminat2$region=="Central Norway"]))
-length(unique(res.seminat2$ano_punkt_id[res.seminat2$region=="Eastern Norway"]))
-length(unique(res.seminat2$ano_punkt_id[res.seminat2$region=="Western Norway"]))
-length(unique(res.seminat2$ano_punkt_id[res.seminat2$region=="Southern Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Northern Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Central Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Eastern Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Western Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Southern Norway"]))
 
 
 
@@ -416,8 +416,8 @@ length(unique(res.seminat2$ano_punkt_id[res.seminat2$region=="Southern Norway"])
 
 
 #### distribution comparison, reference vs. field data ####
-summary(res.seminat$kartleggingsenhet_1m2)
-length(unique(res.seminat$kartleggingsenhet_1m2))
+summary(res.seminat.ANO$kartleggingsenhet_1m2)
+length(unique(res.seminat.ANO$kartleggingsenhet_1m2))
 # 19 NiN-types, of which T41-C-1 has 0 observations, and T32 & T34 as main types don't have a reference -> so, 16 NiN-Types to plot
 colnames(seminat.ref.cov[['Light']])
 
@@ -428,91 +428,91 @@ par(mfrow=c(4,4))
 # T32-C-1
 plot(density( as.matrix(seminat.ref.cov[['Light']][,"T32-C1C2"]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C1',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-1",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-1",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-1",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original)),
        col="red")
 
 # T32-C-2
 plot(density( as.matrix(seminat.ref.cov[['Light']][,"T32-C1C2"]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C2',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-2",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-2",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-2",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original)),
        col="red")
 
 # T32-C-3
 plot(density( as.matrix(seminat.ref.cov[['Light']][,"T32-C3C4"]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C3',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-3",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-3",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-3",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original)),
        col="red")
 
 # T32-C-4
 plot(density( as.matrix(seminat.ref.cov[['Light']][,"T32-C3C4"]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C4',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-4",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-4",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-4",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original)),
        col="red")
 
 # T32-C-5
 plot(density( as.matrix(seminat.ref.cov[['Light']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C5',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-5",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-5",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-5",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original)),
        col="red")
 
 # T32-C-6
 plot(density( as.matrix(seminat.ref.cov[['Light']][,c("T32-C21C6a","T32-C21C6b")]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C6',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-6",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-6",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-6",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original)),
        col="red")
 
 # T32-C-9
 plot(density( as.matrix(seminat.ref.cov[['Light']][,c("T32-C9a","T32-C9b")]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C9',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-9",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-9",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-9",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original)),
        col="red")
 
 # T32-C-10
 plot(density( as.matrix(seminat.ref.cov[['Light']][,c("T32-C10a","T32-C10b")]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C10',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original)),
        col="red")
 
 # T32-C-15
 plot(density( as.matrix(seminat.ref.cov[['Light']][,c("T32-C15")]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C15',xlab='Light value')
-#points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-15",]$original,na.rm=T),
+#points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,na.rm=T),
 #       type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-15",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-15",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original)),
        col="red")
 
 # T32-C-20
 plot(density( as.matrix(seminat.ref.cov[['Light']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T32-C20',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-20",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-20",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T32-C-20",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original)),
        col="red")
 
 
@@ -520,19 +520,19 @@ points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_
 # V10-C-1
 plot(density( as.matrix(seminat.ref.cov[['Light']][,"V10-C1C2"]) ,na.rm=T),
      xlim=c(1,7), type="l", main='V10-C1',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="V10-C-1",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="V10-C-1",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="V10-C-1",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original)),
        col="red")
 
 # V10-C-3
 plot(density( as.matrix(seminat.ref.cov[['Light']][,"V10-C3"]) ,na.rm=T),
      xlim=c(1,7), type="l", main='V10-C3',xlab='Light value')
-#points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="V10-C-3",]$original,na.rm=T),
+#points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,na.rm=T),
 #       type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="V10-C-3",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="V10-C-3",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original)),
        col="red")
 
 
@@ -540,38 +540,38 @@ points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_
 # T34-C-1
 plot(density( as.matrix(seminat.ref.cov[['Light']][,"T34-C1"]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T34-C1',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T34-C-1",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T34-C-1",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T34-C-1",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original)),
        col="red")
 
 # T34-C-2
 plot(density( as.matrix(seminat.ref.cov[['Light']][,c("T34-C2a","T34-C2b","T34-C2c")]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T34-C2',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T34-C-2",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T34-C-2",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T34-C-2",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original)),
        col="red")
 
 # T34-C-4
 plot(density( as.matrix(seminat.ref.cov[['Light']][,c("T34-C4a","T34-C4b","T34-C4c","T34-C4d")]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T34-C4',xlab='Light value')
-#points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T34-C-4",]$original,na.rm=T),
+#points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,na.rm=T),
 #       type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T34-C-4",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T34-C-4",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original)),
        col="red")
 
 
 ## T41
 plot(density( as.matrix(seminat.ref.cov[['Light']][,c("T41a","T41b")]) ,na.rm=T),
      xlim=c(1,7), type="l", main='T41',xlab='Light value')
-points(density(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T41",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T41",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T41",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Light1" & res.seminat$kartleggingsenhet_1m2=="T41",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T41",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Light1" & res.seminat.ANO$kartleggingsenhet_1m2=="T41",]$original)),
        col="red")
 legend("topleft", legend=c("reference","field data"), pch=c(NULL,1), lty=1, col=c("black","red"))
 
@@ -584,91 +584,91 @@ par(mfrow=c(4,4))
 # T32-C-1
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C1C2"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C1',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-1",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-1",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-1",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original)),
        col="red")
 
 # T32-C-2
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C1C2"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C2',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-2",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-2",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-2",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original)),
        col="red")
 
 # T32-C-3
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C3C4"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C3',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-3",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-3",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-3",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original)),
        col="red")
 
 # T32-C-4
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C3C4"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C4',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-4",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-4",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-4",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original)),
        col="red")
 
 # T32-C-5
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C5',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-5",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-5",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-5",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original)),
        col="red")
 
 # T32-C-6
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C21C6a","T32-C21C6b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C6',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-6",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-6",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-6",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original)),
        col="red")
 
 # T32-C-9
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C9a","T32-C9b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C9',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-9",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-9",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-9",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original)),
        col="red")
 
 # T32-C-10
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C10a","T32-C10b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C10',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original)),
        col="red")
 
 # T32-C-15
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C15")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C15',xlab='Grazing_mowing value')
-#points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-15",]$original,na.rm=T),
+#points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,na.rm=T),
 #       type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-15",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-15",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original)),
        col="red")
 
 # T32-C-20
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C20',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-20",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-20",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-20",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original)),
        col="red")
 
 
@@ -676,19 +676,19 @@ points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggi
 # V10-C-1
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"V10-C1C2"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='V10-C1',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-1",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-1",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-1",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original)),
        col="red")
 
 # V10-C-3
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"V10-C3"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='V10-C3',xlab='Grazing_mowing value')
-#points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-3",]$original,na.rm=T),
+#points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,na.rm=T),
 #       type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-3",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-3",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original)),
        col="red")
 
 
@@ -696,38 +696,38 @@ points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggi
 # T34-C-1
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T34-C1"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T34-C1',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-1",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-1",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-1",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original)),
        col="red")
 
 # T34-C-2
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T34-C2a","T34-C2b","T34-C2c")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T34-C2',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-2",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-2",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-2",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original)),
        col="red")
 
 # T34-C-4
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T34-C4a","T34-C4b","T34-C4c","T34-C4d")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T34-C4',xlab='Grazing_mowing value')
-#points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-4",]$original,na.rm=T),
+#points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,na.rm=T),
 #       type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-4",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-4",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original)),
        col="red")
 
 
 ## T41
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T41a","T41b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T41',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T41",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T41",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T41",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T41",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T41",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T41",]$original)),
        col="red")
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
@@ -838,10 +838,10 @@ legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c(
 
 
 #### relating scaled values to NiN condition variables ####
-ggplot(res.seminat, aes(x=bruksintensitet, y=scaled_value)) +
+ggplot(res.seminat.ANO, aes(x=bruksintensitet, y=scaled_value)) +
   geom_point() +
   facet_wrap(~fp_ind, scale="fixed")
 
-ggplot(res.seminat.ASO, aes(x="Aktuell bruksintensitet (7JB-BA)", y=scaled_value)) +
+ggplot(res.seminat.ASO, aes(x=bruksintensitet, y=scaled_value)) +
   geom_point() +
   facet_wrap(~fp_ind, scale="fixed")

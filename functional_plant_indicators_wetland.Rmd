@@ -711,6 +711,7 @@ for (i in 1:length(wetland.ref.cov) ) {
 ```{r, include = F}
 # Data from cache
 wetland.ref.cov<-readRDS(paste0(here::here(), "/data/cache/wetland.ref.cov.RDS"))
+
 #load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_wetland.RData")
 ```
 
@@ -1365,7 +1366,7 @@ length(unique(res.wetland$kartleggingsenhet_1m2))
 colnames(wetland.ref.cov[['Soil_reaction_pH']])
 
 ### pH
-par(mfrow=c(4,4))
+par(mfrow=c(2,4))
 ## V1s
 # V1-C-1
 plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V1-C1a","V1-C1b","V1-C1c","V1-C1d","V1-C1e")]) ,na.rm=T),
@@ -1439,7 +1440,7 @@ points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2
        rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original)),
        col="red")
 
-
+par(mfrow=c(2,4))
 ## V2s
 # V2-C-1
 plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V2-C1a","V2-C1b")]) ,na.rm=T),
@@ -1522,7 +1523,7 @@ legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c(
 
 
 ### Nitrogen
-par(mfrow=c(4,4))
+par(mfrow=c(2,4))
 ## V1s
 # V1-C-1
 plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V1-C1a","V1-C1b","V1-C1c","V1-C1d","V1-C1e")]) ,na.rm=T),
@@ -1596,7 +1597,7 @@ points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenh
        rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original)),
        col="red")
 
-
+par(mfrow=c(2,4))
 ## V2s
 # V2-C-1
 plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V2-C1a","V2-C1b")]) ,na.rm=T),

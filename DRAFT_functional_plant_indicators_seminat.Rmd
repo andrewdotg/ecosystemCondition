@@ -156,12 +156,14 @@ ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
 ASO data
 
 ```{r, echo = F}
+# Add data from cache
+ASO.sp<-readRDS(paste0(here::here(),"/data/cache/ASO.sp.RDS"))
+ASO.geo<-readRDS(paste0(here::here(),"/data/cache/ASO.geo.RDS"))
+
 #excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_20#22.xlsx")
 
-ASO.sp <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx", 
-                     sheet = "transektregistreringer_4")
-ASO.geo <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx",
-                      sheet = "surveyPoint_0")
+#ASO.sp <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx",sheet = "transektregistreringer_4")
+#ASO.geo <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx",sheet = "surveyPoint_0")
 #head(ASO.sp)
 #head(ASO.geo)
 
@@ -173,6 +175,7 @@ Plant indicators from Tyler et al. (2021)
 ## Tyler indicator data
 ## data from cache
 ind.dat <-readRDS(paste0(here::here(),"/data/cache/ind.dat.RDS"))
+
 # ind.dat <- read.table("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
 #                         sep = '\t', header=T, quote = '')
 # head(ind.dat)
@@ -183,6 +186,7 @@ Generalized species lists NiN
 ```{r, echo = F}
 # data from cache
 Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
+
 # load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/functional plant indicators/reference from NiN/Eco_State.RData")
 # str(Eco_State)
 ```
@@ -915,7 +919,10 @@ for (i in 1:length(seminat.ref.cov) ) {
 ```
 
 ```{r, include = F}
-load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_seminat.RData")
+# Data from cache
+seminat.ref.cov<-readRDS(paste0(here::here(), "/data/cache/seminat.ref.cov.RDS"))
+
+#load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_seminat.RData")
 ```
 
 ```{r}
@@ -1194,33 +1201,33 @@ ANO.seminat[ANO.seminat$kartleggingsenhet_1m2=="T34",]
 # for T32 og T34 without grunntype-registration there's no useful reference, these won't be processed further
 
 
-results.seminat <- list()
+results.seminat.ANO <- list()
 ind <- unique(seminat.ref.cov.val$Ind)
 # choose columns for site description
 colnames(ANO.seminat)
-results.seminat[['original']] <- ANO.seminat
+results.seminat.ANO[['original']] <- ANO.seminat
 # drop geometry
-st_geometry(results.seminat[['original']]) <- NULL
-results.seminat[['original']]
+st_geometry(results.seminat.ANO[['original']]) <- NULL
+results.seminat.ANO[['original']]
 
 # add columns for indicators
-nvar.site <- ncol(results.seminat[['original']])
-for (i in 1:length(ind) ) {results.seminat[['original']][,i+nvar.site] <- NA}
-colnames(results.seminat[['original']])[(nvar.site+1):(length(ind)+nvar.site)] <- paste(ind)
-for (i in (nvar.site+1):(length(ind)+nvar.site) ) {results.seminat[['original']][,i] <- as.numeric(results.seminat[['original']][,i])}
-summary(results.seminat[['original']])
-#results.seminat[['original']]$Region <- as.factor(results.seminat[['original']]$Region)
-results.seminat[['original']]$GlobalID <- as.factor(results.seminat[['original']]$GlobalID)
-results.seminat[['original']]$ano_flate_id <- as.factor(results.seminat[['original']]$ano_flate_id)
-results.seminat[['original']]$ano_punkt_id <- as.factor(results.seminat[['original']]$ano_punkt_id)
-results.seminat[['original']]$hovedoekosystem_punkt <- as.factor(results.seminat[['original']]$hovedoekosystem_punkt)
-#results.seminat[['original']]$Hovedoekosystem_rute  <- as.factor(results.seminat[['original']]$Hovedoekosystem_rute )
-results.seminat[['original']]$kartleggingsenhet_1m2 <- as.factor(results.seminat[['original']]$kartleggingsenhet_1m2)
-results.seminat[['original']]$hovedtype_rute    <- as.factor(results.seminat[['original']]$hovedtype_rute)
+nvar.site <- ncol(results.seminat.ANO[['original']])
+for (i in 1:length(ind) ) {results.seminat.ANO[['original']][,i+nvar.site] <- NA}
+colnames(results.seminat.ANO[['original']])[(nvar.site+1):(length(ind)+nvar.site)] <- paste(ind)
+for (i in (nvar.site+1):(length(ind)+nvar.site) ) {results.seminat.ANO[['original']][,i] <- as.numeric(results.seminat.ANO[['original']][,i])}
+summary(results.seminat.ANO[['original']])
+#results.seminat.ANO[['original']]$Region <- as.factor(results.seminat.ANO[['original']]$Region)
+results.seminat.ANO[['original']]$GlobalID <- as.factor(results.seminat.ANO[['original']]$GlobalID)
+results.seminat.ANO[['original']]$ano_flate_id <- as.factor(results.seminat.ANO[['original']]$ano_flate_id)
+results.seminat.ANO[['original']]$ano_punkt_id <- as.factor(results.seminat.ANO[['original']]$ano_punkt_id)
+results.seminat.ANO[['original']]$hovedoekosystem_punkt <- as.factor(results.seminat.ANO[['original']]$hovedoekosystem_punkt)
+#results.seminat.ANO[['original']]$Hovedoekosystem_rute  <- as.factor(results.seminat.ANO[['original']]$Hovedoekosystem_rute )
+results.seminat.ANO[['original']]$kartleggingsenhet_1m2 <- as.factor(results.seminat.ANO[['original']]$kartleggingsenhet_1m2)
+results.seminat.ANO[['original']]$hovedtype_rute    <- as.factor(results.seminat.ANO[['original']]$hovedtype_rute)
 
 
 # roll out
-results.seminat[['scaled']] <- results.seminat[['non-truncated']] <- results.seminat[['original']]
+results.seminat.ANO[['scaled']] <- results.seminat.ANO[['non-truncated']] <- results.seminat.ANO[['original']]
 ```
 
 ```{r, echo = T, eval = F}
@@ -1246,197 +1253,197 @@ for (i in 1:nrow(ANO.seminat) ) {  #
           
           # Light
           dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Light')]
-          results.seminat[['original']][i,'richness'] <- nrow(dat)
+          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Light),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Light'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Light1'] <- scal() 
-            results.seminat[['non-truncated']][i,'Light1'] <- scal.2() 
-            results.seminat[['original']][i,'Light1'] <- val 
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Light1'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Light1'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Light1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Light2'] <- scal() 
-            results.seminat[['non-truncated']][i,'Light2'] <- scal.2() 
-            results.seminat[['original']][i,'Light2'] <- val
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Light2'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Light2'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Light2'] <- val
           }
           
           
           # Moisture
           dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Moisture')]
-          results.seminat[['original']][i,'richness'] <- nrow(dat)
+          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Moisture),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Moisture'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Moist1'] <- scal() 
-            results.seminat[['non-truncated']][i,'Moist1'] <- scal.2() 
-            results.seminat[['original']][i,'Moist1'] <- val 
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Moist1'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Moist1'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Moist1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Moist2'] <- scal() 
-            results.seminat[['non-truncated']][i,'Moist2'] <- scal.2() 
-            results.seminat[['original']][i,'Moist2'] <- val
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Moist2'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Moist2'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Moist2'] <- val
           }
           
           
           # Soil_reaction_pH
           dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Soil_reaction_pH')]
-          results.seminat[['original']][i,'richness'] <- nrow(dat)
+          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Soil_reaction_pH),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Soil_reaction_pH'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'pH1'] <- scal() 
-            results.seminat[['non-truncated']][i,'pH1'] <- scal.2() 
-            results.seminat[['original']][i,'pH1'] <- val 
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'pH1'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'pH1'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'pH1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'pH2'] <- scal() 
-            results.seminat[['non-truncated']][i,'pH2'] <- scal.2() 
-            results.seminat[['original']][i,'pH2'] <- val
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'pH2'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'pH2'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'pH2'] <- val
           }
           
           
           # Nitrogen
           dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Nitrogen')]
-          results.seminat[['original']][i,'richness'] <- nrow(dat)
+          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Nitrogen),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Nitrogen'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Nitrogen1'] <- scal() 
-            results.seminat[['non-truncated']][i,'Nitrogen1'] <- scal.2() 
-            results.seminat[['original']][i,'Nitrogen1'] <- val 
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Nitrogen1'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Nitrogen1'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Nitrogen1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Nitrogen2'] <- scal() 
-            results.seminat[['non-truncated']][i,'Nitrogen2'] <- scal.2() 
-            results.seminat[['original']][i,'Nitrogen2'] <- val
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Nitrogen2'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Nitrogen2'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Nitrogen2'] <- val
           }
           
           
           # Phosphorus
           dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Phosphorus')]
-          results.seminat[['original']][i,'richness'] <- nrow(dat)
+          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Phosphorus),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Phosphorus'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Phosphorus1'] <- scal() 
-            results.seminat[['non-truncated']][i,'Phosphorus1'] <- scal.2() 
-            results.seminat[['original']][i,'Phosphorus1'] <- val 
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Phosphorus1'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Phosphorus1'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Phosphorus1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Phosphorus2'] <- scal() 
-            results.seminat[['non-truncated']][i,'Phosphorus2'] <- scal.2() 
-            results.seminat[['original']][i,'Phosphorus2'] <- val
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Phosphorus2'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Phosphorus2'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Phosphorus2'] <- val
           }
           
           
           # Grazing_mowing
           dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Grazing_mowing')]
-          results.seminat[['original']][i,'richness'] <- nrow(dat)
+          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Grazing_mowing),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Grazing_mowing'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Grazing_mowing1'] <- scal() 
-            results.seminat[['non-truncated']][i,'Grazing_mowing1'] <- scal.2() 
-            results.seminat[['original']][i,'Grazing_mowing1'] <- val 
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Grazing_mowing1'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Grazing_mowing1'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Grazing_mowing1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Grazing_mowing2'] <- scal() 
-            results.seminat[['non-truncated']][i,'Grazing_mowing2'] <- scal.2() 
-            results.seminat[['original']][i,'Grazing_mowing2'] <- val
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Grazing_mowing2'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Grazing_mowing2'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Grazing_mowing2'] <- val
           }
           
           
           # Soil_disturbance
           dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Soil_disturbance')]
-          results.seminat[['original']][i,'richness'] <- nrow(dat)
+          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Soil_disturbance),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Soil_disturbance'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Soil_disturbance1'] <- scal() 
-            results.seminat[['non-truncated']][i,'Soil_disturbance1'] <- scal.2() 
-            results.seminat[['original']][i,'Soil_disturbance1'] <- val 
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Soil_disturbance1'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Soil_disturbance1'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Soil_disturbance1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat dataframe
-            results.seminat[['scaled']][i,'Soil_disturbance2'] <- scal() 
-            results.seminat[['non-truncated']][i,'Soil_disturbance2'] <- scal.2() 
-            results.seminat[['original']][i,'Soil_disturbance2'] <- val
+            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.seminat.ANO dataframe
+            results.seminat.ANO[['scaled']][i,'Soil_disturbance2'] <- scal() 
+            results.seminat.ANO[['non-truncated']][i,'Soil_disturbance2'] <- scal.2() 
+            results.seminat.ANO[['original']][i,'Soil_disturbance2'] <- val
           }
           
           
@@ -1451,29 +1458,29 @@ for (i in 1:nrow(ANO.seminat) ) {  #
 
 
 # for using both sides of the plant indicators
-results.seminat[['2-sided']] <- results.seminat[['non-truncated']]
+results.seminat.ANO[['2-sided']] <- results.seminat.ANO[['non-truncated']]
 
 # remove values >1 for 2-sided indicators
-results.seminat[['2-sided']]$Light1[results.seminat[['2-sided']]$Light1>1] <- NA
-results.seminat[['2-sided']]$Light2[results.seminat[['2-sided']]$Light2>1] <- NA
+results.seminat.ANO[['2-sided']]$Light1[results.seminat.ANO[['2-sided']]$Light1>1] <- NA
+results.seminat.ANO[['2-sided']]$Light2[results.seminat.ANO[['2-sided']]$Light2>1] <- NA
 
-results.seminat[['2-sided']]$Moist1[results.seminat[['2-sided']]$Moist1>1] <- NA
-results.seminat[['2-sided']]$Moist2[results.seminat[['2-sided']]$Moist2>1] <- NA
+results.seminat.ANO[['2-sided']]$Moist1[results.seminat.ANO[['2-sided']]$Moist1>1] <- NA
+results.seminat.ANO[['2-sided']]$Moist2[results.seminat.ANO[['2-sided']]$Moist2>1] <- NA
 
-results.seminat[['2-sided']]$pH1[results.seminat[['2-sided']]$pH1>1] <- NA
-results.seminat[['2-sided']]$pH2[results.seminat[['2-sided']]$pH2>1] <- NA
+results.seminat.ANO[['2-sided']]$pH1[results.seminat.ANO[['2-sided']]$pH1>1] <- NA
+results.seminat.ANO[['2-sided']]$pH2[results.seminat.ANO[['2-sided']]$pH2>1] <- NA
 
-results.seminat[['2-sided']]$Nitrogen1[results.seminat[['2-sided']]$Nitrogen1>1] <- NA
-results.seminat[['2-sided']]$Nitrogen2[results.seminat[['2-sided']]$Nitrogen2>1] <- NA
+results.seminat.ANO[['2-sided']]$Nitrogen1[results.seminat.ANO[['2-sided']]$Nitrogen1>1] <- NA
+results.seminat.ANO[['2-sided']]$Nitrogen2[results.seminat.ANO[['2-sided']]$Nitrogen2>1] <- NA
 
-results.seminat[['2-sided']]$Phosphorus1[results.seminat[['2-sided']]$Phosphorus1>1] <- NA
-results.seminat[['2-sided']]$Phosphorus2[results.seminat[['2-sided']]$Phosphorus2>1] <- NA
+results.seminat.ANO[['2-sided']]$Phosphorus1[results.seminat.ANO[['2-sided']]$Phosphorus1>1] <- NA
+results.seminat.ANO[['2-sided']]$Phosphorus2[results.seminat.ANO[['2-sided']]$Phosphorus2>1] <- NA
 
-results.seminat[['2-sided']]$Grazing_mowing1[results.seminat[['2-sided']]$Grazing_mowing1>1] <- NA
-results.seminat[['2-sided']]$Grazing_mowing2[results.seminat[['2-sided']]$Grazing_mowing2>1] <- NA
+results.seminat.ANO[['2-sided']]$Grazing_mowing1[results.seminat.ANO[['2-sided']]$Grazing_mowing1>1] <- NA
+results.seminat.ANO[['2-sided']]$Grazing_mowing2[results.seminat.ANO[['2-sided']]$Grazing_mowing2>1] <- NA
 
-results.seminat[['2-sided']]$Soil_disturbance1[results.seminat[['2-sided']]$Soil_disturbance1>1] <- NA
-results.seminat[['2-sided']]$Soil_disturbance2[results.seminat[['2-sided']]$Soil_disturbance2>1] <- NA
+results.seminat.ANO[['2-sided']]$Soil_disturbance1[results.seminat.ANO[['2-sided']]$Soil_disturbance1>1] <- NA
+results.seminat.ANO[['2-sided']]$Soil_disturbance2[results.seminat.ANO[['2-sided']]$Soil_disturbance2>1] <- NA
 
 ```
 
@@ -1791,13 +1798,18 @@ results.seminat.ASO[['2-sided']]$Soil_disturbance2[results.seminat.ASO[['2-sided
 
 
 ```{r, include = F}
-load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ANO.RData")
 
-load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO.RData")
+# Use cache data
+results.seminat.ANO<-readRDS(paste0(here::here(),"/data/cache/results.seminat.ANO.RDS"))
+results.seminat.ASO<-readRDS(paste0(here::here(),"/data/cache/results.seminat.ASO.RDS"))
+
+#load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ANO.RData")
+
+#load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO.RData")
 ```
 
 ```{r}
-head(results.seminat[['2-sided']])
+head(results.seminat.ANO[['2-sided']])
 head(results.seminat.ASO[['2-sided']])
 ```
 #### Scaled value analyses
@@ -1807,11 +1819,11 @@ In order to visualize the results we need to rearrange the results-objects from 
 ```{r, message = FALSE}
 #### plotting scaled values by main ecosystem type ####
 ## continuing with 2-sided
-res.seminat <- results.seminat[['2-sided']]
+res.seminat.ANO <- results.seminat.ANO[['2-sided']]
 
 # make long version of the scaled value part
-res.seminat <-
-  res.seminat %>% 
+res.seminat.ANO <-
+  res.seminat.ANO %>% 
   pivot_longer(
     cols = c("Light1","Light2",
              "Moist1","Moist2",
@@ -1826,8 +1838,8 @@ res.seminat <-
   )
 
 # add original values as well
-res.seminat <- 
-  res.seminat %>% add_column(original = results.seminat[['original']] %>% 
+res.seminat.ANO <- 
+  res.seminat.ANO %>% add_column(original = results.seminat.ANO[['original']] %>% 
                                pivot_longer(
                                  cols = c("Light1","Light2",
                                           "Moist1","Moist2",
@@ -1889,7 +1901,7 @@ And we can show the resulting scaled values as Violin plots for each indicator a
 ```{r,echo=FALSE,message=FALSE, warning=FALSE}
 
 # making the plot, ANO
-ggplot(res.seminat, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+ggplot(res.seminat.ANO, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color=NA) +
 #  geom_boxplot(width=0.2, color="grey") +
@@ -1921,12 +1933,12 @@ We can also show the results as a map, for instance for Grazing_mowing1 (the low
 ```{r, echo=FALSE, warning=FALSE,message = FALSE}
 #### scaled value maps ####
 # keep wide format and add geometry again
-res.seminat2 <- results.seminat[['2-sided']]
-st_geometry(res.seminat2) <- st_geometry(ANO.seminat)
+res.seminat.ANO2 <- results.seminat.ANO[['2-sided']]
+st_geometry(res.seminat.ANO2) <- st_geometry(ANO.seminat)
 
 res.seminat.ASO2 <- results.seminat.ASO[['2-sided']]
 st_geometry(res.seminat.ASO2) <- st_geometry(ASO.geo)
-res.seminat.ASO2 <- res.seminat.ASO2 %>% st_transform(crs = st_crs(res.seminat2))
+res.seminat.ASO2 <- res.seminat.ASO2 %>% st_transform(crs = st_crs(res.seminat.ANO2))
   
 
 #nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
@@ -1958,7 +1970,7 @@ regnor <- st_intersection(reg,nor)
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
-  tm_shape(res.seminat2) +
+  tm_shape(res.seminat.ANO2) +
   tm_dots('Grazing_mowing1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
   tm_layout(main.title = "Grazing_mowing index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
@@ -2053,28 +2065,28 @@ indmean.beta <- function(df) {
 
 ```{r}
 
-res.seminat2 = st_join(res.seminat2, regnor, left = TRUE)
+res.seminat.ANO2 = st_join(res.seminat.ANO2, regnor, left = TRUE)
 res.seminat.ASO2 = st_join(res.seminat.ASO2, regnor, left = TRUE)
 
 regnor <- regnor %>%
   mutate(
-    Grazing_mowing1.reg.mean = c(indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
+    Grazing_mowing1.ANO.reg.mean = c(indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
                                  ),
-    Grazing_mowing1.reg.se = c(indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat2[res.seminat2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat2[res.seminat2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat2[res.seminat2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat2[res.seminat2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
+    Grazing_mowing1.ANO.reg.se = c(indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
                                ),
-    Grazing_mowing1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                              nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                              nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                              nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                              nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Grazing_mowing1),])
+    Grazing_mowing1.ANO.reg.n = c(nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),])
                               )
   )
 
@@ -2105,19 +2117,19 @@ regnor <- regnor %>%
 ## scaled value maps for Grazing_mowing1 (lower indicator), ANO
 # mean
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.reg.mean", title="Grazing_mowing (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Grazing_mowing1.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="Grazing_mowing1.ANO.reg.mean", title="Grazing_mowing (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Grazing_mowing1.ANO.reg.n",col="black",bg.color="grey")
 ```
-Mean index value by region for the upper Grazing_mowing indicator (i.e. index shows deviations towards less grazing or mowing). Numbers in grey fields show the number of observations in the respective region.
+Mean index value by region for the upper Grazing_mowing indicator (i.e. index shows deviations towards less grazing or mowing) from the ANO monitoring data. Numbers in grey fields show the number of observations in the respective region.
 
 ```{r}
 # se
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.reg.se", title="Grazing_mowing (lower), SE", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
-  tm_text("Grazing_mowing1.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="Grazing_mowing1.ANO.reg.se", title="Grazing_mowing (lower), SE", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
+  tm_text("Grazing_mowing1.ANO.reg.n",col="black",bg.color="grey")
 
 ```
-Standard error to the mean index value by region for the lower Grazing_mowing indicator. Numbers in grey fields show the number of observations in the respective region.
+Standard error to the mean index value by region for the lower Grazing_mowing indicator from the ANO monitoring data. Numbers in grey fields show the number of observations in the respective region.
 
 And here are the corresponding maps for the upper Nitrogen indicator in the ASO data:
 ```{r}
@@ -2127,7 +2139,7 @@ tm_shape(regnor) +
   tm_polygons(col="Nitrogen2.ASO.reg.mean", title="Nitrogen (upper), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
 ```
-Mean index value by region for the upper Nitrogen indicator (i.e. index shows deviations towards increased Nitrogen availability). Numbers in grey fields show the number of observations in the respective region.
+Mean index value by region for the upper Nitrogen indicator (i.e. index shows deviations towards increased Nitrogen availability) from the ASO monitoring data. Numbers in grey fields show the number of observations in the respective region.
 
 ```{r}
 # se
@@ -2136,7 +2148,7 @@ tm_shape(regnor) +
   tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
 
 ```
-Standard error to the mean index value by region for the upper Nitrogen indicator. Numbers in grey fields show the number of observations in the respective region.
+Standard error to the mean index value by region for the upper Nitrogen indicator from the ASO monitoring data. Numbers in grey fields show the number of observations in the respective region.
 
 
 #### Unscaled values vs. reference
@@ -2155,73 +2167,73 @@ par(mfrow=c(2,4))
 # T32-C-1
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C1C2"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C1',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-1",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-1",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-1",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original)),
        col="red")
 
 # T32-C-2
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C1C2"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C2',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-2",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-2",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-2",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original)),
        col="red")
 
 # T32-C-3
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C3C4"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C3',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-3",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-3",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-3",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original)),
        col="red")
 
 # T32-C-4
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T32-C3C4"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C4',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-4",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-4",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-4",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original)),
        col="red")
 
 # T32-C-5
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C5',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-5",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-5",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-5",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original)),
        col="red")
 
 # T32-C-6
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C21C6a","T32-C21C6b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C6',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-6",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-6",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-6",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original)),
        col="red")
 
 # T32-C-9
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C9a","T32-C9b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C9',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-9",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-9",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-9",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original)),
        col="red")
 
 # T32-C-10
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C10a","T32-C10b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C10',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-10",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original)),
        col="red")
 
 
@@ -2229,19 +2241,19 @@ par(mfrow=c(2,4))
 # T32-C-15
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C15")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C15',xlab='Grazing_mowing value')
-#points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-15",]$original,na.rm=T),
+#points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,na.rm=T),
 #       type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-15",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-15",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original)),
        col="red")
 
 # T32-C-20
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T32-C20',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-20",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-20",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T32-C-20",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original)),
        col="red")
 
 
@@ -2249,19 +2261,19 @@ points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggi
 # V10-C-1
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"V10-C1C2"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='V10-C1',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-1",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-1",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-1",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original)),
        col="red")
 
 # V10-C-3
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"V10-C3"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='V10-C3',xlab='Grazing_mowing value')
-#points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-3",]$original,na.rm=T),
+#points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,na.rm=T),
 #       type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-3",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="V10-C-3",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original)),
        col="red")
 
 
@@ -2269,38 +2281,38 @@ points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggi
 # T34-C-1
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,"T34-C1"]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T34-C1',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-1",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-1",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-1",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original)),
        col="red")
 
 # T34-C-2
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T34-C2a","T34-C2b","T34-C2c")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T34-C2',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-2",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-2",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-2",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original)),
        col="red")
 
 # T34-C-4
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T34-C4a","T34-C4b","T34-C4c","T34-C4d")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T34-C4',xlab='Grazing_mowing value')
-#points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-4",]$original,na.rm=T),
+#points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,na.rm=T),
 #       type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-4",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T34-C-4",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original)),
        col="red")
 
 
 ## T41
 plot(density( as.matrix(seminat.ref.cov[['Grazing_mowing']][,c("T41a","T41b")]) ,na.rm=T),
      xlim=c(1,8), type="l", main='T41',xlab='Grazing_mowing value')
-points(density(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T41",]$original,na.rm=T),
+points(density(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T41",]$original,na.rm=T),
        type="l", col="red")
-points(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T41",]$original,
-       rep(0,length(res.seminat[res.seminat$fp_ind=="Grazing_mowing1" & res.seminat$kartleggingsenhet_1m2=="T41",]$original)),
+points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T41",]$original,
+       rep(0,length(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.ANO$kartleggingsenhet_1m2=="T41",]$original)),
        col="red")
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 

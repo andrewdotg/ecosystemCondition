@@ -66,6 +66,9 @@ for (i in indID) {
 #rm(list= ls()[!(ls() %in% c('forest.ind.list','mire.ind.list','semiNat.ind.list','heath.ind.list','wetland.ref','ind.dat'))])
 #rm(list= ls()[!(ls() %in% c('wetland.ref.backup','wetland.ref','wetland.ref.cov.backup','wetland.ref.cov', 'ANO.sp.ind', 'NiN.wetland.cov','ind.dat'))])
 settings <- "iter=1000,obl=1,rat=1/3,var.abun=T"
+
+saveRDS(wetland.ref.cov, "data/cache/wetland.ref.cov.RDS")
+
 rm(list= ls()[!(ls() %in% c('wetland.ref.cov', 'wetland.ref.cov.backup','settings'))])
 save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_wetland.RData")
 

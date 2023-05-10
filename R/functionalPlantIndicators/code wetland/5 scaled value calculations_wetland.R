@@ -333,7 +333,7 @@ write.table(results.wetland[['original']], file='output/scaled data/results.wetl
 write.table(results.wetland[['2-sided']], file='C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/results.wetland_2-sided.txt',
             quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 
-
+saveRDS(results.wetland, "data/cache/results.wetland.RDS")
 rm(list= ls()[!(ls() %in% c('wetland.ref.cov.val','ANO.wetland','results.wetland','settings'))])
 save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.wetland.RData")
 
