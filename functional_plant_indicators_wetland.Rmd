@@ -1133,8 +1133,7 @@ head(results.wetland[['2-sided']])
 ```
 #### Scaled value analyses
 
-### Simple summary statistics
-We can calculate simple summary statistics like means, standard deviations, and number of observations (note that there is both a lower and an upper indicator for each of the four plant functional indicators)
+In order to visualize the results we need to rearrange the results-objects from wide to long format (note that there is both a lower and an upper condition indicator for each of the functional plant indicators).
 
 ```{r, message = FALSE}
 #### plotting scaled values by main ecosystem type ####
@@ -1162,11 +1161,6 @@ res.wetland <-
                                ) %>%
                                pull(original)
   )
-
-# summarizing the indicator scores
-res.wetland %>%
-  group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE), SD = sd(scaled_value, na.rm=TRUE), N = length(scaled_value[!is.na(scaled_value)]))
 
 ```
 
@@ -1250,30 +1244,97 @@ tm_shape(regnor) +
 ```
 ...but here the colors and values of the data points on the map are hard to make out.
 
-### Regions
-Alternatively we can calculate and show the region-wise means and standard deviations
+### Regions - maps and statistics
+Alternatively we can calculate and show the region-wise means and their related standard errors. But note that calculating a simple mean would be inappropriate for these data. This is because:
+(i) the scaled data are bound between 0 and 1, and thus follow a beta-distribution rather than a Gaussian one
+(ii) the ANO dataset has a nested structure
+
+Therefore, we need to (i) use a beta-model, that (ii) can account for the nested structure of the data.
+Here, we apply the following function using either a glmmTMB null-model with a beta-distribution, logit link, and the nesting as a random intercept, or a simple betareg null-model with logit link if the nesting is not extensive enough for a mixed model.
+```{r}
+library(betareg)
+library(glmmTMB)
+
+expit <- function(L) exp(L) / (1+exp(L)) # since the beta-models use a logit link, we need to calculate the estimates back to the identity scale
+
+# the function performs a glmmTMB if there's >= 5 random levels in the nesting structure
+# if that is not the case, then the function performs a betareg if theres >= 2 observations
+# if that is not the case either, then the function returns the value of the single observation with NA standard error
+
+indmean.beta <- function(df) {
+
+  st_geometry(df) <- NULL
+  colnames(df) <- c("y","ran")
+  
+  if ( nrow(df[!is.na(df[,1]),]) >= 2 ) {
+    
+    if ( length(unique(df[!is.na(df[,1]),2])) >=5 ) {
+      
+      mod1 <- glmmTMB(y ~ 1 +(1|ran), family=beta_family(), data=df)
+      
+      return(c(
+        expit(summary( mod1 )$coefficients$cond[1]),
+        
+        expit( summary( mod1 )$coefficients$cond[1] + 
+                 summary( mod1 )$coefficients$cond[2] )-
+          expit( summary( mod1 )$coefficients$cond[1] ),
+        
+        nrow(df[!is.na(df$y),]),
+        summary( mod1 )$coefficients$cond[1],
+        summary( mod1 )$coefficients$cond[2]
+      ))
+      
+    } else {
+      
+      mod2 <- betareg(y ~ 1, data=df)
+      
+      return(c(
+        expit(summary( mod2 )$coefficients$mean[1]),
+        expit( summary( mod2 )$coefficients$mean[1] + 
+                 summary( mod2 )$coefficients$mean[2] )-
+          expit( summary( mod2 )$coefficients$mean[1] ),
+        nrow(df[!is.na(df$y),]),
+        summary( mod2 )$coefficients$mean[1],
+        summary( mod2 )$coefficients$mean[2]
+      ))
+      
+    }
+    
+  } else {
+    
+    return(c(df$y,NA,1,NA,NA))
+    
+  }
+
+}
+
+```
+
 ```{r}
 
 res.wetland2 = st_join(res.wetland2, regnor, left = TRUE)
 
 regnor <- regnor %>%
   mutate(
-    pH1.reg.mean = c(mean(res.wetland2$pH1[res.wetland2$region=="Northern Norway"],na.rm=T),
-                             mean(res.wetland2$pH1[res.wetland2$region=="Central Norway"],na.rm=T),
-                             mean(res.wetland2$pH1[res.wetland2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.wetland2$pH1[res.wetland2$region=="Western Norway"],na.rm=T),
-                             mean(res.wetland2$pH1[res.wetland2$region=="Southern Norway"],na.rm=T)),
-    pH1.reg.sd = c(sd(res.wetland2$pH1[res.wetland2$region=="Northern Norway"],na.rm=T),
-                          sd(res.wetland2$pH1[res.wetland2$region=="Central Norway"],na.rm=T),
-                          sd(res.wetland2$pH1[res.wetland2$region=="Eastern Norway"],na.rm=T),
-                          sd(res.wetland2$pH1[res.wetland2$region=="Western Norway"],na.rm=T),
-                          sd(res.wetland2$pH1[res.wetland2$region=="Southern Norway"],na.rm=T)),
-             pH1.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$pH1),]),
-                          nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$pH1),]),
-                          nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$pH1),]),
-                          nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$pH1),]),
-                          nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$pH1),]))
+    pH1.reg.mean = c(indmean.beta(df=res.wetland2[res.wetland2$region=="Northern Norway",c("pH1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[1]
+    ),
+    pH1.reg.se = c(indmean.beta(df=res.wetland2[res.wetland2$region=="Northern Norway",c("pH1","ano_flate_id")])[2],
+                               indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[2],
+                               indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[2],
+                               indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[2],
+                               indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[2]
+    ),
+    pH1.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$pH1),]),
+                              nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$pH1),]),
+                              nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$pH1),]),
+                              nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$pH1),]),
+                              nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$pH1),])
     )
+  )
 
 
 ## scaled value maps for pH1 (lower indicator)
@@ -1285,13 +1346,13 @@ tm_shape(regnor) +
 Mean index value by region for the lower pH indicator (i.e. index shows deviations towards a more acidic environment). Numbers in grey fields show the number of observations in the respective region.
 
 ```{r}
-# sd
+# se
 tm_shape(regnor) +
-  tm_polygons(col="pH1.reg.sd", title="pH (lower), sd", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
+  tm_polygons(col="pH1.reg.se", title="pH (lower), sd", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
   tm_text("pH1.reg.n",col="black",bg.color="grey")
 
 ```
-Standard deviation to the mean index value by region for the lower pH indicator. Numbers in grey fields show the number of observations in the respective region.
+Standard error to the mean index value by region for the lower pH indicator. Numbers in grey fields show the number of observations in the respective region.
 
 
 ### unscaled values vs. reference

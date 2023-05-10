@@ -455,7 +455,7 @@ write.table(results.seminat[['2-sided']], file='P:/41201785_okologisk_tilstand_2
             quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 
 
-rm(list= ls()[!(ls() %in% c('ANO.seminat','results.seminat','settings'))])
+rm(list= ls()[!(ls() %in% c('seminat.ref.cov.val','ANO.seminat','results.seminat','settings'))])
 save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ANO.RData")
 
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ANO.RData")

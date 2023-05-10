@@ -426,7 +426,7 @@ write.table(results.seminat.ASO[['2-sided']], file='P:/41201785_okologisk_tilsta
             quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 
 
-rm(list= ls()[!(ls() %in% c('results.seminat.ASO','settings'))])
+rm(list= ls()[!(ls() %in% c('ASO.geo','seminat.ref.cov.val','results.seminat.ASO','settings'))])
 save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO.RData")
 
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO.RData")

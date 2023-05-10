@@ -1802,8 +1802,7 @@ head(results.seminat.ASO[['2-sided']])
 ```
 #### Scaled value analyses
 
-### Simple summary statistics
-We can calculate simple summary statistics like means, standard deviations, and number of observations (note that there is both a lower and an upper indicator for each of the four plant functional indicators)
+In order to visualize the results we need to rearrange the results-objects from wide to long format (note that there is both a lower and an upper condition indicator for each of the functional plant indicators).
 
 ```{r, message = FALSE}
 #### plotting scaled values by main ecosystem type ####
@@ -1882,17 +1881,6 @@ res.seminat.ASO <-
                                    pull(original)
   )
 
-# summarizing the indicator scores
-
-# ANO:
-res.seminat %>%
-  group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE), SD = sd(scaled_value, na.rm=TRUE), N = length(scaled_value[!is.na(scaled_value)]))
-
-#ASO
-res.seminat.ASO %>%
-  group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE), SD = sd(scaled_value, na.rm=TRUE), N = length(scaled_value[!is.na(scaled_value)]))
 
 ```
 
@@ -1997,13 +1985,13 @@ tm_shape(regnor) +
 ```
 ...but here the colors and values of the data points on the map are hard to make out.
 
-### Regions
-Alternatively we can calculate and show the region-wise means and their related standard errors. But note that calculating a simple mean would be inappropriate for these data. This is because 
+### Regions - maps and statistics
+Alternatively we can calculate and show the region-wise means and their related standard errors. But note that calculating a simple mean would be inappropriate for these data. This is because:
 (i) the scaled data are bound between 0 and 1, and thus follow a beta-distribution rather than a Gaussian one
 (ii) both the ANO and the ASO datasets have a nested structure
 
 Therefore, we need to (i) use a beta-model, that (ii) can account for the nested structure of the data.
-Here, we apply the following function using either glmmTMB null-model with a beta-distribution, logit link, and the nesting as a random intercept, or a simple betareg null-model with logit link if the nesting is not extensive enough for a mixed model.
+Here, we apply the following function using either a glmmTMB null-model with a beta-distribution, logit link, and the nesting as a random intercept, or a simple betareg null-model with logit link if the nesting is not extensive enough for a mixed model.
 ```{r}
 library(betareg)
 library(glmmTMB)
@@ -2027,10 +2015,14 @@ indmean.beta <- function(df) {
       
       return(c(
         expit(summary( mod1 )$coefficients$cond[1]),
+        
         expit( summary( mod1 )$coefficients$cond[1] + 
                  summary( mod1 )$coefficients$cond[2] )-
           expit( summary( mod1 )$coefficients$cond[1] ),
-        nrow(df[!is.na(df$y),])
+        
+        nrow(df[!is.na(df$y),]),
+        summary( mod1 )$coefficients$cond[1],
+        summary( mod1 )$coefficients$cond[2]
       ))
       
     } else {
@@ -2042,14 +2034,16 @@ indmean.beta <- function(df) {
         expit( summary( mod2 )$coefficients$mean[1] + 
                  summary( mod2 )$coefficients$mean[2] )-
           expit( summary( mod2 )$coefficients$mean[1] ),
-        nrow(df[!is.na(df$y),])
+        nrow(df[!is.na(df$y),]),
+        summary( mod2 )$coefficients$mean[1],
+        summary( mod2 )$coefficients$mean[2]
       ))
       
     }
     
   } else {
     
-    return(c(df$y,NA,1))
+    return(c(df$y,NA,1,NA,NA))
     
   }
 
@@ -2145,7 +2139,7 @@ tm_shape(regnor) +
 Standard error to the mean index value by region for the upper Nitrogen indicator. Numbers in grey fields show the number of observations in the respective region.
 
 
-### unscaled values vs. reference
+#### Unscaled values vs. reference
 We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since Grazing_mowing for ANO and nitrogen for ASO show some deviations  we exemplify this with these indicators for unscaled values.
 
 Grazing_mowing, ANO:

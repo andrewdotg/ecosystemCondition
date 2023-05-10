@@ -91,19 +91,6 @@ head(res.seminat.ASO[,70:76])
 
 
 
-# summarizing the indicator scores
-
-#ANO
-res.seminat %>%
-  group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE), SD = sd(scaled_value, na.rm=TRUE), N = length(scaled_value[!is.na(scaled_value)]))
-
-#ASO
-res.seminat.ASO %>%
-  group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE), SD = sd(scaled_value, na.rm=TRUE), N = length(scaled_value[!is.na(scaled_value)]))
-
-
 # making the plot, ANO
 ggplot(res.seminat, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
@@ -117,14 +104,6 @@ ggplot(res.seminat, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) 
 
 
 
-
-
-# summarizing the indicator scores
-res.seminat.ASO %>%
-  group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE))
-
-
 # making the plot, ASO
 res.seminat.ASO$NiN_grunntype2 <- substring(res.seminat.ASO$NiN_grunntype,5)
 ggplot(res.seminat.ASO, aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
@@ -136,13 +115,6 @@ ggplot(res.seminat.ASO, aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_in
                                      "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
   xlab("T32 (semi-natural meadow) basic ecosystem type") + 
   ylab("Scaled indicator value (ASO data)") 
-
-
-
-
-
-
-
 
 
 
@@ -252,16 +224,7 @@ tm_shape(regnor) +
 res.seminat2 = st_join(res.seminat2, regnor, left = TRUE)
 colnames(res.seminat2)
 
-res.seminat2 %>% 
-  group_by(as.factor(region)) %>% 
-  dplyr::summarise(Light1.reg.mean = mean(Light1,na.rm=T))
-
-res.seminat2 %>% 
-  group_by(as.factor(region)) %>% 
-  dplyr::summarise(Light2.reg.mean = mean(Light2,na.rm=T))
-  
-
-
+# simple means, inappropriate for 0-1 bound data
 res.seminat2 %>% 
   group_by(as.factor(region)) %>% 
   mutate(Light1.reg.mean = mean(Light1,na.rm=T)) %>%
@@ -280,19 +243,6 @@ res.seminat2 %>%
   mutate(Soil_disturbance2.reg.mean = mean(Soil_disturbance2,na.rm=T))
   
 # and for ASO
-res.seminat.ASO2 = st_join(res.seminat.ASO2, regnor, left = TRUE)
-colnames(res.seminat.ASO2)
-
-res.seminat.ASO2 %>% 
-  group_by(as.factor(region)) %>% 
-  dplyr::summarise(Light1.reg.mean = mean(Light1,na.rm=T))
-
-res.seminat.ASO2 %>% 
-  group_by(as.factor(region)) %>% 
-  dplyr::summarise(Light2.reg.mean = mean(Light2,na.rm=T))
-
-
-
 res.seminat.ASO2 %>% 
   group_by(as.factor(region)) %>% 
   mutate(Light1.reg.mean = mean(Light1,na.rm=T)) %>%
@@ -311,448 +261,119 @@ res.seminat.ASO2 %>%
   mutate(Soil_disturbance2.reg.mean = mean(Soil_disturbance2,na.rm=T))
 
 
-regnor <- regnor %>%
-  mutate(Light1.reg.mean = c(mean(res.seminat2$Light1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat2$Light1[res.seminat2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat2$Light1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat2$Light1[res.seminat2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat2$Light1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Light2.reg.mean = c(mean(res.seminat2$Light2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat2$Light2[res.seminat2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat2$Light2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat2$Light2[res.seminat2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat2$Light2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Moist1.reg.mean = c(mean(res.seminat2$Moist1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat2$Moist1[res.seminat2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat2$Moist1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat2$Moist1[res.seminat2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat2$Moist1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Moist2.reg.mean = c(mean(res.seminat2$Moist2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat2$Moist2[res.seminat2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat2$Moist2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat2$Moist2[res.seminat2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat2$Moist2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         pH1.reg.mean = c(mean(res.seminat2$pH1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat2$pH1[res.seminat2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat2$pH1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat2$pH1[res.seminat2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat2$pH1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         pH2.reg.mean = c(mean(res.seminat2$pH2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat2$pH2[res.seminat2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat2$pH2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat2$pH2[res.seminat2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat2$pH2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Nitrogen1.reg.mean = c(mean(res.seminat2$Nitrogen1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat2$Nitrogen1[res.seminat2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat2$Nitrogen1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat2$Nitrogen1[res.seminat2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat2$Nitrogen1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Nitrogen2.reg.mean = c(mean(res.seminat2$Nitrogen2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat2$Nitrogen2[res.seminat2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat2$Nitrogen2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat2$Nitrogen2[res.seminat2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat2$Nitrogen2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Phosphorus1.reg.mean = c(mean(res.seminat2$Phosphorus1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                                mean(res.seminat2$Phosphorus1[res.seminat2$region=="Central Norway"],na.rm=T),
-                                mean(res.seminat2$Phosphorus1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                                mean(res.seminat2$Phosphorus1[res.seminat2$region=="Western Norway"],na.rm=T),
-                                mean(res.seminat2$Phosphorus1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Phosphorus2.reg.mean = c(mean(res.seminat2$Phosphorus2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                                mean(res.seminat2$Phosphorus2[res.seminat2$region=="Central Norway"],na.rm=T),
-                                mean(res.seminat2$Phosphorus2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                                mean(res.seminat2$Phosphorus2[res.seminat2$region=="Western Norway"],na.rm=T),
-                                mean(res.seminat2$Phosphorus2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Grazing_mowing1.reg.mean = c(mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                                mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Central Norway"],na.rm=T),
-                                mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                                mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Western Norway"],na.rm=T),
-                                mean(res.seminat2$Grazing_mowing1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Grazing_mowing2.reg.mean = c(mean(res.seminat2$Grazing_mowing2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                                mean(res.seminat2$Grazing_mowing2[res.seminat2$region=="Central Norway"],na.rm=T),
-                                mean(res.seminat2$Grazing_mowing2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                                mean(res.seminat2$Grazing_mowing2[res.seminat2$region=="Western Norway"],na.rm=T),
-                                mean(res.seminat2$Grazing_mowing2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Soil_disturbance1.reg.mean = c(mean(res.seminat2$Soil_disturbance1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                                mean(res.seminat2$Soil_disturbance1[res.seminat2$region=="Central Norway"],na.rm=T),
-                                mean(res.seminat2$Soil_disturbance1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                                mean(res.seminat2$Soil_disturbance1[res.seminat2$region=="Western Norway"],na.rm=T),
-                                mean(res.seminat2$Soil_disturbance1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Soil_disturbance2.reg.mean = c(mean(res.seminat2$Soil_disturbance2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                                mean(res.seminat2$Soil_disturbance2[res.seminat2$region=="Central Norway"],na.rm=T),
-                                mean(res.seminat2$Soil_disturbance2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                                mean(res.seminat2$Soil_disturbance2[res.seminat2$region=="Western Norway"],na.rm=T),
-                                mean(res.seminat2$Soil_disturbance2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         
-         Light1.reg.sd = c(sd(res.seminat2$Light1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             sd(res.seminat2$Light1[res.seminat2$region=="Central Norway"],na.rm=T),
-                             sd(res.seminat2$Light1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             sd(res.seminat2$Light1[res.seminat2$region=="Western Norway"],na.rm=T),
-                             sd(res.seminat2$Light1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Light2.reg.sd = c(sd(res.seminat2$Light2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             sd(res.seminat2$Light2[res.seminat2$region=="Central Norway"],na.rm=T),
-                             sd(res.seminat2$Light2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             sd(res.seminat2$Light2[res.seminat2$region=="Western Norway"],na.rm=T),
-                             sd(res.seminat2$Light2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Moist1.reg.sd = c(sd(res.seminat2$Moist1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             sd(res.seminat2$Moist1[res.seminat2$region=="Central Norway"],na.rm=T),
-                             sd(res.seminat2$Moist1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             sd(res.seminat2$Moist1[res.seminat2$region=="Western Norway"],na.rm=T),
-                             sd(res.seminat2$Moist1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Moist2.reg.sd = c(sd(res.seminat2$Moist2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                             sd(res.seminat2$Moist2[res.seminat2$region=="Central Norway"],na.rm=T),
-                             sd(res.seminat2$Moist2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                             sd(res.seminat2$Moist2[res.seminat2$region=="Western Norway"],na.rm=T),
-                             sd(res.seminat2$Moist2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         pH1.reg.sd = c(sd(res.seminat2$pH1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                          sd(res.seminat2$pH1[res.seminat2$region=="Central Norway"],na.rm=T),
-                          sd(res.seminat2$pH1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                          sd(res.seminat2$pH1[res.seminat2$region=="Western Norway"],na.rm=T),
-                          sd(res.seminat2$pH1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         pH2.reg.sd = c(sd(res.seminat2$pH2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                          sd(res.seminat2$pH2[res.seminat2$region=="Central Norway"],na.rm=T),
-                          sd(res.seminat2$pH2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                          sd(res.seminat2$pH2[res.seminat2$region=="Western Norway"],na.rm=T),
-                          sd(res.seminat2$pH2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Nitrogen1.reg.sd = c(sd(res.seminat2$Nitrogen1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                                sd(res.seminat2$Nitrogen1[res.seminat2$region=="Central Norway"],na.rm=T),
-                                sd(res.seminat2$Nitrogen1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                                sd(res.seminat2$Nitrogen1[res.seminat2$region=="Western Norway"],na.rm=T),
-                                sd(res.seminat2$Nitrogen1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Nitrogen2.reg.sd = c(sd(res.seminat2$Nitrogen2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                                sd(res.seminat2$Nitrogen2[res.seminat2$region=="Central Norway"],na.rm=T),
-                                sd(res.seminat2$Nitrogen2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                                sd(res.seminat2$Nitrogen2[res.seminat2$region=="Western Norway"],na.rm=T),
-                                sd(res.seminat2$Nitrogen2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Phosphorus1.reg.sd = c(sd(res.seminat2$Phosphorus1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                              sd(res.seminat2$Phosphorus1[res.seminat2$region=="Central Norway"],na.rm=T),
-                              sd(res.seminat2$Phosphorus1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                              sd(res.seminat2$Phosphorus1[res.seminat2$region=="Western Norway"],na.rm=T),
-                              sd(res.seminat2$Phosphorus1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Phosphorus2.reg.sd = c(sd(res.seminat2$Phosphorus2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                              sd(res.seminat2$Phosphorus2[res.seminat2$region=="Central Norway"],na.rm=T),
-                              sd(res.seminat2$Phosphorus2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                              sd(res.seminat2$Phosphorus2[res.seminat2$region=="Western Norway"],na.rm=T),
-                              sd(res.seminat2$Phosphorus2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Grazing_mowing1.reg.sd = c(sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                              sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Central Norway"],na.rm=T),
-                              sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                              sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Western Norway"],na.rm=T),
-                              sd(res.seminat2$Grazing_mowing1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Grazing_mowing2.reg.sd = c(sd(res.seminat2$Grazing_mowing2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                              sd(res.seminat2$Grazing_mowing2[res.seminat2$region=="Central Norway"],na.rm=T),
-                              sd(res.seminat2$Grazing_mowing2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                              sd(res.seminat2$Grazing_mowing2[res.seminat2$region=="Western Norway"],na.rm=T),
-                              sd(res.seminat2$Grazing_mowing2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Soil_disturbance1.reg.sd = c(sd(res.seminat2$Soil_disturbance1[res.seminat2$region=="Northern Norway"],na.rm=T),
-                              sd(res.seminat2$Soil_disturbance1[res.seminat2$region=="Central Norway"],na.rm=T),
-                              sd(res.seminat2$Soil_disturbance1[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                              sd(res.seminat2$Soil_disturbance1[res.seminat2$region=="Western Norway"],na.rm=T),
-                              sd(res.seminat2$Soil_disturbance1[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         Soil_disturbance2.reg.sd = c(sd(res.seminat2$Soil_disturbance2[res.seminat2$region=="Northern Norway"],na.rm=T),
-                              sd(res.seminat2$Soil_disturbance2[res.seminat2$region=="Central Norway"],na.rm=T),
-                              sd(res.seminat2$Soil_disturbance2[res.seminat2$region=="Eastern Norway"],na.rm=T),
-                              sd(res.seminat2$Soil_disturbance2[res.seminat2$region=="Western Norway"],na.rm=T),
-                              sd(res.seminat2$Soil_disturbance2[res.seminat2$region=="Southern Norway"],na.rm=T)),
-         
-         Light1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Light1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Light1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Light1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Light1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Light1),])),
-         Light2.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Light2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Light2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Light2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Light2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Light2),])),
-         Moist1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Moist1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Moist1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Moist1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Moist1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Moist1),])),
-         Moist2.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Moist2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Moist2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Moist2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Moist2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Moist2),])),
-         pH1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$pH1),]),
-                          nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$pH1),]),
-                          nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$pH1),]),
-                          nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$pH1),]),
-                          nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$pH1),])),
-         pH2.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$pH2),]),
-                          nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$pH2),]),
-                          nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$pH2),]),
-                          nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$pH2),]),
-                          nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$pH2),])),
-         Nitrogen1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Nitrogen1),]),
-                                nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Nitrogen1),]),
-                                nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Nitrogen1),]),
-                                nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Nitrogen1),]),
-                                nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Nitrogen1),])),
-         Nitrogen2.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Nitrogen2),]),
-                                nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Nitrogen2),]),
-                                nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Nitrogen2),]),
-                                nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Nitrogen2),]),
-                                nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Nitrogen2),])),
-         Phosphorus1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Phosphorus1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Phosphorus1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Phosphorus1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Phosphorus1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Phosphorus1),])),
-         Phosphorus2.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Phosphorus2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Phosphorus2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Phosphorus2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Phosphorus2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Phosphorus2),])),
-         Grazing_mowing1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Grazing_mowing1),])),
-         Grazing_mowing2.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Grazing_mowing2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Grazing_mowing2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Grazing_mowing2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Grazing_mowing2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Grazing_mowing2),])),
-         Soil_disturbance1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Soil_disturbance1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Soil_disturbance1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Soil_disturbance1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Soil_disturbance1),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Soil_disturbance1),])),
-         Soil_disturbance2.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Soil_disturbance2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Soil_disturbance2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Soil_disturbance2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Soil_disturbance2),]),
-                             nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Soil_disturbance2),]))
-         )
+# rather use beta-regression
+expit <- function(L) exp(L) / (1+exp(L))
+library(betareg)
+library(glmmTMB)
+
+
+indmean.beta <- function(df) {
   
+  st_geometry(df) <- NULL
+  colnames(df) <- c("y","ran")
   
-# adding the same for ASO
+  if ( nrow(df[!is.na(df[,1]),]) >= 2 ) {
+    
+    if ( length(unique(df[!is.na(df[,1]),2])) >=5 ) {
+      
+      mod1 <- glmmTMB(y ~ 1 +(1|ran), family=beta_family(), data=df)
+      
+      return(c(
+        expit(summary( mod1 )$coefficients$cond[1]),
+        
+        expit( summary( mod1 )$coefficients$cond[1] + 
+                 summary( mod1 )$coefficients$cond[2] )-
+          expit( summary( mod1 )$coefficients$cond[1] ),
+        
+        nrow(df[!is.na(df$y),]),
+        summary( mod1 )$coefficients$cond[1],
+        summary( mod1 )$coefficients$cond[2]
+      ))
+      
+    } else {
+      
+      mod2 <- betareg(y ~ 1, data=df)
+      
+      return(c(
+        expit(summary( mod2 )$coefficients$mean[1]),
+        expit( summary( mod2 )$coefficients$mean[1] + 
+                 summary( mod2 )$coefficients$mean[2] )-
+          expit( summary( mod2 )$coefficients$mean[1] ),
+        nrow(df[!is.na(df$y),]),
+        summary( mod2 )$coefficients$mean[1],
+        summary( mod2 )$coefficients$mean[2]
+      ))
+      
+    }
+    
+  } else {
+    
+    return(c(df$y,NA,1,NA,NA))
+    
+  }
+  
+}
+
+
+
+indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])
+
+indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("Grazing_mowing1","Omradenummer_flatenummer")])
+
+
+
 regnor <- regnor %>%
-  mutate(Light1.ASO.reg.mean = c(mean(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Light2.ASO.reg.mean = c(mean(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Moist1.ASO.reg.mean = c(mean(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Moist2.ASO.reg.mean = c(mean(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                             mean(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         pH1.ASO.reg.mean = c(mean(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                          mean(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                          mean(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                          mean(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                          mean(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         pH2.ASO.reg.mean = c(mean(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                          mean(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                          mean(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                          mean(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                          mean(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Nitrogen1.ASO.reg.mean = c(mean(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                mean(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                mean(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                mean(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                mean(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Nitrogen2.ASO.reg.mean = c(mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                mean(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Phosphorus1.ASO.reg.mean = c(mean(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                  mean(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                  mean(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                  mean(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                  mean(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Phosphorus2.ASO.reg.mean = c(mean(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                  mean(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                  mean(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                  mean(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                  mean(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Grazing_mowing1.ASO.reg.mean = c(mean(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                      mean(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                      mean(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                      mean(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                      mean(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Grazing_mowing2.ASO.reg.mean = c(mean(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                      mean(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                      mean(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                      mean(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                      mean(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Soil_disturbance1.ASO.reg.mean = c(mean(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                        mean(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                        mean(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                        mean(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                        mean(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Soil_disturbance2.ASO.reg.mean = c(mean(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                        mean(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                        mean(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                        mean(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                        mean(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         
-         Light1.ASO.reg.sd = c(sd(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Light1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Light2.ASO.reg.sd = c(sd(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Light2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Moist1.ASO.reg.sd = c(sd(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Moist1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Moist2.ASO.reg.sd = c(sd(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                           sd(res.seminat.ASO2$Moist2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         pH1.ASO.reg.sd = c(sd(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                        sd(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                        sd(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                        sd(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                        sd(res.seminat.ASO2$pH1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         pH2.ASO.reg.sd = c(sd(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                        sd(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                        sd(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                        sd(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                        sd(res.seminat.ASO2$pH2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Nitrogen1.ASO.reg.sd = c(sd(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                              sd(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                              sd(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                              sd(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                              sd(res.seminat.ASO2$Nitrogen1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Nitrogen2.ASO.reg.sd = c(sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                              sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                              sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                              sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                              sd(res.seminat.ASO2$Nitrogen2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Phosphorus1.ASO.reg.sd = c(sd(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                sd(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                sd(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                sd(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                sd(res.seminat.ASO2$Phosphorus1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Phosphorus2.ASO.reg.sd = c(sd(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                sd(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                sd(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                sd(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                sd(res.seminat.ASO2$Phosphorus2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Grazing_mowing1.ASO.reg.sd = c(sd(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                    sd(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                    sd(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                    sd(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                    sd(res.seminat.ASO2$Grazing_mowing1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Grazing_mowing2.ASO.reg.sd = c(sd(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                    sd(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                    sd(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                    sd(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                    sd(res.seminat.ASO2$Grazing_mowing2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Soil_disturbance1.ASO.reg.sd = c(sd(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                      sd(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                      sd(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                      sd(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                      sd(res.seminat.ASO2$Soil_disturbance1[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         Soil_disturbance2.ASO.reg.sd = c(sd(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Northern Norway"],na.rm=T),
-                                      sd(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Central Norway"],na.rm=T),
-                                      sd(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Eastern Norway"],na.rm=T),
-                                      sd(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Western Norway"],na.rm=T),
-                                      sd(res.seminat.ASO2$Soil_disturbance2[res.seminat.ASO2$region=="Southern Norway"],na.rm=T)),
-         
-         Light1.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Light1),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Light1),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Light1),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Light1),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Light1),])),
-         Light2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Light2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Light2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Light2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Light2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Light2),])),
-         Moist1.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Moist1),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Moist1),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Moist1),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Moist1),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Moist1),])),
-         Moist2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Moist2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Moist2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Moist2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Moist2),]),
-                          nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Moist2),])),
-         pH1.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$pH1),]),
-                       nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$pH1),]),
-                       nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$pH1),]),
-                       nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$pH1),]),
-                       nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$pH1),])),
-         pH2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$pH2),]),
-                       nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$pH2),]),
-                       nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$pH2),]),
-                       nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$pH2),]),
-                       nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$pH2),])),
-         Nitrogen1.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Nitrogen1),]),
-                             nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Nitrogen1),]),
-                             nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Nitrogen1),]),
-                             nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Nitrogen1),]),
-                             nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Nitrogen1),])),
-         Nitrogen2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                             nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                             nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                             nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                             nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),])),
-         Phosphorus1.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Phosphorus1),]),
-                               nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Phosphorus1),]),
-                               nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Phosphorus1),]),
-                               nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Phosphorus1),]),
-                               nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Phosphorus1),])),
-         Phosphorus2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Phosphorus2),]),
-                               nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Phosphorus2),]),
-                               nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Phosphorus2),]),
-                               nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Phosphorus2),]),
-                               nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Phosphorus2),])),
-         Grazing_mowing1.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Grazing_mowing1),]),
-                                   nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Grazing_mowing1),]),
-                                   nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Grazing_mowing1),]),
-                                   nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Grazing_mowing1),]),
-                                   nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Grazing_mowing1),])),
-         Grazing_mowing2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Grazing_mowing2),]),
-                                   nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Grazing_mowing2),]),
-                                   nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Grazing_mowing2),]),
-                                   nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Grazing_mowing2),]),
-                                   nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Grazing_mowing2),])),
-         Soil_disturbance1.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Soil_disturbance1),]),
-                                     nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Soil_disturbance1),]),
-                                     nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Soil_disturbance1),]),
-                                     nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Soil_disturbance1),]),
-                                     nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Soil_disturbance1),])),
-         Soil_disturbance2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Soil_disturbance2),]),
-                                     nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Soil_disturbance2),]),
-                                     nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Soil_disturbance2),]),
-                                     nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Soil_disturbance2),]),
-                                     nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Soil_disturbance2),]))
+  mutate(
+    Grazing_mowing1.reg.mean = c(indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.seminat2[res.seminat2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
+    ),
+    Grazing_mowing1.reg.se = c(indmean.beta(df=res.seminat2[res.seminat2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat2[res.seminat2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat2[res.seminat2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat2[res.seminat2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                               indmean.beta(df=res.seminat2[res.seminat2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
+    ),
+    Grazing_mowing1.reg.n = c(nrow(res.seminat2[res.seminat2$region=="Northern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
+                              nrow(res.seminat2[res.seminat2$region=="Central Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
+                              nrow(res.seminat2[res.seminat2$region=="Eastern Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
+                              nrow(res.seminat2[res.seminat2$region=="Western Norway" & !is.na(res.seminat2$Grazing_mowing1),]),
+                              nrow(res.seminat2[res.seminat2$region=="Southern Norway" & !is.na(res.seminat2$Grazing_mowing1),])
+    )
   )
 
+# and adding the values for ASO
+regnor <- regnor %>%
+  mutate(
+    Nitrogen2.ASO.reg.mean = c(indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
+                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
+                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
+                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
+                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1]
+    ),
+    Nitrogen2.ASO.reg.se = c(indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
+                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
+                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
+                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
+                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2]
+    ),
+    Nitrogen2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
+                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
+                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
+                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
+                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]))
+  )
 
-## scaled value maps
-#ANO
 # Grazing_mowing1 (lower indicator), mean
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.reg.mean", title="Grazing_mowing (lower)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_polygons(col="Grazing_mowing1.reg.mean", title="Grazing_mowing (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Grazing_mowing1.reg.n",col="black",bg.color="grey")
-# Grazing_mowing1 (lower indicator), sd
+
+# Grazing_mowing1 (lower indicator), se
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.reg.sd", title="Grazing_mowing (lower)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_polygons(col="Grazing_mowing1.reg.se", title="Grazing_mowing (lower)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Grazing_mowing1.reg.n",col="black",bg.color="grey")
 
 #ASO
@@ -760,10 +381,12 @@ tm_shape(regnor) +
 tm_shape(regnor) +
   tm_polygons(col="Nitrogen2.reg.mean", title="Nitrogen (upper)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Nitrogen2.reg.n",col="black",bg.color="grey")
-# Nitrogen2 (lower indicator), sd
+# Nitrogen2 (lower indicator), se
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.reg.sd", title="Nitrogen (upper)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_polygons(col="Nitrogen2.reg.se", title="Nitrogen (upper)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Nitrogen2.reg.n",col="black",bg.color="grey")
+
+
 
 
 

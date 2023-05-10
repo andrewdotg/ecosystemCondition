@@ -334,7 +334,7 @@ write.table(results.wetland[['2-sided']], file='C:/Users/joachim.topper/OneDrive
             quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 
 
-rm(list= ls()[!(ls() %in% c('ANO.wetland','results.wetland','settings'))])
+rm(list= ls()[!(ls() %in% c('wetland.ref.cov.val','ANO.wetland','results.wetland','settings'))])
 save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.wetland.RData")
 
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.wetland.RData")
