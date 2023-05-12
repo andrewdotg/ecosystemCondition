@@ -20,17 +20,6 @@ nin$hovedoekosystem <- as.factor(nin$hovedoekosystem)
 levels(nin$hovedoekosystem)
 levels(nin$hovedoekosystem)[c(3,4,6)] <- c("Vaatmark","Naturlig_aapne_lav","Naturlig_aapne_uskog")
 
-nin <- nin %>%
-  mutate(hovedoekosystem = recode(hovedoekosystem, 
-                                 "Våtmark" = 'Vaatmark',
-                                 "Skog" = "Skog",
-                                 "Ingen" = "Ingen",
-                                 "Fjell" = "Fjell",
-                                 "Semi-naturlig mark" = 'Semi-naturlig',
-                                 "Naturlig åpne områder i lavlandet" = 'Naturlig_aapne_lav',
-                                 "Naturlig åpne områder under skoggrensa" = 'Naturlig_aapne_uskog'))
-
-
 
 
 nin[nin$hovedoekosystem=="Fjell",]
