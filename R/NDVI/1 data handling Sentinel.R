@@ -20,10 +20,12 @@ nin$hovedoekosystem <- as.factor(nin$hovedoekosystem)
 levels(nin$hovedoekosystem)
 levels(nin$hovedoekosystem)[c(3,4,6)] <- c("Vaatmark","Naturlig_aapne_lav","Naturlig_aapne_uskog")
 
+unique(nin$ninkartleggingsenheter)
 
+unique(nin$ninkartleggingsenheter[nin$hovedoekosystem=="Naturlig_aapne_lav"])
+unique(nin$ninkartleggingsenheter[nin$hovedoekosystem=="Naturlig_aapne_uskog"])
+unique(nin$ninkartleggingsenheter[nin$hovedoekosystem=="Semi-naturlig"])
 
-nin[nin$hovedoekosystem=="Fjell",]
-unique(nin[nin$hovedoekosystem=="Naturlig åpne områder i lavlandet","naturtype"])
 
 
 
