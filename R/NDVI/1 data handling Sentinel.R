@@ -20,6 +20,12 @@ nin$hovedoekosystem <- as.factor(nin$hovedoekosystem)
 levels(nin$hovedoekosystem)
 levels(nin$hovedoekosystem)[c(3,4,6)] <- c("Vaatmark","Naturlig_aapne_lav","Naturlig_aapne_uskog")
 
+# checking mosaics, and main ecosystem type against mapping units
+nin[,c(3,15,24)]
+summary(as.factor(nin$mosaikk))
+# mosaic: data don't say proportion of NiN-types within mosaics -> omit mosaics
+# main types: it seems that main type and mapping unit often do not match -> use mapping units to inform separate main type variable
+
 unique(nin$ninkartleggingsenheter)
 
 unique(nin$ninkartleggingsenheter[nin$hovedoekosystem=="Naturlig_aapne_lav"])
