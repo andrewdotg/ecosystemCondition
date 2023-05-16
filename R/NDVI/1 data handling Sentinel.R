@@ -111,7 +111,7 @@ nin.wetland %>%
   mutate(area_meters = st_area(nin.wetland)
   )
 
-#### continue here ####
+
 ##############Import Sentinel NDVI Data
 df <-
   list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
@@ -119,6 +119,7 @@ df <-
 df
 
 ##########join NiN and NDVI data
-SentinelNDVI <- full_join(nin, df, by="id")
+SentinelNDVI <- full_join(nin.wetland, df, by="id")
 
-
+# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+#### continue here ####
