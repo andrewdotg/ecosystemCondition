@@ -11,7 +11,8 @@ library(sf)
 
 #############Import NiN data
 nin <- st_read("R:\\GeoSpatialData\\Habitats_biotopes\\Norway_Miljodirektoratet_Naturtyper_nin\\Original\\versjon20221231\\Natur_Naturtyper_nin_norge_med_svalbard_25833\\Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
-
+nin.andel <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/NiN/naturtyper_nin_20230516.gdb")
+st_drivers()
 # fixing variable- and ecosystem-names with special characters
 colnames(nin)
 colnames(nin)[c(3,8,17,26,31,33,34)] <- c("hovedoekosystem","kartleggingsaar","noyaktighet",
@@ -55,32 +56,65 @@ nin <- nin %>% mutate(hovedtype = substr(ninkartleggingsenheter, 1, 3),
 # checking mapping unit against main ecosystem type
 nin[,c("hovedoekosystem","hovedtype")]
 summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Vaatmark"]))
-summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Semi-naturlig"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Semi_naturlig"]))
 summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Naturlig_aapne"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Skog"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Fjell"]))
 # making a new variable for the overarching ecosystem types based on the main ecosystem types
+nin$hovedoekosystem.orig <- nin$hovedoekosystem
 
+nin <- nin %>%
+  mutate(hovedoekosystem = case_when(hovedtype %in% paste("V",c(1,3:7,9:10),sep="") ~ 'Vaatmark',
+                                     hovedtype %in% paste("V",11:13,sep="") ~ 'Vaatmark_sterkt_endret',
+                                     hovedtype %in% paste("T",c(31:34,40:41),sep="") ~ 'Semi_naturlig',
+                                     hovedtype %in% paste("T",c(2,12,18,20:21),sep="") ~ 'Naturlig_aapent',
+                                     hovedtype %in% c(paste("T",c(4,30,38),sep=""),paste("V",c(2,8),sep="")) ~ 'Skog',
+                                     hovedtype %in% c(paste("T",c(3,7,9,10,14,22,26),sep=""),paste("V",c(6,7),sep="")) ~ 'Fjell',
+                                     TRUE ~ 'NA'))
 
-#### continue here ####
+# need to split the ninbeskrivelsesvariabler-column into one per variable and these then into two for the variable name and value
+levels(as.factor(nin$ninbeskrivelsesvariabler))
 
+nin2 <- nin %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
+  separate(col = ninbeskrivelsesvariabler,
+           into = c("NiN_variable_code", "NiN_variable_value"),
+           sep = "_",
+           remove=F) %>%
+  mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
+  mutate(NiN_variable_code = as.factor(NiN_variable_code))
 
+nin2$NiN_variable_code <- as.factor(paste0("var_", nin2$NiN_variable_code, "_end",sep=""))
 
+nin3 <- nin2 %>%
+  pivot_wider(
+    names_from = "NiN_variable_code",
+    values_from = "NiN_variable_value"
+  )
+# this does not do what it is expected to do. nrow(nin3) should go down towards nrow(nin), but it stays at almost nrow(nin2)
+# continue with nin for now, ignoring the beskrivelsesvariabler and only using information from 'tilstand'
+summary(as.factor(nin$tilstand))
 
+nin <- nin %>% mutate(tilstand = recode(tilstand,
+                                        "Dårlig" = "DaarliG",
+                                        "Svært redusert" = "Svaert_redusert"))
+summary(as.factor(nin$tilstand))
 
-
-nin %>% 
-  mutate(validGeo = st_is_valid(SHAPE)) %>%
-  filter(!hovedøkosystem %in% c('Skog','Ingen','Fjell')) %>%
-  mutate(hovedtype = substr(ninkartleggingsenheter, 4, 6),
-         hovedtype = str_remove(hovedtype, '-'),
-         id = identifikasjon_lokalid) %>%
+# filter out only wetland data
+nin.wetland <- nin %>% 
+  filter(hovedoekosystem %in% c('Vaatmark')) %>%
+  mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
-  dplyr::select(id, hovedøkosystem, hovedtype, naturtypekode, tilstand)
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand)
 
+nin.wetland %>% 
+  mutate(area_meters = st_area(nin.wetland)
+  )
 
+#### continue here ####
 ##############Import Sentinel NDVI Data
 df <-
-  list.files("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_Sentinel\\", pattern = "*.csv") %>%
+  list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv") %>%
   map_df(~fread(.))
 df
 
