@@ -11,8 +11,8 @@ library(sf)
 
 #############Import NiN data
 nin <- st_read("R:\\GeoSpatialData\\Habitats_biotopes\\Norway_Miljodirektoratet_Naturtyper_nin\\Original\\versjon20221231\\Natur_Naturtyper_nin_norge_med_svalbard_25833\\Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
-nin.andel <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/NiN/naturtyper_nin_20230516.gdb")
-st_drivers()
+nin.andel <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/NiN/naturtyper_nin_20230516.gdb/naturtyper_nin_20230516.gdb")
+
 # fixing variable- and ecosystem-names with special characters
 colnames(nin)
 colnames(nin)[c(3,8,17,26,31,33,34)] <- c("hovedoekosystem","kartleggingsaar","noyaktighet",
