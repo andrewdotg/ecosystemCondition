@@ -114,7 +114,7 @@ nin.wetland %>%
 #### continue here ####
 ##############Import Sentinel NDVI Data
 df <-
-  list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv") %>%
+  list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
   map_df(~fread(.))
 df
 
