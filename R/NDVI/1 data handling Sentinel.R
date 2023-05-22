@@ -92,6 +92,8 @@ nin3 <- nin2 %>%
   )
 # this does not do what it is expected to do. nrow(nin3) should go down towards nrow(nin), but it stays at almost nrow(nin2)
 # continue with nin for now, ignoring the beskrivelsesvariabler and only using information from 'tilstand'
+rm(nin2)
+rm(nin3)
 summary(as.factor(nin$tilstand))
 
 nin <- nin %>% mutate(tilstand = recode(tilstand,
@@ -113,13 +115,22 @@ nin.wetland %>%
 
 
 ##############Import Sentinel NDVI Data
-df <-
-  list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
+df <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
   map_df(~fread(.))
 df
 
 ##########join NiN and NDVI data
 SentinelNDVI <- full_join(nin.wetland, df, by="id")
 
+summary(SentinelNDVI)
+SentinelNDVI <- SentinelNDVI %>%
+  mutate(hovedoekosystem = as.factor(hovedoekosystem),
+         hovedtype = as.factor(hovedtype),
+         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
+         lokalitetskvalitet = as.factor(lokalitetskvalitet),
+         tilstand = as.factor(tilstand))
+summary(SentinelNDVI)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+SentinelNDVI <- SentinelNDVI %>% filter(!is.na(hovedtype))
+summary(SentinelNDVI)
 #### continue here ####
