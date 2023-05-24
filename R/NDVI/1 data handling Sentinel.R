@@ -98,7 +98,7 @@ rm(nin3)
 summary(as.factor(nin$tilstand))
 
 nin <- nin %>% mutate(tilstand = recode(tilstand,
-                                        "Dårlig" = "DaarliG",
+                                        "Dårlig" = "Redusert",
                                         "Svært redusert" = "Svaert_redusert"))
 summary(as.factor(nin$tilstand))
 
@@ -108,7 +108,7 @@ nin.wetland <- nin %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
-  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand)
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, kartleggingsaar)
 
 nin.wetland %>% 
   mutate(area_meters = st_area(nin.wetland)
@@ -129,7 +129,8 @@ SentinelNDVI <- SentinelNDVI %>%
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
-         tilstand = as.factor(tilstand))
+         tilstand = as.factor(tilstand),
+         area_meters = st_area(SentinelNDVI))
 summary(SentinelNDVI)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
 SentinelNDVI <- SentinelNDVI %>% filter(!is.na(hovedtype))
@@ -144,13 +145,52 @@ SentinelNDVI <- SentinelNDVI %>%
 
 summary(SentinelNDVI)
 
-
-ggplot( SentinelNDVI , aes(x=tilstand, y=mean )) + 
-  geom_violin() +
-  facet_wrap( ~hovedtype)
-
-ggplot( SentinelNDVI , aes(x=year, y=mean )) + 
+# how does NDVI vary over the years (all data)
+SentinelNDVI %>%
+ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_grid( tilstand~hovedtype)
+# 2022 stands out with the highest NDVI values missing
+# the pattern is strange, suggest to omit 2022 for this analysis
+SentinelNDVI <- SentinelNDVI %>%
+  filter(year != '2022')
+
+# NDVI across hovedtyper (only for NDVI data matching NiN-mapping)
+SentinelNDVI %>%
+  filter(year == kartleggingsaar) %>%
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  facet_wrap( ~hovedtype)
+# NDVI largely varies between hovedtyper: higher in seminat types and kaldkilde than in fens, lowest in ombrotrophic bogs
+# @Tilstand: in seminat types, kaldkilde, and bogs 'god tilstand' appears to have somewhat lower NDVI than the other condition classes
+# @Tilstand: in fens 'svært redusert tilstand' appears to have somewhat higher NDVI than the other condition classes
+
+# add column for sub-ecosystem types
+SentinelNDVI <- SentinelNDVI %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
+                      subtype = str_remove(subtype, '-'))
+
+# looking at subtypes for polygons in good condition only (only for NDVI data matching NiN-mapping)
+  filter(tilstand == 'God') %>%
+  filter(year == kartleggingsaar) %>%
+  ggplot(aes(x=subtype, y=mean )) + 
+  geom_violin() +
+  facet_wrap( ~hovedtype)
+# NDVI varies between ecosystem subtypes
+# -at least equally much as between main ecosystem types
+# -stronger than between condition classes in previous plots
+
+# looking at some single polygons
+SentinelNDVI %>% 
+  filter(id == 'NINFP1810041123') %>%
+  ggplot(aes(x=date, y=mean )) + geom_point() + ylim(-0.1,0.6)
+
+SentinelNDVI %>% 
+  filter(id == 'NINFP2010025018') %>%
+  ggplot(aes(x=date, y=mean )) + geom_point() + ylim(-0.1,0.6)
+
+SentinelNDVI %>% 
+  filter(id == 'NINFP1810042181') %>%
+  ggplot(aes(x=date, y=mean )) + geom_point() #+ ylim(-0.1,0.6)
+
 
 #### continue here ####
