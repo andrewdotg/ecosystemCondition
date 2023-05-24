@@ -7,11 +7,12 @@
 
 library(data.table)
 library(tidyverse)
+library(lubridate)
 library(sf)
 
 #############Import NiN data
 nin <- st_read("R:\\GeoSpatialData\\Habitats_biotopes\\Norway_Miljodirektoratet_Naturtyper_nin\\Original\\versjon20221231\\Natur_Naturtyper_nin_norge_med_svalbard_25833\\Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
-nin.andel <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/NiN/naturtyper_nin_20230516.gdb/naturtyper_nin_20230516.gdb")
+#nin.andel <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/NiN/naturtyper_nin_20230516.gdb/naturtyper_nin_20230516.gdb")
 
 # fixing variable- and ecosystem-names with special characters
 colnames(nin)
@@ -132,5 +133,24 @@ SentinelNDVI <- SentinelNDVI %>%
 summary(SentinelNDVI)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
 SentinelNDVI <- SentinelNDVI %>% filter(!is.na(hovedtype))
+SentinelNDVI <- SentinelNDVI %>% filter(!is.na(mean))
 summary(SentinelNDVI)
+
+# split date into year, month & day
+SentinelNDVI <- SentinelNDVI %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
+
+summary(SentinelNDVI)
+
+
+ggplot( SentinelNDVI , aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  facet_wrap( ~hovedtype)
+
+ggplot( SentinelNDVI , aes(x=year, y=mean )) + 
+  geom_point() +
+  facet_grid( tilstand~hovedtype)
+
 #### continue here ####
