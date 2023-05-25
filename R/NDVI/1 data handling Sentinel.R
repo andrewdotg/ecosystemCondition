@@ -10,9 +10,17 @@ library(tidyverse)
 library(lubridate)
 library(sf)
 
-#############Import NiN data
+#### data import ####
+## Import NiN data
 nin <- st_read("R:\\GeoSpatialData\\Habitats_biotopes\\Norway_Miljodirektoratet_Naturtyper_nin\\Original\\versjon20221231\\Natur_Naturtyper_nin_norge_med_svalbard_25833\\Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
 #nin.andel <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/NiN/naturtyper_nin_20230516.gdb/naturtyper_nin_20230516.gdb")
+
+## Import Sentinel NDVI Data
+df <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
+  map_df(~fread(.))
+df
+
+#### data handling NiN ####
 
 # fixing variable- and ecosystem-names with special characters
 colnames(nin)
@@ -102,7 +110,11 @@ nin <- nin %>% mutate(tilstand = recode(tilstand,
                                         "Svært redusert" = "Svaert_redusert"))
 summary(as.factor(nin$tilstand))
 
-# filter out only wetland data
+
+
+
+#### wetland data ####
+## filter out only wetland data
 nin.wetland <- nin %>% 
   filter(hovedoekosystem %in% c('Vaatmark')) %>%
   mutate(id = identifikasjon_lokalid) %>%
@@ -114,83 +126,112 @@ nin.wetland %>%
   mutate(area_meters = st_area(nin.wetland)
   )
 
+## join NiN and NDVI data
+SentinelNDVI.wetland <- full_join(nin.wetland, df, by="id")
 
-##############Import Sentinel NDVI Data
-df <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
-  map_df(~fread(.))
-df
-
-##########join NiN and NDVI data
-SentinelNDVI <- full_join(nin.wetland, df, by="id")
-
-summary(SentinelNDVI)
-SentinelNDVI <- SentinelNDVI %>%
+summary(SentinelNDVI.wetland)
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(SentinelNDVI))
-summary(SentinelNDVI)
+         area_meters = st_area(SentinelNDVI.wetland))
+summary(SentinelNDVI.wetland)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
-SentinelNDVI <- SentinelNDVI %>% filter(!is.na(hovedtype))
-SentinelNDVI <- SentinelNDVI %>% filter(!is.na(mean))
-summary(SentinelNDVI)
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(hovedtype))
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(mean))
+summary(SentinelNDVI.wetland)
 
 # split date into year, month & day
-SentinelNDVI <- SentinelNDVI %>%
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 
-summary(SentinelNDVI)
+summary(SentinelNDVI.wetland)
 
-# how does NDVI vary over the years (all data)
-SentinelNDVI %>%
-ggplot( aes(x=year, y=mean )) + 
-  geom_point() +
-  facet_grid( tilstand~hovedtype)
-# 2022 stands out with the highest NDVI values missing
-# the pattern is strange, suggest to omit 2022 for this analysis
-SentinelNDVI <- SentinelNDVI %>%
-  filter(year != '2022')
 
-# NDVI across hovedtyper (only for NDVI data matching NiN-mapping)
-SentinelNDVI %>%
-  filter(year == kartleggingsaar) %>%
-  ggplot( aes(x=tilstand, y=mean )) + 
-  geom_violin() +
-  facet_wrap( ~hovedtype)
-# NDVI largely varies between hovedtyper: higher in seminat types and kaldkilde than in fens, lowest in ombrotrophic bogs
-# @Tilstand: in seminat types, kaldkilde, and bogs 'god tilstand' appears to have somewhat lower NDVI than the other condition classes
-# @Tilstand: in fens 'svært redusert tilstand' appears to have somewhat higher NDVI than the other condition classes
+#### seminat data ####
+## filter out only wetland data
+nin.seminat <- nin %>% 
+  filter(hovedoekosystem %in% c('Semi_naturlig')) %>%
+  mutate(id = identifikasjon_lokalid) %>%
+  filter(validGeo) %>%
+  drop_na(tilstand) %>%
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, kartleggingsaar)
 
-# add column for sub-ecosystem types
-SentinelNDVI <- SentinelNDVI %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
-                      subtype = str_remove(subtype, '-'))
+nin.seminat %>% 
+  mutate(area_meters = st_area(nin.seminat)
+  )
 
-# looking at subtypes for polygons in good condition only (only for NDVI data matching NiN-mapping)
-  filter(tilstand == 'God') %>%
-  filter(year == kartleggingsaar) %>%
-  ggplot(aes(x=subtype, y=mean )) + 
-  geom_violin() +
-  facet_wrap( ~hovedtype)
-# NDVI varies between ecosystem subtypes
-# -at least equally much as between main ecosystem types
-# -stronger than between condition classes in previous plots
+## join NiN and NDVI data
+SentinelNDVI.seminat <- full_join(nin.seminat, df, by="id")
 
-# looking at some single polygons
-SentinelNDVI %>% 
-  filter(id == 'NINFP1810041123') %>%
-  ggplot(aes(x=date, y=mean )) + geom_point() + ylim(-0.1,0.6)
+summary(SentinelNDVI.seminat)
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
+  mutate(hovedoekosystem = as.factor(hovedoekosystem),
+         hovedtype = as.factor(hovedtype),
+         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
+         lokalitetskvalitet = as.factor(lokalitetskvalitet),
+         tilstand = as.factor(tilstand),
+         area_meters = st_area(SentinelNDVI.seminat))
+summary(SentinelNDVI.seminat)
+# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(hovedtype))
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(mean))
+summary(SentinelNDVI.seminat)
 
-SentinelNDVI %>% 
-  filter(id == 'NINFP2010025018') %>%
-  ggplot(aes(x=date, y=mean )) + geom_point() + ylim(-0.1,0.6)
+# split date into year, month & day
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
 
-SentinelNDVI %>% 
-  filter(id == 'NINFP1810042181') %>%
-  ggplot(aes(x=date, y=mean )) + geom_point() #+ ylim(-0.1,0.6)
+summary(SentinelNDVI.seminat)
+
+
+#### naturally open data ####
+## filter out only wetland data
+nin.natopen <- nin %>% 
+  filter(hovedoekosystem %in% c('Naturlig_aapent')) %>%
+  mutate(id = identifikasjon_lokalid) %>%
+  filter(validGeo) %>%
+  drop_na(tilstand) %>%
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, kartleggingsaar)
+
+nin.natopen %>% 
+  mutate(area_meters = st_area(nin.natopen)
+  )
+
+## join NiN and NDVI data
+SentinelNDVI.natopen <- full_join(nin.natopen, df, by="id")
+
+summary(SentinelNDVI.natopen)
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
+  mutate(hovedoekosystem = as.factor(hovedoekosystem),
+         hovedtype = as.factor(hovedtype),
+         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
+         lokalitetskvalitet = as.factor(lokalitetskvalitet),
+         tilstand = as.factor(tilstand),
+         area_meters = st_area(SentinelNDVI.natopen))
+summary(SentinelNDVI.natopen)
+# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(!is.na(hovedtype))
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(!is.na(mean))
+summary(SentinelNDVI.natopen)
+
+# split date into year, month & day
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
+
+summary(SentinelNDVI.natopen)
 
 
 #### continue here ####
+
+
+
+
