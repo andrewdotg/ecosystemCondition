@@ -30,30 +30,49 @@ reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Nor
 
 regnor <- st_intersection(reg,nor)
 
-## Import Sentinel NDVI Data
-df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
-  map_df(~fread(.))
-df.s
+## Import Landsat NDVI Data
+# Set up conditional file paths
+dir <- substr(getwd(), 1,2)
+
+path <- ifelse(dir == "C:", 
+               "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
+               "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
+
+pData <- ifelse(dir == "C:", 
+                "P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat",
+                "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat")
 
 
+## Fread doesn't like the weird path to the server version of the P drive
+## hence this horrendous work around (there must be an easier way than this but I kept hitting dead-ends)
+files=list.files(pData, pattern = "*.csv", full.names = TRUE)
 
+df_list<-list()# initialise a list of dataframes
+# read in a dataframe in each slot of the df_list
+for (i in files){
+  name <- gsub("-",".",i)
+  name <- gsub(".csv","",name)  
+  i <- paste(i,sep="")
+  df_list[[i]]=assign(name,read.csv(i, header=TRUE))
+}  
 
-
+df.l<-bind_rows(df_list, .id = "column_label")
+df.l
 
 #### data handling NiN ####
 
 # fixing variable- and ecosystem-names with special characters
 colnames(nin)
 colnames(nin)[c(3,8,17,26,31,33,34)] <- c("hovedoekosystem","kartleggingsaar","noyaktighet",
-                                       "omraadenavn","uk_naertruet","uk_sentraloekosystemfunksjon",
-                                       "uk_spesieltdaarligkartlagt")
+                                          "omraadenavn","uk_naertruet","uk_sentraloekosystemfunksjon",
+                                          "uk_spesieltdaarligkartlagt")
 unique(nin$hovedoekosystem)
 
 nin <- nin %>% mutate(hovedoekosystem = recode(hovedoekosystem, 
-                                 "Våtmark" = 'Vaatmark',
-                                 "Semi-naturlig mark" = 'Semi_naturlig',
-                                 "Naturlig åpne områder i lavlandet" = 'Naturlig-aapne',
-                                 "Naturlig åpne områder under skoggrensa" = 'Naturlig_aapne')) %>%
+                                               "Våtmark" = 'Vaatmark',
+                                               "Semi-naturlig mark" = 'Semi_naturlig',
+                                               "Naturlig åpne områder i lavlandet" = 'Naturlig-aapne',
+                                               "Naturlig åpne områder under skoggrensa" = 'Naturlig_aapne')) %>%
   mutate(validGeo = st_is_valid(SHAPE))
 
 # checking how many polygons have multiple ecosystem types
@@ -62,7 +81,7 @@ unique(nin$ninkartleggingsenheter)
 nrow(nin)
 # 95469 polygons altogether
 nrow(nin %>%
-  filter(grepl(',', ninkartleggingsenheter))
+       filter(grepl(',', ninkartleggingsenheter))
 )
 # 21094 polygons have more than 1 ecosystem type (they are separated by commas in the ninkartleggingsenheter-variable)
 
@@ -81,7 +100,7 @@ summary(as.factor(nin$ninkartleggingsenheter))
 nin <- nin %>% mutate(ninkartleggingsenheter = str_remove(ninkartleggingsenheter, 'NA_'))
 # making a main ecosystem type variable
 nin <- nin %>% mutate(hovedtype = substr(ninkartleggingsenheter, 1, 3),
-               hovedtype = str_remove(hovedtype, '-'))
+                      hovedtype = str_remove(hovedtype, '-'))
 # checking mapping unit against main ecosystem type
 nin[,c("hovedoekosystem","hovedtype")]
 summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Vaatmark"]))
@@ -184,86 +203,85 @@ nin.natopen %>%
   )
 
 
-
 #### join NiN and NDVI data ####
 
 
 ## wetland
-SentinelNDVI.wetland <- full_join(nin.wetland, df.s, by="id")
+LandsatNDVI.wetland <- full_join(nin.wetland, df.l, by="id")
 
-summary(SentinelNDVI.wetland)
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+summary(LandsatNDVI.wetland)
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(SentinelNDVI.wetland))
-summary(SentinelNDVI.wetland)
+         area_meters = st_area(LandsatNDVI.wetland))
+summary(LandsatNDVI.wetland)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(hovedtype))
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(mean))
-summary(SentinelNDVI.wetland)
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(hovedtype))
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(mean))
+summary(LandsatNDVI.wetland)
 
 # split date into year, month & day
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 
-summary(SentinelNDVI.wetland)
+summary(LandsatNDVI.wetland)
 
 
 ## seminat
-SentinelNDVI.seminat <- full_join(nin.seminat, df.s, by="id")
+LandsatNDVI.seminat <- full_join(nin.seminat, df.l, by="id")
 
-summary(SentinelNDVI.seminat)
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
+summary(LandsatNDVI.seminat)
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(SentinelNDVI.seminat))
-summary(SentinelNDVI.seminat)
+         area_meters = st_area(LandsatNDVI.seminat))
+summary(LandsatNDVI.seminat)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(hovedtype))
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(mean))
-summary(SentinelNDVI.seminat)
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(hovedtype))
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(mean))
+summary(LandsatNDVI.seminat)
 
 # split date into year, month & day
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 
-summary(SentinelNDVI.seminat)
+summary(LandsatNDVI.seminat)
 
 
 ## naturally open
-SentinelNDVI.natopen <- full_join(nin.natopen, df.s, by="id")
+LandsatNDVI.natopen <- full_join(nin.natopen, df.l, by="id")
 
-summary(SentinelNDVI.natopen)
-SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
+summary(LandsatNDVI.natopen)
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(SentinelNDVI.natopen))
-summary(SentinelNDVI.natopen)
+         area_meters = st_area(LandsatNDVI.natopen))
+summary(LandsatNDVI.natopen)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
-SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(!is.na(hovedtype))
-SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(!is.na(mean))
-summary(SentinelNDVI.natopen)
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>% filter(!is.na(hovedtype))
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>% filter(!is.na(mean))
+summary(LandsatNDVI.natopen)
 
 # split date into year, month & day
-SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 
-summary(SentinelNDVI.natopen)
+summary(LandsatNDVI.natopen)
 
 
 #### continue here ####
