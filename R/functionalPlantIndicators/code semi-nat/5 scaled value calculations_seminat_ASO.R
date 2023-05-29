@@ -87,6 +87,8 @@ ASO.geo$NiN_grunntype <- as.factor(ASO.geo$NiN_grunntype)
 summary(ASO.geo$NiN_grunntype)
 # 230 out of 381 ASO-meadows are not T32
 # for anything that is not T32 no data were registered, these won't be processed further
+# which leaves us with 151 ASO-meadows we can expect a result for
+
 
 results.seminat.ASO <- list()
 ind <- unique(seminat.ref.cov.val$Ind)
@@ -418,13 +420,13 @@ hist(results.seminat.ASO[['2-sided']]$Soil_disturbance2,breaks=40)
 #            quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 #write.table(results.seminat.ASO[['non-truncated']], file='output/scaled data/results.seminat.ASO_non-truncated.txt',
 #            quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
-write.table(results.seminat.ASO[['original']], file='P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO_original.txt',
-            quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
-write.table(results.seminat.ASO[['2-sided']], file='P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO_2-sided.txt',
-            quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
+#write.table(results.seminat.ASO[['original']], file='P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO_original.txt',
+#            quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
+#write.table(results.seminat.ASO[['2-sided']], file='P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO_2-sided.txt',
+#            quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 
-
-rm(list= ls()[!(ls() %in% c('results.seminat.ASO','settings'))])
+saveRDS(results.seminat.ASO, "data/cache/results.seminat.ASO.RDS")
+rm(list= ls()[!(ls() %in% c('ASO.geo','seminat.ref.cov.val','results.seminat.ASO','settings'))])
 save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO.RData")
 
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO.RData")
