@@ -1,4 +1,4 @@
-# Functional plant indicators (Moisture, Light, pH, Nitrogen) {#Functional-plant-indicators-wetland}
+# Functional plant indicators, wetland ecosystems (Moisture, Light, pH, Nitrogen) {#Functional-plant-indicators-wetland}
 
 <br />
 
@@ -27,17 +27,17 @@ May 2023
 <hr />
 
 ## Introduction
-Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional type indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021).
+Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional plant indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional condition indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021). Note that deviations from the reference may occur in both directions, e.g. the moisture signature from the testing data may be higher or lower than in the reference. Deviations in these two directions indicate very different environmental phenomena and thus have to be treated separately. Therefore, we develop two condition indicators for each functional plant indicator, a lower one and an upper one (see further down for more details).
 
 ## About the underlying data
-In the 'plant functional indicator' project for wetlands, we use three sets of data for building indicators for ecological condition:
+In the 'functional plant indicator' project for wetlands, we use three sets of data for building indicators for ecological condition:
 
 - as test data we use plant community data from the ANO monitoring scheme (cf. Tingstad et al. 2019)
 - as reference data we use generalized species lists from the Norwegian categorization system for eco-diversity (NiN) (cf. Halvorsen et al. 2020)
 - Swedish plant indicator data for light, moisture, pH, and nitrogen from Tyler et al. (2021)
 
 (1) ANO monitoring data:
-ANO stands for 'areal-representativ naturovervåking', i.e. 'area representative nature monitoring'. 1000 sites are randomly distributed across mainland Norway and visitied within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the wetland-analysis in this document, we only use the plots which were classified as one of the wetland ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
+ANO stands for 'areal-representativ naturovervåking', i.e. 'area representative nature monitoring'. 1000 sites are randomly distributed across mainland Norway and visited within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the wetland-analysis in this document, we only use the plots which were classified as one of the wetland ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
 In the analysis in this document, we use the data available on Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054), which comprises data from the first three ANO-years, 2019-2021, and a total of 8887 plots in 498 sites.
 
 (2) NiN reference data:
@@ -68,7 +68,7 @@ The reference state is defined via the functional signature of the generalized s
 
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
-In this analysis, we derive scaling values from statistical (here, non-parametric) distributions (see Jakobsson et al. 2010). For each ecosystem sub-type and plant functional indicator, the reference value is defined as the median value of the indicator value distribution. As in most cases the distributions naturally are two-sided (but see the Heat-requirement indicator in the mountain assessment for an example of a one-sided plant functional indicator, Fremstad et al. 2022), and deviation from the optimal state thus may occur in both direction (e.g. indicating too low or too high pH), we need to define two threshold values for good ecological condition as well as both a minimum and maximum value. In line with previous assessments of ecological condition for Norwegian forests and mountains, we define a lower and an upper threshold value via the 95% confidence interval of the reference distribution, i.e. its 0.025 and 0.975 quantiles. The minimum and maximum values are given by the minimum and maximum of the possible indicator values for each respective plant functional indicator. For details on the scaling principles in IBECA, please see Töpper & Jakobsson (2021).
+In this analysis, we derive scaling values from statistical (here, non-parametric) distributions (see Jakobsson et al. 2010). For each ecosystem sub-type and plant functional indicator, the reference value is defined as the median value of the indicator value distribution. As in most cases the distributions naturally are two-sided (but see the Heat-requirement indicator in the mountain assessment for an example of a one-sided functional plant indicator, Fremstad et al. 2022), and deviation from the optimal state thus may occur in both direction (e.g. indicating too low or too high pH), we need to define two threshold values for good ecological condition as well as both a minimum and maximum value. In line with previous assessments of ecological condition for Norwegian forests and mountains, we define a lower and an upper threshold value via the 95% confidence interval of the reference distribution, i.e. its 0.025 and 0.975 quantiles. The minimum and maximum values are given by the minimum and maximum of the possible indicator values for each respective plant functional indicator. For details on the scaling principles in IBECA, please see Töpper & Jakobsson (2021).
 
 
 ## Uncertainties
@@ -215,10 +215,10 @@ colnames(NiN.wetland)
 # 47th-50th column is the indicator values of the respective species
 # we choose 1000 iterations
 # species with abundance 1 (i.e. a max of 100%, must be included in each sample)
-# each sample re-samples 2/3 of the number of species
+# each sample re-samples 1/3 of the number of species
 # the abundance of the re-sampled species may vary (see bootstrap function for details)
 wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:50],
-                          iter=1000,obl=1,rat=2/3,var.abun=T)
+                          iter=1000,obl=1,rat=1/3,var.abun=T)
 
 # fixing NaNs
 for (i in 1:length(wetland.ref.cov) ) {
@@ -235,62 +235,62 @@ for (i in 1:length(wetland.ref.cov) ) {
 
 ```r
 head(wetland.ref.cov[[1]])
-#>     V3-C1a   V3-C1b   V3-C1c   V3-C1d   V3-C1e   V1-C1a
-#> 1 6.336842 5.702703 5.891986 5.407407 5.284661 5.682713
-#> 2 6.162896 5.603412 5.233202 5.353870 5.077465 5.908840
-#> 3 5.807692 6.099119 5.567627 5.296296 5.269912 6.087065
-#> 4 6.775087 5.789572 5.493739 5.475034 5.269912 6.352518
-#> 5 5.903114 5.789572 5.641694 5.492308 5.007634 6.364508
-#> 6 6.336842 5.726054 5.668407 5.569579 5.178284 5.616307
+#>   V3-C1a   V3-C1b   V3-C1c   V3-C1d   V3-C1e   V1-C1a
+#> 1     NA 5.537118 5.519421 4.516616 5.198992 5.615385
+#> 2     NA 5.545455 5.303867 5.500000 4.984615 4.857143
+#> 3     NA 6.588832 5.376543 5.904977 4.833333 5.972973
+#> 4     NA 6.308017 5.042328 5.298507 5.245614 4.526066
+#> 5     NA 5.761421 5.333333 5.822622 5.010862 5.758621
+#> 6     NA 5.300000 5.672269 5.250000 5.076159 6.250000
 #>     V1-C1b   V1-C1c   V1-C1d   V1-C1e   V1-C2a   V1-C2b
-#> 1 5.723592 5.291436 5.353811 5.171986 5.823009 5.360731
-#> 2 5.667160 5.929448 5.263294 5.245902 6.299618 5.416517
-#> 3 6.065979 5.575145 5.536041 5.169304 5.894265 5.898420
-#> 4 5.483051 5.570014 5.728625 5.022152 5.849462 5.354067
-#> 5 5.517544 5.720264 5.458237 5.034188 5.867384 5.418605
-#> 6 5.634868 5.710968 5.466031 4.925319 5.891344 5.359712
+#> 1 5.665025 5.040943 5.444206 5.284579 4.516291 5.500000
+#> 2 5.025050 5.823529 5.087358 5.187335 5.649860 6.029586
+#> 3 6.312500 5.710956 5.576603 5.154487 5.781485 6.008580
+#> 4 5.564772 5.372824 5.022936 5.016098 6.454976 4.520129
+#> 5 5.471328 6.035370 5.608986 4.988055 6.576869 5.655134
+#> 6 5.390782 4.984520 4.877800 4.603080 4.896975 6.073020
 #>     V1-C2c   V1-C2d   V1-C3a   V1-C3b   V1-C3c   V1-C3d
-#> 1 5.617886 5.255973 5.879501 5.451770 5.150421 5.454386
-#> 2 5.716802 5.514938 6.344234 5.197347 5.304290 5.319415
-#> 3 5.455844 5.415879 5.713128 5.320140 5.617048 5.505593
-#> 4 5.591304 5.561783 5.722591 5.573379 5.204703 5.590814
-#> 5 5.108579 5.505747 5.830116 5.317019 5.466457 5.370787
-#> 6 5.739508 5.353218 5.906937 5.390173 5.092166 5.493927
+#> 1 4.727120 5.234536 6.242694 5.292952 5.109108 5.214753
+#> 2 5.256491 5.175023 6.561584 5.814873 6.167920 5.461832
+#> 3 5.631367 5.672697 4.837065 5.289557 5.324456 4.809302
+#> 4 5.417409 5.424689 6.581006 4.581459 5.104036 5.271104
+#> 5 5.715929 5.782609 5.982505 5.684211 5.732940 5.369686
+#> 6 4.876417 4.808176 5.975198 5.335248 5.198312 5.698343
 #>     V1-C4a   V1-C4b   V1-C4c   V1-C4d   V1-C4e   V1-C4f
-#> 1 6.036179 5.361275 5.287129 5.246544 5.826291 6.096953
-#> 2 5.798913 5.616487 5.851117 5.579498 6.095665 5.593711
-#> 3 6.293651 5.648649 5.619327 5.577703 5.855586 5.934783
-#> 4 5.889374 5.685484 5.371715 5.093677 5.851802 5.616374
-#> 5 5.776280 5.713755 5.469660 5.717724 5.981818 5.697906
-#> 6 6.177054 5.651599 5.235872 5.522613 5.779343 5.812823
+#> 1 5.674512 6.100610 5.916846 6.220841 6.673210 5.481481
+#> 2 6.421354 5.719110 5.691259 5.397706 5.611799 6.233498
+#> 3 5.486574 6.149593 5.485597 5.446296 6.174157 5.806962
+#> 4 5.870466 5.936061 5.465432 6.407635 6.280048 5.459891
+#> 5 6.063272 5.979097 5.489074 5.492537 6.101709 5.664537
+#> 6 6.338515 6.172363 5.180462 5.120773 6.634538 6.200617
 #>     V1-C4g   V1-C4h    V3-C2    V1-C5   V1-C6a   V1-C6b
-#> 1 5.435681 4.918367 4.994775 4.727076 4.996255 4.630435
-#> 2 5.651721 5.438084 5.015432 4.652138 5.033333 4.773573
-#> 3 5.580581 5.851128 4.773709 4.726855 4.904824 4.773680
-#> 4 5.151030 5.386395 4.870244 4.667209 4.994337 4.894553
-#> 5 5.566054 5.235374 4.886616 4.814668 4.880233 4.836431
-#> 6 5.526852 5.490647 4.876712 4.749831 5.161597 4.823015
+#> 1 6.092386 6.057186 4.996385 4.830956 5.077866 4.628153
+#> 2 5.801220 4.922374 4.764331 4.679059 4.695021 4.988584
+#> 3 5.435173 5.481737 4.781609 4.649430 4.883855 4.942087
+#> 4 5.944277 6.204067 5.198690 4.653085 4.924060 4.614800
+#> 5 5.183016 6.196417 5.224044 4.577465 4.993554 4.574797
+#> 6 5.994172 5.525847 4.768879 4.756207 4.760917 4.516348
 #>     V1-C7a   V1-C7b   V1-C8a   V1-C8b   V2-C1a   V2-C1b
-#> 1 5.005076 4.927380 4.901750 4.761329 4.395683 4.030844
-#> 2 4.801927 4.846557 5.127968 4.896014 4.188559 4.155105
-#> 3 4.572449 4.504233 5.070941 4.808081 4.110694 4.091158
-#> 4 4.884762 4.812344 4.881336 5.094451 4.260394 4.165308
-#> 5 4.783305 4.893412 4.988858 4.848684 4.273535 4.234498
-#> 6 4.814433 4.869048 4.859482 4.702290 4.174721 4.005499
+#> 1 4.544482 4.371762 5.047897 4.633618 4.287703 4.045110
+#> 2 4.492043 4.409722 5.018118 4.484203 4.110429 4.326881
+#> 3 4.759162 5.117394 5.100655 4.734568 4.365521 4.210180
+#> 4 5.099964 4.587847 4.609169 4.303894 3.932933 4.168017
+#> 5 4.574026 4.980466 4.306452 5.038488 4.954111 4.247664
+#> 6 4.996280 4.733447 5.742741 4.772339 4.612745 4.427966
 #>     V2-C2a   V2-C2b   V2-C3a   V2-C3b    V4-C2    V4-C3
-#> 1 4.660793 3.813056 4.138365 3.871470 4.859013 4.983607
-#> 2 4.615487 4.059268 4.056991 3.942257 5.042409 5.249798
-#> 3 4.479858 3.668596 4.187162 4.057981 5.047048 4.992795
-#> 4 4.733990 3.914540 4.233787 4.077534 4.738647 5.027458
-#> 5 4.586890 3.797063 4.404070 3.836165 4.844905 4.734485
-#> 6 4.520000 4.033181 4.377852 3.859554 4.999081 4.966232
+#> 1 4.471163 4.109362 4.081429 3.454026 4.647626 5.152364
+#> 2 4.275137 3.836049 4.134050 4.055677 4.804082 5.327044
+#> 3 4.328051 3.587933 4.015032 4.045385 4.727341 5.645874
+#> 4 4.623957 3.827967 4.588215 4.065883 4.913506 4.729878
+#> 5 4.558872 4.484615 3.762264 3.839943 5.491614 4.388280
+#> 6 3.874477 3.611697 4.451854 4.808479 4.920083 4.641156
 #>      V8-C1    V8-C2    V8-C3
-#> 1 4.767647 4.595033 4.620053
-#> 2 4.660854 4.547687 4.647333
-#> 3 4.679577 4.609576 4.564313
-#> 4 4.835616 4.512004 4.539221
-#> 5 4.500463 4.502172 4.762053
-#> 6 4.805742 4.491489 4.608948
+#> 1 3.830428 4.969906 4.509828
+#> 2 4.554674 4.690696 4.581641
+#> 3 4.714435 4.460696 4.545655
+#> 4 4.507944 4.876977 4.733694
+#> 5 4.871125 4.796040 4.844728
+#> 6 4.293290 4.564882 4.709910
 ```
 
 This results in an R-list with a slot for every selected indicator, and in every slot there's a data frame with as many columns as there are NiN species lists and as many rows as there were iterations in the bootstrap.
@@ -302,62 +302,62 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 
 
 ```
-#>     V3-C1a   V3-C1b   V3-C1c   V3-C1d   V3-C1e   V1-C1a
-#> 1 6.336842 5.702703 5.891986 5.407407 5.284661 5.682713
-#> 2 6.162896 5.603412 5.233202 5.353870 5.077465 5.908840
-#> 3 5.807692 6.099119 5.567627 5.296296 5.269912 6.087065
-#> 4 6.775087 5.789572 5.493739 5.475034 5.269912 6.352518
-#> 5 5.903114 5.789572 5.641694 5.492308 5.007634 6.364508
-#> 6 6.336842 5.726054 5.668407 5.569579 5.178284 5.616307
+#>   V3-C1a   V3-C1b   V3-C1c   V3-C1d   V3-C1e   V1-C1a
+#> 1     NA 5.537118 5.519421 4.516616 5.198992 5.615385
+#> 2     NA 5.545455 5.303867 5.500000 4.984615 4.857143
+#> 3     NA 6.588832 5.376543 5.904977 4.833333 5.972973
+#> 4     NA 6.308017 5.042328 5.298507 5.245614 4.526066
+#> 5     NA 5.761421 5.333333 5.822622 5.010862 5.758621
+#> 6     NA 5.300000 5.672269 5.250000 5.076159 6.250000
 #>     V1-C1b   V1-C1c   V1-C1d   V1-C1e   V1-C2a   V1-C2b
-#> 1 5.723592 5.291436 5.353811 5.171986 5.823009 5.360731
-#> 2 5.667160 5.929448 5.263294 5.245902 6.299618 5.416517
-#> 3 6.065979 5.575145 5.536041 5.169304 5.894265 5.898420
-#> 4 5.483051 5.570014 5.728625 5.022152 5.849462 5.354067
-#> 5 5.517544 5.720264 5.458237 5.034188 5.867384 5.418605
-#> 6 5.634868 5.710968 5.466031 4.925319 5.891344 5.359712
+#> 1 5.665025 5.040943 5.444206 5.284579 4.516291 5.500000
+#> 2 5.025050 5.823529 5.087358 5.187335 5.649860 6.029586
+#> 3 6.312500 5.710956 5.576603 5.154487 5.781485 6.008580
+#> 4 5.564772 5.372824 5.022936 5.016098 6.454976 4.520129
+#> 5 5.471328 6.035370 5.608986 4.988055 6.576869 5.655134
+#> 6 5.390782 4.984520 4.877800 4.603080 4.896975 6.073020
 #>     V1-C2c   V1-C2d   V1-C3a   V1-C3b   V1-C3c   V1-C3d
-#> 1 5.617886 5.255973 5.879501 5.451770 5.150421 5.454386
-#> 2 5.716802 5.514938 6.344234 5.197347 5.304290 5.319415
-#> 3 5.455844 5.415879 5.713128 5.320140 5.617048 5.505593
-#> 4 5.591304 5.561783 5.722591 5.573379 5.204703 5.590814
-#> 5 5.108579 5.505747 5.830116 5.317019 5.466457 5.370787
-#> 6 5.739508 5.353218 5.906937 5.390173 5.092166 5.493927
+#> 1 4.727120 5.234536 6.242694 5.292952 5.109108 5.214753
+#> 2 5.256491 5.175023 6.561584 5.814873 6.167920 5.461832
+#> 3 5.631367 5.672697 4.837065 5.289557 5.324456 4.809302
+#> 4 5.417409 5.424689 6.581006 4.581459 5.104036 5.271104
+#> 5 5.715929 5.782609 5.982505 5.684211 5.732940 5.369686
+#> 6 4.876417 4.808176 5.975198 5.335248 5.198312 5.698343
 #>     V1-C4a   V1-C4b   V1-C4c   V1-C4d   V1-C4e   V1-C4f
-#> 1 6.036179 5.361275 5.287129 5.246544 5.826291 6.096953
-#> 2 5.798913 5.616487 5.851117 5.579498 6.095665 5.593711
-#> 3 6.293651 5.648649 5.619327 5.577703 5.855586 5.934783
-#> 4 5.889374 5.685484 5.371715 5.093677 5.851802 5.616374
-#> 5 5.776280 5.713755 5.469660 5.717724 5.981818 5.697906
-#> 6 6.177054 5.651599 5.235872 5.522613 5.779343 5.812823
+#> 1 5.674512 6.100610 5.916846 6.220841 6.673210 5.481481
+#> 2 6.421354 5.719110 5.691259 5.397706 5.611799 6.233498
+#> 3 5.486574 6.149593 5.485597 5.446296 6.174157 5.806962
+#> 4 5.870466 5.936061 5.465432 6.407635 6.280048 5.459891
+#> 5 6.063272 5.979097 5.489074 5.492537 6.101709 5.664537
+#> 6 6.338515 6.172363 5.180462 5.120773 6.634538 6.200617
 #>     V1-C4g   V1-C4h    V3-C2    V1-C5   V1-C6a   V1-C6b
-#> 1 5.435681 4.918367 4.994775 4.727076 4.996255 4.630435
-#> 2 5.651721 5.438084 5.015432 4.652138 5.033333 4.773573
-#> 3 5.580581 5.851128 4.773709 4.726855 4.904824 4.773680
-#> 4 5.151030 5.386395 4.870244 4.667209 4.994337 4.894553
-#> 5 5.566054 5.235374 4.886616 4.814668 4.880233 4.836431
-#> 6 5.526852 5.490647 4.876712 4.749831 5.161597 4.823015
+#> 1 6.092386 6.057186 4.996385 4.830956 5.077866 4.628153
+#> 2 5.801220 4.922374 4.764331 4.679059 4.695021 4.988584
+#> 3 5.435173 5.481737 4.781609 4.649430 4.883855 4.942087
+#> 4 5.944277 6.204067 5.198690 4.653085 4.924060 4.614800
+#> 5 5.183016 6.196417 5.224044 4.577465 4.993554 4.574797
+#> 6 5.994172 5.525847 4.768879 4.756207 4.760917 4.516348
 #>     V1-C7a   V1-C7b   V1-C8a   V1-C8b   V2-C1a   V2-C1b
-#> 1 5.005076 4.927380 4.901750 4.761329 4.395683 4.030844
-#> 2 4.801927 4.846557 5.127968 4.896014 4.188559 4.155105
-#> 3 4.572449 4.504233 5.070941 4.808081 4.110694 4.091158
-#> 4 4.884762 4.812344 4.881336 5.094451 4.260394 4.165308
-#> 5 4.783305 4.893412 4.988858 4.848684 4.273535 4.234498
-#> 6 4.814433 4.869048 4.859482 4.702290 4.174721 4.005499
+#> 1 4.544482 4.371762 5.047897 4.633618 4.287703 4.045110
+#> 2 4.492043 4.409722 5.018118 4.484203 4.110429 4.326881
+#> 3 4.759162 5.117394 5.100655 4.734568 4.365521 4.210180
+#> 4 5.099964 4.587847 4.609169 4.303894 3.932933 4.168017
+#> 5 4.574026 4.980466 4.306452 5.038488 4.954111 4.247664
+#> 6 4.996280 4.733447 5.742741 4.772339 4.612745 4.427966
 #>     V2-C2a   V2-C2b   V2-C3a   V2-C3b    V4-C2    V4-C3
-#> 1 4.660793 3.813056 4.138365 3.871470 4.859013 4.983607
-#> 2 4.615487 4.059268 4.056991 3.942257 5.042409 5.249798
-#> 3 4.479858 3.668596 4.187162 4.057981 5.047048 4.992795
-#> 4 4.733990 3.914540 4.233787 4.077534 4.738647 5.027458
-#> 5 4.586890 3.797063 4.404070 3.836165 4.844905 4.734485
-#> 6 4.520000 4.033181 4.377852 3.859554 4.999081 4.966232
+#> 1 4.471163 4.109362 4.081429 3.454026 4.647626 5.152364
+#> 2 4.275137 3.836049 4.134050 4.055677 4.804082 5.327044
+#> 3 4.328051 3.587933 4.015032 4.045385 4.727341 5.645874
+#> 4 4.623957 3.827967 4.588215 4.065883 4.913506 4.729878
+#> 5 4.558872 4.484615 3.762264 3.839943 5.491614 4.388280
+#> 6 3.874477 3.611697 4.451854 4.808479 4.920083 4.641156
 #>      V8-C1    V8-C2    V8-C3
-#> 1 4.767647 4.595033 4.620053
-#> 2 4.660854 4.547687 4.647333
-#> 3 4.679577 4.609576 4.564313
-#> 4 4.835616 4.512004 4.539221
-#> 5 4.500463 4.502172 4.762053
-#> 6 4.805742 4.491489 4.608948
+#> 1 3.830428 4.969906 4.509828
+#> 2 4.554674 4.690696 4.581641
+#> 3 4.714435 4.460696 4.545655
+#> 4 4.507944 4.876977 4.733694
+#> 5 4.871125 4.796040 4.844728
+#> 6 4.293290 4.564882 4.709910
 #>  [1] V3-C1a V3-C1b V3-C1c V3-C1d V3-C1e V1-C1a V1-C1b V1-C1c
 #>  [9] V1-C1d V1-C1e V1-C2a V1-C2b V1-C2c V1-C2d V1-C3a V1-C3b
 #> [17] V1-C3c V1-C3d V1-C4a V1-C4b V1-C4c V1-C4d V1-C4e V1-C4f
@@ -380,43 +380,43 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 #>  [8] "V1-C8" "V2-C1" "V2-C2" "V2-C3"
 #> [1] 1 2 3 4 5
 #>          V1       V2       V3       V4       V5       V6
-#> 1  4.736150 4.900265 5.120000 5.201878 5.736585 6.151852
-#> 2  4.597880 4.760764 4.902329 5.391473 5.821132 6.265910
-#> 3  4.610424 4.901870 5.232242 6.708205 7.088321 7.496453
-#> 4  4.677531 4.996095 5.309336 6.599488 6.935913 7.284055
-#> 5  4.464570 4.709785 4.972819 6.803539 7.217742 7.663696
-#> 6  4.425727 4.586035 4.779277 6.925680 7.251258 7.577229
-#> 7  4.490343 4.635103 4.790331 7.024416 7.382590 7.755543
-#> 8  4.892675 5.594595 6.567474 5.528728 6.907166 8.486166
-#> 9  4.958721 5.575057 6.315900 5.735756 7.280132 8.718040
-#> 10 5.139566 5.522530 6.264477 6.426842 7.915167 8.924438
-#> 11 5.089261 5.450281 6.152334 7.113426 8.216718 9.016390
-#> 12 5.126794 5.647878 6.162793 7.065646 8.040734 8.935004
-#> 13 4.525242 4.816224 5.124243 6.016056 7.233970 8.688171
-#> 14 4.504224 4.804565 5.059866 6.326991 7.271581 8.463120
-#> 15 4.558245 4.915094 5.303735 6.258498 7.091729 7.784715
-#> 16 3.974819 4.173047 4.598703 5.112448 5.859056 8.126484
-#> 17 3.685444 4.256174 4.700616 5.513549 6.488092 7.920221
-#> 18 3.631843 4.125515 4.457248 6.004292 6.772113 7.759210
+#> 1  4.650288 4.966443 5.242167 4.730467 5.450611 6.287387
+#> 2  4.412518 4.678375 4.983052 5.024660 5.705182 6.515412
+#> 3  4.181051 4.885976 5.575828 5.959727 7.108910 7.929956
+#> 4  4.265677 4.970310 5.728271 6.072307 6.944127 7.598114
+#> 5  4.026841 4.715468 5.326302 6.041072 7.262666 8.132334
+#> 6  4.331418 4.760871 5.131781 6.519606 7.245583 7.905369
+#> 7  4.379654 4.687800 4.977008 6.665973 7.502367 8.189600
+#> 8  4.676349 5.342796 6.777778 4.473684 6.424165 8.467209
+#> 9  4.735842 5.388481 6.835764 4.805905 6.985401 9.142989
+#> 10 4.684189 5.548379 6.753948 5.703439 7.826415 9.337017
+#> 11 4.644572 5.484308 6.487499 6.503395 8.213247 9.445956
+#> 12 4.552329 5.686564 6.494601 6.530966 8.109657 9.294677
+#> 13 4.219840 4.779976 5.423544 5.518264 7.313205 9.248771
+#> 14 4.166529 4.692662 5.433001 5.869488 7.241861 8.685496
+#> 15 4.206007 4.887366 5.758946 5.712864 7.085127 8.097239
+#> 16 3.657798 4.231589 4.953344 4.851244 5.751619 8.797058
+#> 17 3.446326 4.238208 4.940917 5.141012 6.474238 8.285018
+#> 18 3.242379 4.121921 4.738912 5.556370 6.814557 8.218944
 #>          V7       V8       V9      V10      V11      V12
-#> 1  1.831766 2.243827 2.533659 1.811728 1.952862 2.142723
-#> 2  2.155809 2.516520 2.836431 1.853110 2.167561 2.438285
-#> 3  3.437916 3.787654 4.212773 3.008428 3.323729 3.678983
-#> 4  3.953983 4.388411 4.813829 3.262604 3.807000 4.234730
-#> 5  3.889345 4.163711 4.486426 4.148721 4.462636 4.812027
-#> 6  4.381745 4.575937 4.795270 5.142488 5.459677 5.816705
-#> 7  4.682191 4.876376 5.070794 5.629958 5.900868 6.152190
-#> 8  1.494071 2.013841 2.868778 1.072464 1.494737 1.996790
-#> 9  1.697084 2.099490 3.207349 1.389752 1.667114 2.134328
-#> 10 2.076494 2.837740 3.691609 1.567785 1.974614 2.519928
-#> 11 2.768193 3.604344 4.317389 1.746634 2.396491 3.048414
-#> 12 3.410753 4.508963 5.601644 2.053753 2.685903 3.184157
-#> 13 2.655389 3.091580 3.699116 2.303992 2.761761 3.191950
-#> 14 3.246374 3.547120 3.916825 2.846378 3.186189 3.487493
-#> 15 3.808178 4.212409 4.677554 3.058802 3.517028 4.025923
-#> 16 2.628539 2.942611 3.685835 2.899263 3.211879 3.767787
-#> 17 3.196779 3.618644 4.074977 3.605832 4.032121 4.559970
-#> 18 3.783875 4.097649 4.434308 4.489434 4.900636 5.338214
+#> 1  1.655954 2.069755 2.814447 1.798326 2.101967 2.488591
+#> 2  1.858930 2.328319 2.983125 1.707630 2.083033 2.676179
+#> 3  3.022003 3.802753 4.769512 2.638866 3.345274 4.191821
+#> 4  3.495213 4.389075 5.344473 2.841443 3.687148 5.207416
+#> 5  3.322124 4.182404 4.879182 3.634319 4.453431 5.308846
+#> 6  4.279028 4.750092 5.202615 4.680611 5.400094 6.103431
+#> 7  4.502166 4.913133 5.280336 5.067941 5.752526 6.270266
+#> 8  1.082218 1.951116 3.292487 1.006211 1.544669 2.200000
+#> 9  1.304445 1.971098 4.000000 1.049953 1.613392 2.539114
+#> 10 1.623551 2.737952 4.376870 1.202420 1.908494 3.136698
+#> 11 2.307563 3.592224 4.848489 1.360667 2.344593 3.836578
+#> 12 2.929122 4.566270 5.959868 1.712485 2.626977 3.948144
+#> 13 2.201466 3.168781 4.330514 2.067017 2.802510 3.660364
+#> 14 2.663268 3.405840 4.365503 2.368457 3.072115 3.880840
+#> 15 3.267379 4.278356 5.369703 2.553046 3.524687 4.784577
+#> 16 2.388756 2.849982 4.133991 2.482721 3.078022 4.157467
+#> 17 2.926638 3.625899 4.478642 3.222495 4.096205 5.004499
+#> 18 3.325443 4.107336 4.837873 3.954204 4.890875 5.899529
 #>      NiN
 #> 1  V3-C2
 #> 2  V1-C5
@@ -437,71 +437,71 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 #> 17 V2-C2
 #> 18 V2-C3
 #>      V1   V2   V3   V4   V5   V6   V7   V8   V9  V10  V11
-#> 1  4.74 4.90 5.12 5.20 5.74 6.15 1.83 2.24 2.53 1.81 1.95
-#> 2  4.60 4.76 4.90 5.39 5.82 6.27 2.16 2.52 2.84 1.85 2.17
-#> 3  4.61 4.90 5.23 6.71 7.09 7.50 3.44 3.79 4.21 3.01 3.32
-#> 4  4.68 5.00 5.31 6.60 6.94 7.28 3.95 4.39 4.81 3.26 3.81
-#> 5  4.46 4.71 4.97 6.80 7.22 7.66 3.89 4.16 4.49 4.15 4.46
-#> 6  4.43 4.59 4.78 6.93 7.25 7.58 4.38 4.58 4.80 5.14 5.46
-#> 7  4.49 4.64 4.79 7.02 7.38 7.76 4.68 4.88 5.07 5.63 5.90
-#> 8  4.89 5.59 6.57 5.53 6.91 8.49 1.49 2.01 2.87 1.07 1.49
-#> 9  4.96 5.58 6.32 5.74 7.28 8.72 1.70 2.10 3.21 1.39 1.67
-#> 10 5.14 5.52 6.26 6.43 7.92 8.92 2.08 2.84 3.69 1.57 1.97
-#> 11 5.09 5.45 6.15 7.11 8.22 9.02 2.77 3.60 4.32 1.75 2.40
-#> 12 5.13 5.65 6.16 7.07 8.04 8.94 3.41 4.51 5.60 2.05 2.69
-#> 13 4.53 4.82 5.12 6.02 7.23 8.69 2.66 3.09 3.70 2.30 2.76
-#> 14 4.50 4.80 5.06 6.33 7.27 8.46 3.25 3.55 3.92 2.85 3.19
-#> 15 4.56 4.92 5.30 6.26 7.09 7.78 3.81 4.21 4.68 3.06 3.52
-#> 16 3.97 4.17 4.60 5.11 5.86 8.13 2.63 2.94 3.69 2.90 3.21
-#> 17 3.69 4.26 4.70 5.51 6.49 7.92 3.20 3.62 4.07 3.61 4.03
-#> 18 3.63 4.13 4.46 6.00 6.77 7.76 3.78 4.10 4.43 4.49 4.90
+#> 1  4.65 4.97 5.24 4.73 5.45 6.29 1.66 2.07 2.81 1.80 2.10
+#> 2  4.41 4.68 4.98 5.02 5.71 6.52 1.86 2.33 2.98 1.71 2.08
+#> 3  4.18 4.89 5.58 5.96 7.11 7.93 3.02 3.80 4.77 2.64 3.35
+#> 4  4.27 4.97 5.73 6.07 6.94 7.60 3.50 4.39 5.34 2.84 3.69
+#> 5  4.03 4.72 5.33 6.04 7.26 8.13 3.32 4.18 4.88 3.63 4.45
+#> 6  4.33 4.76 5.13 6.52 7.25 7.91 4.28 4.75 5.20 4.68 5.40
+#> 7  4.38 4.69 4.98 6.67 7.50 8.19 4.50 4.91 5.28 5.07 5.75
+#> 8  4.68 5.34 6.78 4.47 6.42 8.47 1.08 1.95 3.29 1.01 1.54
+#> 9  4.74 5.39 6.84 4.81 6.99 9.14 1.30 1.97 4.00 1.05 1.61
+#> 10 4.68 5.55 6.75 5.70 7.83 9.34 1.62 2.74 4.38 1.20 1.91
+#> 11 4.64 5.48 6.49 6.50 8.21 9.45 2.31 3.59 4.85 1.36 2.34
+#> 12 4.55 5.69 6.49 6.53 8.11 9.29 2.93 4.57 5.96 1.71 2.63
+#> 13 4.22 4.78 5.42 5.52 7.31 9.25 2.20 3.17 4.33 2.07 2.80
+#> 14 4.17 4.69 5.43 5.87 7.24 8.69 2.66 3.41 4.37 2.37 3.07
+#> 15 4.21 4.89 5.76 5.71 7.09 8.10 3.27 4.28 5.37 2.55 3.52
+#> 16 3.66 4.23 4.95 4.85 5.75 8.80 2.39 2.85 4.13 2.48 3.08
+#> 17 3.45 4.24 4.94 5.14 6.47 8.29 2.93 3.63 4.48 3.22 4.10
+#> 18 3.24 4.12 4.74 5.56 6.81 8.22 3.33 4.11 4.84 3.95 4.89
 #>     V12
-#> 1  2.14
-#> 2  2.44
-#> 3  3.68
-#> 4  4.23
-#> 5  4.81
-#> 6  5.82
-#> 7  6.15
-#> 8  2.00
-#> 9  2.13
-#> 10 2.52
-#> 11 3.05
-#> 12 3.18
-#> 13 3.19
-#> 14 3.49
-#> 15 4.03
-#> 16 3.77
-#> 17 4.56
-#> 18 5.34
+#> 1  2.49
+#> 2  2.68
+#> 3  4.19
+#> 4  5.21
+#> 5  5.31
+#> 6  6.10
+#> 7  6.27
+#> 8  2.20
+#> 9  2.54
+#> 10 3.14
+#> 11 3.84
+#> 12 3.95
+#> 13 3.66
+#> 14 3.88
+#> 15 4.78
+#> 16 4.16
+#> 17 5.00
+#> 18 5.90
 #>    Light_q2.5      Light_q50      Light_q97.5   
-#>  Min.   :3.632   Min.   :4.126   Min.   :4.457  
-#>  1st Qu.:4.471   1st Qu.:4.654   1st Qu.:4.818  
-#>  Median :4.578   Median :4.858   Median :5.122  
-#>  Mean   :4.561   Mean   :4.909   Mean   :5.323  
-#>  3rd Qu.:4.854   3rd Qu.:5.337   3rd Qu.:5.942  
-#>  Max.   :5.140   Max.   :5.648   Max.   :6.567  
+#>  Min.   :3.242   Min.   :4.122   Min.   :4.739  
+#>  1st Qu.:4.170   1st Qu.:4.689   1st Qu.:5.020  
+#>  Median :4.299   Median :4.833   Median :5.428  
+#>  Mean   :4.249   Mean   :4.893   Mean   :5.642  
+#>  3rd Qu.:4.622   3rd Qu.:5.250   3rd Qu.:6.305  
+#>  Max.   :4.736   Max.   :5.687   Max.   :6.836  
 #>    Moist_q2.5      Moist_q50      Moist_q97.5   
-#>  Min.   :5.112   Min.   :5.737   Min.   :6.152  
-#>  1st Qu.:5.580   1st Qu.:6.806   1st Qu.:7.599  
-#>  Median :6.293   Median :7.155   Median :7.852  
-#>  Mean   :6.209   Mean   :7.028   Mean   :7.945  
-#>  3rd Qu.:6.780   3rd Qu.:7.278   3rd Qu.:8.638  
-#>  Max.   :7.113   Max.   :8.217   Max.   :9.016  
+#>  Min.   :4.474   Min.   :5.451   Min.   :6.287  
+#>  1st Qu.:5.054   1st Qu.:6.559   1st Qu.:7.972  
+#>  Median :5.708   Median :7.097   Median :8.252  
+#>  Mean   :5.649   Mean   :6.970   Mean   :8.310  
+#>  3rd Qu.:6.064   3rd Qu.:7.301   3rd Qu.:9.057  
+#>  Max.   :6.666   Max.   :8.213   Max.   :9.446  
 #>     pH_q2.5          pH_q50         pH_q97.5    
-#>  Min.   :1.494   Min.   :2.014   Min.   :2.534  
-#>  1st Qu.:2.274   1st Qu.:2.864   1st Qu.:3.687  
-#>  Median :3.222   Median :3.611   Median :4.144  
-#>  Mean   :3.061   Mean   :3.507   Mean   :4.051  
-#>  3rd Qu.:3.802   3rd Qu.:4.200   3rd Qu.:4.630  
-#>  Max.   :4.682   Max.   :4.876   Max.   :5.602  
+#>  Min.   :1.082   Min.   :1.951   Min.   :2.814  
+#>  1st Qu.:1.945   1st Qu.:2.766   1st Qu.:4.183  
+#>  Median :2.795   Median :3.609   Median :4.624  
+#>  Mean   :2.675   Mean   :3.483   Mean   :4.515  
+#>  3rd Qu.:3.308   3rd Qu.:4.254   3rd Qu.:5.122  
+#>  Max.   :4.502   Max.   :4.913   Max.   :5.960  
 #>  Nitrogen_q2.5    Nitrogen_q50   Nitrogen_q97.5 
-#>  Min.   :1.072   Min.   :1.495   Min.   :1.997  
-#>  1st Qu.:1.822   1st Qu.:2.225   1st Qu.:2.652  
-#>  Median :2.873   Median :3.199   Median :3.583  
-#>  Mean   :2.883   Mean   :3.272   Mean   :3.696  
-#>  3rd Qu.:3.520   3rd Qu.:3.976   3rd Qu.:4.479  
-#>  Max.   :5.630   Max.   :5.901   Max.   :6.152  
+#>  Min.   :1.006   Min.   :1.545   Min.   :2.200  
+#>  1st Qu.:1.709   1st Qu.:2.163   1st Qu.:3.268  
+#>  Median :2.426   Median :3.075   Median :4.053  
+#>  Mean   :2.519   Mean   :3.240   Mean   :4.183  
+#>  3rd Qu.:3.127   3rd Qu.:3.994   3rd Qu.:5.157  
+#>  Max.   :5.068   Max.   :5.753   Max.   :6.270  
 #>      NiN           
 #>  Length:18         
 #>  Class :character  
@@ -510,352 +510,352 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 #>                    
 #> 
 #>    Light_q2.5 Light_q50 Light_q97.5 Moist_q2.5 Moist_q50
-#> 1    4.736150  4.900265    5.120000   5.201878  5.736585
-#> 2    4.597880  4.760764    4.902329   5.391473  5.821132
-#> 3    4.610424  4.901870    5.232242   6.708205  7.088321
-#> 4    4.677531  4.996095    5.309336   6.599488  6.935913
-#> 5    4.464570  4.709785    4.972819   6.803539  7.217742
-#> 6    4.425727  4.586035    4.779277   6.925680  7.251258
-#> 7    4.490343  4.635103    4.790331   7.024416  7.382590
-#> 8    4.892675  5.594595    6.567474   5.528728  6.907166
-#> 9    4.958721  5.575057    6.315900   5.735756  7.280132
-#> 10   5.139566  5.522530    6.264477   6.426842  7.915167
-#> 11   5.089261  5.450281    6.152334   7.113426  8.216718
-#> 12   5.126794  5.647878    6.162793   7.065646  8.040734
-#> 13   4.525242  4.816224    5.124243   6.016056  7.233970
-#> 14   4.504224  4.804565    5.059866   6.326991  7.271581
-#> 15   4.558245  4.915094    5.303735   6.258498  7.091729
-#> 16   3.974819  4.173047    4.598703   5.112448  5.859056
-#> 17   3.685444  4.256174    4.700616   5.513549  6.488092
-#> 18   3.631843  4.125515    4.457248   6.004292  6.772113
+#> 1    4.650288  4.966443    5.242167   4.730467  5.450611
+#> 2    4.412518  4.678375    4.983052   5.024660  5.705182
+#> 3    4.181051  4.885976    5.575828   5.959727  7.108910
+#> 4    4.265677  4.970310    5.728271   6.072307  6.944127
+#> 5    4.026841  4.715468    5.326302   6.041072  7.262666
+#> 6    4.331418  4.760871    5.131781   6.519606  7.245583
+#> 7    4.379654  4.687800    4.977008   6.665973  7.502367
+#> 8    4.676349  5.342796    6.777778   4.473684  6.424165
+#> 9    4.735842  5.388481    6.835764   4.805905  6.985401
+#> 10   4.684189  5.548379    6.753948   5.703439  7.826415
+#> 11   4.644572  5.484308    6.487499   6.503395  8.213247
+#> 12   4.552329  5.686564    6.494601   6.530966  8.109657
+#> 13   4.219840  4.779976    5.423544   5.518264  7.313205
+#> 14   4.166529  4.692662    5.433001   5.869488  7.241861
+#> 15   4.206007  4.887366    5.758946   5.712864  7.085127
+#> 16   3.657798  4.231589    4.953344   4.851244  5.751619
+#> 17   3.446326  4.238208    4.940917   5.141012  6.474238
+#> 18   3.242379  4.121921    4.738912   5.556370  6.814557
 #>    Moist_q97.5  pH_q2.5   pH_q50 pH_q97.5 Nitrogen_q2.5
-#> 1     6.151852 1.831766 2.243827 2.533659      1.811728
-#> 2     6.265910 2.155809 2.516520 2.836431      1.853110
-#> 3     7.496453 3.437916 3.787654 4.212773      3.008428
-#> 4     7.284055 3.953983 4.388411 4.813829      3.262604
-#> 5     7.663696 3.889345 4.163711 4.486426      4.148721
-#> 6     7.577229 4.381745 4.575937 4.795270      5.142488
-#> 7     7.755543 4.682191 4.876376 5.070794      5.629958
-#> 8     8.486166 1.494071 2.013841 2.868778      1.072464
-#> 9     8.718040 1.697084 2.099490 3.207349      1.389752
-#> 10    8.924438 2.076494 2.837740 3.691609      1.567785
-#> 11    9.016390 2.768193 3.604344 4.317389      1.746634
-#> 12    8.935004 3.410753 4.508963 5.601644      2.053753
-#> 13    8.688171 2.655389 3.091580 3.699116      2.303992
-#> 14    8.463120 3.246374 3.547120 3.916825      2.846378
-#> 15    7.784715 3.808178 4.212409 4.677554      3.058802
-#> 16    8.126484 2.628539 2.942611 3.685835      2.899263
-#> 17    7.920221 3.196779 3.618644 4.074977      3.605832
-#> 18    7.759210 3.783875 4.097649 4.434308      4.489434
+#> 1     6.287387 1.655954 2.069755 2.814447      1.798326
+#> 2     6.515412 1.858930 2.328319 2.983125      1.707630
+#> 3     7.929956 3.022003 3.802753 4.769512      2.638866
+#> 4     7.598114 3.495213 4.389075 5.344473      2.841443
+#> 5     8.132334 3.322124 4.182404 4.879182      3.634319
+#> 6     7.905369 4.279028 4.750092 5.202615      4.680611
+#> 7     8.189600 4.502166 4.913133 5.280336      5.067941
+#> 8     8.467209 1.082218 1.951116 3.292487      1.006211
+#> 9     9.142989 1.304445 1.971098 4.000000      1.049953
+#> 10    9.337017 1.623551 2.737952 4.376870      1.202420
+#> 11    9.445956 2.307563 3.592224 4.848489      1.360667
+#> 12    9.294677 2.929122 4.566270 5.959868      1.712485
+#> 13    9.248771 2.201466 3.168781 4.330514      2.067017
+#> 14    8.685496 2.663268 3.405840 4.365503      2.368457
+#> 15    8.097239 3.267379 4.278356 5.369703      2.553046
+#> 16    8.797058 2.388756 2.849982 4.133991      2.482721
+#> 17    8.285018 2.926638 3.625899 4.478642      3.222495
+#> 18    8.218944 3.325443 4.107336 4.837873      3.954204
 #>    Nitrogen_q50 Nitrogen_q97.5    NiN
-#> 1      1.952862       2.142723 V3-C-2
-#> 2      2.167561       2.438285 V1-C-5
-#> 3      3.323729       3.678983 V4-C-2
-#> 4      3.807000       4.234730 V4-C-3
-#> 5      4.462636       4.812027 V8-C-1
-#> 6      5.459677       5.816705 V8-C-2
-#> 7      5.900868       6.152190 V8-C-3
-#> 8      1.494737       1.996790 V3-C-1
-#> 9      1.667114       2.134328 V1-C-1
-#> 10     1.974614       2.519928 V1-C-2
-#> 11     2.396491       3.048414 V1-C-3
-#> 12     2.685903       3.184157 V1-C-4
-#> 13     2.761761       3.191950 V1-C-6
-#> 14     3.186189       3.487493 V1-C-7
-#> 15     3.517028       4.025923 V1-C-8
-#> 16     3.211879       3.767787 V2-C-1
-#> 17     4.032121       4.559970 V2-C-2
-#> 18     4.900636       5.338214 V2-C-3
+#> 1      2.101967       2.488591 V3-C-2
+#> 2      2.083033       2.676179 V1-C-5
+#> 3      3.345274       4.191821 V4-C-2
+#> 4      3.687148       5.207416 V4-C-3
+#> 5      4.453431       5.308846 V8-C-1
+#> 6      5.400094       6.103431 V8-C-2
+#> 7      5.752526       6.270266 V8-C-3
+#> 8      1.544669       2.200000 V3-C-1
+#> 9      1.613392       2.539114 V1-C-1
+#> 10     1.908494       3.136698 V1-C-2
+#> 11     2.344593       3.836578 V1-C-3
+#> 12     2.626977       3.948144 V1-C-4
+#> 13     2.802510       3.660364 V1-C-6
+#> 14     3.072115       3.880840 V1-C-7
+#> 15     3.524687       4.784577 V1-C-8
+#> 16     3.078022       4.157467 V2-C-1
+#> 17     4.096205       5.004499 V2-C-2
+#> 18     4.890875       5.899529 V2-C-3
 #>          N1 hoved  grunn county region       Ind       Rv
-#> 1   wetland    NA V3-C-2    all    all    Light1 4.900265
-#> 2   wetland    NA V3-C-2    all    all    Light2 4.900265
-#> 3   wetland    NA V1-C-5    all    all    Light1 4.760764
-#> 4   wetland    NA V1-C-5    all    all    Light2 4.760764
-#> 5   wetland    NA V4-C-2    all    all    Light1 4.901870
-#> 6   wetland    NA V4-C-2    all    all    Light2 4.901870
-#> 7   wetland    NA V4-C-3    all    all    Light1 4.996095
-#> 8   wetland    NA V4-C-3    all    all    Light2 4.996095
-#> 9   wetland    NA V8-C-1    all    all    Light1 4.709785
-#> 10  wetland    NA V8-C-1    all    all    Light2 4.709785
-#> 11  wetland    NA V8-C-2    all    all    Light1 4.586035
-#> 12  wetland    NA V8-C-2    all    all    Light2 4.586035
-#> 13  wetland    NA V8-C-3    all    all    Light1 4.635103
-#> 14  wetland    NA V8-C-3    all    all    Light2 4.635103
-#> 15  wetland    NA V3-C-1    all    all    Light1 5.594595
-#> 16  wetland    NA V3-C-1    all    all    Light2 5.594595
-#> 17  wetland    NA V1-C-1    all    all    Light1 5.575057
-#> 18  wetland    NA V1-C-1    all    all    Light2 5.575057
-#> 19  wetland    NA V1-C-2    all    all    Light1 5.522530
-#> 20  wetland    NA V1-C-2    all    all    Light2 5.522530
-#> 21  wetland    NA V1-C-3    all    all    Light1 5.450281
-#> 22  wetland    NA V1-C-3    all    all    Light2 5.450281
-#> 23  wetland    NA V1-C-4    all    all    Light1 5.647878
-#> 24  wetland    NA V1-C-4    all    all    Light2 5.647878
-#> 25  wetland    NA V1-C-6    all    all    Light1 4.816224
-#> 26  wetland    NA V1-C-6    all    all    Light2 4.816224
-#> 27  wetland    NA V1-C-7    all    all    Light1 4.804565
-#> 28  wetland    NA V1-C-7    all    all    Light2 4.804565
-#> 29  wetland    NA V1-C-8    all    all    Light1 4.915094
-#> 30  wetland    NA V1-C-8    all    all    Light2 4.915094
-#> 31  wetland    NA V2-C-1    all    all    Light1 4.173047
-#> 32  wetland    NA V2-C-1    all    all    Light2 4.173047
-#> 33  wetland    NA V2-C-2    all    all    Light1 4.256174
-#> 34  wetland    NA V2-C-2    all    all    Light2 4.256174
-#> 35  wetland    NA V2-C-3    all    all    Light1 4.125515
-#> 36  wetland    NA V2-C-3    all    all    Light2 4.125515
-#> 37  wetland    NA V3-C-2    all    all    Moist1 5.736585
-#> 38  wetland    NA V3-C-2    all    all    Moist2 5.736585
-#> 39  wetland    NA V1-C-5    all    all    Moist1 5.821132
-#> 40  wetland    NA V1-C-5    all    all    Moist2 5.821132
-#> 41  wetland    NA V4-C-2    all    all    Moist1 7.088321
-#> 42  wetland    NA V4-C-2    all    all    Moist2 7.088321
-#> 43  wetland    NA V4-C-3    all    all    Moist1 6.935913
-#> 44  wetland    NA V4-C-3    all    all    Moist2 6.935913
-#> 45  wetland    NA V8-C-1    all    all    Moist1 7.217742
-#> 46  wetland    NA V8-C-1    all    all    Moist2 7.217742
-#> 47  wetland    NA V8-C-2    all    all    Moist1 7.251258
-#> 48  wetland    NA V8-C-2    all    all    Moist2 7.251258
-#> 49  wetland    NA V8-C-3    all    all    Moist1 7.382590
-#> 50  wetland    NA V8-C-3    all    all    Moist2 7.382590
-#> 51  wetland    NA V3-C-1    all    all    Moist1 6.907166
-#> 52  wetland    NA V3-C-1    all    all    Moist2 6.907166
-#> 53  wetland    NA V1-C-1    all    all    Moist1 7.280132
-#> 54  wetland    NA V1-C-1    all    all    Moist2 7.280132
-#> 55  wetland    NA V1-C-2    all    all    Moist1 7.915167
-#> 56  wetland    NA V1-C-2    all    all    Moist2 7.915167
-#> 57  wetland    NA V1-C-3    all    all    Moist1 8.216718
-#> 58  wetland    NA V1-C-3    all    all    Moist2 8.216718
-#> 59  wetland    NA V1-C-4    all    all    Moist1 8.040734
-#> 60  wetland    NA V1-C-4    all    all    Moist2 8.040734
-#> 61  wetland    NA V1-C-6    all    all    Moist1 7.233970
-#> 62  wetland    NA V1-C-6    all    all    Moist2 7.233970
-#> 63  wetland    NA V1-C-7    all    all    Moist1 7.271581
-#> 64  wetland    NA V1-C-7    all    all    Moist2 7.271581
-#> 65  wetland    NA V1-C-8    all    all    Moist1 7.091729
-#> 66  wetland    NA V1-C-8    all    all    Moist2 7.091729
-#> 67  wetland    NA V2-C-1    all    all    Moist1 5.859056
-#> 68  wetland    NA V2-C-1    all    all    Moist2 5.859056
-#> 69  wetland    NA V2-C-2    all    all    Moist1 6.488092
-#> 70  wetland    NA V2-C-2    all    all    Moist2 6.488092
-#> 71  wetland    NA V2-C-3    all    all    Moist1 6.772113
-#> 72  wetland    NA V2-C-3    all    all    Moist2 6.772113
-#> 73  wetland    NA V3-C-2    all    all       pH1 2.243827
-#> 74  wetland    NA V3-C-2    all    all       pH2 2.243827
-#> 75  wetland    NA V1-C-5    all    all       pH1 2.516520
-#> 76  wetland    NA V1-C-5    all    all       pH2 2.516520
-#> 77  wetland    NA V4-C-2    all    all       pH1 3.787654
-#> 78  wetland    NA V4-C-2    all    all       pH2 3.787654
-#> 79  wetland    NA V4-C-3    all    all       pH1 4.388411
-#> 80  wetland    NA V4-C-3    all    all       pH2 4.388411
-#> 81  wetland    NA V8-C-1    all    all       pH1 4.163711
-#> 82  wetland    NA V8-C-1    all    all       pH2 4.163711
-#> 83  wetland    NA V8-C-2    all    all       pH1 4.575937
-#> 84  wetland    NA V8-C-2    all    all       pH2 4.575937
-#> 85  wetland    NA V8-C-3    all    all       pH1 4.876376
-#> 86  wetland    NA V8-C-3    all    all       pH2 4.876376
-#> 87  wetland    NA V3-C-1    all    all       pH1 2.013841
-#> 88  wetland    NA V3-C-1    all    all       pH2 2.013841
-#> 89  wetland    NA V1-C-1    all    all       pH1 2.099490
-#> 90  wetland    NA V1-C-1    all    all       pH2 2.099490
-#> 91  wetland    NA V1-C-2    all    all       pH1 2.837740
-#> 92  wetland    NA V1-C-2    all    all       pH2 2.837740
-#> 93  wetland    NA V1-C-3    all    all       pH1 3.604344
-#> 94  wetland    NA V1-C-3    all    all       pH2 3.604344
-#> 95  wetland    NA V1-C-4    all    all       pH1 4.508963
-#> 96  wetland    NA V1-C-4    all    all       pH2 4.508963
-#> 97  wetland    NA V1-C-6    all    all       pH1 3.091580
-#> 98  wetland    NA V1-C-6    all    all       pH2 3.091580
-#> 99  wetland    NA V1-C-7    all    all       pH1 3.547120
-#> 100 wetland    NA V1-C-7    all    all       pH2 3.547120
-#> 101 wetland    NA V1-C-8    all    all       pH1 4.212409
-#> 102 wetland    NA V1-C-8    all    all       pH2 4.212409
-#> 103 wetland    NA V2-C-1    all    all       pH1 2.942611
-#> 104 wetland    NA V2-C-1    all    all       pH2 2.942611
-#> 105 wetland    NA V2-C-2    all    all       pH1 3.618644
-#> 106 wetland    NA V2-C-2    all    all       pH2 3.618644
-#> 107 wetland    NA V2-C-3    all    all       pH1 4.097649
-#> 108 wetland    NA V2-C-3    all    all       pH2 4.097649
-#> 109 wetland    NA V3-C-2    all    all Nitrogen1 1.952862
-#> 110 wetland    NA V3-C-2    all    all Nitrogen2 1.952862
-#> 111 wetland    NA V1-C-5    all    all Nitrogen1 2.167561
-#> 112 wetland    NA V1-C-5    all    all Nitrogen2 2.167561
-#> 113 wetland    NA V4-C-2    all    all Nitrogen1 3.323729
-#> 114 wetland    NA V4-C-2    all    all Nitrogen2 3.323729
-#> 115 wetland    NA V4-C-3    all    all Nitrogen1 3.807000
-#> 116 wetland    NA V4-C-3    all    all Nitrogen2 3.807000
-#> 117 wetland    NA V8-C-1    all    all Nitrogen1 4.462636
-#> 118 wetland    NA V8-C-1    all    all Nitrogen2 4.462636
-#> 119 wetland    NA V8-C-2    all    all Nitrogen1 5.459677
-#> 120 wetland    NA V8-C-2    all    all Nitrogen2 5.459677
-#> 121 wetland    NA V8-C-3    all    all Nitrogen1 5.900868
-#> 122 wetland    NA V8-C-3    all    all Nitrogen2 5.900868
-#> 123 wetland    NA V3-C-1    all    all Nitrogen1 1.494737
-#> 124 wetland    NA V3-C-1    all    all Nitrogen2 1.494737
-#> 125 wetland    NA V1-C-1    all    all Nitrogen1 1.667114
-#> 126 wetland    NA V1-C-1    all    all Nitrogen2 1.667114
-#> 127 wetland    NA V1-C-2    all    all Nitrogen1 1.974614
-#> 128 wetland    NA V1-C-2    all    all Nitrogen2 1.974614
-#> 129 wetland    NA V1-C-3    all    all Nitrogen1 2.396491
-#> 130 wetland    NA V1-C-3    all    all Nitrogen2 2.396491
-#> 131 wetland    NA V1-C-4    all    all Nitrogen1 2.685903
-#> 132 wetland    NA V1-C-4    all    all Nitrogen2 2.685903
-#> 133 wetland    NA V1-C-6    all    all Nitrogen1 2.761761
-#> 134 wetland    NA V1-C-6    all    all Nitrogen2 2.761761
-#> 135 wetland    NA V1-C-7    all    all Nitrogen1 3.186189
-#> 136 wetland    NA V1-C-7    all    all Nitrogen2 3.186189
-#> 137 wetland    NA V1-C-8    all    all Nitrogen1 3.517028
-#> 138 wetland    NA V1-C-8    all    all Nitrogen2 3.517028
-#> 139 wetland    NA V2-C-1    all    all Nitrogen1 3.211879
-#> 140 wetland    NA V2-C-1    all    all Nitrogen2 3.211879
-#> 141 wetland    NA V2-C-2    all    all Nitrogen1 4.032121
-#> 142 wetland    NA V2-C-2    all    all Nitrogen2 4.032121
-#> 143 wetland    NA V2-C-3    all    all Nitrogen1 4.900636
-#> 144 wetland    NA V2-C-3    all    all Nitrogen2 4.900636
+#> 1   wetland    NA V3-C-2    all    all    Light1 4.966443
+#> 2   wetland    NA V3-C-2    all    all    Light2 4.966443
+#> 3   wetland    NA V1-C-5    all    all    Light1 4.678375
+#> 4   wetland    NA V1-C-5    all    all    Light2 4.678375
+#> 5   wetland    NA V4-C-2    all    all    Light1 4.885976
+#> 6   wetland    NA V4-C-2    all    all    Light2 4.885976
+#> 7   wetland    NA V4-C-3    all    all    Light1 4.970310
+#> 8   wetland    NA V4-C-3    all    all    Light2 4.970310
+#> 9   wetland    NA V8-C-1    all    all    Light1 4.715468
+#> 10  wetland    NA V8-C-1    all    all    Light2 4.715468
+#> 11  wetland    NA V8-C-2    all    all    Light1 4.760871
+#> 12  wetland    NA V8-C-2    all    all    Light2 4.760871
+#> 13  wetland    NA V8-C-3    all    all    Light1 4.687800
+#> 14  wetland    NA V8-C-3    all    all    Light2 4.687800
+#> 15  wetland    NA V3-C-1    all    all    Light1 5.342796
+#> 16  wetland    NA V3-C-1    all    all    Light2 5.342796
+#> 17  wetland    NA V1-C-1    all    all    Light1 5.388481
+#> 18  wetland    NA V1-C-1    all    all    Light2 5.388481
+#> 19  wetland    NA V1-C-2    all    all    Light1 5.548379
+#> 20  wetland    NA V1-C-2    all    all    Light2 5.548379
+#> 21  wetland    NA V1-C-3    all    all    Light1 5.484308
+#> 22  wetland    NA V1-C-3    all    all    Light2 5.484308
+#> 23  wetland    NA V1-C-4    all    all    Light1 5.686564
+#> 24  wetland    NA V1-C-4    all    all    Light2 5.686564
+#> 25  wetland    NA V1-C-6    all    all    Light1 4.779976
+#> 26  wetland    NA V1-C-6    all    all    Light2 4.779976
+#> 27  wetland    NA V1-C-7    all    all    Light1 4.692662
+#> 28  wetland    NA V1-C-7    all    all    Light2 4.692662
+#> 29  wetland    NA V1-C-8    all    all    Light1 4.887366
+#> 30  wetland    NA V1-C-8    all    all    Light2 4.887366
+#> 31  wetland    NA V2-C-1    all    all    Light1 4.231589
+#> 32  wetland    NA V2-C-1    all    all    Light2 4.231589
+#> 33  wetland    NA V2-C-2    all    all    Light1 4.238208
+#> 34  wetland    NA V2-C-2    all    all    Light2 4.238208
+#> 35  wetland    NA V2-C-3    all    all    Light1 4.121921
+#> 36  wetland    NA V2-C-3    all    all    Light2 4.121921
+#> 37  wetland    NA V3-C-2    all    all    Moist1 5.450611
+#> 38  wetland    NA V3-C-2    all    all    Moist2 5.450611
+#> 39  wetland    NA V1-C-5    all    all    Moist1 5.705182
+#> 40  wetland    NA V1-C-5    all    all    Moist2 5.705182
+#> 41  wetland    NA V4-C-2    all    all    Moist1 7.108910
+#> 42  wetland    NA V4-C-2    all    all    Moist2 7.108910
+#> 43  wetland    NA V4-C-3    all    all    Moist1 6.944127
+#> 44  wetland    NA V4-C-3    all    all    Moist2 6.944127
+#> 45  wetland    NA V8-C-1    all    all    Moist1 7.262666
+#> 46  wetland    NA V8-C-1    all    all    Moist2 7.262666
+#> 47  wetland    NA V8-C-2    all    all    Moist1 7.245583
+#> 48  wetland    NA V8-C-2    all    all    Moist2 7.245583
+#> 49  wetland    NA V8-C-3    all    all    Moist1 7.502367
+#> 50  wetland    NA V8-C-3    all    all    Moist2 7.502367
+#> 51  wetland    NA V3-C-1    all    all    Moist1 6.424165
+#> 52  wetland    NA V3-C-1    all    all    Moist2 6.424165
+#> 53  wetland    NA V1-C-1    all    all    Moist1 6.985401
+#> 54  wetland    NA V1-C-1    all    all    Moist2 6.985401
+#> 55  wetland    NA V1-C-2    all    all    Moist1 7.826415
+#> 56  wetland    NA V1-C-2    all    all    Moist2 7.826415
+#> 57  wetland    NA V1-C-3    all    all    Moist1 8.213247
+#> 58  wetland    NA V1-C-3    all    all    Moist2 8.213247
+#> 59  wetland    NA V1-C-4    all    all    Moist1 8.109657
+#> 60  wetland    NA V1-C-4    all    all    Moist2 8.109657
+#> 61  wetland    NA V1-C-6    all    all    Moist1 7.313205
+#> 62  wetland    NA V1-C-6    all    all    Moist2 7.313205
+#> 63  wetland    NA V1-C-7    all    all    Moist1 7.241861
+#> 64  wetland    NA V1-C-7    all    all    Moist2 7.241861
+#> 65  wetland    NA V1-C-8    all    all    Moist1 7.085127
+#> 66  wetland    NA V1-C-8    all    all    Moist2 7.085127
+#> 67  wetland    NA V2-C-1    all    all    Moist1 5.751619
+#> 68  wetland    NA V2-C-1    all    all    Moist2 5.751619
+#> 69  wetland    NA V2-C-2    all    all    Moist1 6.474238
+#> 70  wetland    NA V2-C-2    all    all    Moist2 6.474238
+#> 71  wetland    NA V2-C-3    all    all    Moist1 6.814557
+#> 72  wetland    NA V2-C-3    all    all    Moist2 6.814557
+#> 73  wetland    NA V3-C-2    all    all       pH1 2.069755
+#> 74  wetland    NA V3-C-2    all    all       pH2 2.069755
+#> 75  wetland    NA V1-C-5    all    all       pH1 2.328319
+#> 76  wetland    NA V1-C-5    all    all       pH2 2.328319
+#> 77  wetland    NA V4-C-2    all    all       pH1 3.802753
+#> 78  wetland    NA V4-C-2    all    all       pH2 3.802753
+#> 79  wetland    NA V4-C-3    all    all       pH1 4.389075
+#> 80  wetland    NA V4-C-3    all    all       pH2 4.389075
+#> 81  wetland    NA V8-C-1    all    all       pH1 4.182404
+#> 82  wetland    NA V8-C-1    all    all       pH2 4.182404
+#> 83  wetland    NA V8-C-2    all    all       pH1 4.750092
+#> 84  wetland    NA V8-C-2    all    all       pH2 4.750092
+#> 85  wetland    NA V8-C-3    all    all       pH1 4.913133
+#> 86  wetland    NA V8-C-3    all    all       pH2 4.913133
+#> 87  wetland    NA V3-C-1    all    all       pH1 1.951116
+#> 88  wetland    NA V3-C-1    all    all       pH2 1.951116
+#> 89  wetland    NA V1-C-1    all    all       pH1 1.971098
+#> 90  wetland    NA V1-C-1    all    all       pH2 1.971098
+#> 91  wetland    NA V1-C-2    all    all       pH1 2.737952
+#> 92  wetland    NA V1-C-2    all    all       pH2 2.737952
+#> 93  wetland    NA V1-C-3    all    all       pH1 3.592224
+#> 94  wetland    NA V1-C-3    all    all       pH2 3.592224
+#> 95  wetland    NA V1-C-4    all    all       pH1 4.566270
+#> 96  wetland    NA V1-C-4    all    all       pH2 4.566270
+#> 97  wetland    NA V1-C-6    all    all       pH1 3.168781
+#> 98  wetland    NA V1-C-6    all    all       pH2 3.168781
+#> 99  wetland    NA V1-C-7    all    all       pH1 3.405840
+#> 100 wetland    NA V1-C-7    all    all       pH2 3.405840
+#> 101 wetland    NA V1-C-8    all    all       pH1 4.278356
+#> 102 wetland    NA V1-C-8    all    all       pH2 4.278356
+#> 103 wetland    NA V2-C-1    all    all       pH1 2.849982
+#> 104 wetland    NA V2-C-1    all    all       pH2 2.849982
+#> 105 wetland    NA V2-C-2    all    all       pH1 3.625899
+#> 106 wetland    NA V2-C-2    all    all       pH2 3.625899
+#> 107 wetland    NA V2-C-3    all    all       pH1 4.107336
+#> 108 wetland    NA V2-C-3    all    all       pH2 4.107336
+#> 109 wetland    NA V3-C-2    all    all Nitrogen1 2.101967
+#> 110 wetland    NA V3-C-2    all    all Nitrogen2 2.101967
+#> 111 wetland    NA V1-C-5    all    all Nitrogen1 2.083033
+#> 112 wetland    NA V1-C-5    all    all Nitrogen2 2.083033
+#> 113 wetland    NA V4-C-2    all    all Nitrogen1 3.345274
+#> 114 wetland    NA V4-C-2    all    all Nitrogen2 3.345274
+#> 115 wetland    NA V4-C-3    all    all Nitrogen1 3.687148
+#> 116 wetland    NA V4-C-3    all    all Nitrogen2 3.687148
+#> 117 wetland    NA V8-C-1    all    all Nitrogen1 4.453431
+#> 118 wetland    NA V8-C-1    all    all Nitrogen2 4.453431
+#> 119 wetland    NA V8-C-2    all    all Nitrogen1 5.400094
+#> 120 wetland    NA V8-C-2    all    all Nitrogen2 5.400094
+#> 121 wetland    NA V8-C-3    all    all Nitrogen1 5.752526
+#> 122 wetland    NA V8-C-3    all    all Nitrogen2 5.752526
+#> 123 wetland    NA V3-C-1    all    all Nitrogen1 1.544669
+#> 124 wetland    NA V3-C-1    all    all Nitrogen2 1.544669
+#> 125 wetland    NA V1-C-1    all    all Nitrogen1 1.613392
+#> 126 wetland    NA V1-C-1    all    all Nitrogen2 1.613392
+#> 127 wetland    NA V1-C-2    all    all Nitrogen1 1.908494
+#> 128 wetland    NA V1-C-2    all    all Nitrogen2 1.908494
+#> 129 wetland    NA V1-C-3    all    all Nitrogen1 2.344593
+#> 130 wetland    NA V1-C-3    all    all Nitrogen2 2.344593
+#> 131 wetland    NA V1-C-4    all    all Nitrogen1 2.626977
+#> 132 wetland    NA V1-C-4    all    all Nitrogen2 2.626977
+#> 133 wetland    NA V1-C-6    all    all Nitrogen1 2.802510
+#> 134 wetland    NA V1-C-6    all    all Nitrogen2 2.802510
+#> 135 wetland    NA V1-C-7    all    all Nitrogen1 3.072115
+#> 136 wetland    NA V1-C-7    all    all Nitrogen2 3.072115
+#> 137 wetland    NA V1-C-8    all    all Nitrogen1 3.524687
+#> 138 wetland    NA V1-C-8    all    all Nitrogen2 3.524687
+#> 139 wetland    NA V2-C-1    all    all Nitrogen1 3.078022
+#> 140 wetland    NA V2-C-1    all    all Nitrogen2 3.078022
+#> 141 wetland    NA V2-C-2    all    all Nitrogen1 4.096205
+#> 142 wetland    NA V2-C-2    all    all Nitrogen2 4.096205
+#> 143 wetland    NA V2-C-3    all    all Nitrogen1 4.890875
+#> 144 wetland    NA V2-C-3    all    all Nitrogen2 4.890875
 #>           Gv maxmin
-#> 1   4.736150      1
-#> 2   5.120000      7
-#> 3   4.597880      1
-#> 4   4.902329      7
-#> 5   4.610424      1
-#> 6   5.232242      7
-#> 7   4.677531      1
-#> 8   5.309336      7
-#> 9   4.464570      1
-#> 10  4.972819      7
-#> 11  4.425727      1
-#> 12  4.779277      7
-#> 13  4.490343      1
-#> 14  4.790331      7
-#> 15  4.892675      1
-#> 16  6.567474      7
-#> 17  4.958721      1
-#> 18  6.315900      7
-#> 19  5.139566      1
-#> 20  6.264477      7
-#> 21  5.089261      1
-#> 22  6.152334      7
-#> 23  5.126794      1
-#> 24  6.162793      7
-#> 25  4.525242      1
-#> 26  5.124243      7
-#> 27  4.504224      1
-#> 28  5.059866      7
-#> 29  4.558245      1
-#> 30  5.303735      7
-#> 31  3.974819      1
-#> 32  4.598703      7
-#> 33  3.685444      1
-#> 34  4.700616      7
-#> 35  3.631843      1
-#> 36  4.457248      7
-#> 37  5.201878      1
-#> 38  6.151852     12
-#> 39  5.391473      1
-#> 40  6.265910     12
-#> 41  6.708205      1
-#> 42  7.496453     12
-#> 43  6.599488      1
-#> 44  7.284055     12
-#> 45  6.803539      1
-#> 46  7.663696     12
-#> 47  6.925680      1
-#> 48  7.577229     12
-#> 49  7.024416      1
-#> 50  7.755543     12
-#> 51  5.528728      1
-#> 52  8.486166     12
-#> 53  5.735756      1
-#> 54  8.718040     12
-#> 55  6.426842      1
-#> 56  8.924438     12
-#> 57  7.113426      1
-#> 58  9.016390     12
-#> 59  7.065646      1
-#> 60  8.935004     12
-#> 61  6.016056      1
-#> 62  8.688171     12
-#> 63  6.326991      1
-#> 64  8.463120     12
-#> 65  6.258498      1
-#> 66  7.784715     12
-#> 67  5.112448      1
-#> 68  8.126484     12
-#> 69  5.513549      1
-#> 70  7.920221     12
-#> 71  6.004292      1
-#> 72  7.759210     12
-#> 73  1.831766      1
-#> 74  2.533659      8
-#> 75  2.155809      1
-#> 76  2.836431      8
-#> 77  3.437916      1
-#> 78  4.212773      8
-#> 79  3.953983      1
-#> 80  4.813829      8
-#> 81  3.889345      1
-#> 82  4.486426      8
-#> 83  4.381745      1
-#> 84  4.795270      8
-#> 85  4.682191      1
-#> 86  5.070794      8
-#> 87  1.494071      1
-#> 88  2.868778      8
-#> 89  1.697084      1
-#> 90  3.207349      8
-#> 91  2.076494      1
-#> 92  3.691609      8
-#> 93  2.768193      1
-#> 94  4.317389      8
-#> 95  3.410753      1
-#> 96  5.601644      8
-#> 97  2.655389      1
-#> 98  3.699116      8
-#> 99  3.246374      1
-#> 100 3.916825      8
-#> 101 3.808178      1
-#> 102 4.677554      8
-#> 103 2.628539      1
-#> 104 3.685835      8
-#> 105 3.196779      1
-#> 106 4.074977      8
-#> 107 3.783875      1
-#> 108 4.434308      8
-#> 109 1.811728      1
-#> 110 2.142723      9
-#> 111 1.853110      1
-#> 112 2.438285      9
-#> 113 3.008428      1
-#> 114 3.678983      9
-#> 115 3.262604      1
-#> 116 4.234730      9
-#> 117 4.148721      1
-#> 118 4.812027      9
-#> 119 5.142488      1
-#> 120 5.816705      9
-#> 121 5.629958      1
-#> 122 6.152190      9
-#> 123 1.072464      1
-#> 124 1.996790      9
-#> 125 1.389752      1
-#> 126 2.134328      9
-#> 127 1.567785      1
-#> 128 2.519928      9
-#> 129 1.746634      1
-#> 130 3.048414      9
-#> 131 2.053753      1
-#> 132 3.184157      9
-#> 133 2.303992      1
-#> 134 3.191950      9
-#> 135 2.846378      1
-#> 136 3.487493      9
-#> 137 3.058802      1
-#> 138 4.025923      9
-#> 139 2.899263      1
-#> 140 3.767787      9
-#> 141 3.605832      1
-#> 142 4.559970      9
-#> 143 4.489434      1
-#> 144 5.338214      9
+#> 1   4.650288      1
+#> 2   5.242167      7
+#> 3   4.412518      1
+#> 4   4.983052      7
+#> 5   4.181051      1
+#> 6   5.575828      7
+#> 7   4.265677      1
+#> 8   5.728271      7
+#> 9   4.026841      1
+#> 10  5.326302      7
+#> 11  4.331418      1
+#> 12  5.131781      7
+#> 13  4.379654      1
+#> 14  4.977008      7
+#> 15  4.676349      1
+#> 16  6.777778      7
+#> 17  4.735842      1
+#> 18  6.835764      7
+#> 19  4.684189      1
+#> 20  6.753948      7
+#> 21  4.644572      1
+#> 22  6.487499      7
+#> 23  4.552329      1
+#> 24  6.494601      7
+#> 25  4.219840      1
+#> 26  5.423544      7
+#> 27  4.166529      1
+#> 28  5.433001      7
+#> 29  4.206007      1
+#> 30  5.758946      7
+#> 31  3.657798      1
+#> 32  4.953344      7
+#> 33  3.446326      1
+#> 34  4.940917      7
+#> 35  3.242379      1
+#> 36  4.738912      7
+#> 37  4.730467      1
+#> 38  6.287387     12
+#> 39  5.024660      1
+#> 40  6.515412     12
+#> 41  5.959727      1
+#> 42  7.929956     12
+#> 43  6.072307      1
+#> 44  7.598114     12
+#> 45  6.041072      1
+#> 46  8.132334     12
+#> 47  6.519606      1
+#> 48  7.905369     12
+#> 49  6.665973      1
+#> 50  8.189600     12
+#> 51  4.473684      1
+#> 52  8.467209     12
+#> 53  4.805905      1
+#> 54  9.142989     12
+#> 55  5.703439      1
+#> 56  9.337017     12
+#> 57  6.503395      1
+#> 58  9.445956     12
+#> 59  6.530966      1
+#> 60  9.294677     12
+#> 61  5.518264      1
+#> 62  9.248771     12
+#> 63  5.869488      1
+#> 64  8.685496     12
+#> 65  5.712864      1
+#> 66  8.097239     12
+#> 67  4.851244      1
+#> 68  8.797058     12
+#> 69  5.141012      1
+#> 70  8.285018     12
+#> 71  5.556370      1
+#> 72  8.218944     12
+#> 73  1.655954      1
+#> 74  2.814447      8
+#> 75  1.858930      1
+#> 76  2.983125      8
+#> 77  3.022003      1
+#> 78  4.769512      8
+#> 79  3.495213      1
+#> 80  5.344473      8
+#> 81  3.322124      1
+#> 82  4.879182      8
+#> 83  4.279028      1
+#> 84  5.202615      8
+#> 85  4.502166      1
+#> 86  5.280336      8
+#> 87  1.082218      1
+#> 88  3.292487      8
+#> 89  1.304445      1
+#> 90  4.000000      8
+#> 91  1.623551      1
+#> 92  4.376870      8
+#> 93  2.307563      1
+#> 94  4.848489      8
+#> 95  2.929122      1
+#> 96  5.959868      8
+#> 97  2.201466      1
+#> 98  4.330514      8
+#> 99  2.663268      1
+#> 100 4.365503      8
+#> 101 3.267379      1
+#> 102 5.369703      8
+#> 103 2.388756      1
+#> 104 4.133991      8
+#> 105 2.926638      1
+#> 106 4.478642      8
+#> 107 3.325443      1
+#> 108 4.837873      8
+#> 109 1.798326      1
+#> 110 2.488591      9
+#> 111 1.707630      1
+#> 112 2.676179      9
+#> 113 2.638866      1
+#> 114 4.191821      9
+#> 115 2.841443      1
+#> 116 5.207416      9
+#> 117 3.634319      1
+#> 118 5.308846      9
+#> 119 4.680611      1
+#> 120 6.103431      9
+#> 121 5.067941      1
+#> 122 6.270266      9
+#> 123 1.006211      1
+#> 124 2.200000      9
+#> 125 1.049953      1
+#> 126 2.539114      9
+#> 127 1.202420      1
+#> 128 3.136698      9
+#> 129 1.360667      1
+#> 130 3.836578      9
+#> 131 1.712485      1
+#> 132 3.948144      9
+#> 133 2.067017      1
+#> 134 3.660364      9
+#> 135 2.368457      1
+#> 136 3.880840      9
+#> 137 2.553046      1
+#> 138 4.784577      9
+#> 139 2.482721      1
+#> 140 4.157467      9
+#> 141 3.222495      1
+#> 142 5.004499      9
+#> 143 3.954204      1
+#> 144 5.899529      9
 #>       N1               hoved               grunn   
 #>  Length:144         Length:144         V1-C-1 : 8  
 #>  Class :character   Class :character   V1-C-2 : 8  
@@ -873,12 +873,12 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 #>                                        Nitrogen2:18  
 #>                                        (Other)  :36  
 #>        Rv              Gv            maxmin     
-#>  Min.   :1.495   Min.   :1.072   Min.   : 1.00  
-#>  1st Qu.:3.469   1st Qu.:3.431   1st Qu.: 1.00  
-#>  Median :4.611   Median :4.605   Median : 4.00  
-#>  Mean   :4.679   Mean   :4.716   Mean   : 5.00  
-#>  3rd Qu.:5.758   3rd Qu.:5.864   3rd Qu.: 8.25  
-#>  Max.   :8.217   Max.   :9.016   Max.   :12.00  
+#>  Min.   :1.545   Min.   :1.006   Min.   : 1.00  
+#>  1st Qu.:3.391   1st Qu.:3.315   1st Qu.: 1.00  
+#>  Median :4.690   Median :4.682   Median : 4.00  
+#>  Mean   :4.646   Mean   :4.718   Mean   : 5.00  
+#>  3rd Qu.:5.691   3rd Qu.:5.736   3rd Qu.: 8.25  
+#>  Max.   :8.213   Max.   :9.446   Max.   :12.00  
 #> 
 ```
 
@@ -886,22 +886,22 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 ```r
 head(wetland.ref.cov.val)
 #>        N1 hoved  grunn county region    Ind       Rv
-#> 1 wetland    NA V3-C-2    all    all Light1 4.900265
-#> 2 wetland    NA V3-C-2    all    all Light2 4.900265
-#> 3 wetland    NA V1-C-5    all    all Light1 4.760764
-#> 4 wetland    NA V1-C-5    all    all Light2 4.760764
-#> 5 wetland    NA V4-C-2    all    all Light1 4.901870
-#> 6 wetland    NA V4-C-2    all    all Light2 4.901870
+#> 1 wetland    NA V3-C-2    all    all Light1 4.966443
+#> 2 wetland    NA V3-C-2    all    all Light2 4.966443
+#> 3 wetland    NA V1-C-5    all    all Light1 4.678375
+#> 4 wetland    NA V1-C-5    all    all Light2 4.678375
+#> 5 wetland    NA V4-C-2    all    all Light1 4.885976
+#> 6 wetland    NA V4-C-2    all    all Light2 4.885976
 #>         Gv maxmin
-#> 1 4.736150      1
-#> 2 5.120000      7
-#> 3 4.597880      1
-#> 4 4.902329      7
-#> 5 4.610424      1
-#> 6 5.232242      7
+#> 1 4.650288      1
+#> 2 5.242167      7
+#> 3 4.412518      1
+#> 4 4.983052      7
+#> 5 4.181051      1
+#> 6 5.575828      7
 ```
 
-Once test data (ANO) and the scaling values from the reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO plot's CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper indicators for each plant functional indicator type. An ANO plot can only have a scaled value in either the lower or the upper indicator (the other one will be 'NA'), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.
+Once test data (ANO) and the scaling values from the reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO plot's CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper condition indicators for each functional plant indicator. An ANO plot can only have a scaled value in either the lower or the upper indicator (the other one will be 'NA'), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.
 
 Here is the scaling function
 
@@ -1332,24 +1332,23 @@ head(results.wetland[['2-sided']])
 #> 5 chrpot_miljodirektoratet 2019-09-09 10:59:26
 #> 6 chrpot_miljodirektoratet 2019-09-09 10:59:58
 #>   hovedtype_rute    Light1    Light2    Moist1    Moist2
-#> 1             V1        NA 0.9880821        NA 0.5073251
-#> 2             V1 0.5557351        NA        NA 0.9783315
-#> 3             V1 0.5506190        NA 0.5484802        NA
-#> 4             V1        NA 0.9702611        NA 0.7785145
-#> 5             V1 0.5998524        NA 0.5246274        NA
-#> 6             V1 0.9771330        NA        NA 0.9056025
+#> 1             V1        NA 0.8862960        NA 0.5304041
+#> 2             V1 0.5888900        NA        NA 0.9309185
+#> 3             V1 0.5834686        NA 0.6960238        NA
+#> 4             V1        NA 0.9386198        NA 0.8013800
+#> 5             V1 0.7360043        NA 0.6614711        NA
+#> 6             V1        NA 0.9581721        NA 0.8824488
 #>         pH1       pH2 Nitrogen1 Nitrogen2
-#> 1 0.5130170        NA        NA 0.6919856
-#> 2 0.9992800        NA        NA 0.5718196
-#> 3        NA 0.8622486        NA 0.5796588
-#> 4        NA 0.4743074        NA 0.5484617
-#> 5 0.8311036        NA        NA 0.7270619
-#> 6        NA 0.7803061        NA 0.9422970
+#> 1 0.7102018        NA        NA 0.8024127
+#> 2        NA 0.9748303        NA 0.6355716
+#> 3        NA 0.8994699        NA 0.6743312
+#> 4        NA 0.5594912        NA 0.5791890
+#> 5 0.9750870        NA        NA 0.8390342
+#> 6        NA 0.8547261        NA 0.9476639
 ```
 #### Scaled value analyses
 
-### Simple summary statistics
-We can calculate simple summary statistics like means, standard deviations, and number of observations (note that there is both a lower and an upper indicator for each of the four plant functional indicators)
+In order to visualize the results we need to rearrange the results-objects from wide to long format (note that there is both a lower and an upper condition indicator for each of the functional plant indicators).
 
 
 ```r
@@ -1364,29 +1363,50 @@ res.wetland <-
     cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
     names_to = "fp_ind",
     values_to = "scaled_value",
-    values_drop_na = TRUE
+    values_drop_na = FALSE
   )
 
-# summarizing the indicator scores
-res.wetland %>%
-  group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE), SD = sd(scaled_value, na.rm=TRUE), N = length(scaled_value))
-#> # A tibble: 8 × 4
-#>   fp_ind     Mean    SD     N
-#>   <chr>     <dbl> <dbl> <int>
-#> 1 Light1    0.672 0.137   586
-#> 2 Light2    0.626 0.206   656
-#> 3 Moist1    0.728 0.149   730
-#> 4 Moist2    0.709 0.180   512
-#> 5 Nitrogen1 0.615 0.229   471
-#> 6 Nitrogen2 0.662 0.154   771
-#> 7 pH1       0.564 0.230   768
-#> 8 pH2       0.653 0.184   474
+# add original values as well
+res.wetland <- 
+  res.wetland %>% add_column(original = results.wetland[['original']] %>% 
+                               pivot_longer(
+                                 cols =  c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
+                                 names_to = NULL,
+                                 values_to = "original",
+                                 values_drop_na = FALSE
+                               ) %>%
+                               pull(original)
+  )
 ```
 
 ### Ecosystem sub-types
 And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
 <img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+The functional signature from the plant communities in wetland ecosystems looks largely good, except for V2 (swamp forests), which show rather low index scores for the lower pH and Nitrogen indicators, i.e. suggesting too acidic conditions and too low nitrogen availability.
+
+We can look at V2 specifically to see if this is the case for all sub-types.
+
+
+```r
+# making the plot for V2 only
+ggplot(res.wetland[res.wetland$hovedtype_rute=="V2",], aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin() +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4) + 
+  xlab("Main ecosystem type") + 
+  ylab("Scaled indicator value") 
+#> Warning: Removed 556 rows containing non-finite values
+#> (`stat_ydensity()`).
+#> Warning: Groups with fewer than two data points have been dropped.
+#> Groups with fewer than two data points have been dropped.
+#> Warning: Removed 556 rows containing missing values
+#> (`geom_point()`).
+```
+
+<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+The deviations towards low pH and low nitrogen are mainly an issue for V2-C1, limestone-poor swamp forests.
 
 ### Indicator index maps
 We can also show the results as a map, for instance for pH1 (the lower pH indicator), either by directly plotting the data onto the map...
@@ -1412,11 +1432,75 @@ We can also show the results as a map, for instance for pH1 (the lower pH indica
 #> [4] "Vestlandet"      "SÃ¸rlandet"
 ```
 
-<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-22-1.png" width="672" />
 ...but here the colors and values of the data points on the map are hard to make out.
 
-### Regions
-Alternatively we can calculate and show the region-wise means and standard deviations
+### Regions - maps and statistics
+Alternatively we can calculate and show the region-wise means and their related standard errors. But note that calculating a simple mean would be inappropriate for these data. This is because:
+(i) the scaled data are bound between 0 and 1, and thus follow a beta-distribution rather than a Gaussian one
+(ii) the ANO dataset has a nested structure
+
+Therefore, we need to (i) use a beta-model, that (ii) can account for the nested structure of the data.
+Here, we apply the following function using either a glmmTMB null-model with a beta-distribution, logit link, and the nesting as a random intercept, or a simple betareg null-model with logit link if the nesting is not extensive enough for a mixed model.
+
+```r
+library(betareg)
+library(glmmTMB)
+
+expit <- function(L) exp(L) / (1+exp(L)) # since the beta-models use a logit link, we need to calculate the estimates back to the identity scale
+
+# the function performs a glmmTMB if there's >= 5 random levels in the nesting structure
+# if that is not the case, then the function performs a betareg if theres >= 2 observations
+# if that is not the case either, then the function returns the value of the single observation with NA standard error
+
+indmean.beta <- function(df) {
+
+  st_geometry(df) <- NULL
+  colnames(df) <- c("y","ran")
+  
+  if ( nrow(df[!is.na(df[,1]),]) >= 2 ) {
+    
+    if ( length(unique(df[!is.na(df[,1]),2])) >=5 ) {
+      
+      mod1 <- glmmTMB(y ~ 1 +(1|ran), family=beta_family(), data=df)
+      
+      return(c(
+        expit(summary( mod1 )$coefficients$cond[1]),
+        
+        expit( summary( mod1 )$coefficients$cond[1] + 
+                 summary( mod1 )$coefficients$cond[2] )-
+          expit( summary( mod1 )$coefficients$cond[1] ),
+        
+        nrow(df[!is.na(df$y),]),
+        summary( mod1 )$coefficients$cond[1],
+        summary( mod1 )$coefficients$cond[2]
+      ))
+      
+    } else {
+      
+      mod2 <- betareg(y ~ 1, data=df)
+      
+      return(c(
+        expit(summary( mod2 )$coefficients$mean[1]),
+        expit( summary( mod2 )$coefficients$mean[1] + 
+                 summary( mod2 )$coefficients$mean[2] )-
+          expit( summary( mod2 )$coefficients$mean[1] ),
+        nrow(df[!is.na(df$y),]),
+        summary( mod2 )$coefficients$mean[1],
+        summary( mod2 )$coefficients$mean[2]
+      ))
+      
+    }
+    
+  } else {
+    
+    return(c(df$y,NA,1,NA,NA))
+    
+  }
+
+}
+```
+
 
 ```r
 
@@ -1424,39 +1508,409 @@ res.wetland2 = st_join(res.wetland2, regnor, left = TRUE)
 
 regnor <- regnor %>%
   mutate(
-    pH1.reg.mean = c(mean(res.wetland2$pH1[res.wetland2$region=="Northern Norway"],na.rm=T),
-                             mean(res.wetland2$pH1[res.wetland2$region=="Central Norway"],na.rm=T),
-                             mean(res.wetland2$pH1[res.wetland2$region=="Eastern Norway"],na.rm=T),
-                             mean(res.wetland2$pH1[res.wetland2$region=="Western Norway"],na.rm=T),
-                             mean(res.wetland2$pH1[res.wetland2$region=="Southern Norway"],na.rm=T)),
-    pH1.reg.sd = c(sd(res.wetland2$pH1[res.wetland2$region=="Northern Norway"],na.rm=T),
-                          sd(res.wetland2$pH1[res.wetland2$region=="Central Norway"],na.rm=T),
-                          sd(res.wetland2$pH1[res.wetland2$region=="Eastern Norway"],na.rm=T),
-                          sd(res.wetland2$pH1[res.wetland2$region=="Western Norway"],na.rm=T),
-                          sd(res.wetland2$pH1[res.wetland2$region=="Southern Norway"],na.rm=T))
+    pH1.reg.mean = c(indmean.beta(df=res.wetland2[res.wetland2$region=="Northern Norway",c("pH1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[1]
+    ),
+    pH1.reg.se = c(indmean.beta(df=res.wetland2[res.wetland2$region=="Northern Norway",c("pH1","ano_flate_id")])[2],
+                               indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[2],
+                               indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[2],
+                               indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[2],
+                               indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[2]
+    ),
+    pH1.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$pH1),]),
+                              nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$pH1),]),
+                              nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$pH1),]),
+                              nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$pH1),]),
+                              nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$pH1),])
     )
+  )
 
 
 ## scaled value maps for pH1 (lower indicator)
 # mean
 tm_shape(regnor) +
-  tm_polygons(col="pH1.reg.mean", title="pH (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE)))
+  tm_polygons(col="pH1.reg.mean", title="pH (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("pH1.reg.n",col="black",bg.color="grey")
 ```
 
-<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-22-1.png" width="672" />
+<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-24-1.png" width="672" />
+Mean index value by region for the lower pH indicator (i.e. index shows deviations towards a more acidic environment). Numbers in grey fields show the number of observations in the respective region.
+
+
+```r
+# se
+tm_shape(regnor) +
+  tm_polygons(col="pH1.reg.se", title="pH (lower), sd", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
+  tm_text("pH1.reg.n",col="black",bg.color="grey")
+```
+
+<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-25-1.png" width="672" />
+Standard error to the mean index value by region for the lower pH indicator. Numbers in grey fields show the number of observations in the respective region.
+
+
+### unscaled values vs. reference
+We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since pH and nitrogen show some deviation of the lower pH indicator we exemplify this with these indicators for unscaled values.
+
+
+```r
+summary(res.wetland$kartleggingsenhet_1m2)
+#>      V1  V1-C-1  V1-C-2  V1-C-3  V1-C-4  V1-C-5  V1-C-6 
+#>       8    2144    1224     448     160    2424    1248 
+#>  V1-C-7  V1-C-8 V10-C-1 V10-C-3 V11-C-1     V12 V12-C-1 
+#>     320      48      40       8      16      16     152 
+#> V12-C-2      V2  V2-C-1  V2-C-2  V2-C-3      V3  V3-C-1 
+#>       8       8     832     224      32      40     440 
+#>  V3-C-2      V4  V4-C-1  V4-C-2  V4-C-4  V6-C-1  V6-C-2 
+#>     472       8      32      72       8      64       8 
+#>  V6-C-3  V6-C-4  V6-C-5  V6-C-7  V6-C-9  V8-C-1  V8-C-2 
+#>      72      40       8       8       8      16       8 
+#>  V9-C-1  V9-C-2  V9-C-3 
+#>      80      16      16
+length(unique(res.wetland$kartleggingsenhet_1m2))
+#> [1] 38
+# 16 NiN-types to plot
+colnames(wetland.ref.cov[['Soil_reaction_pH']])
+#>  [1] "V3-C1a" "V3-C1b" "V3-C1c" "V3-C1d" "V3-C1e" "V1-C1a"
+#>  [7] "V1-C1b" "V1-C1c" "V1-C1d" "V1-C1e" "V1-C2a" "V1-C2b"
+#> [13] "V1-C2c" "V1-C2d" "V1-C3a" "V1-C3b" "V1-C3c" "V1-C3d"
+#> [19] "V1-C4a" "V1-C4b" "V1-C4c" "V1-C4d" "V1-C4e" "V1-C4f"
+#> [25] "V1-C4g" "V1-C4h" "V3-C2"  "V1-C5"  "V1-C6a" "V1-C6b"
+#> [31] "V1-C7a" "V1-C7b" "V1-C8a" "V1-C8b" "V2-C1a" "V2-C1b"
+#> [37] "V2-C2a" "V2-C2b" "V2-C3a" "V2-C3b" "V4-C2"  "V4-C3" 
+#> [43] "V8-C1"  "V8-C2"  "V8-C3"
+
+### pH
+par(mfrow=c(2,4))
+## V1s
+# V1-C-1
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V1-C1a","V1-C1b","V1-C1c","V1-C1d","V1-C1e")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C1',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-1",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-1",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-1",]$original)),
+       col="red")
+
+# V1-C-2
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V1-C2a","V1-C2b","V1-C2c","V1-C2d")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C2',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-2",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-2",]$original)),
+       col="red")
+
+# V1-C-3
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V1-C3a","V1-C3b","V1-C3c","V1-C3d")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C3',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-3",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-3",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-3",]$original)),
+       col="red")
+
+# V1-C-4
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V1-C4a","V1-C4b","V1-C4c","V1-C4d","V1-C4e","V1-C4f","V1-C4g","V1-C4h")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C4',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-4",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-4",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-4",]$original)),
+       col="red")
+
+# V1-C-5
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V1-C5")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C5',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-5",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-5",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-5",]$original)),
+       col="red")
+
+# V1-C-6
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V1-C6a","V1-C6b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C6',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-6",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-6",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-6",]$original)),
+       col="red")
+
+# V1-C-7
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V1-C7a","V1-C7b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C7',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-7",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-7",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-7",]$original)),
+       col="red")
+
+# V1-C-8
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V1-C8a","V1-C8b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C8',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original)),
+       col="red")
+```
+
+<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-26-1.png" width="672" />
 
 ```r
 
-# sd
-tm_shape(regnor) +
-  tm_polygons(col="pH1.reg.sd", title="pH (lower), sd", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE))
+par(mfrow=c(2,4))
+## V2s
+# V2-C-1
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V2-C1a","V2-C1b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V2-C1',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V2-C-1",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V2-C-1",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V2-C-1",]$original)),
+       col="red")
+
+# V2-C-2
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V2-C2a","V2-C2b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V2-C2',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V2-C-2",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V2-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V2-C-2",]$original)),
+       col="red")
+
+# V2-C-3
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V2-C3a","V2-C3b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V2-C3',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V2-C-3",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V2-C-3",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V2-C-3",]$original)),
+       col="red")
+
+## V3s
+# V3-C-1
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V3-C1a","V3-C1b","V3-C1c","V3-C1d","V3-C1e")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V3-C1',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V3-C-1",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V3-C-1",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V3-C-1",]$original)),
+       col="red")
+
+# V3-C-2
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V3-C2")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V3-C2',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V3-C-2",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V3-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V3-C-2",]$original)),
+       col="red")
+
+## V4s
+# V4-C-2
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V4-C2")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V4-C2',xlab='pH value')
+points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V4-C-2",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V4-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V4-C-2",]$original)),
+       col="red")
+
+
+## V8s
+# V8-C-1
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V8-C1")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V8-C1',xlab='pH value')
+#points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V8-C-1",]$original,na.rm=T),
+#       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V8-C-1",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V8-C-1",]$original)),
+       col="red")
+
+# V8-C-2
+plot(density( as.matrix(wetland.ref.cov[['Soil_reaction_pH']][,c("V8-C2")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V8-C2',xlab='pH value')
+#points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V8-C-2",]$original,na.rm=T),
+#       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V8-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V8-C-2",]$original)),
+       col="red")
+legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 ```
 
-<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-22-2.png" width="672" />
+<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-26-2.png" width="672" />
+
+```r
 
 
 
 
+### Nitrogen
+par(mfrow=c(2,4))
+## V1s
+# V1-C-1
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V1-C1a","V1-C1b","V1-C1c","V1-C1d","V1-C1e")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C1',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-1",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-1",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-1",]$original)),
+       col="red")
+
+# V1-C-2
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V1-C2a","V1-C2b","V1-C2c","V1-C2d")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C2',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-2",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-2",]$original)),
+       col="red")
+
+# V1-C-3
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V1-C3a","V1-C3b","V1-C3c","V1-C3d")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C3',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-3",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-3",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-3",]$original)),
+       col="red")
+
+# V1-C-4
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V1-C4a","V1-C4b","V1-C4c","V1-C4d","V1-C4e","V1-C4f","V1-C4g","V1-C4h")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C4',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-4",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-4",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-4",]$original)),
+       col="red")
+
+# V1-C-5
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V1-C5")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C5',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-5",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-5",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-5",]$original)),
+       col="red")
+
+# V1-C-6
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V1-C6a","V1-C6b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C6',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-6",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-6",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-6",]$original)),
+       col="red")
+
+# V1-C-7
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V1-C7a","V1-C7b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C7',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-7",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-7",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-7",]$original)),
+       col="red")
+
+# V1-C-8
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V1-C8a","V1-C8b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V1-C8',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original)),
+       col="red")
+```
+
+<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-26-3.png" width="672" />
+
+```r
+
+par(mfrow=c(2,4))
+## V2s
+# V2-C-1
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V2-C1a","V2-C1b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V2-C1',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V2-C-1",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V2-C-1",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V2-C-1",]$original)),
+       col="red")
+
+# V2-C-2
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V2-C2a","V2-C2b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V2-C2',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V2-C-2",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V2-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V2-C-2",]$original)),
+       col="red")
+
+# V2-C-3
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V2-C3a","V2-C3b")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V2-C3',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V2-C-3",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V2-C-3",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V2-C-3",]$original)),
+       col="red")
+
+## V3s
+# V3-C-1
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V3-C1a","V3-C1b","V3-C1c","V3-C1d","V3-C1e")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V3-C1',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V3-C-1",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V3-C-1",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V3-C-1",]$original)),
+       col="red")
+
+# V3-C-2
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V3-C2")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V3-C2',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V3-C-2",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V3-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V3-C-2",]$original)),
+       col="red")
+
+## V4s
+# V4-C-2
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V4-C2")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V4-C2',xlab='Nitrogen value')
+points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V4-C-2",]$original,na.rm=T),
+       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V4-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V4-C-2",]$original)),
+       col="red")
+
+## V8s
+# V8-C-1
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V8-C1")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V8-C1',xlab='Nitrogen value')
+#points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V8-C-1",]$original,na.rm=T),
+#       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V8-C-1",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V8-C-1",]$original)),
+       col="red")
+
+# V8-C-2
+plot(density( as.matrix(wetland.ref.cov[['Nitrogen']][,c("V8-C2")]) ,na.rm=T),
+     xlim=c(1,7), type="l", main='V8-C2',xlab='Nitrogen value')
+#points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V8-C-2",]$original,na.rm=T),
+#       type="l", col="red")
+points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V8-C-2",]$original,
+       rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V8-C-2",]$original)),
+       col="red")
+
+legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
+```
+
+<img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-26-4.png" width="672" />
+THe figure shows that deviations mainly occur in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
