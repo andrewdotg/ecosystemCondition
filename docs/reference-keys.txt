@@ -196,10 +196,10 @@ data-sets-2
 data-handling
 bootstrap-function-for-frequency-abundance
 scaled-value-analyses
-simple-summary-statistics
 ecosystem-sub-types
 indicator-index-maps
-regions-1
+regions---maps-and-statistics
+unscaled-values-vs.-reference
 eksport-file-final-product
 areal-av-isbreer
 introduction-4
@@ -222,7 +222,7 @@ importing-the-data-sets
 glacial-atlas
 map-of-norway
 n50
-regions-2
+regions-1
 glacial-area-per-region
 contemporary-area
 same-for-n50
@@ -349,7 +349,7 @@ analyses-8
 data-set-1
 dummy-data
 dummy-regions-and-et-map
-regions-3
+regions-2
 ecosystem-map-2
 conceptual-workflow-1
 collate-variable-data-series
