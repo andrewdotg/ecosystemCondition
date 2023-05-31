@@ -30,12 +30,12 @@ library(tidyverse)
 library(lubridate)
 library(sf)
 
-#### NiN data & Norway map ####
-## Import NiN data
+#### data upload ####
+### Import NiN data
 nin <- st_read("R:\\GeoSpatialData\\Habitats_biotopes\\Norway_Miljodirektoratet_Naturtyper_nin\\Original\\versjon20221231\\Natur_Naturtyper_nin_norge_med_svalbard_25833\\Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
 #nin.andel <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/NiN/naturtyper_nin_20230516.gdb/naturtyper_nin_20230516.gdb")
 
-## Import region- og Norgeskart
+### Import region- og Norgeskart
 nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
   st_as_sf() %>%
   st_transform(crs = st_crs(nin))
@@ -50,6 +50,47 @@ reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Nor
 
 regnor <- st_intersection(reg,nor)
 
+### NDVI data
+## Import Sentinel NDVI Data
+df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
+  map_df(~fread(.))
+df.s
+
+## Import MODIS NDVI Data
+# MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
+df.m<- read.csv("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_MODIS\\modis_ndvi_ts_2000_2022.csv", )
+df.m
+df.m$mean<-df.m$mean/10000
+df.m
+
+## Import Landsat NDVI Data
+# Set up conditional file paths
+dir <- substr(getwd(), 1,2)
+
+path <- ifelse(dir == "C:", 
+               "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
+               "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
+
+pData <- ifelse(dir == "C:", 
+                "P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat",
+                "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat")
+
+
+# Fread doesn't like the weird path to the server version of the P drive
+# hence this horrendous work around (there must be an easier way than this but I kept hitting dead-ends)
+files=list.files(pData, pattern = "*.csv", full.names = TRUE)
+
+df_list<-list()# initialise a list of dataframes
+# read in a dataframe in each slot of the df_list
+for (i in files){
+  name <- gsub("-",".",i)
+  name <- gsub(".csv","",name)  
+  i <- paste(i,sep="")
+  df_list[[i]]=assign(name,read.csv(i, header=TRUE))
+}  
+
+df.l<-bind_rows(df_list, .id = "column_label")
+df.l
 
 
 #### data handling NiN ####
@@ -113,6 +154,16 @@ nin <- nin %>%
                                      hovedtype %in% c(paste("T",c(3,7,9,10,14,22,26),sep=""),paste("V",c(6,7),sep="")) ~ 'Fjell',
                                      TRUE ~ 'NA'))
 
+
+summary(as.factor(nin$tilstand))
+
+nin <- nin %>% mutate(tilstand = recode(tilstand,
+                                        "Dårlig" = "Redusert",
+                                        "Svært redusert" = "Svaert_redusert"))
+summary(as.factor(nin$tilstand))
+
+
+
 # need to split the ninbeskrivelsesvariabler-column into one per variable and these then into two for the variable name and value
 levels(as.factor(nin$ninbeskrivelsesvariabler))
 
@@ -135,12 +186,7 @@ nin3 <- nin2 %>%
 # continue with nin for now, ignoring the beskrivelsesvariabler and only using information from 'tilstand'
 rm(nin2)
 rm(nin3)
-summary(as.factor(nin$tilstand))
 
-nin <- nin %>% mutate(tilstand = recode(tilstand,
-                                        "Dårlig" = "Redusert",
-                                        "Svært redusert" = "Svaert_redusert"))
-summary(as.factor(nin$tilstand))
 
 
 
@@ -163,7 +209,7 @@ nin.wetland <- nin.wetland %>%
   mutate(area_meters_nin = st_area(nin.wetland)
   )
 
-saveRDS(nin.wetland, "data/cache/nin.wetland.RDS")
+
 
 
 
@@ -185,7 +231,7 @@ nin.seminat <- nin.seminat %>%
   mutate(area_meters_nin = st_area(nin.seminat)
   )
 
-saveRDS(nin.seminat, "data/cache/nin.seminat.RDS")
+
 
 
 ## filter out only naturally open data
@@ -206,21 +252,22 @@ nin.natopen <- nin.natopen %>%
   mutate(area_meters_nin = st_area(nin.natopen)
   )
 
+
+
+
+
+#### save and load processed NiN-data from cache ####
+saveRDS(nin.wetland, "data/cache/nin.wetland.RDS")
+saveRDS(nin.seminat, "data/cache/nin.seminat.RDS")
 saveRDS(nin.natopen, "data/cache/nin.natopen.RDS")
-
-
-#### load processed NiN-data from cache
 nin.wetland <- readRDS(paste0(here::here(),"/data/cache/nin.wetland.RDS"))
 nin.seminat <- readRDS(paste0(here::here(),"/data/cache/nin.seminat.RDS"))
 nin.natopen <- readRDS(paste0(here::here(),"/data/cache/nin.natopen.RDS"))
 
 
-#### Sentinel NDVI data ####
-## Import Sentinel NDVI Data
-df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
-  map_df(~fread(.))
-df.s
 
+
+#### Sentinel NDVI data ####
 
 ## join nin.wetland & Sentinel NDVI data
 SentinelNDVI.wetland <- full_join(nin.wetland, df.s, by="id")
@@ -302,13 +349,6 @@ summary(SentinelNDVI.natopen)
 
 
 #### Modis NDVI data ####
-## Import MODIS NDVI Data
-# MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
-df.m<- read.csv("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_MODIS\\modis_ndvi_ts_2000_2022.csv", )
-df.m
-df.m$mean<-df.m$mean/10000
-df.m
-
 
 ## join nin.wetland and Modis NDVI data
 ModisNDVI.wetland <- full_join(nin.wetland, df.m, by="id")
@@ -389,35 +429,6 @@ summary(ModisNDVI.natopen)
 
 
 #### Landsat NDVI data ####
-## Import Landsat NDVI Data
-# Set up conditional file paths
-dir <- substr(getwd(), 1,2)
-
-path <- ifelse(dir == "C:", 
-               "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
-               "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
-
-pData <- ifelse(dir == "C:", 
-                "P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat",
-                "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat")
-
-
-## Fread doesn't like the weird path to the server version of the P drive
-## hence this horrendous work around (there must be an easier way than this but I kept hitting dead-ends)
-files=list.files(pData, pattern = "*.csv", full.names = TRUE)
-
-df_list<-list()# initialise a list of dataframes
-# read in a dataframe in each slot of the df_list
-for (i in files){
-  name <- gsub("-",".",i)
-  name <- gsub(".csv","",name)  
-  i <- paste(i,sep="")
-  df_list[[i]]=assign(name,read.csv(i, header=TRUE))
-}  
-
-df.l<-bind_rows(df_list, .id = "column_label")
-df.l
-
 
 ## join nin.wetland & Landsat NDVI data
 LandsatNDVI.wetland <- full_join(nin.wetland, df.l, by="id")

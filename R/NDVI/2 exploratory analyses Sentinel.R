@@ -1,7 +1,7 @@
 ############ working with max NDVI per year in every NiN polygon
 
 #### Wetland analyses, Sentinel data ####
-# how does NDVI vary over the years (all data)
+# how does NDVI vary over the years (all years)
 SentinelNDVI.wetland %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
@@ -11,11 +11,12 @@ SentinelNDVI.wetland %>%
   facet_grid( tilstand~hovedtype)
 # 2022 stands out with the highest NDVI values missing
 # the pattern is strange, suggest to omit 2022 for this analysis
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
-  filter(year != '2022')
+#SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != '2022')
 
-# NDVI across hovedtyper (only for NDVI data matching NiN-mapping)
+# NDVI across hovedtyper (only for NDVI years data matching NiN-mapping years)
 SentinelNDVI.wetland %>%
+  filter(year != '2022') %>%
+  
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   
@@ -32,6 +33,8 @@ SentinelNDVI.wetland <- SentinelNDVI.wetland %>% mutate(subtype = substring(nink
 
 # looking at subtypes for polygons in good condition only (only for NDVI data matching NiN-mapping)
 SentinelNDVI.wetland %>%
+  filter(year != '2022') %>%
+  
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   
@@ -46,6 +49,8 @@ SentinelNDVI.wetland %>%
 
 # looking at some single polygons
 SentinelNDVI.wetland %>% 
+  filter(year != '2022') %>%
+  
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   
@@ -53,6 +58,8 @@ SentinelNDVI.wetland %>%
   ggplot(aes(x=date, y=mean )) + geom_point() + ylim(-0.1,1)
 
 SentinelNDVI.wetland %>% 
+  filter(year != '2022') %>%
+  
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   
@@ -60,6 +67,8 @@ SentinelNDVI.wetland %>%
   ggplot(aes(x=date, y=mean )) + geom_point() + ylim(-0.1,1)
 
 SentinelNDVI.wetland %>% 
+  filter(year != '2022') %>%
+  
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   
@@ -68,6 +77,11 @@ SentinelNDVI.wetland %>%
 
 
 #### continue here ####
+
+
+
+
+
 
 
 #### Seminat analyses, Sentinel data ####
