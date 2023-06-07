@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Chapter 1 Trophic level biomass ratios | DRAFT_trophic_levels-biomass_indicators.knit</title>
+
+  
+   
+   <meta name="generator" content="placeholder" />
+  <meta property="og:title" content="Chapter 1 Trophic level biomass ratios | DRAFT_trophic_levels-biomass_indicators.knit" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 1 Trophic level biomass ratios | DRAFT_trophic_levels-biomass_indicators.knit" />
+  
+  
+  
+  <!-- JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script>
+    <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+    <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+    <script src="libs/bs3compat-0.4.2/transition.js"></script>
+    <script src="libs/bs3compat-0.4.2/tabs.js"></script>
+    <script src="libs/bs3compat-0.4.2/bs3compat.js"></script>
+    <link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet" />
+    <script src="libs/bs4_book-1.0.0/bs4_book.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script>
+
+  <!-- CSS -->
+  <style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+      <link rel="stylesheet" href="style.css" />
+  
+</head>
+
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book">
+    <a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title=""></a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+      </form>
+
+      <nav aria-label="Table of contents">
+        <h2>Table of contents</h2>
+        <div id="book-toc"></div>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="#">View book source <i class="fab fa-github"></i></a></li></p>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="col-sm-12 col-md-9 col-lg-7" id="content">
+<!--bookdown:title:end-->
+<!--bookdown:title:start-->
+<div id="trophic-level-biomass-ratios" class="section level1" number="1">
+<h1><span class="header-section-number">Chapter 1</span> Trophic level biomass ratios</h1>
+<p><br /></p>
+<p><em>Author and date:</em>
+James Speed</p>
+<p>June 2023</p>
+<p><br /></p>
+<!-- Load all you dependencies here -->
+<!-- Don't remove these three html lines -->
+<br />
+<br />
+<hr />
+<!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
+<div id="introduction" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Introduction</h2>
+<p>Here we will develop indicators of ecological condition for Norway, based on the distribution of biomass between trophic levels - specifically between vegetation and vertebrate consumers. This includes three trophic levels, plants, herbivores and carnivores. Indicators of trophic interactions are based on deviation between the observed biomass at each consumer trophic level from the expected biomass based on the biomass at the prey trophic level. The expected biomass estimates are derived from global relationships between plants and vertebrate herbivores (<a href="https://doi.org/10.1111/1365-2664.14047">Fløjgaard et al. 2022</a>) and between vertebrate prey and predators (<a href="https://www.science.org/doi/pdf/10.1126/science.aac6284?casa_token=mM3vaCIMkpAAAAAA:bo4aODtkJORM0kIeFfezII4T_0wo7Y7X8ktWxI6vHN64sGmMw9Xi9xCc_g33c437swJaeTeiEE_N">Hatton et al 2015</a>)</p>
+<p>As the plant biomass level we use Net Primary Productivity. MODIS NPP was selected since it provides the highest temporal extent of available data sources (1999 to present). Spatial resolution is low relative to other remote sensing sources, however, the spatial resolution is still far higher than the consumer data, so the temporal extent was prioritised.</p>
+<p>The herbivore data is an extension of the data presented in Austrheim et al. 2008 <a href="https://onlinelibrary.wiley.com/doi/pdf/10.2981/10-038" class="uri">https://onlinelibrary.wiley.com/doi/pdf/10.2981/10-038</a> and Speed et al. 2015 <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0217166" class="uri">https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0217166</a>. For the development of the trophic interaction indicators the same methods were applied to herbivore data going back to 1907 (contra 1949 in the two studies above). This data was extracted by Gunnar Austrheim (livestock) and Erling J. Solberg (wild cervids). In each dataset, the metabolic biomass and the raw biomass of a given species is provided for each year and municipality. The 2007 municipalities were used. The data were rasterized to the same grid as the NPP data.</p>
+<p>Metabolic biomass measures were used in the previous studies on Norwegian herbivores cited above. However, for consistency with the global studies used to find predicted biomass, we use raw (unscaled) biomass here.</p>
+<p>Herbivore species are wild herbivores: moose/elg, red deer/hjort, roe deer/rådyr, wild reindeer/villrein and livestock: cattle/storfe, sheep/sau, horses/hest, goats/geit and semi-domestic reindeer/tamrein</p>
+<p>The carnivore data is taken from back-cast population modelling for the large carnivores in Norway (wolf/ulv, brown bear/bjørn, lynx/gaupe and wolverine/jerv). The data was based on hunting statistics, and was collated and modelled by Anna Sobocinski in a master thesis: <a href="https://ntnuopen.ntnu.no/ntnu-xmlui/handle/11250/3047580" class="uri">https://ntnuopen.ntnu.no/ntnu-xmlui/handle/11250/3047580</a> The thesis also presented metabolic biomass, but we use raw biomass to make the indicators. This data was also rasterized.</p>
+<p>We calculate indicators (1) across all ecosystems and the total consumer communities (all localities and all herbivores and all carnivores) and (2) specific indicators for each main ecosystem type</p>
+</div>
+<div id="part-1-total-communities" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Part 1: Total communities</h2>
+<p>We start by calculation biomass ratios across all herbivores and carnivores, with no regard to the ecosystem type.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#NPP</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Read in</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>npprast<span class="ot">&lt;-</span><span class="fu">rast</span>(<span class="fu">paste0</span>(pData,<span class="st">&quot;/Trophic_levels/NPP.tiff&quot;</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>viltrast<span class="ot">&lt;-</span><span class="fu">rast</span>(<span class="fu">paste0</span>(pData,<span class="st">&quot;/Trophic_levels/Vilt_RawBiomass.tiff&quot;</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>livestockrast<span class="ot">&lt;-</span><span class="fu">rast</span>(<span class="fu">paste0</span>(pData,<span class="st">&quot;/Trophic_levels/Livestock_RawBiomass.tiff&quot;</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>carnivorerast<span class="ot">&lt;-</span><span class="fu">rast</span>(<span class="fu">paste0</span>(pData,<span class="st">&quot;/Trophic_levels/Carnivores_RawBiomass.tiff&quot;</span>))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Vector of years we work with</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>allyears_vect<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">1907</span>,<span class="dv">1917</span>,<span class="dv">1929</span>,<span class="dv">1938</span>,<span class="dv">1949</span>,<span class="dv">1959</span>,<span class="dv">1969</span>,<span class="dv">1979</span>,<span class="dv">1989</span>,<span class="dv">1999</span>,<span class="dv">2009</span>,<span class="dv">2015</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#Livestock data from 1939 and vilt from 1938</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(livestockrast)<span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="dv">1939</span>,<span class="dv">1938</span>,<span class="fu">names</span>(livestockrast))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(livestockrast)</span></code></pre></div>
+<pre><code>##  [1] &quot;RawBiomassDensity_sau_1907&quot;     &quot;RawBiomassDensity_sau_1917&quot;     &quot;RawBiomassDensity_sau_1929&quot;    
+##  [4] &quot;RawBiomassDensity_sau_1938&quot;     &quot;RawBiomassDensity_sau_1949&quot;     &quot;RawBiomassDensity_sau_1959&quot;    
+##  [7] &quot;RawBiomassDensity_sau_1969&quot;     &quot;RawBiomassDensity_sau_1979&quot;     &quot;RawBiomassDensity_sau_1989&quot;    
+## [10] &quot;RawBiomassDensity_sau_1999&quot;     &quot;RawBiomassDensity_sau_2009&quot;     &quot;RawBiomassDensity_sau_2015&quot;    
+## [13] &quot;RawBiomassDensity_geit_1907&quot;    &quot;RawBiomassDensity_geit_1917&quot;    &quot;RawBiomassDensity_geit_1929&quot;   
+## [16] &quot;RawBiomassDensity_geit_1938&quot;    &quot;RawBiomassDensity_geit_1949&quot;    &quot;RawBiomassDensity_geit_1959&quot;   
+## [19] &quot;RawBiomassDensity_geit_1969&quot;    &quot;RawBiomassDensity_geit_1979&quot;    &quot;RawBiomassDensity_geit_1989&quot;   
+## [22] &quot;RawBiomassDensity_geit_1999&quot;    &quot;RawBiomassDensity_geit_2009&quot;    &quot;RawBiomassDensity_geit_2015&quot;   
+## [25] &quot;RawBiomassDensity_storf_1907&quot;   &quot;RawBiomassDensity_storf_1917&quot;   &quot;RawBiomassDensity_storf_1929&quot;  
+## [28] &quot;RawBiomassDensity_storf_1938&quot;   &quot;RawBiomassDensity_storf_1949&quot;   &quot;RawBiomassDensity_storf_1959&quot;  
+## [31] &quot;RawBiomassDensity_storf_1969&quot;   &quot;RawBiomassDensity_storf_1979&quot;   &quot;RawBiomassDensity_storf_1989&quot;  
+## [34] &quot;RawBiomassDensity_storf_1999&quot;   &quot;RawBiomassDensity_storf_2009&quot;   &quot;RawBiomassDensity_storf_2015&quot;  
+## [37] &quot;RawBiomassDensity_hest_1907&quot;    &quot;RawBiomassDensity_hest_1917&quot;    &quot;RawBiomassDensity_hest_1929&quot;   
+## [40] &quot;RawBiomassDensity_hest_1938&quot;    &quot;RawBiomassDensity_hest_1949&quot;    &quot;RawBiomassDensity_hest_1959&quot;   
+## [43] &quot;RawBiomassDensity_hest_1969&quot;    &quot;RawBiomassDensity_hest_1979&quot;    &quot;RawBiomassDensity_hest_1989&quot;   
+## [46] &quot;RawBiomassDensity_hest_1999&quot;    &quot;RawBiomassDensity_hest_2009&quot;    &quot;RawBiomassDensity_hest_2015&quot;   
+## [49] &quot;RawBiomassDensity_tamrein_1907&quot; &quot;RawBiomassDensity_tamrein_1917&quot; &quot;RawBiomassDensity_tamrein_1929&quot;
+## [52] &quot;RawBiomassDensity_tamrein_1938&quot; &quot;RawBiomassDensity_tamrein_1949&quot; &quot;RawBiomassDensity_tamrein_1959&quot;
+## [55] &quot;RawBiomassDensity_tamrein_1969&quot; &quot;RawBiomassDensity_tamrein_1979&quot; &quot;RawBiomassDensity_tamrein_1989&quot;
+## [58] &quot;RawBiomassDensity_tamrein_1999&quot; &quot;RawBiomassDensity_tamrein_2009&quot; &quot;RawBiomassDensity_tamrein_2015&quot;
+## [61] &quot;Livestock_Raw_1907&quot;             &quot;Livestock_Raw_1917&quot;             &quot;Livestock_Raw_1929&quot;            
+## [64] &quot;Livestock_Raw_1938&quot;             &quot;Livestock_Raw_1949&quot;             &quot;Livestock_Raw_1959&quot;            
+## [67] &quot;Livestock_Raw_1969&quot;             &quot;Livestock_Raw_1979&quot;             &quot;Livestock_Raw_1989&quot;            
+## [70] &quot;Livestock_Raw_1999&quot;             &quot;Livestock_Raw_2009&quot;             &quot;Livestock_Raw_2015&quot;            
+## [73] &quot;TotalHerbivoreBiomass_Raw_1907&quot; &quot;TotalHerbivoreBiomass_Raw_1917&quot; &quot;TotalHerbivoreBiomass_Raw_1929&quot;
+## [76] &quot;TotalHerbivoreBiomass_Raw_1938&quot; &quot;TotalHerbivoreBiomass_Raw_1949&quot; &quot;TotalHerbivoreBiomass_Raw_1959&quot;
+## [79] &quot;TotalHerbivoreBiomass_Raw_1969&quot; &quot;TotalHerbivoreBiomass_Raw_1979&quot; &quot;TotalHerbivoreBiomass_Raw_1989&quot;
+## [82] &quot;TotalHerbivoreBiomass_Raw_1999&quot; &quot;TotalHerbivoreBiomass_Raw_2009&quot; &quot;TotalHerbivoreBiomass_Raw_2015&quot;</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Norwegian counties to help plotting</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>norcounty_shp<span class="ot">&lt;-</span><span class="fu">st_read</span>(<span class="fu">paste0</span>(pData,<span class="st">&quot;/Trophic_levels/&quot;</span>),<span class="st">&quot;ViltdataCounty&quot;</span>)</span></code></pre></div>
+<pre><code>## Reading layer `ViltdataCounty&#39; from data source 
+##   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Trophic_levels&#39; using driver `ESRI Shapefile&#39;
+## Simple feature collection with 912 features and 8 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -76208 ymin: 6450245 xmax: 1114929 ymax: 7939986
+## Projected CRS: ETRS89 / UTM zone 33N</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Simplify by county nr</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>norcounty<span class="ot">&lt;-</span>norcounty_shp <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FylkeNr) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">geometry =</span> <span class="fu">st_union</span>(geometry)) </span></code></pre></div>
+<p>Now we can plot the raw biomass data.</p>
+<p>First NPP</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Select relevant years for NPP</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>npprast_yrs<span class="ot">&lt;-</span>npprast[[<span class="fu">names</span>(npprast)<span class="sc">%in%</span><span class="fu">c</span>(<span class="st">&quot;NPP_2000&quot;</span>,<span class="st">&quot;NPP_2009&quot;</span>,<span class="st">&quot;NPP_2015&quot;</span>)]]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">geom_spatraster</span>(<span class="at">data=</span>npprast_yrs)<span class="sc">+</span><span class="fu">facet_grid</span>(<span class="sc">~</span>lyr)<span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>         <span class="fu">scale_fill_continuous</span>(<span class="at">low=</span><span class="st">&quot;lightgreen&quot;</span>,<span class="at">high=</span><span class="st">&quot;darkgreen&quot;</span>,<span class="at">na.value=</span><span class="cn">NA</span>,<span class="fu">expression</span>(<span class="st">&#39;kgC km&#39;</span><span class="sc">^-</span><span class="dv">2</span><span class="sc">~</span><span class="st">&#39;year&#39;</span><span class="sc">^-</span><span class="dv">1</span>))<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Plotting%20basic%20data-1.png" width="672" /></p>
+<p>Next total herbivore biomass</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Total herbivore biomass</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#For some reason need to read the raster in again</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>livestockrast<span class="ot">&lt;-</span><span class="fu">rast</span>(<span class="fu">paste0</span>(pData,<span class="st">&quot;/Trophic_levels/Livestock_RawBiomass.tiff&quot;</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>totalherbivorebiomass<span class="ot">&lt;-</span>livestockrast[[<span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(livestockrast),<span class="st">&quot;_&quot;</span>),<span class="st">&#39;[&#39;</span>,<span class="dv">1</span>) <span class="sc">%in%</span> <span class="st">&quot;TotalHerbivoreBiomass&quot;</span>]]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(totalherbivorebiomass)<span class="ot">&lt;-</span>allyears_vect</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>totalherbivorebiomass</span></code></pre></div>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 3378, 2701, 12  (nrow, ncol, nlyr)
+## resolution  : 440.9985, 441.0127  (x, y)
+## extent      : -76208, 1114929, 6450245, 7939986  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
+## source      : Livestock_RawBiomass.tiff 
+## names       :     1907,     1917,     1929,     1938,        1949,        1959, ... 
+## min values  :     0.00,     0.00,     0.00,     0.00,    36.40469,    37.53634, ... 
+## max values  : 24068.81, 32279.18, 33138.37, 36387.98, 15082.97559, 22528.81055, ...</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_spatraster</span>(<span class="at">data=</span>totalherbivorebiomass)<span class="sc">+</span><span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_continuous</span>(<span class="at">trans=</span><span class="st">&#39;log10&#39;</span>,<span class="at">low=</span><span class="st">&quot;lightskyblue&quot;</span>,<span class="at">high=</span><span class="st">&quot;darkblue&quot;</span>, <span class="at">na.value=</span><span class="cn">NA</span>,<span class="fu">expression</span>(<span class="st">&#39;Herbivore </span><span class="sc">\n</span><span class="st">biomass </span><span class="sc">\n</span><span class="st">kg km&#39;</span><span class="sc">^-</span><span class="dv">2</span> ))<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<pre><code>## Warning: Transformation introduced infinite values in discrete y-axis</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/PlotTotalHerbivoreBiomass-1.png" width="672" /></p>
+<p>And finally total carnivore biomass</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>carnivorerast<span class="ot">&lt;-</span><span class="fu">rast</span>(<span class="fu">paste0</span>(pData,<span class="st">&quot;/Trophic_levels/Carnivores_RawBiomass.tiff&quot;</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>totalcarnivores<span class="ot">&lt;-</span>carnivorerast[[<span class="dv">49</span><span class="sc">:</span><span class="dv">60</span>]]</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_spatraster</span>(<span class="at">data=</span>totalcarnivores)<span class="sc">+</span><span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_continuous</span>(<span class="at">low=</span><span class="st">&#39;white&#39;</span>,<span class="at">high=</span><span class="st">&#39;red&#39;</span>, <span class="at">na.value=</span><span class="cn">NA</span>, <span class="fu">expression</span>(<span class="st">&#39;Carnviore</span><span class="sc">\n</span><span class="st">Biomass </span><span class="sc">\n</span><span class="st">kg km&#39;</span><span class="sc">^-</span><span class="dv">2</span> ))<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Plot%20carnivore%20biomass-1.png" width="672" /></p>
+<p>Now we use the NPP to estimate the expected herbivore biomass Fløjgaard et al. 2015 Figure 1/Table 1 Global relationship (mean NPP1km)</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># npprast&lt;-rast(&quot;Vertebrates/data/TrophicBiomassData/NPP.tiff&quot;)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># npprast_yrs&lt;-npprast[[names(npprast)%in%c(&quot;NPP_2000&quot;,&quot;NPP_2009&quot;,&quot;NPP_2015&quot;)]]</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>expected_herbivore_biomass<span class="ot">&lt;-</span>(npprast_yrs<span class="sc">^</span><span class="fl">0.47</span> <span class="sc">*</span> <span class="fl">0.643</span>)<span class="co">#Global </span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Expected herbivore biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_spatraster</span>(<span class="at">data=</span>expected_herbivore_biomass)<span class="sc">+</span><span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span><span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_continuous</span>(<span class="at">low=</span><span class="st">&#39;lightskyblue&#39;</span>,<span class="at">high=</span><span class="st">&quot;darkblue&quot;</span>,<span class="at">na.value=</span><span class="cn">NA</span>,<span class="fu">expression</span>(<span class="st">&#39;kg km&#39;</span><span class="sc">^-</span><span class="dv">2</span>))</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Calculating%20expected%20herbivore%20biomass-1.png" width="672" /></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#writeRaster(expected_herbivore_biomass,paste0(pData,&quot;/Trophic_levels/expectedherbivorebiomass.tif&quot;),overwrite=TRUE)</span></span></code></pre></div>
+<p>Now we can calculate the deviation between the observed herbivore biomass and the expected herbivore biomass. We calculate this as a % change.</p>
+<p>100 x (ActualBiomass – ExpectedBiomass)/(ExpectedBiomass +1)</p>
+<p>To display this we truncated to 100%|-100%</p>
+<p>A value of 0 indicates that the locality has expected biomass. Value of 100 indicates that the locality has 100% (or more) higher biomass than expected Value of -100 indicates that the locality has 100% (or more) lower biomass than expected</p>
+<p>«Good» condition assumed to be 0 to |40%|</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#expected_herbivore_biomass&lt;-rast(&quot;Vertebrates/outputs/expectedbiomass/expectedherbivorebiomass.tif&quot;)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">#livestockrast&lt;-rast(&quot;Vertebrates/data/TrophicBiomassData/Livestock_RawBiomass.tiff&quot;)</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>totalherbivorebiomass<span class="ot">&lt;-</span>livestockrast[[<span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(livestockrast),<span class="st">&quot;_&quot;</span>),<span class="st">&#39;[&#39;</span>,<span class="dv">1</span>) <span class="sc">%in%</span> <span class="st">&quot;TotalHerbivoreBiomass&quot;</span>]]</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(totalherbivorebiomass)<span class="ot">&lt;-</span>allyears_vect</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>totalherbivorebiomass_npp<span class="ot">&lt;-</span>totalherbivorebiomass[[<span class="fu">names</span>(totalherbivorebiomass) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;1999&quot;</span>,<span class="st">&quot;2009&quot;</span>,<span class="st">&quot;2015&quot;</span>)]]</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a> diffherb<span class="ot">&lt;-</span><span class="dv">100</span><span class="sc">*</span>(totalherbivorebiomass_npp<span class="sc">-</span>expected_herbivore_biomass)<span class="sc">/</span>(expected_herbivore_biomass<span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a> <span class="fu">names</span>(diffherb)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;2000&quot;</span>,<span class="st">&#39;2009&#39;</span>,<span class="st">&#39;2015&#39;</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># #Plot on a diverging colour scale around 0</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_spatraster</span>(<span class="at">data=</span>diffherb)<span class="sc">+</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">&quot;Difference from expected herbivore biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>   <span class="fu">scale_fill_distiller</span>(<span class="at">type=</span><span class="st">&quot;div&quot;</span>,<span class="at">limit=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="dv">100</span>),<span class="at">oob=</span>squish, <span class="at">na.value=</span><span class="cn">NA</span>,<span class="st">&#39;% Difference from </span><span class="sc">\n</span><span class="st">expected biomass&#39;</span>)<span class="sc">+</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/DifferenceHerbivoreBiomass-1.png" width="672" /></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#writeRaster(diffherb,paste0(pData,&quot;/Trophic_levels/HerbivoreBiomassDiffExpected.tif&quot;),overwrite=TRUE)</span></span></code></pre></div>
+<p>Above we see that on the West coast, Trøndelag, Oppland have double herbivore biomass than expected. There is more herbivore biomass than expected in parts of Finnmark, while Nordland and Lierne have lower herbivore biomass than expected based on NPP. Vestfold &amp; Telemark (and parts of Viken) change from having more herbivore biomass than expected in 2000 to less than expected in 2015 (this is consistent with reduction in moose population in these regions)</p>
+<p>– Next we move on to estimate the expected carnivore biomass based on observed herbivore biomass and calculate the deviation as a % difference from expected as for the herbivores. This is based on Hatton et al. 2015 Figure 1 (predator prey biomass relationships)</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#livestockrast&lt;-rast(paste0(pData,&quot;/Trophic_levels/Livestock_RawBiomass.tiff&quot;))</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>totalherbivorebiomass<span class="ot">&lt;-</span>livestockrast[[<span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(livestockrast),<span class="st">&quot;_&quot;</span>),<span class="st">&#39;[&#39;</span>,<span class="dv">1</span>) <span class="sc">%in%</span> <span class="st">&quot;TotalHerbivoreBiomass&quot;</span>]]</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(totalherbivorebiomass)<span class="ot">&lt;-</span>allyears_vect</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#carnivorerast&lt;-rast(paste0(pData,&quot;/Trophic_levels/Carnivores_RawBiomass.tiff&quot;))</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>totalcarnivores<span class="ot">&lt;-</span>carnivorerast[[<span class="dv">49</span><span class="sc">:</span><span class="dv">60</span>]]</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Expected carnivore biomass </span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Taken from Hatton et al. Figure 1</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>expected_carnivore_biomass<span class="ot">&lt;-</span>(totalherbivorebiomass<span class="sc">^</span><span class="fl">0.73</span>)<span class="sc">*</span><span class="fl">0.014</span><span class="co">#African carnivore and herbivore communities</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_spatraster</span>(<span class="at">data=</span>expected_carnivore_biomass)<span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Expected carnivore biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span><span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_continuous</span>(<span class="at">low=</span><span class="st">&#39;lightskyblue&#39;</span>,<span class="at">high=</span><span class="st">&quot;darkblue&quot;</span>,<span class="at">na.value=</span><span class="cn">NA</span>,<span class="fu">expression</span>(<span class="st">&#39;kg km&#39;</span><span class="sc">^-</span><span class="dv">2</span>),<span class="at">trans=</span><span class="st">&#39;log10&#39;</span>)</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<pre><code>## Warning: Transformation introduced infinite values in discrete y-axis</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Expected%20carnivore%20biomass-1.png" width="672" /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>diffcarn<span class="ot">&lt;-</span><span class="dv">100</span><span class="sc">*</span> (totalcarnivores<span class="sc">-</span>expected_carnivore_biomass)<span class="sc">/</span>(expected_carnivore_biomass<span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(diffcarn)<span class="ot">&lt;-</span>allyears_vect</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_spatraster</span>(<span class="at">data=</span>diffcarn)<span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&#39;Difference from expected carnivore biomass&#39;</span>)<span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">type=</span><span class="st">&quot;div&quot;</span>,<span class="at">limit=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="dv">100</span>),<span class="at">oob=</span>squish,<span class="at">na.value=</span><span class="cn">NA</span>,<span class="st">&quot;%difference from </span><span class="sc">\n</span><span class="st">expected biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Expected%20carnivore%20biomass-2.png" width="672" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#writeRaster(expected_carnivore_biomass,paste0(pData,&quot;/Trophic_levels/expectedcarnivorebiomass.tif&quot;),overwrite=TRUE)</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#writeRaster(diffcarn,paste0(pData,&quot;/Trophic_levels/CarnivoreBiomassDiffExpected.tif&quot;),overwrite=TRUE)</span></span></code></pre></div>
+<p>From the above we see that Norway has had less carnivore biomass than expected based on the available herbivore biomass across the time period. Some counties and time periods (e.g. Hedmark today and Finnmark in 1907 had about the same carnivore biomass as predicted.</p>
+</div>
+<div id="part-2---habitat-specific-biomass-distributions" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> Part 2 - Habitat specific biomass distributions</h2>
+<p>We now create biomass ratios for specific habitat types. To do this we need an ecosystem map and to place each consumer species within each habitat.</p>
+<p>Indicators were not developed for mire ecosystems. This decision was taken in conversation with the mire ecosystem group, on the basis that herbivores have minimum use of the mrie ecosystems.</p>
+<p>Table of the consumer species associated with each habitat.</p>
+<table>
+<colgroup>
+<col width="24%" />
+<col width="26%" />
+<col width="24%" />
+<col width="24%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Ecosystem</th>
+<th>Livestock</th>
+<th>Wild herbivores</th>
+<th>Carnivores</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Forest</td>
+<td>Storfe</td>
+<td>Elg, rådyr, hjort</td>
+<td>Ulv, gaupe, bjørn</td>
+</tr>
+<tr class="even">
+<td>Alpine</td>
+<td>Sau, tamrein, geit</td>
+<td>Villrein</td>
+<td>Jerv</td>
+</tr>
+<tr class="odd">
+<td>Semi-naturlig mark</td>
+<td>Sau, hest, geit, storfe</td>
+<td>Hjort</td>
+<td>Gaupe, ulv</td>
+</tr>
+<tr class="even">
+<td>Naturlig åpne områder</td>
+<td>Sau, geit, storfe</td>
+<td>Hjort</td>
+<td>Gaupe, ulv</td>
+</tr>
+<tr class="odd">
+<td>Myr</td>
+<td>---</td>
+<td>---</td>
+<td>---</td>
+</tr>
+</tbody>
+</table>
+<p>Since a suitable ecosystem map is still under development, we use the AR50 land-cover map as a place-holding solution. AR50 does not give a good representation of naturlig åpen områder or semi-naturlig mark, so we demonstrate the habitat specific biomass distributions using the forest class in AR50 and the species outlined above.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Forest</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co">#AR50 type raster</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>artype50<span class="ot">&lt;-</span><span class="fu">rast</span>(<span class="st">&quot;/data/R/GeoSpatialData/LandCover/Norway_LandResource_AR50/Processed/Raster/AR50_Norge.tif&quot;</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co">#artype50&lt;-rast(&quot;Vertebrates/AR50/AR50_artype_25_ETRS_1989_UTM_Zone_33N.tif&quot;)</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Reclassify</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>artype50_F<span class="ot">&lt;-</span>artype50</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>arTdf<span class="ot">&lt;-</span><span class="fu">data.frame</span>(<span class="at">id=</span><span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">50</span>,<span class="dv">60</span>,<span class="dv">70</span>,<span class="dv">81</span>,<span class="dv">82</span>,<span class="dv">128</span>),<span class="at">label=</span><span class="fu">c</span>(<span class="st">&quot;BuiltUp&quot;</span>,<span class="st">&quot;Pastures/Arable&quot;</span>,<span class="st">&quot;Forest&quot;</span>,<span class="st">&quot;Open&quot;</span>,<span class="st">&quot;Mires&quot;</span>,<span class="st">&quot;Ice&quot;</span>,<span class="st">&quot;Freshwater&quot;</span>,<span class="st">&quot;Sea&quot;</span>,<span class="st">&quot;Unmapped&quot;</span>))</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(artype50_F)<span class="ot">&lt;-</span>arTdf</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>arcols<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;black&quot;</span>,<span class="st">&quot;orange&quot;</span>,<span class="st">&quot;darkgreen&quot;</span>,<span class="st">&quot;wheat&quot;</span>,<span class="st">&quot;lightblue&quot;</span>,<span class="st">&quot;white&quot;</span>,<span class="st">&quot;blue&quot;</span>,<span class="st">&quot;blue&quot;</span>,<span class="cn">NA</span>)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_spatraster</span>(<span class="at">data=</span>artype50_F)<span class="sc">+</span><span class="fu">scale_fill_manual</span>(<span class="at">values=</span>arcols,<span class="at">na.value =</span> <span class="cn">NA</span>)</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 501014</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Habitat%20specific%20rasters-1.png" width="672" /></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Load biomass rasters</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># npprast&lt;-rast(&quot;Vertebrates/data/TrophicBiomassData/NPP.tiff&quot;)</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co"># viltrast&lt;-rast(&quot;Vertebrates/data/TrophicBiomassData/Vilt_RawBiomass.tiff&quot;)</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># livestockrast&lt;-rast(&quot;Vertebrates/data/TrophicBiomassData/Livestock_RawBiomass.tiff&quot;)</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># carnivorerast&lt;-rast(&quot;Vertebrates/data/TrophicBiomassData/Carnivores_RawBiomass.tiff&quot;)</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co"># expected_herbivore_biomass&lt;-rast(&quot;Vertebrates/outputs/expectedbiomass/expectedherbivorebiomass.tif&quot;)</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># expected_carnivore_biomass&lt;-rast(&quot;Vertebrates/outputs/expectedbiomass/expectedcarnivorebiomass.tif&quot;)</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Project the AR50 to the NPP rasters</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="do">### NEED TO CHECK IF THIS IS THE CORRECT LAYER OR GET THE CORRECT ONE FROM JAMES</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>artype50_FR<span class="ot">&lt;-</span><span class="fu">project</span>(<span class="fu">resample</span>(artype50_F,npprast,<span class="at">method=</span><span class="st">&#39;near&#39;</span>),npprast)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Combine herbivores</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>allherbivores<span class="ot">&lt;-</span><span class="fu">c</span>(viltrast,livestockrast)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a><span class="co">#Mask out forest from rasters</span></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>forest_expected_herbivore_biomass<span class="ot">&lt;-</span><span class="fu">mask</span>(expected_herbivore_biomass,artype50_FR,<span class="at">maskvalues=</span><span class="dv">30</span>,<span class="at">inverse=</span><span class="cn">TRUE</span>)</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>forest_herbivores<span class="ot">&lt;-</span><span class="fu">mask</span>(allherbivores,artype50_FR,<span class="at">maskvalues=</span><span class="dv">30</span>,<span class="at">inverse=</span><span class="cn">TRUE</span>)</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>forest_carnivores<span class="ot">&lt;-</span><span class="fu">mask</span>(carnivorerast,artype50_FR,<span class="at">maskvalues=</span><span class="dv">30</span>,<span class="at">inverse=</span><span class="cn">TRUE</span>)</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>forest_expected_carnivore_biomass<span class="ot">&lt;-</span><span class="fu">mask</span>(expected_carnivore_biomass,artype50_FR,<span class="at">maskvalues=</span><span class="dv">30</span>,<span class="at">inverse=</span><span class="cn">TRUE</span>)</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a><span class="co">#Sum up selected forest herbivore species</span></span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="co">#Here we select the relevant herbivore species for the ecosystem type</span></span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>allyears_vect<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">1907</span>,<span class="dv">1917</span>,<span class="dv">1929</span>,<span class="dv">1938</span>,<span class="dv">1949</span>,<span class="dv">1959</span>,<span class="dv">1969</span>,<span class="dv">1979</span>,<span class="dv">1989</span>,<span class="dv">1999</span>,<span class="dv">2009</span>,<span class="dv">2015</span>)</span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>forest_herbivores_selectspp<span class="ot">&lt;-</span><span class="fu">rast</span>(forest_herbivores,<span class="at">nlyrs=</span><span class="dv">12</span>)</span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(allyears_vect)){</span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(i)</span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a>  forest_herbivores_selectspp[[i]]<span class="ot">&lt;-</span><span class="fu">sum</span>(forest_herbivores[[<span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(forest_herbivores),<span class="st">&quot;_&quot;</span>),<span class="st">&#39;[&#39;</span>,<span class="dv">3</span>)</span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>                                                         <span class="sc">%in%</span> allyears_vect[i] <span class="sc">&amp;</span></span>
+<span id="cb29-33"><a href="#cb29-33" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(forest_herbivores),<span class="st">&quot;_&quot;</span>),<span class="st">&#39;[&#39;</span>,<span class="dv">2</span>)</span>
+<span id="cb29-34"><a href="#cb29-34" aria-hidden="true" tabindex="-1"></a>                                                          <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;roe&quot;</span>,<span class="st">&quot;hjort&quot;</span>,<span class="st">&quot;elg&quot;</span>,<span class="st">&quot;storf&quot;</span>)]]</span>
+<span id="cb29-35"><a href="#cb29-35" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-36"><a href="#cb29-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## [1] 1
+## [1] 2
+## [1] 3
+## [1] 4
+## [1] 5
+## [1] 6
+## [1] 7
+## [1] 8
+## [1] 9
+## [1] 10
+## [1] 11
+## [1] 12</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(forest_herbivores_selectspp)<span class="ot">&lt;-</span>allyears_vect</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a> <span class="co">#Sum up selected forest carnivore species</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a> <span class="co">#Here we select the relevant carnivore species for the habitat type</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a> forest_carnivores_selectspp<span class="ot">&lt;-</span><span class="fu">rast</span>(forest_carnivores,<span class="at">nlyrs=</span><span class="dv">12</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a> <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(allyears_vect)){</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">print</span>(i)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>   forest_carnivores_selectspp[[i]]<span class="ot">&lt;-</span><span class="fu">sum</span>(forest_carnivores[[<span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(forest_carnivores),<span class="st">&quot;_&quot;</span>),<span class="st">&#39;[&#39;</span>,<span class="dv">3</span>) </span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>                                                            <span class="sc">%in%</span> allyears_vect[i] <span class="sc">&amp;</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>                                                              <span class="fu">sapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(forest_carnivores),<span class="st">&quot;_&quot;</span>),<span class="st">&#39;[&#39;</span>,<span class="dv">2</span>)</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>                                                            <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Wolf&quot;</span>,<span class="st">&quot;Lynx&quot;</span>,<span class="st">&quot;Bear&quot;</span>)]]</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>   )</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a> }</span></code></pre></div>
+<pre><code>## [1] 1
+## [1] 2
+## [1] 3
+## [1] 4
+## [1] 5
+## [1] 6
+## [1] 7
+## [1] 8
+## [1] 9
+## [1] 10
+## [1] 11
+## [1] 12</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">names</span>(forest_carnivores_selectspp)<span class="ot">&lt;-</span>allyears_vect</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a> <span class="co">#Difference in expected and actual biomass in forest</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a> forest_herbivores_selectspp_nppyrs<span class="ot">&lt;-</span>forest_herbivores_selectspp[[<span class="fu">names</span>(forest_herbivores_selectspp)<span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;1999&quot;</span>,<span class="st">&quot;2009&quot;</span>,<span class="st">&quot;2015&quot;</span>)]]</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>forest_diffherb<span class="ot">&lt;-</span><span class="dv">100</span><span class="sc">*</span>(forest_herbivores_selectspp_nppyrs <span class="sc">-</span> forest_expected_herbivore_biomass)<span class="sc">/</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a> (forest_expected_herbivore_biomass<span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co">#norcounty_shp&lt;-st_read(&quot;Vertebrates/data/Processed/&quot;,&quot;ViltdataCounty&quot;)</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a> <span class="co">#Simplify by county nr</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>norcounty<span class="ot">&lt;-</span>norcounty_shp <span class="sc">%&gt;%</span> </span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>   <span class="fu">group_by</span>(FylkeNr) <span class="sc">%&gt;%</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>   <span class="fu">summarise</span>(<span class="at">geometry =</span> <span class="fu">st_union</span>(geometry)) </span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_spatraster</span>(<span class="at">data=</span>forest_diffherb)<span class="sc">+</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">&quot;Difference in forest herbivores from expectation&quot;</span>)<span class="sc">+</span></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">scale_fill_distiller</span>(<span class="at">type=</span><span class="st">&quot;div&quot;</span>,<span class="at">palette=</span><span class="st">&#39;RdYlBu&#39;</span>,<span class="at">limit=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="dv">100</span>),<span class="at">oob=</span>squish,<span class="at">na.value=</span><span class="cn">NA</span>, <span class="st">&quot;% difference from </span><span class="sc">\n</span><span class="st">expected biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Habitat%20specific%20rasters-2.png" width="672" /></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>forest_diffcarn<span class="ot">&lt;-</span><span class="dv">100</span><span class="sc">*</span>(forest_carnivores_selectspp<span class="sc">-</span>forest_expected_carnivore_biomass)<span class="sc">/</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>   (forest_expected_carnivore_biomass<span class="sc">+</span><span class="dv">1</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_spatraster</span>(<span class="at">data=</span>forest_diffcarn)<span class="sc">+</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">&quot;Difference from expected carnivore biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">scale_fill_distiller</span>(<span class="at">type=</span><span class="st">&quot;div&quot;</span>,<span class="at">palette=</span><span class="st">&#39;RdYlBu&#39;</span>,<span class="at">limit=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="dv">100</span>),<span class="at">oob=</span>squish,<span class="at">na.value=</span><span class="cn">NA</span>,<span class="st">&quot;% difference from</span><span class="sc">\n</span><span class="st">expected biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Habitat%20specific%20rasters-3.png" width="672" /></p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># #Scaling as indicators</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_spatraster</span>(<span class="at">data=</span>forest_diffherb)<span class="sc">+</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">&quot;Difference from expected herbivore biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradientn</span>(<span class="at">colors=</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>,<span class="st">&quot;yellow&quot;</span>,<span class="st">&#39;yellow&#39;</span> ,  <span class="st">&quot;red&quot;</span>),</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="sc">-</span><span class="dv">40</span>,<span class="dv">0</span>,<span class="dv">40</span>,<span class="dv">100</span>),<span class="at">limits=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="dv">100</span>),<span class="at">na.value=</span><span class="cn">NA</span>,<span class="st">&quot;% difference from</span><span class="sc">\n</span><span class="st">expected biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Habitat%20specific%20rasters-4.png" width="672" /></p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_sf</span>(<span class="at">data=</span>norcounty,<span class="at">fill=</span><span class="st">&quot;white&quot;</span>,<span class="at">lwd=</span><span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_spatraster</span>(<span class="at">data=</span>forest_diffcarn)<span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">&quot;Difference from expected carnivore biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">scale_fill_gradientn</span>(<span class="at">colors=</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>,<span class="st">&quot;yellow&quot;</span>,<span class="st">&#39;yellow&#39;</span> ,  <span class="st">&quot;red&quot;</span>),</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="sc">-</span><span class="dv">40</span>,<span class="dv">0</span>,<span class="dv">40</span>,<span class="dv">100</span>),<span class="at">limits=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="dv">100</span>),<span class="at">na.value=</span><span class="cn">NA</span>,<span class="st">&quot;% difference from</span><span class="sc">\n</span><span class="st">expected biomass&quot;</span>)<span class="sc">+</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_wrap</span>(<span class="sc">~</span>lyr)<span class="sc">+</span><span class="fu">theme_bw</span>()</span></code></pre></div>
+<pre><code>## SpatRaster resampled to ncells = 500703</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/Habitat%20specific%20rasters-5.png" width="672" /></p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#writeRaster(forest_diffcarn,paste0(pData,&quot;/Trophic_levels/forest_carnivores_diffexpected.tif&quot;),overwrite=TRUE)</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a> <span class="co">#writeRaster(forest_diffherb,paste0(pData,&quot;/Trophic_levels/forest_herbivores_diffexpected.tif&quot;),overwrite=TRUE)</span></span></code></pre></div>
+<p>In the above maps, yellow indicates good condition (within 40% of expected biomass between 60% and 140% of expected biomass). Blue indicates poor condition, with &gt;40% less biomass than expected (i.e. &lt;60% of expected biomass), while red indicates poor conditions with &gt;40% biomass than expected (i.e. &gt;140% of expected biomass).</p>
+</div>
+<div id="part-3-county-averages-over-time" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> Part 3 County averages over time</h2>
+<p>Finally we summarise the biomass deviations by county over time. 0% deviation represents reference condition. The lines at 40% and -40% show the limits for good condition.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#forest_diffcarn&lt;-rast(&quot;Vertebrates/outputs/forest_carnivores_diffexpected.tif&quot;)</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co">#forest_diffherb&lt;-rast(&quot;Vertebrates/outputs/forest_herbivores_diffexpected.tif&quot;)</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co">#norcounty_shp&lt;-st_read(&quot;Vertebrates/data/Processed/&quot;,&quot;ViltdataCounty&quot;)</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a> <span class="co">#Simplify by county nr</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>norcounty<span class="ot">&lt;-</span>norcounty_shp <span class="sc">%&gt;%</span> </span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(FylkeNr) <span class="sc">%&gt;%</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a> <span class="fu">summarise</span>(<span class="at">geometry =</span> <span class="fu">st_union</span>(geometry)) </span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="co">#County timegraphs</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="co">#Make spatVect </span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>norcounty<span class="sc">$</span>CountyName<span class="ot">&lt;-</span>norcounty<span class="sc">$</span>FylkeNr</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="co">#Provide names (some issues with encoding...)</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>norcounty<span class="sc">$</span>CountyName<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;_stfold&quot;</span>,<span class="st">&quot;Akershus&quot;</span>,<span class="st">&quot;Oslo&quot;</span>,<span class="st">&quot;Hedmark&quot;</span>,<span class="st">&quot;Oppland&quot;</span>,<span class="st">&quot;Buskerud&quot;</span>,<span class="st">&quot;Vestfold&quot;</span>,<span class="st">&quot;Telemark&quot;</span>,<span class="st">&quot;Aust-Agder&quot;</span>,<span class="st">&quot;Vest-Agder&quot;</span>,<span class="st">&quot;Rogaland&quot;</span>,<span class="st">&quot;Hordaland&quot;</span>,<span class="st">&quot;Sogn og Fjordane&quot;</span>,</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;M_re og Romsdal&quot;</span>,<span class="st">&quot;S_r-Tr_ndelag&quot;</span>,<span class="st">&quot;Nord-Tr_ndelag&quot;</span>,<span class="st">&quot;Nordland&quot;</span>,<span class="st">&quot;Troms&quot;</span>,<span class="st">&quot;Finnmark&quot;</span>)</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>norcounty_vect<span class="ot">&lt;-</span><span class="fu">vect</span>(norcounty)</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>forest_carn_herb_county<span class="ot">&lt;-</span>terra<span class="sc">::</span><span class="fu">extract</span>(forest_diffcarn,norcounty_vect,mean,<span class="at">na.rm=</span>T)</span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>forest_carn_herb_county<span class="sc">$</span>ID<span class="ot">&lt;-</span>norcounty_vect<span class="sc">$</span>FylkeNr<span class="co">#Replace IDs with Fylke Nrs</span></span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>forest_carn_herb_county<span class="sc">$</span>CountyName<span class="ot">&lt;-</span>norcounty_vect<span class="sc">$</span>CountyName<span class="co">#Replace IDs with Fylke Nrs</span></span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>forest_carn_herb_countyDF<span class="ot">&lt;-</span><span class="fu">gather</span>(forest_carn_herb_county,<span class="at">key=</span><span class="st">&quot;Year&quot;</span>,<span class="at">value=</span><span class="st">&quot;Difference&quot;</span>,<span class="sc">-</span>ID,<span class="sc">-</span>CountyName)</span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a>forest_carn_herb_countyDF<span class="sc">$</span>YearN<span class="ot">&lt;-</span><span class="fu">as.numeric</span>(<span class="fu">substr</span>(forest_carn_herb_countyDF<span class="sc">$</span>Year,<span class="dv">2</span>,<span class="dv">5</span>))</span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>forest_carn_herb_countyDF,<span class="fu">aes</span>(<span class="at">x=</span>YearN,<span class="at">y=</span>Difference,<span class="at">color=</span>CountyName))<span class="sc">+</span><span class="fu">geom_line</span>()<span class="sc">+</span><span class="fu">scale_color_discrete</span>()<span class="sc">+</span></span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Forest: % Difference from expected carnivore biomass&quot;</span>)<span class="sc">+</span><span class="fu">theme_bw</span>()<span class="sc">+</span><span class="fu">xlim</span>(<span class="fu">c</span>(<span class="dv">1905</span>,<span class="dv">2025</span>))<span class="sc">+</span><span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">40</span>,<span class="dv">0</span>),<span class="at">lty=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))<span class="sc">+</span></span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data=</span>forest_carn_herb_countyDF[forest_carn_herb_countyDF<span class="sc">$</span>YearN<span class="sc">==</span><span class="dv">2015</span>,],<span class="fu">aes</span>(<span class="at">label =</span> CountyName, <span class="at">x =</span> <span class="dv">2015</span>, <span class="at">y =</span> Difference), <span class="at">hjust =</span> <span class="sc">-</span>.<span class="dv">1</span>) </span></code></pre></div>
+<pre><code>## Warning: Removed 228 rows containing missing values (`geom_line()`).</code></pre>
+<pre><code>## Warning: Removed 19 rows containing missing values (`geom_text()`).</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/CountySummaries-1.png" width="672" /></p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>forest_herb_veg_county<span class="ot">&lt;-</span>terra<span class="sc">::</span><span class="fu">extract</span>(forest_diffherb,norcounty_vect,mean,<span class="at">na.rm=</span>T)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>forest_herb_veg_county<span class="sc">$</span>ID<span class="ot">&lt;-</span>norcounty_vect<span class="sc">$</span>FylkeNr<span class="co">#Replace IDs with Fylke Nrs</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>forest_herb_veg_county<span class="sc">$</span>CountyName<span class="ot">&lt;-</span>norcounty_vect<span class="sc">$</span>CountyName<span class="co">#Replace IDs with Fylke Nrs</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>forest_herb_veg_countyDF<span class="ot">&lt;-</span><span class="fu">gather</span>(forest_herb_veg_county,<span class="at">key=</span><span class="st">&quot;Year&quot;</span>,<span class="at">value=</span><span class="st">&quot;Difference&quot;</span>,<span class="sc">-</span>ID,<span class="sc">-</span>CountyName)</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>forest_herb_veg_countyDF<span class="sc">$</span>YearN<span class="ot">&lt;-</span><span class="fu">as.numeric</span>(<span class="fu">substr</span>(forest_herb_veg_countyDF<span class="sc">$</span>Year,<span class="dv">2</span>,<span class="dv">5</span>))</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>forest_herb_veg_countyDF,<span class="fu">aes</span>(<span class="at">x=</span>YearN,<span class="at">y=</span>Difference,<span class="at">color=</span>CountyName))<span class="sc">+</span><span class="fu">geom_line</span>()<span class="sc">+</span><span class="fu">scale_color_discrete</span>()<span class="sc">+</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Forest: % Difference from expected herbivore biomass&quot;</span>)<span class="sc">+</span><span class="fu">theme_bw</span>()<span class="sc">+</span><span class="fu">xlim</span>(<span class="fu">c</span>(<span class="dv">1999</span>,<span class="dv">2018</span>))<span class="sc">+</span><span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">40</span>,<span class="dv">0</span>,<span class="dv">40</span>),<span class="at">lty=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>))<span class="sc">+</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data=</span>forest_herb_veg_countyDF[forest_herb_veg_countyDF<span class="sc">$</span>YearN<span class="sc">==</span><span class="dv">2015</span>,],<span class="fu">aes</span>(<span class="at">label =</span> CountyName, <span class="at">x =</span> <span class="dv">2015</span>, <span class="at">y =</span> Difference), <span class="at">hjust =</span> <span class="sc">-</span>.<span class="dv">1</span>) </span></code></pre></div>
+<pre><code>## Warning: Removed 57 rows containing missing values (`geom_line()`).
+## Removed 19 rows containing missing values (`geom_text()`).</code></pre>
+<p><img src="DRAFT_trophic_levels-biomass_indicators_files/figure-html/CountySummaries-2.png" width="672" /></p>
+</div>
+</div>
+  </main>
+
+  <div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <div id="book-on-this-page"></div>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          <li><a id="book-source" href="#">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="#">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5">
+  <div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong></strong>" was written by . </p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer>
+
+
+</body>
+
+</html>
