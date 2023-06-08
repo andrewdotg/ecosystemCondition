@@ -15,7 +15,9 @@ March 2023
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse) 
+library(stringr, lib.loc = "/usr/lib/R/site-library")
+library(tidyverse, lib.loc = "/usr/local/lib/R/site-library")
+#library(tidyverse) 
 library(stars)
 library(sf)
 library(tmap)
