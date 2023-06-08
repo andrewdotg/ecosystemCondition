@@ -23,8 +23,10 @@ The web page is made to document the work related to a R&D project to develop in
 
 `eaTools` is an R package aimed at solving common tasks in GIS oriented ecosystem accounting, especially ecosystem condition accounting. We will use functions from this package, such as this function to normalise condition variables seen in Figure \@ref(fig:eaTools-example).
 
+
 ```{r eaTools-example, fig.cap="A normalised condition variable is called an indicator. This indicator had been transformed with a sigmoid function."}
 #devtools::install_github("NINAnor/eaTools")
+
 library(eaTools)
 
 # Import example data

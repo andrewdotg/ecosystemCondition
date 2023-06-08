@@ -16,10 +16,13 @@ May 2023
 
 
 
+
 |Ecosystem |Økologisk.egenskap |ECT.class                       |
 |:---------|:------------------|:-------------------------------|
 |våtmark   |Primærproduksjon   |Functional state characteristic |
 |våtmark   |Abiotiske forhold  |Functional state characteristic |
+
+
 
 <!-- Don't remove these three html lines -->
 <br />
@@ -1446,6 +1449,14 @@ Here, we apply the following function using either a glmmTMB null-model with a b
 ```r
 library(betareg)
 library(glmmTMB)
+#> Warning in checkMatrixPackageVersion(): Package version inconsistency detected.
+#> TMB was built with Matrix version 1.5.3
+#> Current Matrix version is 1.5.1
+#> Please re-install 'TMB' from source using install.packages('TMB', type = 'source') or ask CRAN for a binary version of 'TMB' matching CRAN's 'Matrix' package
+#> Warning in checkDepPackageVersion(dep_pkg = "TMB"): Package version inconsistency detected.
+#> glmmTMB was built with TMB version 1.9.2
+#> Current TMB version is 1.9.4
+#> Please re-install glmmTMB from source or restore original 'TMB' package (see '?reinstalling' for more information)
 
 expit <- function(L) exp(L) / (1+exp(L)) # since the beta-models use a logit link, we need to calculate the estimates back to the identity scale
 

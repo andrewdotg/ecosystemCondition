@@ -1,7 +1,7 @@
 ---
 title: "Indicators for Ecosystem Condition in Norway"
 author: "Anders L. Kolstad"
-date: "2023-06-06"
+date: "2023-06-08"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
@@ -24,8 +24,10 @@ The web page is made to document the work related to a R&D project to develop in
 `eaTools` is an R package aimed at solving common tasks in GIS oriented ecosystem accounting, especially ecosystem condition accounting. We will use functions from this package, such as this function to normalise condition variables seen in Figure \@ref(fig:eaTools-example).
 
 
+
 ```r
 #devtools::install_github("NINAnor/eaTools")
+
 library(eaTools)
 
 # Import example data

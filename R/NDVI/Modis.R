@@ -6,7 +6,9 @@
 
 
 library(data.table)
-library(tidyverse)
+library(stringr, lib.loc = "/usr/lib/R/site-library")
+library(tidyverse, lib.loc = "/usr/local/lib/R/site-library")
+#library(tidyverse)
 library(sf)
 
 #############Import NiN data

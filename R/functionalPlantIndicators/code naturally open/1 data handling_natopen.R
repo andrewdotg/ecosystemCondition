@@ -3,8 +3,10 @@ library(sf)
 library(tidyr)
 library(plyr)
 library(dplyr)
-library(stringr)
-library(tidyverse)
+library(stringr, lib.loc = "/usr/lib/R/site-library")
+library(tidyverse, lib.loc = "/usr/local/lib/R/site-library")
+#library(stringr)
+#library(tidyverse)
 library(readxl)
 
 #### download from kartkatalogen to P-drive ####

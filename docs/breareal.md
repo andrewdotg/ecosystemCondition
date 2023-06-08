@@ -12,7 +12,7 @@ Anders Kolstad
 
 
 ```
-#> [1] "2023-06-06"
+#> [1] "2023-06-08"
 ```
 
 
@@ -21,9 +21,12 @@ Anders Kolstad
 
 
 
+
 |Ecosystem |Økologisk.egenskap          |ECT.class                              |
 |:---------|:---------------------------|:--------------------------------------|
 |Fjell     |Landskapsøkologiske mønstre |Landscape and seascape characteristics |
+
+
 
 <br />
 <br />
@@ -512,6 +515,8 @@ knitr::kable(myTbl)
 |Sørlandet  |    0.7033655|       3.739583|         0.1880866|
 |Vestlandet | 1077.9902876|    1372.939792|         0.7851694|
 
+
+
 Scaling and clipping the regions against the outline of Norway
 
 
@@ -629,5 +634,7 @@ knitr::kable(exp[,1:5])
 |Østlandet  |  251.3490789|  3.77023618|  365.357472| 0.6879538|MULTIPOLYGON (((236668.3 66... |
 |Vestlandet | 1077.9902876| 16.16985431| 1372.939792| 0.7851694|MULTIPOLYGON (((875.0099 64... |
 |Sørlandet  |    0.7033655|  0.01055048|    3.739583|        NA|MULTIPOLYGON (((-4329.09 64... |
+
+
 
 
