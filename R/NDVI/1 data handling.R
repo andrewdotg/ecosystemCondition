@@ -285,7 +285,10 @@ summary(SentinelNDVI.wetland)
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(hovedtype))
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(mean))
 summary(SentinelNDVI.wetland)
-
+# get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
+dim(SentinelNDVI.wetland)
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(as.numeric(area_meters) >= 100)
+dim(SentinelNDVI.wetland)
 # split date into year, month & day
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
   dplyr::mutate(year = lubridate::year(date), 
@@ -311,7 +314,10 @@ summary(SentinelNDVI.seminat)
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(hovedtype))
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(mean))
 summary(SentinelNDVI.seminat)
-
+# get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
+dim(SentinelNDVI.seminat)
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(as.numeric(area_meters) >= 100)
+dim(SentinelNDVI.seminat)
 # split date into year, month & day
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
   dplyr::mutate(year = lubridate::year(date), 
@@ -337,7 +343,10 @@ summary(SentinelNDVI.natopen)
 SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(!is.na(hovedtype))
 SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(!is.na(mean))
 summary(SentinelNDVI.natopen)
-
+# get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
+dim(SentinelNDVI.natopen)
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(as.numeric(area_meters) >= 100)
+dim(SentinelNDVI.natopen)
 # split date into year, month & day
 SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
   dplyr::mutate(year = lubridate::year(date), 
@@ -366,7 +375,10 @@ summary(ModisNDVI.wetland)
 ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(hovedtype))
 ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(mean))
 summary(ModisNDVI.wetland)
-
+# get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
+dim(ModisNDVI.wetland)
+ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(as.numeric(area_meters) >= 62500)
+dim(ModisNDVI.wetland)
 # split date into year, month & day
 ModisNDVI.wetland <- ModisNDVI.wetland %>%
   dplyr::mutate(year = lubridate::year(date), 
@@ -392,7 +404,10 @@ summary(ModisNDVI.seminat)
 ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(!is.na(hovedtype))
 ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(!is.na(mean))
 summary(ModisNDVI.seminat)
-
+# get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
+dim(ModisNDVI.seminat)
+ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(as.numeric(area_meters) >= 62500)
+dim(ModisNDVI.seminat)
 # split date into year, month & day
 ModisNDVI.seminat <- ModisNDVI.seminat %>%
   dplyr::mutate(year = lubridate::year(date), 
@@ -418,7 +433,10 @@ summary(ModisNDVI.natopen)
 ModisNDVI.natopen <- ModisNDVI.natopen %>% filter(!is.na(hovedtype))
 ModisNDVI.natopen <- ModisNDVI.natopen %>% filter(!is.na(mean))
 summary(ModisNDVI.natopen)
-
+# get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
+dim(ModisNDVI.natopen)
+ModisNDVI.natopen <- ModisNDVI.natopen %>% filter(as.numeric(area_meters) >= 62500)
+dim(ModisNDVI.natopen)
 # split date into year, month & day
 ModisNDVI.natopen <- ModisNDVI.natopen %>%
   dplyr::mutate(year = lubridate::year(date), 
@@ -446,7 +464,10 @@ summary(LandsatNDVI.wetland)
 LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(hovedtype))
 LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(mean))
 summary(LandsatNDVI.wetland)
-
+# get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
+dim(LandsatNDVI.wetland)
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(as.numeric(area_meters) >= 900)
+dim(LandsatNDVI.wetland)
 # split date into year, month & day
 LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
   dplyr::mutate(year = lubridate::year(date), 
@@ -472,7 +493,10 @@ summary(LandsatNDVI.seminat)
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(hovedtype))
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(mean))
 summary(LandsatNDVI.seminat)
-
+# get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
+dim(LandsatNDVI.seminat)
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(as.numeric(area_meters) >= 900)
+dim(LandsatNDVI.seminat)
 # split date into year, month & day
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   dplyr::mutate(year = lubridate::year(date), 
@@ -498,7 +522,10 @@ summary(LandsatNDVI.natopen)
 LandsatNDVI.natopen <- LandsatNDVI.natopen %>% filter(!is.na(hovedtype))
 LandsatNDVI.natopen <- LandsatNDVI.natopen %>% filter(!is.na(mean))
 summary(LandsatNDVI.natopen)
-
+# get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
+dim(LandsatNDVI.natopen)
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>% filter(as.numeric(area_meters) >= 900)
+dim(LandsatNDVI.natopen)
 # split date into year, month & day
 LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   dplyr::mutate(year = lubridate::year(date), 
