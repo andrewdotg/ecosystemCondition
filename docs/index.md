@@ -25,8 +25,6 @@ The web page is made to document the work related to a R&D project to develop in
 
 
 
-
-
 ```r
 #devtools::install_github("NINAnor/eaTools")
 

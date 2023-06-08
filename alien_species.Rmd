@@ -9,9 +9,7 @@ March 2023
 
 ```{r setup, include=FALSE}
 library(knitr)
-library(stringr, lib.loc = "/usr/lib/R/site-library")
-library(tidyverse, lib.loc = "/usr/local/lib/R/site-library")
-#library(tidyverse)
+library(tidyverse)
 library(sf)
 library(tmap)
 library(ggpubr)
