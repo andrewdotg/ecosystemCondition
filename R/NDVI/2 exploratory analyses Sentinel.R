@@ -1,4 +1,22 @@
 ############ working with max NDVI per year in every NiN polygon
+SentinelNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE)) %>%
+  ggplot(aes(x=as.numeric(area_meters))) + 
+  geom_histogram()
+
+SentinelNDVI.seminat %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE)) %>%
+  ggplot(aes(x=as.numeric(area_meters))) + 
+  geom_histogram()
+
+SentinelNDVI.natopen %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE)) %>%
+  ggplot(aes(x=as.numeric(area_meters))) + 
+  geom_histogram()
+
 
 #### Wetland analyses, Sentinel data ####
 # how does NDVI vary over the years (all years)
