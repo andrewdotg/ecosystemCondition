@@ -31,11 +31,11 @@ summary( betareg(mean_beta~tilstand*region,data=SentinelNDVI.wetland.max) )
 
 summary( glmmTMB(mean_beta~tilstand_num*region +(1|hovedtype/id), family=beta_family(),data=SentinelNDVI.wetland.max) )
 
-summary( betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:region + tilstand_num:hovedtype, data=SentinelNDVI.wetland.max) )
-summary( glmmTMB(mean_beta~tilstand_num + region + hovedtype + tilstand_num:region + tilstand_num:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.max) )
+summary( betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype, data=SentinelNDVI.wetland.max) )
+summary( glmmTMB(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.max) )
 
-summary( betareg(mean_beta~tilstand + region + hovedtype + tilstand:region + tilstand:hovedtype, data=SentinelNDVI.wetland.max) )
-summary( glmmTMB(mean_beta~tilstand + region + hovedtype + tilstand:region + tilstand:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.max) )
+summary( betareg(mean_beta~tilstand + region + hovedtype + tilstand:hovedtype, data=SentinelNDVI.wetland.max) )
+summary( glmmTMB(mean_beta~tilstand + region + hovedtype + tilstand:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.max) )
 
 
 SentinelNDVI.wetland.max %>%
@@ -50,3 +50,19 @@ SentinelNDVI.wetland.max %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
   facet_grid(region~hovedtype)
+
+
+
+
+
+
+sample(
+  x = c(1,0.6,0.4,0.2),
+  size = 1,
+  replace = FALSE,
+  prob = c(0.1,0.2,0.3,0.4)
+)
+
+dbeta()
+
+https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
