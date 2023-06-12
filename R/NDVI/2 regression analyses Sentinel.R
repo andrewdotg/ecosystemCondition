@@ -63,6 +63,30 @@ sample(
   prob = c(0.1,0.2,0.3,0.4)
 )
 
+
+rm(list= ls()[!(ls() %in% c('SentinelNDVI.wetland','SentinelNDVI.wetland.max','SentinelNDVI.seminat','SentinelNDVI.natopen'))])
+
+
 dbeta()
 
 https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
+
+
+mod_wetland <- betareg(mean_beta~tilstand + region + hovedtype + tilstand:hovedtype, data=SentinelNDVI.wetland.max)
+
+coef(mod_wetland)
+summary(mod_wetland)
+
+str(summary(mod_wetland))
+
+# logit-link function and inverse
+logit <- function(p) log( p / (1-p) )
+expit <- function(L) exp(L) / (1+exp(L)) 
+
+phi <- coef(mod_wetland)[25]
+# V3, Central, god
+mu <- expit(sum(coef(mod_wetland)[c(1,10)]))
+
+dbeta(seq(0,1,0.01), mu+phi, phi*(1-mu))
+plot(seq(0,1,0.01),
+     dbeta(seq(0,1,0.01), mu+phi, phi*(1-mu)))
