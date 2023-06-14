@@ -49,59 +49,73 @@ knitr::kable(metaData)
 <hr />
 
 ## Introduction
-The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and the plant productivity in the given area.
+The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and plant productivity in the given area. Different ecosystem types naturally have greenness signals of different intensity but also with a certain variance. Deviations beyond the natural variation in either direction may indicate a reduction in ecological condition of a given ecosystem. E.g. lower than normal NDVI may indicate excessive disturbance, while higher than normal NDVI may indicate regrowth and transitions towards more densely vegetated systems. In recent assessments of ecological condition for forest and mountain ecosystems, two different NDVI-based indicators were developed and applied. For forests, NDVI-values across the country were compared to a spatial reference NDVI-signal from protected areas. For mountains, the extent and consistence of the temporal change of NDVI-values over the last twenty years was assessed. In both cases, the NDVI-product from the MODIS satellite reflectance imagery was used based on available maps of spatial ecosystem extent in Norway (i.e. national maps for the forest and mountain ecosystems). Here, we explore the potential for developing an NDVI-indicator for ecological condition representing open wetland ecosystems (i.e. excluding forest swamps). For this task, two initial challenges can be identified early on:
+1) We don't yet have a national wetland map, i.e. we don't know the exact locations of all wetlands in Norway, which is a prerequisite to extract satellite data for the right locations and ecosystems, and thus achieve a good and unbiased spatial representation for the assessment area.
+2) The spatial extent of the single wetland ecosystem occurrences (hereafter 'polygons') includes many wetland areas which are way smaller than the pixel size in the MODIS imagery (250 x 250 m) which was used for forests and mountains and has a nice time series back to year 2000.
 
+In this draft development for a wetland NDVI indicator for ecological condition we approach these challenges in the following ways:
+1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the right ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of wetland ecosystems are available.
+2) We include Sentinel-II imagery for wetland ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m which is smaller than almost all wetland polygons in the NiN-data. However, since Sentinel-II only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. In addition, we still explore NDVI data from the MODIS and Landsat satellites (see more details below).
 
-of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional plant indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional condition indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021). Note that deviations from the reference may occur in both directions, e.g. the moisture signature from the testing data may be higher or lower than in the reference. Deviations in these two directions indicate very different environmental phenomena and thus have to be treated separately. Therefore, we develop two condition indicators for each functional plant indicator, a lower one and an upper one (see further down for more details).
 
 ## About the underlying data
-In the 'functional plant indicator' project for wetlands, we use three sets of data for building indicators for ecological condition:
+In the NDVI project for wetlands, we use four sets of data for building indicators for ecological condition:
 
-- as test data we use plant community data from the ANO monitoring scheme (cf. Tingstad et al. 2019)
-- as reference data we use generalized species lists from the Norwegian categorization system for eco-diversity (NiN) (cf. Halvorsen et al. 2020)
-- Swedish plant indicator data for light, moisture, pH, and nitrogen from Tyler et al. (2021)
+- NiN ecosystem data from 'Naturtypekartlegging etter Miljødirektoratets innstruks' to guide extraction of NDVI data for the right locations and to provide information on the field-assessed ecological condition of mapped polygons
+- Sentinel-II satellite NDVI data
+- MODIS satellite NDVI data
+- Landsat satellite NDVI data
 
-(1) ANO monitoring data:
-ANO stands for 'areal-representativ naturovervåking', i.e. 'area representative nature monitoring'. 1000 sites are randomly distributed across mainland Norway and visited within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the wetland-analysis in this document, we only use the plots which were classified as one of the wetland ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
-In the analysis in this document, we use the data available on Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054), which comprises data from the first three ANO-years, 2019-2021, and a total of 8887 plots in 498 sites.
+(1) NiN ecosystem data:
 
-(2) NiN reference data:
-The generalized species lists underlying the ecosystem categorization in NiN represent expert-compiled species lists based on empirical evidence from the literature and expert knowledge of the systems and their species. In these lists, every species is assigned an abundance value on a 6-step scale, with each step representing a range for the 'expected combination of frequency and cover' of occurrence (1: < 1/32, 2: 1/32 - 1/8 , 3: 1/8 - 3/8, 4: 3/8 - 4/5, 5: 3/8 - 4/5 + dominance, 6: > 4/5). For the purpose of this project, these steps are simplified to maximum 'expected combination of frequency and cover', whereby steps 4 & 5 are assigned 0.6 and 0.8, respectively, in order to distinguish between them.
+(2) Sentinel-II satellite NDVI data:
 
-(3) The Swedish plant indicator set published by Tyler et al. (2021) contains a large collection of plant indicators based on the Swedish flora, which is well representative of the Norwegian flora as well. From this set, we decided to include indicator data for light, moisture, pH, and nitrogen for wetlands as these are thought to be subject to potential change due to shrub/tree encroachment, drainage, and pollution.
+(3) MODIS satellite NDVI data:
+
+(4) Landsat satellite NDVI data:
+
+
+have to exclude all polygons smaller than the MODIS pixel size of 250 x 250 m, which reduces the number of available polygons greatly. To explore temporal trends even further back in time, we also include Landsat NDVI data, which span a time frame from ??? to ???, and have a resolution of 30 x 30 m, thus excluding only few polygons of insufficient size. 
+
+
+
+
+
+
 
 
 ### Representativity in time and space
-For wetlands, the ANO data contain 1351 plots in 330 sites, in principle distributed randomly across the country. As wetlands occur more often in certain regions of Norway than in others, the amount of plots and sites is not equal among Norway's five regions. The 1351 plots are distributed across regions in the following way:
+For wetlands, the NiN data contain 6503 wetland polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6503 wetland polygons are distributed across regions and main ecosystem types in the following way:
 
-- Northern Norway: 416
-- Central Norway:  362
-- Eastern Norway:  295
-- Western Norway:  151
-- Southern Norway: 127
+----build a matrix-table----
+
+The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the wetland occurrences in the NiN data likely are even more spatially biased than it is the case for the NDVI data from Sentinel-II and Landsat. 
 
 ### Temporal coverage
-The evaluation data cover the first three years, 2019-2021, of the first 5-year-cycle in the ANO monitoring scheme. Thus there is no actual time series to these data, and the indicator evaluation does therefore not include any temporal analyses.
+The currently available NiN data on wetland ecosystems span a time period from 2018-2021 and thus represent a contemporary sample of ecosystem occurrences. Note that none of the polygons in the NiN-data has been visited more than once during that period.
+
+Sentinel-II satellite NDVI data span the years 2015-2022.
+MODIS satellite NDVI data span the years ????-????.
+Landsat satellite NDVI data span the years ????-????.
 
 
 ## Collinearities with other indicators
-<!-- Text here -->
+The NDVI signal may likely be co-linear with the re-growth indicator based on LiDAr derived canopy height in drained wetland areas under shrub and tree encroachment.
 
 ## Reference state and values
 ### Reference state
-The reference state is defined via the functional signature of the generalized species lists in NiN (see also Töpper et al. 2018). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for ecosystem sub-types ("grunntyper" or "kartleggingsenheter" at a 1:5000 mapping scale) within the main wetland types in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
-
+This indicator project is mainly exploratory, mapping the possibilities of and lacking prerequisites for satellite derived NDVI data to inform ecological condition assessments. Therefore, we lack a concise strategy for how to define the reference state, especially prior to having access to an ecosystem map for wetland ecosystems. In this exploratory work, we will use the condition classification in the NiN-data to explore its applicability for defining a reference state. We will use statistical models to test whether or not NDVI varies systematically with condition and across time.
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
-In this analysis, we derive scaling values from statistical (here, non-parametric) distributions (see Jakobsson et al. 2010). For each ecosystem sub-type and plant functional indicator, the reference value is defined as the median value of the indicator value distribution. As in most cases the distributions naturally are two-sided (but see the Heat-requirement indicator in the mountain assessment for an example of a one-sided functional plant indicator, Fremstad et al. 2022), and deviation from the optimal state thus may occur in both direction (e.g. indicating too low or too high pH), we need to define two threshold values for good ecological condition as well as both a minimum and maximum value. In line with previous assessments of ecological condition for Norwegian forests and mountains, we define a lower and an upper threshold value via the 95% confidence interval of the reference distribution, i.e. its 0.025 and 0.975 quantiles. The minimum and maximum values are given by the minimum and maximum of the possible indicator values for each respective plant functional indicator. For details on the scaling principles in IBECA, please see Töpper & Jakobsson (2021).
-
+We will explore (i) if the condition classes in the NiN data can be used to define scaling values, and (ii) the potential for taking a probabilistic approach to scaling original NDVI values to a condition index based on probability density curves derived from above named models.
 
 ## Uncertainties
-We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area.
+Given a condition index can be achieved, we can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area.
 
 
 ## References
-Diekmann, M. 2003. Species indicator values as an important tool in applied plant ecology - a review. Basic and Applied Ecology 4: 493-506, doi:10.1078/1439-1791-00185
+
+----not referred to in text yet, but likely will :)----
 
 Framstad, E., Kolstad, A. L., Nybø, S., Töpper, J. & Vandvik, V. 2022. The condition of forest and mountain ecosystems in Norway. Assessment by the IBECA method. NINA Report 2100. Norwegian Institute for Nature Research.
 
@@ -109,26 +123,25 @@ Halvorsen, R., Skarpaas, O., Bryn, A., Bratli, H., Erikstad, L., Simensen, T., &
 
 Jakobsson, S., Töpper, J.P., Evju, M., Framstad, E., Lyngstad, A., Pedersen, B., Sickel, H., Sverdrup-Thygeson, A., Vandvik. V., Velle, L.G., Aarrestad, P.A. & Nybø, S. 2020. Setting reference levels and limits for good ecological condition in terrestrial ecosystems. Insights from a case study based on the IBECA approach. Ecological Indicators 116: 106492.
 
-Jakobsson, S., Evju, M., Framstad, E., Imbert, A., Lyngstad, A., Sickel, H., Sverdrup-Thygeson, A., Töpper, J., Vandvik, V., Velle, L.G., Aarrestad, P.A. & Nybø, S. 2021. An index-based assessment of ecological condition and its links to international frameworks. Ecological Indicators 124: 107252.
 
-Tingstad, L., Evju, M., Sickel, H., & Töpper, J. 2019. Utvikling av nasjonal arealrepresentativ naturovervåking (ANO). Forslag til gjennomføring, protokoller og kostnadsvurderinger med utgangspunkt i erfaringer fra uttesting i Trøndelag. NINA Rapport 1642.
 
 Töpper, J. & Jakobsson, S. 2021. The Index-Based Ecological Condition Assessment (IBECA) - Technical protocol, version 1.0. NINA Report 1967. Norwegian Institute for Nature Research.
 
-Töpper, J., Velle, L.G. & Vandvik, V. 2018. Developing a method for assessment of ecological state based on indicator values after Ellenberg and Grime (revised edition). NINA Report 1529b. Norwegian Institute for Nature Research.
 
-Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indicator and traits values for Swedish vascular plants. Ecological In-dicators, 120. doi:10.1016/j.ecolind.2020.106923
 
 
 ## Analyses
 ### Data sets
 
-ANO data
-
+#### NiN data
+We read the NiN data for this document from a cache at the NINA server...
 ```{r, echo = F}
 # Add data from cache
-ANO.sp<-readRDS(paste0(here::here(),"/data/cache/ANO.sp.RDS"))
-ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
+nin<-readRDS(paste0(here::here(),"/data/cache/nin.RDS"))
+```
+
+...but it can also be directly downloaded from Miiljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset)
+```{r, echo = T, eval = F}
 
 # st_layers(dsn = "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
 # ANO.sp <- st_read("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",

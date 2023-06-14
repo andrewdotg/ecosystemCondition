@@ -24,7 +24,7 @@
 
 
 
-
+library(downloader)
 library(data.table)
 library(tidyverse)
 library(lubridate)
@@ -33,7 +33,18 @@ library(sf)
 #### data upload ####
 ### Import NiN data
 nin <- st_read("R:\\GeoSpatialData\\Habitats_biotopes\\Norway_Miljodirektoratet_Naturtyper_nin\\Original\\versjon20221231\\Natur_Naturtyper_nin_norge_med_svalbard_25833\\Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
-#nin.andel <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/NiN/naturtyper_nin_20230516.gdb/naturtyper_nin_20230516.gdb")
+
+
+## alternatively download directly from kartkatalogen to P-drive
+url <- "https://nedlasting.miljodirektoratet.no/Miljodata//Naturtyper_nin/FILEGDB/4326/Naturtyper_nin_0000_norge_4326_FILEGDB.zip"
+download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", mode="w") 
+unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", 
+       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB")
+
+## read in from NINA server
+nin <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/naturtyper_nin_20230516.gdb/naturtyper_nin_20230516.gdb")
+
+
 
 ### Import region- og Norgeskart
 nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
@@ -257,6 +268,7 @@ nin.natopen <- nin.natopen %>%
 
 
 #### save and load processed NiN-data from cache ####
+saveRDS(nin, "data/cache/nin.RDS")
 saveRDS(nin.wetland, "data/cache/nin.wetland.RDS")
 saveRDS(nin.seminat, "data/cache/nin.seminat.RDS")
 saveRDS(nin.natopen, "data/cache/nin.natopen.RDS")
