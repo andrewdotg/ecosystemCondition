@@ -37,12 +37,12 @@ nin <- st_read("R:\\GeoSpatialData\\Habitats_biotopes\\Norway_Miljodirektoratet_
 
 ## alternatively download directly from kartkatalogen to P-drive
 url <- "https://nedlasting.miljodirektoratet.no/Miljodata//Naturtyper_nin/FILEGDB/4326/Naturtyper_nin_0000_norge_4326_FILEGDB.zip"
-download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", mode="w") 
+download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", mode="wb") 
 unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", 
-       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB")
-
-## read in from NINA server
-nin <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/naturtyper_nin_20230516.gdb/naturtyper_nin_20230516.gdb")
+       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/nin_data")
+st_layers("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb")
+nin.2 <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb",
+                 layer="naturtyper_nin_omr")
 
 
 
