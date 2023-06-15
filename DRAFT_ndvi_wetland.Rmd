@@ -137,21 +137,43 @@ Töpper, J. & Jakobsson, S. 2021. The Index-Based Ecological Condition Assessmen
 We read the NiN data for this document from a cache at the NINA server...
 ```{r, echo = F}
 # Add data from cache
-nin<-readRDS(paste0(here::here(),"/data/cache/nin.RDS"))
+nin <- readRDS(paste0(here::here(),"/data/cache/nin.RDS"))
 ```
 
-...but it can also be directly downloaded from Miiljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset)
+...but it can also be directly downloaded from Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset)
 ```{r, echo = T, eval = F}
 
-# st_layers(dsn = "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
-# ANO.sp <- st_read("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-#                    layer="ANO_Art")
-# ANO.geo <- st_read("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-#                   layer="ANO_SurveyPoint")
-# head(ANO.sp)
-# head(ANO.geo)
+url <- "https://nedlasting.miljodirektoratet.no/Miljodata//Naturtyper_nin/FILEGDB/4326/Naturtyper_nin_0000_norge_4326_FILEGDB.zip"
+download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", mode="wb") 
+unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", 
+       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/nin_data")
+st_layers("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb")
+nin <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb",
+                 layer="naturtyper_nin_omr")
+
 ```
 
+#### Geometry for Norway and the five regions
+
+```{r}
+# Import region- og Norgeskart, make sure they have the same geometry as the nin data
+nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
+  st_as_sf() %>%
+  st_transform(crs = st_crs(nin))
+
+reg <- st_read("data/regions.shp")%>%
+  st_as_sf() %>%
+  st_transform(crs = st_crs(nin))
+
+# change region names to something R-friendly
+reg$region
+reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway")
+
+# combine the Norway and the region maps
+regnor <- st_intersection(reg,nor)
+```
+
+#### NDVI data
 Plant indicators from Tyler et al. (2021)
 ```{r, echo = F}
 ## Tyler indicator data
