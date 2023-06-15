@@ -11,19 +11,20 @@ June 2023
 
 <!-- Load all you dependencies here -->
 ```{r setup, include=FALSE}
+library(downloader)
+library(data.table)
+library(lubridate)
 library(sf)
 library(plyr)
 library(stringr, lib.loc = "/usr/lib/R/site-library")
 library(tidyverse, lib.loc = "/usr/local/lib/R/site-library")
-library(data.table)
-library(lubridate)
 library(RColorBrewer)
 library("gridExtra") 
 library(ggridges)
 library(tmap)
 library(tmaptools)
-library(raster)
-library(stars)
+library(betareg)
+library(StepBeta)
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -55,20 +56,20 @@ The Normalized difference vegetation index (NDVI) can be used to describe the gr
 
 In this draft development for a wetland NDVI indicator for ecological condition we approach these challenges in the following ways:
 1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the right ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of wetland ecosystems are available.
-2) We include Sentinel-II imagery for wetland ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m which is smaller than almost all wetland polygons in the NiN-data. However, since Sentinel-II only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. In addition, we still explore NDVI data from the MODIS and Landsat satellites (see more details below).
+2) We include Sentinel-2 imagery for wetland ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m which is smaller than almost all wetland polygons in the NiN-data. However, since Sentinel-2 only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. In addition, we still explore NDVI data from the MODIS and Landsat satellites (see more details below).
 
 
 ## About the underlying data
 In the NDVI project for wetlands, we use four sets of data for building indicators for ecological condition:
 
 - NiN ecosystem data from 'Naturtypekartlegging etter Miljødirektoratets innstruks' to guide extraction of NDVI data for the right locations and to provide information on the field-assessed ecological condition of mapped polygons
-- Sentinel-II satellite NDVI data
+- Sentinel-2 satellite NDVI data
 - MODIS satellite NDVI data
 - Landsat satellite NDVI data
 
 (1) NiN ecosystem data:
 
-(2) Sentinel-II satellite NDVI data:
+(2) Sentinel-2 satellite NDVI data:
 
 (3) MODIS satellite NDVI data:
 
@@ -89,12 +90,12 @@ For wetlands, the NiN data contain 6503 wetland polygons of known area size acro
 
 ----build a matrix-table----
 
-The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the wetland occurrences in the NiN data likely are even more spatially biased than it is the case for the NDVI data from Sentinel-II and Landsat. 
+The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the wetland occurrences in the NiN data likely are even more spatially biased than it is the case for the NDVI data from Sentinel-2 and Landsat. 
 
 ### Temporal coverage
 The currently available NiN data on wetland ecosystems span a time period from 2018-2021 and thus represent a contemporary sample of ecosystem occurrences. Note that none of the polygons in the NiN-data has been visited more than once during that period.
 
-Sentinel-II satellite NDVI data span the years 2015-2022.
+Sentinel-2 satellite NDVI data span the years 2015-2022.
 MODIS satellite NDVI data span the years ????-????.
 Landsat satellite NDVI data span the years ????-????.
 
@@ -132,11 +133,16 @@ Töpper, J. & Jakobsson, S. 2021. The Index-Based Ecological Condition Assessmen
 
 ## Analyses
 ### Data sets
+The analyses in this document make use of the following data sets:
+-NiN data (Naturtyper etter Miljødirektoratets innstruks)
+-Sentinel-2 NDVI data
+-MODIS NDVI data
+-Landsat NDVI data
 
-#### NiN data
+#### NiN data and geometry for Norway and the five regions
 We read the NiN data for this document from a cache at the NINA server...
 ```{r, echo = F}
-# Add data from cache
+# Add NiN data from cache
 nin <- readRDS(paste0(here::here(),"/data/cache/nin.RDS"))
 ```
 
@@ -150,11 +156,8 @@ unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_
 st_layers("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb")
 nin <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb",
                  layer="naturtyper_nin_omr")
-
 ```
-
-#### Geometry for Norway and the five regions
-
+And we upload maps for Norway and the five regions: Southern, Western, Eastern, Central, adn Northern Norway
 ```{r}
 # Import region- og Norgeskart, make sure they have the same geometry as the nin data
 nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
@@ -174,6 +177,73 @@ regnor <- st_intersection(reg,nor)
 ```
 
 #### NDVI data
+All NDVI data are calculated mean NDVI values for each respective NiN polygon from each available Sentinel-2, MODIS, or Landsat image in Google Earth Engine (GEE). 
+
+##### Sentinel-2 NDVI data
+The GEE code can be seen here: https://code.earthengine.google.com/2ceb0c3e03adade9e6f6d0903184b8c4
+The image collection contains Sentinel imagery from June, July and August 2015-2022
+To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
+```{r}
+# Import Sentinel NDVI Data
+df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
+  map_df(~fread(.))
+df.s
+```
+
+##### MODIS NDVI data
+The GEE code can be seen here: https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84
+The image collection contains MODIS imagery from June, July and August 2000-2022
+
+```{r}
+# Import MODIS NDVI Data
+# MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
+df.m<- read.csv("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_MODIS\\modis_ndvi_ts_2000_2022.csv", )
+df.m
+df.m$mean<-df.m$mean/10000
+df.m
+```
+
+##### Landsat NDVI data
+The GEE code can be seen here: https://code.earthengine.google.com/da8a9279238ef26d14be08a43788b6b7
+The image collection contains Landsat imagery from June, July and August 1984-2022
+To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
+```{r}
+# Import Landsat NDVI Data
+# Set up conditional file paths
+dir <- substr(getwd(), 1,2)
+
+path <- ifelse(dir == "C:", 
+               "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
+               "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
+
+pData <- ifelse(dir == "C:", 
+                "P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat",
+                "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat")
+
+
+# Fread doesn't like the weird path to the server version of the P drive
+# hence this horrendous work around
+files=list.files(pData, pattern = "*.csv", full.names = TRUE)
+
+df_list<-list()# initialise a list of dataframes
+# read in a dataframe in each slot of the df_list
+for (i in files){
+  name <- gsub("-",".",i)
+  name <- gsub(".csv","",name)  
+  i <- paste(i,sep="")
+  df_list[[i]]=assign(name,read.csv(i, header=TRUE))
+}  
+
+df.l<-bind_rows(df_list, .id = "column_label")
+df.l
+
+```
+
+### Data handling
+
+
+
+
 Plant indicators from Tyler et al. (2021)
 ```{r, echo = F}
 ## Tyler indicator data
