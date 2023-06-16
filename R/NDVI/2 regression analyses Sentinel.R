@@ -10,59 +10,53 @@ SentinelNDVI.wetland %>%
   geom_violin() +
   facet_grid( region~hovedtype)
 
-
+#library(glmmTMB)
 library(betareg)
-library(glmmTMB)
 library(StepBeta)
 SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
 
-
-SentinelNDVI.wetland.max <- SentinelNDVI.wetland %>%
-  filter(year != '2022') %>%
-  
-  filter(year == kartleggingsaar) %>%
-  
-  group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE))
+# NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
+SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
+  filter(year == kartleggingsaar)
 
 # make an extra numeric condition variable
-unique(SentinelNDVI.wetland.max$tilstand)
-SentinelNDVI.wetland.max <- SentinelNDVI.wetland.max %>% mutate(tilstand_num = recode(tilstand, 
+unique(SentinelNDVI.wetland.train$tilstand)
+SentinelNDVI.wetland.train <- SentinelNDVI.wetland.train %>% mutate(tilstand_num = recode(tilstand, 
                                             "God" = '1',
                                             "Moderat" = '2',
                                             "Redusert" = '3',
                                             "Svært redusert" = '4'))
-SentinelNDVI.wetland.max$tilstand_num <- as.numeric(SentinelNDVI.wetland.max$tilstand_num)
+SentinelNDVI.wetland.train$tilstand_num <- as.numeric(SentinelNDVI.wetland.train$tilstand_num)
 
-summary(SentinelNDVI.wetland.max$tilstand_num)
+summary(SentinelNDVI.wetland.train$tilstand_num)
   
   
 
-summary( betareg(mean_beta~tilstand_num*region,data=SentinelNDVI.wetland.max) )
+summary( betareg(mean_beta~tilstand_num*region,data=SentinelNDVI.wetland.train) )
 
-summary( betareg(mean_beta~tilstand*region,data=SentinelNDVI.wetland.max) )
-
-
-summary( glmmTMB(mean_beta~tilstand_num*region +(1|hovedtype/id), family=beta_family(),data=SentinelNDVI.wetland.max) )
-
-summary( betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype, data=SentinelNDVI.wetland.max) )
-summary( glmmTMB(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.max) )
-
-summary( betareg(mean_beta~tilstand + region + hovedtype + tilstand:hovedtype, data=SentinelNDVI.wetland.max) )
-summary( glmmTMB(mean_beta~tilstand + region + hovedtype + tilstand:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.max) )
+summary( betareg(mean_beta~tilstand*region,data=SentinelNDVI.wetland.train) )
 
 
-summary( glmmTMB(mean_beta~tilstand*region*hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.max) )
+summary( glmmTMB(mean_beta~tilstand_num*region +(1|hovedtype/id), family=beta_family(),data=SentinelNDVI.wetland.train) )
+
+summary( betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype, data=SentinelNDVI.wetland.train) )
+summary( glmmTMB(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.train) )
+
+summary( betareg(mean_beta~tilstand + region + hovedtype + tilstand:hovedtype, data=SentinelNDVI.wetland.train) )
+summary( glmmTMB(mean_beta~tilstand + region + hovedtype + tilstand:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.train) )
 
 
-SentinelNDVI.wetland.max %>%
+summary( glmmTMB(mean_beta~tilstand*region*hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.train) )
+
+
+SentinelNDVI.wetland.train %>%
   filter(region=="Northern Norway") %>%
   
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
   facet_wrap( ~hovedtype)
 
-SentinelNDVI.wetland.max %>%
+SentinelNDVI.wetland.train %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
@@ -81,7 +75,7 @@ sample(
 )
 
 
-rm(list= ls()[!(ls() %in% c('SentinelNDVI.wetland','SentinelNDVI.wetland.max','SentinelNDVI.seminat','SentinelNDVI.natopen'))])
+rm(list= ls()[!(ls() %in% c('SentinelNDVI.wetland','SentinelNDVI.wetland.train','SentinelNDVI.seminat','SentinelNDVI.natopen'))])
 
 
 dbeta()
@@ -89,10 +83,10 @@ dbeta()
 https://stats.stackexchange.com/questions/12232/calculating-the-parameters-of-a-beta-distribution-using-the-mean-and-variance
 
 
-mod_wetland.full <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.max)
-mod_wetland.1 <- betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype + tilstand_num:region + hovedtype:region, data=SentinelNDVI.wetland.max)
+mod_wetland.full <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train)
+mod_wetland.1 <- betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype + tilstand_num:region + hovedtype:region, data=SentinelNDVI.wetland.train)
 summary(mod_wetland.1)
-mod_wetland.2 <- betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype + tilstand_num:region, data=SentinelNDVI.wetland.max)
+mod_wetland.2 <- betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype + tilstand_num:region, data=SentinelNDVI.wetland.train)
 summary(mod_wetland.2)
 
 StepBeta(mod_wetland.1)

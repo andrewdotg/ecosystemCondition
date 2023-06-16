@@ -1,9 +1,14 @@
 ############ working with max NDVI per year in every NiN polygon
-SentinelNDVI.wetland %>%
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE)) %>%
-  ggplot(aes(x=as.numeric(area_meters))) + 
-  geom_histogram()
+  filter(mean == max(mean, na.rm=TRUE))
+
+## distribution of polygon sizes
+summary(SentinelNDVI.wetland$area_meters)
+
+hist(SentinelNDVI.wetland$area_meters,xlim=c(0,20000),breaks=50000)
+abline(v=100,lty=2)
+
 
 SentinelNDVI.seminat %>%
   group_by(id, year) %>%

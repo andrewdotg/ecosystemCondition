@@ -240,8 +240,315 @@ df.l
 ```
 
 ### Data handling
+#### NiN data
+```{r, echo = T, eval = F}
+# fixing variable- and ecosystem-names with special characters
+colnames(nin)
+colnames(nin)[c(3,8,17,26,31,33,34)] <- c("hovedoekosystem","kartleggingsaar","noyaktighet",
+                                       "omraadenavn","uk_naertruet","uk_sentraloekosystemfunksjon",
+                                       "uk_spesieltdaarligkartlagt")
+unique(nin$hovedoekosystem)
+
+nin <- nin %>% mutate(hovedoekosystem = recode(hovedoekosystem, 
+                                 "Våtmark" = 'Vaatmark',
+                                 "Semi-naturlig mark" = 'Semi_naturlig',
+                                 "Naturlig åpne områder i lavlandet" = 'Naturlig-aapne',
+                                 "Naturlig åpne områder under skoggrensa" = 'Naturlig_aapne')) %>%
+  mutate(validGeo = st_is_valid(SHAPE))
+
+# checking how many polygons have multiple ecosystem types
+unique(nin$ninkartleggingsenheter)
+
+nrow(nin)
+# 95469 polygons altogether
+nrow(nin %>%
+  filter(grepl(',', ninkartleggingsenheter))
+)
+# 21094 polygons have more than 1 ecosystem type (they are separated by commas in the ninkartleggingsenheter-variable)
+
+nrow(nin %>%
+       filter(!grepl(',', ninkartleggingsenheter))
+)
+# 74375 polygons should have only 1 ecosystem type
+
+# there's no information on the proportion of ecosystem types in the polygons, so we got to omit all polygons with multiple ecosystem types :(
+nin <- nin %>%
+  filter(!grepl(',', ninkartleggingsenheter))
+
+# fix the content in the ninkartleggingsenheter-variable
+summary(as.factor(nin$ninkartleggingsenheter))
+# get rid of the NA- in the beginning
+nin <- nin %>% mutate(ninkartleggingsenheter = str_remove(ninkartleggingsenheter, 'NA_'))
+# making a main ecosystem type variable
+nin <- nin %>% mutate(hovedtype = substr(ninkartleggingsenheter, 1, 3),
+               hovedtype = str_remove(hovedtype, '-'))
+# checking mapping unit against main ecosystem type
+nin[,c("hovedoekosystem","hovedtype")]
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Vaatmark"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Semi_naturlig"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Naturlig_aapne"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Skog"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Fjell"]))
+# making a new variable for the overarching ecosystem types based on the main ecosystem types
+nin$hovedoekosystem.orig <- nin$hovedoekosystem
+
+nin <- nin %>%
+  mutate(hovedoekosystem = case_when(hovedtype %in% paste("V",c(1,3:7,9:10),sep="") ~ 'Vaatmark',
+                                     hovedtype %in% paste("V",11:13,sep="") ~ 'Vaatmark_sterkt_endret',
+                                     hovedtype %in% paste("T",c(31:34,40:41),sep="") ~ 'Semi_naturlig',
+                                     hovedtype %in% paste("T",c(2,12,18,20:21),sep="") ~ 'Naturlig_aapent',
+                                     hovedtype %in% c(paste("T",c(4,30,38),sep=""),paste("V",c(2,8),sep="")) ~ 'Skog',
+                                     hovedtype %in% c(paste("T",c(3,7,9,10,14,22,26),sep=""),paste("V",c(6,7),sep="")) ~ 'Fjell',
+                                     TRUE ~ 'NA'))
 
 
+summary(as.factor(nin$tilstand))
+
+nin <- nin %>% mutate(tilstand = recode(tilstand,
+                                        "Dårlig" = "Redusert",
+                                        "Svært redusert" = "Svaert_redusert"))
+summary(as.factor(nin$tilstand))
+
+
+
+# need to split the ninbeskrivelsesvariabler-column into one per variable and these then into two for the variable name and value
+levels(as.factor(nin$ninbeskrivelsesvariabler))
+
+nin2 <- nin %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
+  separate(col = ninbeskrivelsesvariabler,
+           into = c("NiN_variable_code", "NiN_variable_value"),
+           sep = "_",
+           remove=F) %>%
+  mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
+  mutate(NiN_variable_code = as.factor(NiN_variable_code))
+
+nin2$NiN_variable_code <- as.factor(paste0("var_", nin2$NiN_variable_code, "_end",sep=""))
+
+nin3 <- nin2 %>%
+  pivot_wider(
+    names_from = "NiN_variable_code",
+    values_from = "NiN_variable_value"
+  )
+# this does not do what it is expected to do. nrow(nin3) should go down towards nrow(nin), but it stays at almost nrow(nin2)
+# continue with nin for now, ignoring the beskrivelsesvariabler and only using information from 'tilstand'
+rm(nin2)
+rm(nin3)
+
+
+
+
+## filter out only wetland data
+nin.wetland <- nin %>% 
+  filter(hovedoekosystem %in% c('Vaatmark')) %>%
+  mutate(id = identifikasjon_lokalid) %>%
+  filter(validGeo) %>%
+  drop_na(tilstand) %>%
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, kartleggingsaar)
+
+
+# merge NiN-data with region
+nin.wetland = st_join(nin.wetland, regnor, left = TRUE)
+nin.wetland
+
+colnames(nin.wetland)[c(1,8)] <- c("id","region_id")
+
+nin.wetland <- nin.wetland %>% 
+  mutate(area_meters_nin = st_area(nin.wetland)
+  )
+
+```
+
+```{r, echo = F}
+
+#load processed NiN-data from cache
+nin.wetland <- readRDS(paste0(here::here(),"/data/cache/nin.wetland.RDS"))
+
+```
+
+#### NDVI data
+```{r}
+## Sentinel-2
+# join nin.wetland & Sentinel NDVI data
+SentinelNDVI.wetland <- full_join(nin.wetland, df.s, by="id")
+summary(SentinelNDVI.wetland)
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+  mutate(hovedoekosystem = as.factor(hovedoekosystem),
+         hovedtype = as.factor(hovedtype),
+         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
+         lokalitetskvalitet = as.factor(lokalitetskvalitet),
+         tilstand = as.factor(tilstand),
+         area_meters = st_area(SentinelNDVI.wetland))
+summary(SentinelNDVI.wetland)
+# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(hovedtype))
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(mean))
+summary(SentinelNDVI.wetland)
+# get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
+dim(SentinelNDVI.wetland)
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(as.numeric(area_meters) >= 100)
+dim(SentinelNDVI.wetland)
+# split date into year, month & day
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
+# add column for sub-ecosystem types
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
+                                                        subtype = str_remove(subtype, '-'))
+# we are using max NDVI per year in every NiN polygon
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+
+summary(SentinelNDVI.wetland)
+
+## MODIS
+# join nin.wetland and Modis NDVI data
+ModisNDVI.wetland <- full_join(nin.wetland, df.m, by="id")
+
+summary(ModisNDVI.wetland)
+ModisNDVI.wetland <- ModisNDVI.wetland %>%
+  mutate(hovedoekosystem = as.factor(hovedoekosystem),
+         hovedtype = as.factor(hovedtype),
+         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
+         lokalitetskvalitet = as.factor(lokalitetskvalitet),
+         tilstand = as.factor(tilstand),
+         area_meters = st_area(ModisNDVI.wetland))
+summary(ModisNDVI.wetland)
+# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(hovedtype))
+ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(mean))
+summary(ModisNDVI.wetland)
+# get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
+dim(ModisNDVI.wetland)
+ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(as.numeric(area_meters) >= 62500)
+dim(ModisNDVI.wetland)
+# split date into year, month & day
+ModisNDVI.wetland <- ModisNDVI.wetland %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
+# we are using max NDVI per year in every NiN polygon
+ModisNDVI.wetland <- ModisNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+summary(ModisNDVI.wetland)
+
+## Landsat
+# join nin.wetland & Landsat NDVI data
+LandsatNDVI.wetland <- full_join(nin.wetland, df.l, by="id")
+
+summary(LandsatNDVI.wetland)
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+  mutate(hovedoekosystem = as.factor(hovedoekosystem),
+         hovedtype = as.factor(hovedtype),
+         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
+         lokalitetskvalitet = as.factor(lokalitetskvalitet),
+         tilstand = as.factor(tilstand),
+         area_meters = st_area(LandsatNDVI.wetland))
+summary(LandsatNDVI.wetland)
+# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(hovedtype))
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(mean))
+summary(LandsatNDVI.wetland)
+# get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
+dim(LandsatNDVI.wetland)
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(as.numeric(area_meters) >= 900)
+dim(LandsatNDVI.wetland)
+# split date into year, month & day
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
+# we are using max NDVI per year in every NiN polygon
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+
+summary(LandsatNDVI.wetland)
+```
+
+
+### Exploratory analyses, Sentinel-2
+
+```{r}
+## how are polygon sizes distributed?
+summary(SentinelNDVI.wetland$area_meters)
+
+hist(SentinelNDVI.wetland$area_meters,xlim=c(0,20000),breaks=50000)
+abline(v=100,lty=2)
+
+## how does NDVI vary over the years (all years)
+SentinelNDVI.wetland %>%
+  ggplot( aes(x=year, y=mean )) + 
+  geom_point() +
+  facet_grid( tilstand~hovedtype)
+# 2022 stands out with the highest NDVI values missing
+# the pattern is strange, suggest to omit 2022 for this analysis
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != '2022')
+
+## NDVI across hovedtyper (only for NDVI years data matching NiN-mapping years)
+SentinelNDVI.wetland %>%
+  filter(year == kartleggingsaar) %>%
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  facet_wrap( ~hovedtype)
+# NDVI largely varies between hovedtyper: higher in seminat wet-meadows (V10), lowest in ombrotrophic bogs (V3)
+# @Tilstand: in seminat types, kaldkilde, and bogs ndvi seems to increase as condition deteriorates, in fens not much of a pattern
+
+
+## looking at subtypes for polygons in good condition only (and only for NDVI data matching NiN-mapping)
+SentinelNDVI.wetland %>%
+  filter(tilstand == 'God') %>%
+  filter(year == kartleggingsaar) %>%
+  ggplot(aes(x=subtype, y=mean )) + 
+  geom_violin() +
+  facet_wrap( ~hovedtype)
+# NDVI varies between ecosystem subtypes
+# -at least equally much as between main ecosystem types
+# -stronger than between condition classes in previous plots
+
+```
+
+
+### Regression analyses, NDVI as a function of condition, Sentinel-2
+```{r}
+# NDVI data are bound between -1 and 1, and thus require modelling with an appropriate method that handles bounded data
+# we can transform the variable to be bounded between 0 and 1 and use beta-regression models
+SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
+# NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
+SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
+  filter(year == kartleggingsaar)
+
+summary( betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train) )
+# full model does not work, remove the 3-way interaction
+summary( betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:region + tilstand_num:hovedtype + region:hovedtype, data=SentinelNDVI.wetland.train) )
+# this works! Let's run a stepwise-function to fin the most parsimonious model
+model.wetland.train <- betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:region + tilstand_num:hovedtype + region:hovedtype, data=SentinelNDVI.wetland.train)
+model.wetland.train <- StepBeta(model.wetland.train)
+summary(model.wetland.train)
+```
+
+NDVI values do vary between:
+- Regions
+- Ecosystem types
+- Condition classes
+
+Since the 3-way interaction term was not possible to be evaluated by the model, but it is evident that all three variables matter, we run the model separately for every region
+```{r}
+model.wetland.train.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Northern Norway",])
+model.wetland.train.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Central Norway",])
+model.wetland.train.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Western Norway",])
+model.wetland.train.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Eastern Norway",])
+model.wetland.train.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Southern Norway",])
+
+```
+
+
+### Regression analyses, NDVI across time
+
+
+### Scaled value calculations
 
 
 Plant indicators from Tyler et al. (2021)
