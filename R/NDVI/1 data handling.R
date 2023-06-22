@@ -178,22 +178,37 @@ summary(as.factor(nin$tilstand))
 # need to split the ninbeskrivelsesvariabler-column into one per variable and these then into two for the variable name and value
 levels(as.factor(nin$ninbeskrivelsesvariabler))
 
+# two attempts of doing that
 nin2 <- nin %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
   separate(col = ninbeskrivelsesvariabler,
            into = c("NiN_variable_code", "NiN_variable_value"),
            sep = "_",
            remove=F) %>%
   mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
-  mutate(NiN_variable_code = as.factor(NiN_variable_code))
+  mutate(NiN_variable_code = as.factor(NiN_variable_code)) %>%
+  subset(select = -ninbeskrivelsesvariabler)
 
-nin2$NiN_variable_code <- as.factor(paste0("var_", nin2$NiN_variable_code, "_end",sep=""))
+nin2 <- as.data.frame(nin2)
+
+# or
+nin2<- nin %>% 
+  mutate(ninbeskrivelsesvariabler = strsplit(as.character(ninbeskrivelsesvariabler), ",")) %>% 
+  unnest(ninbeskrivelsesvariabler) %>%
+  separate(col=ninbeskrivelsesvariabler, into=c('NiN_variable_code', 'NiN_variable_value'), sep='_')
+
+nin2 <- as.data.frame(nin2)
+
+#nin2$NiN_variable_code <- as.factor(paste0("var_", nin2$NiN_variable_code, "_end",sep=""))
 
 nin3 <- nin2 %>%
   pivot_wider(
     names_from = "NiN_variable_code",
     values_from = "NiN_variable_value"
   )
-# this does not do what it is expected to do. nrow(nin3) should go down towards nrow(nin), but it stays at almost nrow(nin2)
+
+nin3 <- as.data.frame(nin3)
+
+
 # continue with nin for now, ignoring the beskrivelsesvariabler and only using information from 'tilstand'
 rm(nin2)
 rm(nin3)
@@ -552,3 +567,4 @@ summary(LandsatNDVI.natopen)
 
 
 
+#rm(list= ls()[!(ls() %in% c('SentinelNDVI.wetland','ModisNDVI.wetland','LandsatNDVI.wetland'))])

@@ -9,6 +9,7 @@ SentinelNDVI.wetland %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
   facet_grid( region~hovedtype)
+# V4 has lacking data for quite some condition classes in most regions
 
 #library(glmmTMB)
 library(betareg)
@@ -16,8 +17,10 @@ library(StepBeta)
 SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
 
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
+# we drop V4 for the analysis as it lacks data for most combinations of condition and region
 SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
-  filter(year == kartleggingsaar)
+  filter(year == kartleggingsaar) %>%
+  filter(hovedtype != 'V4')
 
 # make an extra numeric condition variable
 unique(SentinelNDVI.wetland.train$tilstand)

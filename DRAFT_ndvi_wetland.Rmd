@@ -310,31 +310,11 @@ nin <- nin %>% mutate(tilstand = recode(tilstand,
 summary(as.factor(nin$tilstand))
 
 
-
-# need to split the ninbeskrivelsesvariabler-column into one per variable and these then into two for the variable name and value
-levels(as.factor(nin$ninbeskrivelsesvariabler))
-
-nin2 <- nin %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
-  separate(col = ninbeskrivelsesvariabler,
-           into = c("NiN_variable_code", "NiN_variable_value"),
-           sep = "_",
-           remove=F) %>%
-  mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
-  mutate(NiN_variable_code = as.factor(NiN_variable_code))
-
-nin2$NiN_variable_code <- as.factor(paste0("var_", nin2$NiN_variable_code, "_end",sep=""))
-
-nin3 <- nin2 %>%
-  pivot_wider(
-    names_from = "NiN_variable_code",
-    values_from = "NiN_variable_value"
-  )
-# this does not do what it is expected to do. nrow(nin3) should go down towards nrow(nin), but it stays at almost nrow(nin2)
-# continue with nin for now, ignoring the beskrivelsesvariabler and only using information from 'tilstand'
-rm(nin2)
-rm(nin3)
-
-
+##############################
+##############################
+# code on ninbeskrivelsesvariabler here if relevant
+##############################
+##############################
 
 
 ## filter out only wetland data
@@ -508,6 +488,20 @@ SentinelNDVI.wetland %>%
 # -at least equally much as between main ecosystem types
 # -stronger than between condition classes in previous plots
 
+
+## looking at ndvi in different condition classes, separately for main types and regions  (only for NDVI data matching NiN-mapping)
+SentinelNDVI.wetland %>%
+  filter(year != '2022') %>%
+  
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE)) %>%
+  
+  filter(year == kartleggingsaar) %>%
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  facet_grid( region~hovedtype)
+# V4 has lacking data for quite some condition classes in most regions
+
 ```
 
 
@@ -517,14 +511,14 @@ SentinelNDVI.wetland %>%
 # we can transform the variable to be bounded between 0 and 1 and use beta-regression models
 SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
-SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
-  filter(year == kartleggingsaar)
+# we drop V4 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
 
-summary( betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train) )
-# full model does not work, remove the 3-way interaction
-summary( betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:region + tilstand_num:hovedtype + region:hovedtype, data=SentinelNDVI.wetland.train) )
-# this works! Let's run a stepwise-function to fin the most parsimonious model
-model.wetland.train <- betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:region + tilstand_num:hovedtype + region:hovedtype, data=SentinelNDVI.wetland.train)
+SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
+  filter(year == kartleggingsaar) %>%
+  filter(hovedtype != 'V4')
+
+# We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
+model.wetland.train <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train)
 model.wetland.train <- StepBeta(model.wetland.train)
 summary(model.wetland.train)
 ```
@@ -534,7 +528,7 @@ NDVI values do vary between:
 - Ecosystem types
 - Condition classes
 
-Since the 3-way interaction term was not possible to be evaluated by the model, but it is evident that all three variables matter, we run the model separately for every region
+It is evident that all three variables matter, for ease of interpretation we run the model separately for every region
 ```{r}
 model.wetland.train.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Northern Norway",])
 model.wetland.train.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Central Norway",])
