@@ -1,3 +1,10 @@
+# make sure to run these if not running script '2 exploratory analyses Sentinel'
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != '2022')
+
+
 # NDVI across hovedtyper (only for NDVI years data matching NiN-mapping years)
 SentinelNDVI.wetland %>%
   filter(year != '2022') %>%
@@ -25,50 +32,62 @@ SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
 # make an extra numeric condition variable
 unique(SentinelNDVI.wetland.train$tilstand)
 SentinelNDVI.wetland.train <- SentinelNDVI.wetland.train %>% mutate(tilstand_num = recode(tilstand, 
-                                            "God" = '1',
-                                            "Moderat" = '2',
-                                            "Redusert" = '3',
-                                            "Svært redusert" = '4'))
+                                            "God" = '0',
+                                            "Moderat" = '1',
+                                            "Redusert" = '2',
+                                            "Svært redusert" = '3'))
 SentinelNDVI.wetland.train$tilstand_num <- as.numeric(SentinelNDVI.wetland.train$tilstand_num)
 
 summary(SentinelNDVI.wetland.train$tilstand_num)
   
   
 
-summary( betareg(mean_beta~tilstand_num*region,data=SentinelNDVI.wetland.train) )
+model.wetland.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train)
+model.wetland.cond.Sent <- StepBeta(model.wetland.cond.Sent)
+summary(model.wetland.cond.Sent)
 
-summary( betareg(mean_beta~tilstand*region,data=SentinelNDVI.wetland.train) )
-
-
-summary( glmmTMB(mean_beta~tilstand_num*region +(1|hovedtype/id), family=beta_family(),data=SentinelNDVI.wetland.train) )
-
-summary( betareg(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype, data=SentinelNDVI.wetland.train) )
-summary( glmmTMB(mean_beta~tilstand_num + region + hovedtype + tilstand_num:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.train) )
-
-summary( betareg(mean_beta~tilstand + region + hovedtype + tilstand:hovedtype, data=SentinelNDVI.wetland.train) )
-summary( glmmTMB(mean_beta~tilstand + region + hovedtype + tilstand:hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.train) )
+#summary( glmmTMB(mean_beta~tilstand*region*hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.train) )
 
 
-summary( glmmTMB(mean_beta~tilstand*region*hovedtype +(1|id), family=beta_family(),data=SentinelNDVI.wetland.train) )
+# separate models per region
+model.wetland.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Northern Norway",])
+model.wetland.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Central Norway",])
+model.wetland.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Western Norway",])
+model.wetland.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Eastern Norway",])
+model.wetland.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Southern Norway",])
 
 
-SentinelNDVI.wetland.train %>%
-  filter(region=="Northern Norway") %>%
-  
-  ggplot( aes(x=tilstand, y=mean )) + 
-  geom_violin() +
-  facet_wrap( ~hovedtype)
 
 SentinelNDVI.wetland.train %>%
+  filter(!is.na(region)) %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
   facet_grid(region~hovedtype)
 
 
+summary(model.wetland.cond.Sent.N)
+summary(model.wetland.cond.Sent.C)
+summary(model.wetland.cond.Sent.E)
+summary(model.wetland.cond.Sent.W)
+summary(model.wetland.cond.Sent.S)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+# playing with probability density functions
 
 sample(
   x = c(1,0.6,0.4,0.2),

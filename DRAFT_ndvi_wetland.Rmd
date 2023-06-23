@@ -323,7 +323,7 @@ nin.wetland <- nin %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
-  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, kartleggingsaar)
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, ninbeskrivelsesvariabler, kartleggingsaar)
 
 
 # merge NiN-data with region
@@ -335,6 +335,12 @@ colnames(nin.wetland)[c(1,8)] <- c("id","region_id")
 nin.wetland <- nin.wetland %>% 
   mutate(area_meters_nin = st_area(nin.wetland)
   )
+# check and edit the order of regions
+levels(nin.wetland$region)
+nin.wetland$region <- as.factor(nin.wetland$region)
+levels(nin.wetland$region)
+nin.wetland$region <- factor(nin.wetland$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
+levels(nin.wetland$region)
 
 ```
 
@@ -517,24 +523,37 @@ SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
   filter(year == kartleggingsaar) %>%
   filter(hovedtype != 'V4')
 
-# We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
-model.wetland.train <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train)
-model.wetland.train <- StepBeta(model.wetland.train)
-summary(model.wetland.train)
-```
+# make an extra numeric condition variable
+unique(SentinelNDVI.wetland.train$tilstand)
+SentinelNDVI.wetland.train <- SentinelNDVI.wetland.train %>% mutate(tilstand_num = recode(tilstand, 
+                                            "God" = '0',
+                                            "Moderat" = '1',
+                                            "Redusert" = '2',
+                                            "Svært redusert" = '3'))
+SentinelNDVI.wetland.train$tilstand_num <- as.numeric(SentinelNDVI.wetland.train$tilstand_num)
 
+
+# We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
+model.wetland.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train)
+model.wetland.cond.Sent <- StepBeta(model.wetland.cond.Sent)
+summary(model.wetland.cond.Sent)
+```
 NDVI values do vary between:
 - Regions
 - Ecosystem types
 - Condition classes
 
-It is evident that all three variables matter, for ease of interpretation we run the model separately for every region
+It is evident that there are differences between regions. But since we are not interested in the statistics for region differences, we run separate models for every region for ease of interpretation.
+```{r, include = F}
+rm(model.wetland.cond.Sent)
+```
+
 ```{r}
-model.wetland.train.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Northern Norway",])
-model.wetland.train.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Central Norway",])
-model.wetland.train.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Western Norway",])
-model.wetland.train.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Eastern Norway",])
-model.wetland.train.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Southern Norway",])
+model.wetland.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Northern Norway",])
+model.wetland.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Central Norway",])
+model.wetland.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Western Norway",])
+model.wetland.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Eastern Norway",])
+model.wetland.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Southern Norway",])
 
 ```
 

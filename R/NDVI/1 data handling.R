@@ -26,9 +26,18 @@
 
 library(downloader)
 library(data.table)
-library(tidyverse)
 library(lubridate)
 library(sf)
+library(plyr)
+library(stringr)
+library(tidyverse)
+library(RColorBrewer)
+library("gridExtra") 
+library(ggridges)
+library(tmap)
+library(tmaptools)
+library(betareg)
+library(StepBeta)
 
 #### data upload ####
 ### Import NiN data
@@ -175,6 +184,7 @@ summary(as.factor(nin$tilstand))
 
 
 
+  
 # need to split the ninbeskrivelsesvariabler-column into one per variable and these then into two for the variable name and value
 levels(as.factor(nin$ninbeskrivelsesvariabler))
 
@@ -222,19 +232,24 @@ nin.wetland <- nin %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
-  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, kartleggingsaar)
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, ninbeskrivelsesvariabler, kartleggingsaar)
 
 
 # merge NiN-data with region
 nin.wetland = st_join(nin.wetland, regnor, left = TRUE)
 nin.wetland
 
-colnames(nin.wetland)[c(1,8)] <- c("id","region_id")
+colnames(nin.wetland)[c(1,9)] <- c("id","region_id")
 
 nin.wetland <- nin.wetland %>% 
   mutate(area_meters_nin = st_area(nin.wetland)
   )
-
+# check and edit the order of regions
+levels(nin.wetland$region)
+nin.wetland$region <- as.factor(nin.wetland$region)
+levels(nin.wetland$region)
+nin.wetland$region <- factor(nin.wetland$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
+levels(nin.wetland$region)
 
 
 
@@ -245,17 +260,23 @@ nin.seminat <- nin %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
-  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, kartleggingsaar)
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, ninbeskrivelsesvariabler, kartleggingsaar)
 
 # merge NiN-data with region
 nin.seminat = st_join(nin.seminat, regnor, left = TRUE)
 nin.seminat
 
-colnames(nin.seminat)[c(1,8)] <- c("id","region_id")
+colnames(nin.seminat)[c(1,9)] <- c("id","region_id")
 
 nin.seminat <- nin.seminat %>% 
   mutate(area_meters_nin = st_area(nin.seminat)
   )
+# check and edit the order of regions
+levels(nin.seminat$region)
+nin.seminat$region <- as.factor(nin.seminat$region)
+levels(nin.seminat$region)
+nin.seminat$region <- factor(nin.seminat$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
+levels(nin.seminat$region)
 
 
 
@@ -266,17 +287,23 @@ nin.natopen <- nin %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
-  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, kartleggingsaar)
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, ninbeskrivelsesvariabler, kartleggingsaar)
 
 # merge NiN-data with region
 nin.natopen = st_join(nin.natopen, regnor, left = TRUE)
 nin.natopen
 
-colnames(nin.natopen)[c(1,8)] <- c("id","region_id")
+colnames(nin.natopen)[c(1,9)] <- c("id","region_id")
 
 nin.natopen <- nin.natopen %>% 
   mutate(area_meters_nin = st_area(nin.natopen)
   )
+# check and edit the order of regions
+levels(nin.wetland$region)
+nin.wetland$region <- as.factor(nin.wetland$region)
+levels(nin.wetland$region)
+nin.wetland$region <- factor(nin.wetland$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
+levels(nin.wetland$region)
 
 
 
@@ -287,19 +314,25 @@ saveRDS(nin, "data/cache/nin.RDS")
 saveRDS(nin.wetland, "data/cache/nin.wetland.RDS")
 saveRDS(nin.seminat, "data/cache/nin.seminat.RDS")
 saveRDS(nin.natopen, "data/cache/nin.natopen.RDS")
+nin <- readRDS(paste0(here::here(),"/data/cache/nin.RDS"))
 nin.wetland <- readRDS(paste0(here::here(),"/data/cache/nin.wetland.RDS"))
 nin.seminat <- readRDS(paste0(here::here(),"/data/cache/nin.seminat.RDS"))
 nin.natopen <- readRDS(paste0(here::here(),"/data/cache/nin.natopen.RDS"))
 
-
-
+#### save and load raw NDVI data to and from desktop cache ####
+saveRDS(df.s, "C:/Users/joachim.topper/OneDrive - NINA/Desktop/ndvi.Sentinel.raw.RDS")
+saveRDS(df.m, "C:/Users/joachim.topper/OneDrive - NINA/Desktop/ndvi.Modis.raw.RDS")
+saveRDS(df.l, "C:/Users/joachim.topper/OneDrive - NINA/Desktop/ndvi.Landsat.raw.RDS")
+df.s <- readRDS("C:/Users/joachim.topper/OneDrive - NINA/Desktop/ndvi.Sentinel.raw.RDS")
+df.m <- readRDS("C:/Users/joachim.topper/OneDrive - NINA/Desktop/ndvi.Modis.raw.RDS")
+df.l <- readRDS("C:/Users/joachim.topper/OneDrive - NINA/Desktop/ndvi.Landsat.raw.RDS")
 
 #### Sentinel NDVI data ####
 
 ## join nin.wetland & Sentinel NDVI data
 SentinelNDVI.wetland <- full_join(nin.wetland, df.s, by="id")
 
-summary(SentinelNDVI.wetland)
+#summary(SentinelNDVI.wetland)
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
@@ -307,11 +340,11 @@ SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
          area_meters = st_area(SentinelNDVI.wetland))
-summary(SentinelNDVI.wetland)
+#summary(SentinelNDVI.wetland)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(hovedtype))
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(mean))
-summary(SentinelNDVI.wetland)
+#summary(SentinelNDVI.wetland)
 # get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
 dim(SentinelNDVI.wetland)
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(as.numeric(area_meters) >= 100)
@@ -322,7 +355,7 @@ SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 
-summary(SentinelNDVI.wetland)
+#summary(SentinelNDVI.wetland)
 
 
 ## join nin.seminat & Sentinel NDVI data
@@ -389,7 +422,7 @@ summary(SentinelNDVI.natopen)
 ## join nin.wetland and Modis NDVI data
 ModisNDVI.wetland <- full_join(nin.wetland, df.m, by="id")
 
-summary(ModisNDVI.wetland)
+#summary(ModisNDVI.wetland)
 ModisNDVI.wetland <- ModisNDVI.wetland %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
@@ -397,11 +430,11 @@ ModisNDVI.wetland <- ModisNDVI.wetland %>%
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
          area_meters = st_area(ModisNDVI.wetland))
-summary(ModisNDVI.wetland)
+#summary(ModisNDVI.wetland)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
 ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(hovedtype))
 ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(mean))
-summary(ModisNDVI.wetland)
+#summary(ModisNDVI.wetland)
 # get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
 dim(ModisNDVI.wetland)
 ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(as.numeric(area_meters) >= 62500)
@@ -412,7 +445,7 @@ ModisNDVI.wetland <- ModisNDVI.wetland %>%
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 
-summary(ModisNDVI.wetland)
+#summary(ModisNDVI.wetland)
 
 
 ## join nin.seminat and Modis NDVI data
@@ -478,7 +511,7 @@ summary(ModisNDVI.natopen)
 ## join nin.wetland & Landsat NDVI data
 LandsatNDVI.wetland <- full_join(nin.wetland, df.l, by="id")
 
-summary(LandsatNDVI.wetland)
+#summary(LandsatNDVI.wetland)
 LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
@@ -486,11 +519,11 @@ LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
          area_meters = st_area(LandsatNDVI.wetland))
-summary(LandsatNDVI.wetland)
+#summary(LandsatNDVI.wetland)
 # get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
 LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(hovedtype))
 LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(mean))
-summary(LandsatNDVI.wetland)
+#summary(LandsatNDVI.wetland)
 # get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
 dim(LandsatNDVI.wetland)
 LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(as.numeric(area_meters) >= 900)
@@ -501,7 +534,7 @@ LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 
-summary(LandsatNDVI.wetland)
+#summary(LandsatNDVI.wetland)
 
 
 ## join nin.seminat & Landsat NDVI data
