@@ -38,6 +38,7 @@ library(tmap)
 library(tmaptools)
 library(betareg)
 library(StepBeta)
+library(glmmTMB)
 
 #### data upload ####
 ### Import NiN data
@@ -240,6 +241,12 @@ nin.wetland = st_join(nin.wetland, regnor, left = TRUE)
 nin.wetland
 
 colnames(nin.wetland)[c(1,9)] <- c("id","region_id")
+
+# check that every nin-polygon still occurs only once
+summary(as.factor(nin.wetland$id))
+nin.wetland[nin.wetland$id=="NINFP2110008060",]
+# this one was assigned to both Western and Central Norway, we drop the latter
+nin.wetland <- nin.wetland[!row.names(nin.wetland) %in% '1144.1',]
 
 nin.wetland <- nin.wetland %>% 
   mutate(area_meters_nin = st_area(nin.wetland)
@@ -600,4 +607,4 @@ summary(LandsatNDVI.natopen)
 
 
 
-#rm(list= ls()[!(ls() %in% c('SentinelNDVI.wetland','ModisNDVI.wetland','LandsatNDVI.wetland'))])
+rm(list= ls()[!(ls() %in% c('SentinelNDVI.wetland','ModisNDVI.wetland','LandsatNDVI.wetland'))])
