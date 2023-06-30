@@ -44,11 +44,9 @@ options(
 palette(ninaPalette())
 ```
 
-
-
-
-Bla bla
-
+Intro
+======
+Not much here yet, only some quick commands.
 
 ```{r}
 library(Norimon)
@@ -56,4 +54,47 @@ library(Norimon)
 ```{r}
 connect_to_insect_db()
 ```
+
+```{r}
+require(DBI)
+ require(dplyr)
+locations <- tbl(con,
+                 Id(schema = "locations",
+                    table = "localities"))
+
+
+```
+```{r}
+locations
+```
+```{r}
+require(sf)
+
+locations_sf <- read_sf(con,
+                 Id(schema = "locations",
+                    table = "localities"))
+
+
+```
+```{r}
+require(ggplot2)
+
+ggplot(locations_sf) +
+  geom_sf(aes(fill = habitat_type))
+```
+
+
+New locality function
+---------
+
+```{r}
+insect_localities_sf <- get_localities()
+```
+
+```{r}
+insect_localities <- get_localities(as_sf = FALSE)
+```
+
+
+
 
