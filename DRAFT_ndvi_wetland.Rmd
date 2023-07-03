@@ -51,39 +51,28 @@ knitr::kable(metaData)
 <hr />
 
 ## Introduction
-The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and plant productivity in the given area. Different ecosystem types naturally have greenness signals of different intensity but also with a certain variance. Deviations beyond the natural variation in either direction may indicate a reduction in ecological condition of a given ecosystem. E.g. lower than normal NDVI may indicate excessive disturbance, while higher than normal NDVI may indicate regrowth and transitions towards more densely vegetated systems. In recent assessments of ecological condition for forest and mountain ecosystems, two different NDVI-based indicators were developed and applied. For forests, NDVI-values across the country were compared to a spatial reference NDVI-signal from protected areas. For mountains, the extent and consistence of the temporal change of NDVI-values over the last twenty years was assessed. In both cases, the NDVI-product from the MODIS satellite reflectance imagery was used based on available maps of spatial ecosystem extent in Norway (i.e. national maps for the forest and mountain ecosystems). Here, we explore the potential for developing an NDVI-indicator for ecological condition representing open wetland ecosystems (i.e. excluding forest swamps). For this task, two initial challenges can be identified early on:
+The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and plant productivity in the given area. Different ecosystem types naturally have greenness signals of different intensity but also with a certain variance. Deviations beyond the natural variation in either direction may indicate a reduction in ecological condition of a given ecosystem. E.g. lower than normal NDVI may indicate excessive disturbance, while higher than normal NDVI may indicate regrowth and transitions towards more densely vegetated systems. In recent assessments of ecological condition for forest and mountain ecosystems, two different NDVI-based indicators were developed and applied. For forests, NDVI-values across the country were compared to a spatial reference NDVI-signal from protected areas. For mountains, the extent and consistence of the temporal change of NDVI-values over the last twenty years was assessed. In both cases, MODIS-derived NDVI values (MOD13Q1 V6-product) were used. National maps for forest and mountain ecosystems were used to define the areas of interest.
+Here, we explore the potential for developing an NDVI-indicator for ecological condition representing open wetland ecosystems (i.e. excluding forest swamps). For this task, two initial challenges can be identified early on:
 1) We don't yet have a national wetland map, i.e. we don't know the exact locations of all wetlands in Norway, which is a prerequisite to extract satellite data for the right locations and ecosystems, and thus achieve a good and unbiased spatial representation for the assessment area.
-2) The spatial extent of the single wetland ecosystem occurrences (hereafter 'polygons') includes many wetland areas which are way smaller than the pixel size in the MODIS imagery (250 x 250 m) which was used for forests and mountains and has a time series back to year 2000.
+2) The spatial extent of the single wetland ecosystem occurrences ('polygons' hereafter) includes many wetland areas which are smaller than the resolution of the MODIS imagery (250 x 250 m), which was used for forests and mountains and has a time series going back to the year 2000.
 
 In this draft development for a wetland NDVI indicator for ecological condition we approach these challenges in the following ways:
-1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the right ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of wetland ecosystems are available.
-2) We include Sentinel-2 imagery for wetland ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m which is smaller than almost all wetland polygons in the NiN-data. However, since Sentinel-2 only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. In addition, we still explore NDVI data from the MODIS and Landsat satellites (see more details below).
+1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the correct ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of wetland ecosystems are available.
+2) We include Sentinel-2 imagery for wetland ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m, which is smaller than almost all wetland polygons in the NiN-data. However, since Sentinel-2 only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. Thus, we still explore NDVI data from the MODIS and Landsat satellites (see more details below).
 
 
 ## About the underlying data
 In the NDVI project for wetlands, we use four sets of data for building indicators for ecological condition:
 
-- NiN ecosystem data from 'Naturtypekartlegging etter Miljødirektoratets innstruks' to guide extraction of NDVI data for the right locations and to provide information on the field-assessed ecological condition of mapped polygons
-- Sentinel-2 satellite NDVI data
-- MODIS satellite NDVI data
-- Landsat satellite NDVI data
+(1) NiN ecosystem data from 'Naturtypekartlegging etter Miljødirektoratets innstruks' to guide extraction of NDVI data for the correct locations and to provide information on the field-assessed ecological condition of mapped polygons.
 
-(1) NiN ecosystem data:
+(2) Sentinel-2 satellite-derived NDVI data (10 x 10 m resolution) - See https://code.earthengine.google.com/2ceb0c3e03adade9e6f6d0903184b8c4 for the Google Earth Engine code used to process Sentinel imagery and export NDVI data.
 
-(2) Sentinel-2 satellite NDVI data:
+(3) Landsat satellite-derived NDVI data (30 x 30 m resolution). See https://code.earthengine.google.com/da8a9279238ef26d14be08a43788b6b7 for the Google Earth Engine code used to process Landsat imagery and export NDVI data.
 
-(3) MODIS satellite NDVI data:
+(4) MODIS satellite-derived NDVI data (250 x 250 m resolution). The MOD13Q1 data product was used for NDVI values. The product provides a vegetation index value (NDVI) per pixel. MODIS NDVI is calculated from atmospherically-corrected bi-directional surface reflectances that have been masked for water, clouds, heavy aerosols and cloud shadows. The algorithm chooses the best available pixel value from all the acquisitions from the 16 day period. See https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84 for the Google Earth Engine code used to export NDVI data
 
-(4) Landsat satellite NDVI data:
-
-
-have to exclude all polygons smaller than the MODIS pixel size of 250 x 250 m, which reduces the number of available polygons greatly. To explore temporal trends even further back in time, we also include Landsat NDVI data, which span a time frame from 1984 to 2021, and have a resolution of 30 x 30 m, thus excluding only few polygons of insufficient size. 
-
-
-
-
-
-
+We have to exclude all polygons smaller than the MODIS pixel size of 250 x 250 m, which greatly reduces the number of available polygons. Thus, to explore temporal trends further back in time, we also include Landsat-derived NDVI data, which span a time frame from 1984 to 2021, and have a resolution of 30 x 30 m, thus excluding only few polygons of insufficient size. 
 
 
 ### Representativity in time and space
@@ -91,7 +80,7 @@ For wetlands, the NiN data contain 6503 wetland polygons of known area size acro
 
 ----build a matrix-table----
 
-The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the wetland occurrences in the NiN data likely are even more spatially biased than it is the case for the NDVI data from Sentinel-2 and Landsat. 
+The NDVI data from either satellite follows the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the wetland occurrences in the NiN data likely are even more spatially biased than is the case for the NDVI data from Sentinel-2 and Landsat satellites. 
 
 ### Temporal coverage
 The currently available NiN data on wetland ecosystems span a time period from 2018-2021 and thus represent a contemporary sample of ecosystem occurrences. Note that none of the polygons in the NiN-data has been visited more than once during that period.
@@ -125,10 +114,19 @@ Halvorsen, R., Skarpaas, O., Bryn, A., Bratli, H., Erikstad, L., Simensen, T., &
 
 Jakobsson, S., Töpper, J.P., Evju, M., Framstad, E., Lyngstad, A., Pedersen, B., Sickel, H., Sverdrup-Thygeson, A., Vandvik. V., Velle, L.G., Aarrestad, P.A. & Nybø, S. 2020. Setting reference levels and limits for good ecological condition in terrestrial ecosystems. Insights from a case study based on the IBECA approach. Ecological Indicators 116: 106492.
 
-
-
 Töpper, J. & Jakobsson, S. 2021. The Index-Based Ecological Condition Assessment (IBECA) - Technical protocol, version 1.0. NINA Report 1967. Norwegian Institute for Nature Research.
 
+NDVI Literature
+
+Cunliffe, A.M., Assmann, J.J., Daskalova, G.N., Kerby, J.T. & Myers-Smith, I.H. 2020. Aboveground biomass corresponds strongly with drone-derived canopy height but weakly with greenness (NDVI) in a shrub tundra landscape. Environmental Research Letters 15(12): 125004.
+
+Karlsen, S.R., Elvebakk, A., Høgda, K.A. & Grydeland, T. 2014. Spatial and temporal variability in the onset of the growing season on Svalbard, Arctic Norway—measured by MODIS-NDVI satellite data. Remote Sensing 6(9): 8088-8106.
+
+Taddeo, S., Dronova, I. & Depsky, N. 2019. Spectral vegetation indices of wetland greenness: Responses to vegetation structure, composition, and spatial distribution. Remote sensing of Environment 234: 111467.
+
+Tshabalala, N.N., Mutanga, O. & Sibanda, M. 2021. The Utility of Sentinel-2 MSI Data to Estimate Wetland Vegetation Leaf Area Index in Natural and Rehabilitated Wetlands. Geographies 1(3): 178-191.
+
+Valøen, K. 2019. Stochastic rain events increase NDVI through moss water content: a High-Arctic field experiment. NTNU.
 
 
 
@@ -137,8 +135,8 @@ Töpper, J. & Jakobsson, S. 2021. The Index-Based Ecological Condition Assessmen
 The analyses in this document make use of the following data sets:
 -NiN data (Naturtyper etter Miljødirektoratets innstruks)
 -Sentinel-2 NDVI data
--MODIS NDVI data
 -Landsat NDVI data
+-MODIS NDVI data
 
 #### NiN data and geometry for Norway and the five regions
 We read the NiN data for this document from a cache at the NINA server...
@@ -182,8 +180,7 @@ All NDVI data are calculated mean NDVI values for each respective NiN polygon fr
 
 ##### Sentinel-2 NDVI data
 The GEE code can be seen here: https://code.earthengine.google.com/2ceb0c3e03adade9e6f6d0903184b8c4
-The image collection contains Sentinel imagery from June, July and August 2015-2022
-To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
+The image collection contains Sentinel imagery from June, July and August 2015-2022. The GEE script creates a folder in Google Drive and places the exports there. To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files.
 ```{r}
 # Import Sentinel NDVI Data
 df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
@@ -193,7 +190,7 @@ df.s
 
 ##### MODIS NDVI data
 The GEE code can be seen here: https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84
-The image collection contains MODIS imagery from June, July and August 2000-2022
+The image collection contains MODIS imagery from June, July and August 2000-2022. The GEE script creates a folder in Google Drive and places the exported file there.
 
 ```{r}
 # Import MODIS NDVI Data
@@ -205,8 +202,7 @@ df.m
 
 ##### Landsat NDVI data
 The GEE code can be seen here: https://code.earthengine.google.com/da8a9279238ef26d14be08a43788b6b7
-The image collection contains Landsat imagery from June, July and August 1984-2022
-To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
+The image collection contains Landsat imagery from June, July and August 1984-2022. The GEE script creates a folder in Google Drive and places the exports there. To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
 ```{r}
 # Import Landsat NDVI Data
 # Set up conditional file paths
