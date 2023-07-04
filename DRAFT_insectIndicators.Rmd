@@ -51,16 +51,14 @@ Sys.Date()
 <br />
 
 #Notes on this draft
-This is a draft. The plan to finish it up i the fall of 2023. 
+Most things are done but it's still a rough draft. I plan to finish it in august. But you could see where it's headed so raise the alarm if I'm off course.
 
-Incomprehensive list of things that will change:
+Incomplete list of things that will change:
 
-* Fill in missing sections.
-* Choices affecting the individual indicators, such as what taxa to select for each indicator'
-* Upgrade of genetic diversity calculation. This is just a placeholder, awaiting some new data.
-* Bumblebee and butterfly indicators will be added. The routines are done but should be streamlined.
+* Fill in sections that lack text.
+* Upgrade genetic diversity calculation. The current calculation is just a placeholder, awaiting some new data from Marie.
 * Packaging of R-package versions for reproducibility? Or just point to a version on Github..
-* Make bombLepiSurv public.
+* Make bombLepiSurv public. After touch-up and fixes of github issues.
 * Fix any comments in this draft inside hard brackets.
 * Write something about the choice of each indicator.
  
@@ -149,6 +147,9 @@ indList <- tibble("Dataset" = indDataset,
 knitr::kable(indList)
 ```
 
+[Add short motivation for each indicator]
+
+
 ## About the underlying data
 <!-- Text here -->
 
@@ -171,8 +172,6 @@ knitr::kable(indList)
 ### Norwegian standard
 <!-- Text here -->
 
-### <!-- Text here -->
-<!-- Text here. Note that there are two parallell systems for defining ecosystem properties - one Norwegian and one international (SEEA EA). See man/SEEA EA examples.pdf for help -->
 
 ## Collinearities with other indicators
 None measured so far, but it is reasonable to assume that some of these indicators will share some causal relationships with eachother, and therefore correlate to some degree. This could potentially happen with some other indicators not described here.
@@ -259,7 +258,7 @@ poll_loc_year %>%
 kableExtra::kbl()
 ```
 
-## Bootstrap observations
+#### Bootstrap observations
 The localities in the NorIns program are (semi-)randomly selected and can be viewed as samples of a larger population. Individually, they represent a single measurement of an insect community in a habitat type in a region. To get the sampling uncertainty for this representation, we can bootstrap the values by this simple prosess: we choose a random set of localities within a year and region (with replacement) and calculate the average values. We then repeat this process a large number of times to get a bootstrap sample of values, which can be used to express the uncertainty in the dataset.
 
 We typically have 10 localities for a given habitat type and region each year, which is not very much to base our uncertainty estimates on. But bootstrapping works fairly well on small samples and has the advantage that is doesn't make assumptions of the statistical distribution of the errors. Note that once we get a larger dataset with repeating surveys every 5 years, it probably makes sense to do some kind of parametric (hierarcichal) modelling of the values instead of this simple bootstrap.
@@ -307,7 +306,7 @@ But the `boot_stat` object also stores the individual bootstrap values for later
 poll_richness_boot[2]
 ```
 
-## Comparing bootstrap values to a reference point
+#### Comparing bootstrap values to a reference point
 Setting aside the difficulties in establishing robust reference values, the next step is to compare the observed values (with bootstrapped uncertainty) to the chosen reference value. This can be made in several ways. Most simply, if we have a single numeric value as a reference value, we can simply subtract that from the observed values. For example, if we observe 13 species of pollinators in 2022 at a location, and the reference point is 10, the 2022 has increased by 13 - 10 = 3 species. Such subtractions should be made on the set of bootstrapped values, and new summary statistics calculated, preserving the uncertainty from the bootstrap. The `boot_stat` has its own subtraction method do to just that. In this example, we set the reference value arbitrarily to 30 species.
 
 ```{r}
@@ -336,13 +335,13 @@ diff_poll_richness_boot2 <- poll_richness_boot %>%
 diff_poll_richness_boot2
 ```
 
-##Normalizing the values
+#### Normalizing the values
 After the comparison to a reference value, we need to normalize the indicator values to lie between 0 and 1. This can be done in several ways (insert link to scaling chapter). The simplest case is to use a linear scaling, with a natural zero. This can be done by dividing the indicator values by the highest value state. A `boot_stat` object has a `/` function that divides each bootstap value by a given value, truncates the highest values to 1, and recalculates the summary values.
 
 [Show this, but need to think on how to do this with difference values]
 
 
-## Display and plot bootstrap values
+#### Display and plot bootstrap values
 The boot_stat class also has its own plot function. It tries to plot a comparison of the bootstrap distributions over years, for each group. For example, if we plot the object `diff_poll_richness_boot`, we can look at the yearly differences in beetles species richness in the two geographic regions: (Note that we have only 1 year of data from Sørlandet so far)
 
 ```{r beetle_richness_boot}
@@ -358,7 +357,7 @@ plot(diff_poll_richness_boot2)
 More plotting options are available, see the `Norimon` indicator workflow vignette.
 
 
-## Map plots
+#### Map plots
 In addition to the density plots above, we can also display the values geographically, in a map. The `map_plot()` function takes a `boot_stat` object and plots the values according to its region names.
 
 
@@ -383,6 +382,112 @@ map_plot(palette = "orange-green",
 
 This concludes the tour of the `Norimon` functionality.
 
+### Calculation principles for NBBM indicators
+These indicators were developed for the Nature Index of Norway, back in 2010 by Ola Diserud and Sandra Åström [ref], and is calculated routinely on a yearly basis [see xx for the most current report]. 
+
+These indicators summarize the state of a bumblebee or butterfly community by estimating the difference from a reference community. Formally, the community indicator (CI) is expressed as the relative change of the community from a state of reference (SR), were the change is calculated by a state of change (ST). 
+
+
+$$CI = \frac{SR-SC}{SR}$$
+The state of reference (SR) represents a community of species that can be expected to be observed in a given habitat type and region. It is calculated by assigning each species to class of expected commonality; common (C), sporadic (S) and rare (R) species. This classification is done by expert opinion, informed by known present and past species distributions. This state of reference doesn't contain all current possible species, only a subset of species, making up a historical reference community. Potential observations of "new" species therefore doesn't inform the indicator value at all. Common species is expected to be observed in at least 5 % of the surveyed transects in a habitat type and region. Sporadic species similarly is defined as having a presence below 5 % but above 1 %. Rare species is seen in no more than 1 % of the transects, and lastly, species not seen in any transect is assumed as lost (L) for the purpose of this calculation. 
+  
+Each commonality class gets it's own weight, so that common species inform the reference state more than sporadic species, followed by rare species. The state of reference (SR) is thus a value, where each species adds to the state according to its commonality. Formally, it is defined as:
+
+$$SR = n_C * w_{C, SR} + n_S * w_{S, SR} + n_R * w_{R, SR} = \sum_{i = (C, S, R)} n_i * w_{i, SR}, $$
+where $n_i$ is the number of species in a commonality class (C, S, R), and the weights $[w_{C, SR}, w_{S, SR}, w_{R, SR}]$ specifies their respective contribution to the reference state (SR). The weights used is $[w_{C, SR}, w_{S, SR}, w_{R, SR}] = [1.0, 0.75, 0.50]$, i.e. a sporadic species has 75 % the weight of a common species, and a rare species has 50 % the weight of a common species. 
+
+
+The state of change (SC) is calculated as
+ $$SC = n_{CS} * w_{CS} + n_{CR} * w_{CR} + n_{CL} * w_{CL} + n_{SR} * w_{SR} + n_{SL} * w_{SL} + n_{RL} * w_{RL}, $$ 
+where $n_{CS}$ is the number of expected common species (C) that is observed sporadically (S), and $w_{CS}$ is the weight of this change. Similarly, $n_{CR}$ is the number of expected species that is observed rarely, $n_{RL}$ is the number of rare species that is lost, and so on. Potential increases in observation rates does not inform the indicator. Changes for common species is weighted more heavily than changes for less common species, and larger decreases is weighted more heavily than smalle decreases, such that $[w_{CS}, w_{CR}, w_{CL}, w_{SR}, w_{SL}, w_{RL}]= [0.50, 0.75, 1.00, 0.50, 0.75, 0.50]$.
+
+The indicator values are estimated with uncertainty, by bootstrapping the set of localities within a region, and calculating the indicator for each of 999 such samples.
+
+#### Calculation example
+These calculations with bootstrap sampling is implemented in the R-package `bombLepiSurv` (Bombus and Lepidoptera Survey). We briefly show this functionality with bumblebees in semi-natural lands as an example.
+
+We connect to the internal database with a convenience function `humlesommerfConnect`
+```{r}
+bombLepiSurv::humlesommerfConnect()
+```
+
+We can fetch the all observations of bumblebees in semi-natural land with the `getAllData` function. Species names is here shown in Norwegian.
+
+```{r, fig.cap = "Bumblebees in grasslands 2021"}
+allBombusGrassland2022 <- getAllData(type = "bumblebees",
+                                     habitat = "gressmark",
+                                     year = 2022,
+                                     language = "norsk")
+
+```
+
+A summary of the records is most easily plotted by `surveyBarPlot`
+
+```{r}
+surveyBarplot(allBombusGrassland2022)
+```
+
+But for calculating the indicators, we only consider the transects that had were surveyed for the standard 3 times per year, to cover the phenology of the entire season. Complete data sets can be fetched by the function `getComplData`, which fetches data from one habitat type and region at a time. 
+
+```{r}
+bombus_trond_2022 <- getComplData(type = "Humler",
+                                  region_short = "Trond",
+                                  habitat = "Gressmark",
+                                  year = 2022)
+```
+
+The observed relative to the expected occurrences can be visualized through the `plotArt` function. This requires a reference community, which can be fetched through the `getExpValues` function.
+
+
+```{r}
+exp_bombus_trond <- getExpValues(type = "Humler",
+                                 region_short = "Trond",
+                                 habitat = "Gressmark"
+                                 ) %>% 
+  select(species = species_latin,
+         everything())
+```
+
+Species in green bars are species that are expected to be common, and should reach the green areas in the plot. Similarly with the blue (sporadic species), and red (rare species). We see in this case that Bombus soroeensis is an exptected sporadic species that only were observed rarely. 
+
+
+```{r}
+plotArt(bombus_trond_2022,
+        exp_bombus_trond)
+```
+[add all species in exp to plot]
+
+
+The actual calculation and bootstrapping is done in the function `calcInd`. This function calls the `getComplData` and `getExpectedValues` functions internally. It also requires the weights for the commonality classes in the reference community (SR), and the weights for the changes in state (CS). This is fetched internally via the functions `getAmountWeights` and `getDiffWeights`, respectively. Here the classes is in norwegian (v = common, m = sporadic, s = rare).
+
+```{r}
+getDiffWeights()
+
+```
+```{r}
+getAmountWeights()
+```
+Lastly, we specify the number of samples for the bootstrap 
+
+
+```{r}
+nIter = 999
+```
+
+```{r}
+hInd2022TrondGress <- calcInd(type = "Humler",
+                              region_short = "Trond",
+                              habitat = "Gressmark",
+                              year = 2022,
+                              nIter = nIter,
+                              save.draws = T)
+```
+
+The result [is going to be] an object of class [xxx]. Add print and plot methods...
+
+Plotting functions for a series of indicator values is shown below in the indicator calculations.
+
+
 ### Data sets
 There are a few different ways to access the data required for these indicators. Both the NMBB and the NorIns project stores its data in an internal database at NINA. They both also export most of their data to GBIF, but those exports need to be restructured before they can be processed in the following scripts.
 
@@ -396,17 +501,7 @@ The `Norimon` package has convenience functions to fetch data from the database,
 #### NMBB data
 The data for the bumblebee and butterfly indicators can be accessed through the R-package `bombLepiSurv`. [Replace this with the GBIF version?. At least make the package public.]
 
-```{r}
-require(bombLepiSurv)
-bombLepiSurv::humlesommerfConnect(connectionName = "bombLepiCon")
-bombus_obs <- getAllData(dataConnection = "bombLepiCon",
-                         type = "bumblebees",
-                         year = 2009:2022)
-lepi_obs <- getAllData(dataConnection = "bombLepiCon",
-                         type = "butterflies",
-                         year = 2009:2022)
 
-```
 
 
 #### Regions
@@ -414,6 +509,7 @@ lepi_obs <- getAllData(dataConnection = "bombLepiCon",
 Importing a shape file with the regional delineation. The indicators associated with the NorIns project can be attributed to the 5 country regions of Norway. Currently however, the data program only covers 4 of the 5 regions.
 
 ```{r}
+connect_to_insect_db()
 norway_regions <- Norimon::get_map()
 norway_reg_NorIns <- norway_regions %>% 
   filter(region != "Vestlandet") %>% 
@@ -430,7 +526,7 @@ tm_shape(norway_reg_NorIns) +
 The indicators from the NMBB program is similary connected to regions, with the exception that the south-east region only covers the old fylke's of Vestfold and Østfold, and that Nord-Norge isn't covered yet. [Find the old fylke geometries and add this map to bombLepiSurv]
 
 
-### Indicator values for NorIns indicators
+### Calculation of NorIns indicators
 #### Biomass of flying insects in semi-natural land
 
 Fetch the data.
@@ -756,6 +852,261 @@ gde_sn_to_exp <- norway_reg_NorIns  %>%
 
 gde_sn_to_exp
 ```
+
+### Calculation of NBBM indicators
+
+### Bumblebees in open landscapes
+```{r}
+require(bombLepiSurv)
+humlesommerfConnect(host = "ninradardata01.nina.no")
+
+```
+
+```{r bombusGressBarplot, fig.cap = "Bumblebees in grasslands 2021"}
+allBombusGressmark2022 <- getAllData(type = "bumblebees",
+                        habitat = "gressmark",
+                        year = 2022,
+                        language = "norsk")
+
+
+surveyBarplot(allBombusGressmark2022) #+
+#  ggtitle("Humler i gressmark 2021")
+
+```
+
+
+
+```{r}
+nIter = 999
+
+hInd2022TrondGress <- calcInd(type = "Humler",
+                              region_short = "Trond",
+                              habitat = "Gressmark",
+                              year = 2022,
+                              nIter = nIter,
+                              save.draws = T)
+```
+
+```{r}
+hInd2022SorGress <- calcInd(type = "Humler",
+                              region_short = "Sor",
+                              habitat = "Gressmark",
+                              year = 2022,
+                              nIter = nIter,
+                              save.draws = T)
+```
+
+```{r}
+hInd2022OstGress <- calcInd(type = "Humler",
+                              region_short = "Ost",
+                              habitat = "Gressmark",
+                              year = 2022,
+                              nIter = nIter,
+                              save.draws = T)
+```
+
+[Implement this]
+```{r, eval = F}
+hInd2022VestGress <- calcInd(type = "Humler",
+                              region_short = "Vest",
+                              habitat = "Gressmark",
+                              year = 2022,
+                              nIter = nIter,
+                              save.draws = T)
+```
+
+
+### Butterflies in open landscapes
+
+```{r}
+nIter = 999
+
+sInd2022TrondGress <- calcInd(type = "Sommerfugl",
+                              region_short = "Trond",
+                              habitat = "Gressmark",
+                              year = 2022,
+                              nIter = nIter,
+                              save.draws = T)
+```
+
+```{r}
+sInd2022SorGress <- calcInd(type = "Sommerfugl",
+                              region_short = "Sor",
+                              habitat = "Gressmark",
+                              year = 2022,
+                              nIter = nIter,
+                              save.draws = T)
+```
+
+```{r}
+sInd2022OstGress <- calcInd(type = "Sommerfugl",
+                              region_short = "Ost",
+                              habitat = "Gressmark",
+                              year = 2022,
+                              nIter = nIter,
+                              save.draws = T)
+```
+
+[Implement this]
+```{r, eval = F}
+sInd2022VestGress <- calcInd(type = "Sommerfugl",
+                              region_short = "Vest",
+                              habitat = "Gressmark",
+                              year = 2022,
+                              nIter = nIter,
+                              save.draws = T)
+```
+
+
+The calculations for earlier years is already present as datasets in the R-package and can be fetched individually. Once this is done, we can plot the timeseries of values using the function `indPlot`.
+
+Todo, put these in the new version of the package.
+```{r}
+#load("out/IndicatorValues2020.Rdata")
+```
+
+
+```{r}
+
+data("sInd2019TrondGress")
+data("sInd2019TrondSkog")
+data("sInd2019OstGress")
+data("sInd2019OstSkog")
+data("sInd2019SorGress")
+data("sInd2019SorSkog")
+data("sInd2018TrondGress")
+data("sInd2018TrondSkog")
+data("sInd2018OstGress")
+data("sInd2018OstSkog")
+data("sInd2018SorGress")
+data("sInd2018SorSkog")
+data("sInd2017TrondGress")
+data("sInd2017TrondSkog")
+data("sInd2017OstGress")
+data("sInd2017OstSkog")
+data("sInd2017SorGress")
+data("sInd2017SorSkog")
+data("sInd2016TrondGress")
+data("sInd2016TrondSkog")
+data("sInd2016OstGress")
+data("sInd2016OstSkog")
+data("sInd2016SorGress")
+data("sInd2016SorSkog")
+data("sInd2015TrondGress")
+data("sInd2015TrondSkog")
+data("sInd2015OstGress")
+data("sInd2015OstSkog")
+data("sInd2015SorGress")
+data("sInd2015SorSkog")
+data("sInd2014TrondGress")
+data("sInd2014TrondSkog")
+data("sInd2014OstGress")
+data("sInd2014OstSkog")
+data("sInd2014SorGress")
+data("sInd2014SorSkog")
+data("sInd2013TrondGress")
+data("sInd2013TrondSkog")
+data("sInd2013OstGress")
+data("sInd2013OstSkog")
+data("sInd2013SorGress")
+data("sInd2013SorSkog")
+data("sInd2012TrondGress")
+data("sInd2012TrondSkog")
+data("sInd2012OstGress")
+data("sInd2012OstSkog")
+data("sInd2011OstGress")
+data("sInd2011OstSkog")
+data("sInd2010OstGress")
+data("sInd2010OstSkog")
+data("sInd2009OstGress")
+data("sInd2009OstSkog")
+data("hInd2019TrondGress")
+data("hInd2019TrondSkog")
+data("hInd2019OstGress")
+data("hInd2019OstSkog")
+data("hInd2019SorGress")
+data("hInd2019SorSkog")
+data("hInd2018TrondGress")
+data("hInd2018TrondSkog")
+data("hInd2018OstGress")
+data("hInd2018OstSkog")
+data("hInd2018SorGress")
+data("hInd2018SorSkog")
+data("hInd2017TrondGress")
+data("hInd2017TrondSkog")
+data("hInd2017OstGress")
+data("hInd2017OstSkog")
+data("hInd2017SorGress")
+data("hInd2017SorSkog")
+data("hInd2016TrondGress")
+data("hInd2016TrondSkog")
+data("hInd2016OstGress")
+data("hInd2016OstSkog")
+data("hInd2016SorGress")
+data("hInd2016SorSkog")
+data("hInd2015TrondGress")
+data("hInd2015TrondSkog")
+data("hInd2015OstGress")
+data("hInd2015OstSkog")
+data("hInd2015SorGress")
+data("hInd2015SorSkog")
+data("hInd2014TrondGress")
+data("hInd2014TrondSkog")
+data("hInd2014OstGress")
+data("hInd2014OstSkog")
+data("hInd2014SorGress")
+data("hInd2014SorSkog")
+data("hInd2013TrondGress")
+data("hInd2013TrondSkog")
+data("hInd2013OstGress")
+data("hInd2013OstSkog")
+data("hInd2013SorGress")
+data("hInd2013SorSkog")
+data("hInd2012TrondGress")
+data("hInd2012TrondSkog")
+data("hInd2012OstGress")
+data("hInd2012OstSkog")
+data("hInd2011OstGress")
+data("hInd2011OstSkog")
+data("hInd2010OstGress")
+data("hInd2010OstSkog")
+data("hInd2009OstGress")
+data("hInd2009OstSkog")
+
+```
+
+```{r bombusGressIndPlot}
+hGressIndVals <- collectIndData(taxa = "bumblebees", 
+                                habitat = "gressmark",
+                                years = 2009:2022)
+
+indPlot(input = hGressIndVals,
+        confLevel = "95%",
+        lineWidth = 1,
+        dodge = 0.5,
+        pointSize = 4) +
+  ggtitle("Indicator values for bumblebees in semi-natural landscapes") +
+  scale_x_continuous(breaks = 2009:2022)
+
+```
+
+
+
+```{r lepiGressIndPlot}
+sGressIndVals <- collectIndData(taxa = "butterflies", 
+                                habitat = "gressmark",
+                                years = 2009:2022)
+
+indPlot(input = sGressIndVals,
+        confLevel = "95%",
+        lineWidth = 1,
+        dodge = 0.5,
+        pointSize = 4) +
+  ggtitle("Indicator values for butterflies in semi-natural landscapes") +
+  scale_x_continuous(breaks = 2009:2022)
+
+```
+
 
 
 ## Prepare export
