@@ -119,18 +119,16 @@ Notice the degree of annotation.
 <p><em>Author and date:</em>
 Jens Åström</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.Date</span>()</span></code></pre></div>
-<pre><code>## [1] &quot;2023-07-04&quot;</code></pre>
+<pre><code>## [1] &quot;2023-07-05&quot;</code></pre>
 <p><br /></p>
 <p>#Notes on this draft
-This is a draft. The plan to finish it up i the fall of 2023.</p>
-<p>Incomprehensive list of things that will change:</p>
+Most things are done but it’s still a rough draft. I plan to finish it in august. But you could see where it’s headed so raise the alarm if I’m off course.</p>
+<p>Incomplete list of things that will change:</p>
 <ul>
-<li>Fill in missing sections.</li>
-<li>Choices affecting the individual indicators, such as what taxa to select for each indicator’</li>
-<li>Upgrade of genetic diversity calculation. This is just a placeholder, awaiting some new data.</li>
-<li>Bumblebee and butterfly indicators will be added. The routines are done but should be streamlined.</li>
+<li>Fill in sections that lack text.</li>
+<li>Upgrade genetic diversity calculation. The current calculation is just a placeholder, awaiting some new data from Marie.</li>
 <li>Packaging of R-package versions for reproducibility? Or just point to a version on Github..</li>
-<li>Make bombLepiSurv public.</li>
+<li>Make bombLepiSurv public. After touch-up and fixes of github issues.</li>
 <li>Fix any comments in this draft inside hard brackets.</li>
 <li>Write something about the choice of each indicator.</li>
 </ul>
@@ -743,12 +741,12 @@ Semi-nat
 <pre><code>## # A tibble: 6 × 6
 ##    year region_name no_species boot_sd boot_lower2.5 boot_upper97.5
 ##   &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1  2020 Østlandet         60.4    5.87          49.7           72.4
-## 2  2021 Trøndelag         42.0    3.12          35.4           47.4
-## 3  2021 Østlandet         53.3    5.92          41.5           64.8
-## 4  2022 Sørlandet         29.6    5.73          18.4           41.6
-## 5  2022 Trøndelag         34.7    2.46          29.9           39.7
-## 6  2022 Østlandet         35.9    2.85          30.3           41.6</code></pre>
+## 1  2020 Østlandet         60.9    5.99          49.4           72.4
+## 2  2021 Trøndelag         42.0    3.04          35.6           47.5
+## 3  2021 Østlandet         53.7    5.86          41.8           64.8
+## 4  2022 Sørlandet         29.4    5.56          18.5           40.4
+## 5  2022 Trøndelag         34.7    2.57          30.1           40  
+## 6  2022 Østlandet         36.0    2.83          30.4           41.5</code></pre>
 <p>But the <code>boot_stat</code> object also stores the individual bootstrap values for later computation. [Why is is only 5 994 rows? Fix/figure out]</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>poll_richness_boot[<span class="dv">2</span>]</span></code></pre></div>
 <pre><code>## $bootstrap_values
@@ -756,16 +754,16 @@ Semi-nat
 ## # Groups:   year, region_name [6]
 ##     year region_name boot_values
 ##    &lt;int&gt; &lt;chr&gt;             &lt;dbl&gt;
-##  1  2020 Østlandet          57.6
-##  2  2020 Østlandet          51.1
-##  3  2020 Østlandet          56.9
-##  4  2020 Østlandet          67.3
-##  5  2020 Østlandet          46.6
-##  6  2020 Østlandet          65.6
-##  7  2020 Østlandet          62.8
-##  8  2020 Østlandet          55.7
-##  9  2020 Østlandet          54.6
-## 10  2020 Østlandet          47.2
+##  1  2020 Østlandet          51.4
+##  2  2020 Østlandet          69.4
+##  3  2020 Østlandet          62  
+##  4  2020 Østlandet          58.3
+##  5  2020 Østlandet          54.6
+##  6  2020 Østlandet          55.2
+##  7  2020 Østlandet          66.6
+##  8  2020 Østlandet          60.7
+##  9  2020 Østlandet          56.9
+## 10  2020 Østlandet          57.5
 ## # … with 5,984 more rows</code></pre>
 </div>
 <div id="comparing-bootstrap-values-to-a-reference-point" class="section level4" number="1.8.1.2">
@@ -775,23 +773,23 @@ Semi-nat
 <pre><code>## # A tibble: 6 × 6
 ##    year region_name no_species boot_sd boot_lower2.5 boot_upper97.5
 ##   &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1  2020 Østlandet         60.4    5.87          49.7           72.4
-## 2  2021 Trøndelag         42.0    3.12          35.4           47.4
-## 3  2021 Østlandet         53.3    5.92          41.5           64.8
-## 4  2022 Sørlandet         29.6    5.73          18.4           41.6
-## 5  2022 Trøndelag         34.7    2.46          29.9           39.7
-## 6  2022 Østlandet         35.9    2.85          30.3           41.6</code></pre>
+## 1  2020 Østlandet         60.9    5.99          49.4           72.4
+## 2  2021 Trøndelag         42.0    3.04          35.6           47.5
+## 3  2021 Østlandet         53.7    5.86          41.8           64.8
+## 4  2022 Sørlandet         29.4    5.56          18.5           40.4
+## 5  2022 Trøndelag         34.7    2.57          30.1           40  
+## 6  2022 Østlandet         36.0    2.83          30.4           41.5</code></pre>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>diff_poll_richness_boot <span class="ot">&lt;-</span> poll_richness_boot <span class="sc">-</span> <span class="dv">30</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>diff_poll_richness_boot</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 6
 ##    year region_name no_species boot_sd boot_lower2.5 boot_upper97.5
 ##   &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1  2020 Østlandet       30.4      5.87        19.7             42.4
-## 2  2021 Trøndelag       12.0      3.12         5.4             17.4
-## 3  2021 Østlandet       23.3      5.92        11.5             34.8
-## 4  2022 Sørlandet       -0.406    5.73       -11.6             11.6
-## 5  2022 Trøndelag        4.66     2.46        -0.100            9.7
-## 6  2022 Østlandet        5.95     2.85         0.300           11.6</code></pre>
+## 1  2020 Østlandet       30.9      5.99        19.4             42.4
+## 2  2021 Trøndelag       12.0      3.04         5.6             17.5
+## 3  2021 Østlandet       23.7      5.86        11.8             34.8
+## 4  2022 Sørlandet       -0.633    5.56       -11.5             10.4
+## 5  2022 Trøndelag        4.68     2.57         0.100           10  
+## 6  2022 Østlandet        5.95     2.83         0.400           11.5</code></pre>
 <p>Alternatively, we could use a reference point in the time series itself. Say for example that we want to use the values for species richness of pollinators in semi-natural land i Østlandet 2020 as a reference point. We can then calculate the difference (the contrast) between this level and all the other levels. We do this by the function <code>boot_contrast()</code></p>
 <p><strong>NB! This functionality is in development. It currently works for single rows as reference points, but needs updating to allow for referencing several values, e.g using the start values for all regions and habitat types as their own reference points.</strong></p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>diff_poll_richness_boot2 <span class="ot">&lt;-</span> poll_richness_boot <span class="sc">%&gt;%</span></span>
@@ -800,12 +798,12 @@ Semi-nat
 <pre><code>## # A tibble: 6 × 6
 ##    year region_name no_species boot_sd boot_lower2.5 boot_upper97.5
 ##   &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1  2020 Østlandet         0       0              0             0   
-## 2  2021 Trøndelag       -18.4     6.61         -31.2          -5.80
-## 3  2021 Østlandet        -7.08    8.39         -23.2           8.8 
-## 4  2022 Sørlandet       -30.8     8.26         -47.2         -14.5 
-## 5  2022 Trøndelag       -25.8     6.46         -38.7         -13.7 
-## 6  2022 Østlandet       -24.5     6.62         -38.2         -12.2</code></pre>
+## 1  2020 Østlandet         0       0              0              0  
+## 2  2021 Trøndelag       -18.9     6.65         -32.4           -5.6
+## 3  2021 Østlandet        -7.16    8.44         -24.3            9.1
+## 4  2022 Sørlandet       -31.5     8.14         -47.2          -15.3
+## 5  2022 Trøndelag       -26.2     6.41         -39.2          -13.6
+## 6  2022 Østlandet       -24.9     6.73         -38.1          -11.7</code></pre>
 </div>
 <div id="normalizing-the-values" class="section level4" number="1.8.1.3">
 <h4><span class="header-section-number">1.8.1.3</span> Normalizing the values</h4>
@@ -957,12 +955,12 @@ where <span class="math inline">\(n_{CS}\)</span> is the number of expected comm
 <pre><code>## # A tibble: 6 × 6
 ##    year region_name avg_wet_weight boot_sd boot_lower2.5 boot_upper97.5
 ##   &lt;int&gt; &lt;chr&gt;                &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1  2020 Østlandet            0.673  0.0802         0.523          0.832
-## 2  2021 Trøndelag            0.864  0.100          0.637          1    
-## 3  2021 Østlandet            0.583  0.0788         0.433          0.737
-## 4  2022 Sørlandet            0.468  0.0657         0.345          0.604
-## 5  2022 Trøndelag            0.628  0.0696         0.508          0.782
-## 6  2022 Østlandet            0.370  0.0445         0.281          0.456</code></pre>
+## 1  2020 Østlandet            0.671  0.0794         0.514          0.834
+## 2  2021 Trøndelag            0.863  0.0988         0.651          1    
+## 3  2021 Østlandet            0.583  0.0743         0.437          0.735
+## 4  2022 Sørlandet            0.469  0.0638         0.350          0.597
+## 5  2022 Trøndelag            0.623  0.0686         0.494          0.768
+## 6  2022 Østlandet            0.369  0.0440         0.285          0.459</code></pre>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(biomass_sn_diff)</span></code></pre></div>
 <p><img src="DRAFT_insectIndicators_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 <p>Prepare export format.</p>
@@ -988,15 +986,15 @@ where <span class="math inline">\(n_{CS}\)</span> is the number of expected comm
 ## Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 ## Projected CRS: ETRS89 / UTM zone 33N
 ## # A tibble: 6 × 7
-##   region                                                                                       geom  year ind_value ind_sd ind_lower2.5 ind_upper9…¹
-##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;     &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022     0.468 0.0657        0.345        0.604
-## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021     0.864 0.100         0.637        1    
-## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022     0.628 0.0696        0.508        0.782
-## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020     0.673 0.0802        0.523        0.832
-## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021     0.583 0.0788        0.433        0.737
-## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022     0.370 0.0445        0.281        0.456
-## # … with abbreviated variable name ¹​ind_upper97.5</code></pre>
+##   region                                                                                       geom  year ind_v…¹ ind_sd ind_l…² ind_u…³
+##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022   0.469 0.0638   0.350   0.597
+## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021   0.863 0.0988   0.651   1    
+## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022   0.623 0.0686   0.494   0.768
+## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020   0.671 0.0794   0.514   0.834
+## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021   0.583 0.0743   0.437   0.735
+## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022   0.369 0.0440   0.285   0.459
+## # … with abbreviated variable names ¹​ind_value, ²​ind_lower2.5, ³​ind_upper97.5</code></pre>
 </div>
 <div id="species-richness-of-flying-insects-in-semi-natural-land" class="section level4" number="1.8.4.2">
 <h4><span class="header-section-number">1.8.4.2</span> Species richness of flying insects in semi-natural land</h4>
@@ -1018,12 +1016,12 @@ where <span class="math inline">\(n_{CS}\)</span> is the number of expected comm
 <pre><code>## # A tibble: 6 × 6
 ##    year region_name no_species boot_sd boot_lower2.5 boot_upper97.5
 ##   &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1  2020 Østlandet        0.517  0.0475         0.426          0.617
-## 2  2021 Trøndelag        0.698  0.0451         0.599          0.773
-## 3  2021 Østlandet        0.766  0.0400         0.695          0.849
-## 4  2022 Sørlandet        0.547  0.0648         0.423          0.672
-## 5  2022 Trøndelag        0.631  0.0293         0.574          0.687
-## 6  2022 Østlandet        0.627  0.0212         0.584          0.667</code></pre>
+## 1  2020 Østlandet        0.518  0.0466         0.428          0.611
+## 2  2021 Trøndelag        0.695  0.0447         0.594          0.771
+## 3  2021 Østlandet        0.766  0.0435         0.682          0.851
+## 4  2022 Sørlandet        0.544  0.0632         0.425          0.673
+## 5  2022 Trøndelag        0.630  0.0296         0.575          0.687
+## 6  2022 Østlandet        0.627  0.0198         0.588          0.668</code></pre>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(richness_sn_diff)</span></code></pre></div>
 <p><img src="DRAFT_insectIndicators_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
 <p>Prepare export format.</p>
@@ -1049,15 +1047,15 @@ where <span class="math inline">\(n_{CS}\)</span> is the number of expected comm
 ## Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 ## Projected CRS: ETRS89 / UTM zone 33N
 ## # A tibble: 6 × 7
-##   region                                                                                       geom  year ind_value ind_sd ind_lower2.5 ind_upper9…¹
-##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;     &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022     0.547 0.0648        0.423        0.672
-## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021     0.698 0.0451        0.599        0.773
-## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022     0.631 0.0293        0.574        0.687
-## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020     0.517 0.0475        0.426        0.617
-## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021     0.766 0.0400        0.695        0.849
-## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022     0.627 0.0212        0.584        0.667
-## # … with abbreviated variable name ¹​ind_upper97.5</code></pre>
+##   region                                                                                       geom  year ind_v…¹ ind_sd ind_l…² ind_u…³
+##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022   0.544 0.0632   0.425   0.673
+## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021   0.695 0.0447   0.594   0.771
+## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022   0.630 0.0296   0.575   0.687
+## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020   0.518 0.0466   0.428   0.611
+## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021   0.766 0.0435   0.682   0.851
+## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022   0.627 0.0198   0.588   0.668
+## # … with abbreviated variable names ¹​ind_value, ²​ind_lower2.5, ³​ind_upper97.5</code></pre>
 </div>
 <div id="species-richness-of-pollinators-in-semi-natural-land" class="section level4" number="1.8.4.3">
 <h4><span class="header-section-number">1.8.4.3</span> Species richness of pollinators in semi-natural land</h4>
@@ -1084,12 +1082,12 @@ where <span class="math inline">\(n_{CS}\)</span> is the number of expected comm
 <pre><code>## # A tibble: 6 × 6
 ##    year region_name no_species boot_sd boot_lower2.5 boot_upper97.5
 ##   &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1  2020 Østlandet        0.921  0.0799         0.744          1    
-## 2  2021 Trøndelag        0.838  0.0618         0.702          0.948
-## 3  2021 Østlandet        0.913  0.0721         0.758          1    
-## 4  2022 Sørlandet        0.592  0.112          0.366          0.814
-## 5  2022 Trøndelag        0.695  0.0502         0.596          0.796
-## 6  2022 Østlandet        0.636  0.0552         0.526          0.744</code></pre>
+## 1  2020 Østlandet        0.925  0.0736         0.751          1    
+## 2  2021 Trøndelag        0.839  0.0630         0.698          0.946
+## 3  2021 Østlandet        0.910  0.0735         0.744          1    
+## 4  2022 Sørlandet        0.591  0.119          0.356          0.832
+## 5  2022 Trøndelag        0.695  0.0510         0.6            0.8  
+## 6  2022 Østlandet        0.638  0.0547         0.532          0.743</code></pre>
 <div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pollinators_sn_diff)</span></code></pre></div>
 <p><img src="DRAFT_insectIndicators_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
 <p>Prepare export format.</p>
@@ -1115,15 +1113,15 @@ where <span class="math inline">\(n_{CS}\)</span> is the number of expected comm
 ## Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 ## Projected CRS: ETRS89 / UTM zone 33N
 ## # A tibble: 6 × 7
-##   region                                                                                       geom  year ind_value ind_sd ind_lower2.5 ind_upper9…¹
-##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;     &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022     0.592 0.112         0.366        0.814
-## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021     0.838 0.0618        0.702        0.948
-## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022     0.695 0.0502        0.596        0.796
-## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020     0.921 0.0799        0.744        1    
-## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021     0.913 0.0721        0.758        1    
-## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022     0.636 0.0552        0.526        0.744
-## # … with abbreviated variable name ¹​ind_upper97.5</code></pre>
+##   region                                                                                       geom  year ind_v…¹ ind_sd ind_l…² ind_u…³
+##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022   0.591 0.119    0.356   0.832
+## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021   0.839 0.0630   0.698   0.946
+## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022   0.695 0.0510   0.6     0.8  
+## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020   0.925 0.0736   0.751   1    
+## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021   0.910 0.0735   0.744   1    
+## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022   0.638 0.0547   0.532   0.743
+## # … with abbreviated variable names ¹​ind_value, ²​ind_lower2.5, ³​ind_upper97.5</code></pre>
 </div>
 <div id="relationship-between-symphyta-and-parasitica-in-semi-natural-land" class="section level4" number="1.8.4.4">
 <h4><span class="header-section-number">1.8.4.4</span> Relationship between Symphyta and Parasitica in semi-natural land</h4>
@@ -1207,12 +1205,12 @@ where <span class="math inline">\(n_{CS}\)</span> is the number of expected comm
 <pre><code>## # A tibble: 6 × 6
 ##    year region_name par_per_sym_richn boot_sd boot_lower2.5 boot_upper97.5
 ##   &lt;int&gt; &lt;chr&gt;                   &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1  2020 Østlandet               0.288  0.0236         0.244          0.339
-## 2  2021 Trøndelag               0.888  0.0918         0.699          1    
-## 3  2021 Østlandet               0.606  0.0514         0.505          0.701
-## 4  2022 Sørlandet               0.823  0.170          0.538          1    
-## 5  2022 Trøndelag               0.559  0.0618         0.445          0.683
-## 6  2022 Østlandet               0.701  0.132          0.466          1</code></pre>
+## 1  2020 Østlandet               0.289  0.0240         0.248          0.343
+## 2  2021 Trøndelag               0.891  0.0944         0.691          1    
+## 3  2021 Østlandet               0.603  0.0510         0.507          0.700
+## 4  2022 Sørlandet               0.833  0.162          0.531          1    
+## 5  2022 Trøndelag               0.557  0.0623         0.447          0.685
+## 6  2022 Østlandet               0.705  0.132          0.474          0.991</code></pre>
 <div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(par_sym_sn_diff)</span></code></pre></div>
 <p><img src="DRAFT_insectIndicators_files/figure-html/unnamed-chunk-56-1.png" width="672" /></p>
 <p>Prepare export format.</p>
@@ -1238,15 +1236,15 @@ where <span class="math inline">\(n_{CS}\)</span> is the number of expected comm
 ## Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 ## Projected CRS: ETRS89 / UTM zone 33N
 ## # A tibble: 6 × 7
-##   region                                                                                       geom  year ind_value ind_sd ind_lower2.5 ind_upper9…¹
-##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;     &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022     0.823 0.170         0.538        1    
-## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021     0.888 0.0918        0.699        1    
-## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022     0.559 0.0618        0.445        0.683
-## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020     0.288 0.0236        0.244        0.339
-## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021     0.606 0.0514        0.505        0.701
-## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022     0.701 0.132         0.466        1    
-## # … with abbreviated variable name ¹​ind_upper97.5</code></pre>
+##   region                                                                                       geom  year ind_v…¹ ind_sd ind_l…² ind_u…³
+##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022   0.833 0.162    0.531   1    
+## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021   0.891 0.0944   0.691   1    
+## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022   0.557 0.0623   0.447   0.685
+## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020   0.289 0.0240   0.248   0.343
+## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021   0.603 0.0510   0.507   0.700
+## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022   0.705 0.132    0.474   0.991
+## # … with abbreviated variable names ¹​ind_value, ²​ind_lower2.5, ³​ind_upper97.5</code></pre>
 </div>
 <div id="genetic-diversity-evenness-of-flying-insects-in-semi-natural-land" class="section level4" number="1.8.4.5">
 <h4><span class="header-section-number">1.8.4.5</span> Genetic diversity evenness of flying insects in semi-natural land</h4>
@@ -1271,12 +1269,12 @@ This could also be done for a subset of species.
 <pre><code>## # A tibble: 6 × 6
 ##    year region_name GDE_by_asv boot_sd boot_lower2.5 boot_upper97.5
 ##   &lt;int&gt; &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
-## 1  2020 Østlandet        0.871  0.0288         0.811          0.927
-## 2  2021 Trøndelag        0.755  0.0238         0.709          0.799
-## 3  2021 Østlandet        0.824  0.0190         0.786          0.861
-## 4  2022 Sørlandet        0.811  0.0277         0.757          0.87 
-## 5  2022 Trøndelag        0.748  0.0226         0.706          0.796
-## 6  2022 Østlandet        0.932  0.0152         0.901          0.961</code></pre>
+## 1  2020 Østlandet        0.871  0.0292         0.813          0.927
+## 2  2021 Trøndelag        0.755  0.0245         0.704          0.801
+## 3  2021 Østlandet        0.825  0.0181         0.789          0.86 
+## 4  2022 Sørlandet        0.810  0.0281         0.76           0.867
+## 5  2022 Trøndelag        0.747  0.0221         0.704          0.793
+## 6  2022 Østlandet        0.933  0.0153         0.901          0.961</code></pre>
 <div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gde_sn_diff)</span></code></pre></div>
 <p><img src="DRAFT_insectIndicators_files/figure-html/unnamed-chunk-62-1.png" width="672" /></p>
 <p>Prepare export format.</p>
@@ -1302,15 +1300,15 @@ This could also be done for a subset of species.
 ## Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 ## Projected CRS: ETRS89 / UTM zone 33N
 ## # A tibble: 6 × 7
-##   region                                                                                       geom  year ind_value ind_sd ind_lower2.5 ind_upper9…¹
-##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;     &lt;dbl&gt;  &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022     0.811 0.0277        0.757        0.87 
-## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021     0.755 0.0238        0.709        0.799
-## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022     0.748 0.0226        0.706        0.796
-## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020     0.871 0.0288        0.811        0.927
-## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021     0.824 0.0190        0.786        0.861
-## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022     0.932 0.0152        0.901        0.961
-## # … with abbreviated variable name ¹​ind_upper97.5</code></pre>
+##   region                                                                                       geom  year ind_v…¹ ind_sd ind_l…² ind_u…³
+##   &lt;chr&gt;                                                                          &lt;MULTIPOLYGON [m]&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Sørlandet (((-31605 6513854, -31464 6513743, -31449 6513590, -32255 6512745, -32512 6512740, -...  2022   0.810 0.0281   0.76    0.867
+## 2 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2021   0.755 0.0245   0.704   0.801
+## 3 Trøndelag (((227783 7068646, 227876 7069284, 227998 7069292, 228247 7069134, 228869 7069030, 2...  2022   0.747 0.0221   0.704   0.793
+## 4 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2020   0.871 0.0292   0.813   0.927
+## 5 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2021   0.825 0.0181   0.789   0.86 
+## 6 Østlandet (((179915 6537265, 180246 6536997, 180600 6536671, 181028 6536601, 181197 6536581, 1...  2022   0.933 0.0153   0.901   0.961
+## # … with abbreviated variable names ¹​ind_value, ²​ind_lower2.5, ³​ind_upper97.5</code></pre>
 </div>
 </div>
 <div id="calculation-of-nbbm-indicators" class="section level3" number="1.8.5">
@@ -1394,110 +1392,155 @@ This could also be done for a subset of species.
 <p>The calculations for earlier years is already present as datasets in the R-package and can be fetched individually. Once this is done, we can plot the timeseries of values using the function <code>indPlot</code>.</p>
 <p>Todo, put these in the new version of the package.</p>
 <div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load(&quot;out/IndicatorValues2020.Rdata&quot;)</span></span></code></pre></div>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019TrondGress&quot;</span>)</span>
-<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019TrondSkog&quot;</span>)</span>
-<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019OstGress&quot;</span>)</span>
-<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019OstSkog&quot;</span>)</span>
-<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019SorGress&quot;</span>)</span>
-<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019SorSkog&quot;</span>)</span>
-<span id="cb95-7"><a href="#cb95-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018TrondGress&quot;</span>)</span>
-<span id="cb95-8"><a href="#cb95-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018TrondSkog&quot;</span>)</span>
-<span id="cb95-9"><a href="#cb95-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018OstGress&quot;</span>)</span>
-<span id="cb95-10"><a href="#cb95-10" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018OstSkog&quot;</span>)</span>
-<span id="cb95-11"><a href="#cb95-11" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018SorGress&quot;</span>)</span>
-<span id="cb95-12"><a href="#cb95-12" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018SorSkog&quot;</span>)</span>
-<span id="cb95-13"><a href="#cb95-13" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017TrondGress&quot;</span>)</span>
-<span id="cb95-14"><a href="#cb95-14" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017TrondSkog&quot;</span>)</span>
-<span id="cb95-15"><a href="#cb95-15" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017OstGress&quot;</span>)</span>
-<span id="cb95-16"><a href="#cb95-16" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017OstSkog&quot;</span>)</span>
-<span id="cb95-17"><a href="#cb95-17" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017SorGress&quot;</span>)</span>
-<span id="cb95-18"><a href="#cb95-18" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017SorSkog&quot;</span>)</span>
-<span id="cb95-19"><a href="#cb95-19" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016TrondGress&quot;</span>)</span>
-<span id="cb95-20"><a href="#cb95-20" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016TrondSkog&quot;</span>)</span>
-<span id="cb95-21"><a href="#cb95-21" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016OstGress&quot;</span>)</span>
-<span id="cb95-22"><a href="#cb95-22" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016OstSkog&quot;</span>)</span>
-<span id="cb95-23"><a href="#cb95-23" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016SorGress&quot;</span>)</span>
-<span id="cb95-24"><a href="#cb95-24" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016SorSkog&quot;</span>)</span>
-<span id="cb95-25"><a href="#cb95-25" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015TrondGress&quot;</span>)</span>
-<span id="cb95-26"><a href="#cb95-26" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015TrondSkog&quot;</span>)</span>
-<span id="cb95-27"><a href="#cb95-27" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015OstGress&quot;</span>)</span>
-<span id="cb95-28"><a href="#cb95-28" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015OstSkog&quot;</span>)</span>
-<span id="cb95-29"><a href="#cb95-29" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015SorGress&quot;</span>)</span>
-<span id="cb95-30"><a href="#cb95-30" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015SorSkog&quot;</span>)</span>
-<span id="cb95-31"><a href="#cb95-31" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014TrondGress&quot;</span>)</span>
-<span id="cb95-32"><a href="#cb95-32" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014TrondSkog&quot;</span>)</span>
-<span id="cb95-33"><a href="#cb95-33" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014OstGress&quot;</span>)</span>
-<span id="cb95-34"><a href="#cb95-34" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014OstSkog&quot;</span>)</span>
-<span id="cb95-35"><a href="#cb95-35" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014SorGress&quot;</span>)</span>
-<span id="cb95-36"><a href="#cb95-36" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014SorSkog&quot;</span>)</span>
-<span id="cb95-37"><a href="#cb95-37" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013TrondGress&quot;</span>)</span>
-<span id="cb95-38"><a href="#cb95-38" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013TrondSkog&quot;</span>)</span>
-<span id="cb95-39"><a href="#cb95-39" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013OstGress&quot;</span>)</span>
-<span id="cb95-40"><a href="#cb95-40" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013OstSkog&quot;</span>)</span>
-<span id="cb95-41"><a href="#cb95-41" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013SorGress&quot;</span>)</span>
-<span id="cb95-42"><a href="#cb95-42" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013SorSkog&quot;</span>)</span>
-<span id="cb95-43"><a href="#cb95-43" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2012TrondGress&quot;</span>)</span>
-<span id="cb95-44"><a href="#cb95-44" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2012TrondSkog&quot;</span>)</span>
-<span id="cb95-45"><a href="#cb95-45" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2012OstGress&quot;</span>)</span>
-<span id="cb95-46"><a href="#cb95-46" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2012OstSkog&quot;</span>)</span>
-<span id="cb95-47"><a href="#cb95-47" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2011OstGress&quot;</span>)</span>
-<span id="cb95-48"><a href="#cb95-48" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2011OstSkog&quot;</span>)</span>
-<span id="cb95-49"><a href="#cb95-49" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2010OstGress&quot;</span>)</span>
-<span id="cb95-50"><a href="#cb95-50" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2010OstSkog&quot;</span>)</span>
-<span id="cb95-51"><a href="#cb95-51" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2009OstGress&quot;</span>)</span>
-<span id="cb95-52"><a href="#cb95-52" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2009OstSkog&quot;</span>)</span>
-<span id="cb95-53"><a href="#cb95-53" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019TrondGress&quot;</span>)</span>
-<span id="cb95-54"><a href="#cb95-54" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019TrondSkog&quot;</span>)</span>
-<span id="cb95-55"><a href="#cb95-55" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019OstGress&quot;</span>)</span>
-<span id="cb95-56"><a href="#cb95-56" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019OstSkog&quot;</span>)</span>
-<span id="cb95-57"><a href="#cb95-57" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019SorGress&quot;</span>)</span>
-<span id="cb95-58"><a href="#cb95-58" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019SorSkog&quot;</span>)</span>
-<span id="cb95-59"><a href="#cb95-59" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018TrondGress&quot;</span>)</span>
-<span id="cb95-60"><a href="#cb95-60" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018TrondSkog&quot;</span>)</span>
-<span id="cb95-61"><a href="#cb95-61" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018OstGress&quot;</span>)</span>
-<span id="cb95-62"><a href="#cb95-62" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018OstSkog&quot;</span>)</span>
-<span id="cb95-63"><a href="#cb95-63" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018SorGress&quot;</span>)</span>
-<span id="cb95-64"><a href="#cb95-64" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018SorSkog&quot;</span>)</span>
-<span id="cb95-65"><a href="#cb95-65" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017TrondGress&quot;</span>)</span>
-<span id="cb95-66"><a href="#cb95-66" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017TrondSkog&quot;</span>)</span>
-<span id="cb95-67"><a href="#cb95-67" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017OstGress&quot;</span>)</span>
-<span id="cb95-68"><a href="#cb95-68" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017OstSkog&quot;</span>)</span>
-<span id="cb95-69"><a href="#cb95-69" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017SorGress&quot;</span>)</span>
-<span id="cb95-70"><a href="#cb95-70" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017SorSkog&quot;</span>)</span>
-<span id="cb95-71"><a href="#cb95-71" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016TrondGress&quot;</span>)</span>
-<span id="cb95-72"><a href="#cb95-72" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016TrondSkog&quot;</span>)</span>
-<span id="cb95-73"><a href="#cb95-73" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016OstGress&quot;</span>)</span>
-<span id="cb95-74"><a href="#cb95-74" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016OstSkog&quot;</span>)</span>
-<span id="cb95-75"><a href="#cb95-75" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016SorGress&quot;</span>)</span>
-<span id="cb95-76"><a href="#cb95-76" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016SorSkog&quot;</span>)</span>
-<span id="cb95-77"><a href="#cb95-77" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015TrondGress&quot;</span>)</span>
-<span id="cb95-78"><a href="#cb95-78" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015TrondSkog&quot;</span>)</span>
-<span id="cb95-79"><a href="#cb95-79" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015OstGress&quot;</span>)</span>
-<span id="cb95-80"><a href="#cb95-80" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015OstSkog&quot;</span>)</span>
-<span id="cb95-81"><a href="#cb95-81" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015SorGress&quot;</span>)</span>
-<span id="cb95-82"><a href="#cb95-82" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015SorSkog&quot;</span>)</span>
-<span id="cb95-83"><a href="#cb95-83" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014TrondGress&quot;</span>)</span>
-<span id="cb95-84"><a href="#cb95-84" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014TrondSkog&quot;</span>)</span>
-<span id="cb95-85"><a href="#cb95-85" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014OstGress&quot;</span>)</span>
-<span id="cb95-86"><a href="#cb95-86" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014OstSkog&quot;</span>)</span>
-<span id="cb95-87"><a href="#cb95-87" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014SorGress&quot;</span>)</span>
-<span id="cb95-88"><a href="#cb95-88" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014SorSkog&quot;</span>)</span>
-<span id="cb95-89"><a href="#cb95-89" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013TrondGress&quot;</span>)</span>
-<span id="cb95-90"><a href="#cb95-90" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013TrondSkog&quot;</span>)</span>
-<span id="cb95-91"><a href="#cb95-91" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013OstGress&quot;</span>)</span>
-<span id="cb95-92"><a href="#cb95-92" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013OstSkog&quot;</span>)</span>
-<span id="cb95-93"><a href="#cb95-93" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013SorGress&quot;</span>)</span>
-<span id="cb95-94"><a href="#cb95-94" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013SorSkog&quot;</span>)</span>
-<span id="cb95-95"><a href="#cb95-95" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2012TrondGress&quot;</span>)</span>
-<span id="cb95-96"><a href="#cb95-96" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2012TrondSkog&quot;</span>)</span>
-<span id="cb95-97"><a href="#cb95-97" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2012OstGress&quot;</span>)</span>
-<span id="cb95-98"><a href="#cb95-98" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2012OstSkog&quot;</span>)</span>
-<span id="cb95-99"><a href="#cb95-99" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2011OstGress&quot;</span>)</span>
-<span id="cb95-100"><a href="#cb95-100" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2011OstSkog&quot;</span>)</span>
-<span id="cb95-101"><a href="#cb95-101" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2010OstGress&quot;</span>)</span>
-<span id="cb95-102"><a href="#cb95-102" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2010OstSkog&quot;</span>)</span>
-<span id="cb95-103"><a href="#cb95-103" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2009OstGress&quot;</span>)</span>
-<span id="cb95-104"><a href="#cb95-104" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2009OstSkog&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2022VestGress&quot;</span>)</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2022VestSkog&quot;</span>)</span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2022TrondGress&quot;</span>)</span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2022TrondSkog&quot;</span>)</span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2022OstGress&quot;</span>)</span>
+<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2022OstSkog&quot;</span>)</span>
+<span id="cb95-7"><a href="#cb95-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2022SorGress&quot;</span>)</span>
+<span id="cb95-8"><a href="#cb95-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2022SorSkog&quot;</span>)</span>
+<span id="cb95-9"><a href="#cb95-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-10"><a href="#cb95-10" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2021TrondGress&quot;</span>)</span>
+<span id="cb95-11"><a href="#cb95-11" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2021TrondSkog&quot;</span>)</span>
+<span id="cb95-12"><a href="#cb95-12" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2021OstGress&quot;</span>)</span>
+<span id="cb95-13"><a href="#cb95-13" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2021OstSkog&quot;</span>)</span>
+<span id="cb95-14"><a href="#cb95-14" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2021SorGress&quot;</span>)</span>
+<span id="cb95-15"><a href="#cb95-15" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2021SorSkog&quot;</span>)</span>
+<span id="cb95-16"><a href="#cb95-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-17"><a href="#cb95-17" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2020TrondGress&quot;</span>)</span>
+<span id="cb95-18"><a href="#cb95-18" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2020TrondSkog&quot;</span>)</span>
+<span id="cb95-19"><a href="#cb95-19" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2020OstGress&quot;</span>)</span>
+<span id="cb95-20"><a href="#cb95-20" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2020OstSkog&quot;</span>)</span>
+<span id="cb95-21"><a href="#cb95-21" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2020SorGress&quot;</span>)</span>
+<span id="cb95-22"><a href="#cb95-22" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2020SorSkog&quot;</span>)</span>
+<span id="cb95-23"><a href="#cb95-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-24"><a href="#cb95-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-25"><a href="#cb95-25" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019TrondGress&quot;</span>)</span>
+<span id="cb95-26"><a href="#cb95-26" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019TrondSkog&quot;</span>)</span>
+<span id="cb95-27"><a href="#cb95-27" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019OstGress&quot;</span>)</span>
+<span id="cb95-28"><a href="#cb95-28" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019OstSkog&quot;</span>)</span>
+<span id="cb95-29"><a href="#cb95-29" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019SorGress&quot;</span>)</span>
+<span id="cb95-30"><a href="#cb95-30" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2019SorSkog&quot;</span>)</span>
+<span id="cb95-31"><a href="#cb95-31" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018TrondGress&quot;</span>)</span>
+<span id="cb95-32"><a href="#cb95-32" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018TrondSkog&quot;</span>)</span>
+<span id="cb95-33"><a href="#cb95-33" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018OstGress&quot;</span>)</span>
+<span id="cb95-34"><a href="#cb95-34" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018OstSkog&quot;</span>)</span>
+<span id="cb95-35"><a href="#cb95-35" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018SorGress&quot;</span>)</span>
+<span id="cb95-36"><a href="#cb95-36" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2018SorSkog&quot;</span>)</span>
+<span id="cb95-37"><a href="#cb95-37" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017TrondGress&quot;</span>)</span>
+<span id="cb95-38"><a href="#cb95-38" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017TrondSkog&quot;</span>)</span>
+<span id="cb95-39"><a href="#cb95-39" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017OstGress&quot;</span>)</span>
+<span id="cb95-40"><a href="#cb95-40" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017OstSkog&quot;</span>)</span>
+<span id="cb95-41"><a href="#cb95-41" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017SorGress&quot;</span>)</span>
+<span id="cb95-42"><a href="#cb95-42" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2017SorSkog&quot;</span>)</span>
+<span id="cb95-43"><a href="#cb95-43" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016TrondGress&quot;</span>)</span>
+<span id="cb95-44"><a href="#cb95-44" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016TrondSkog&quot;</span>)</span>
+<span id="cb95-45"><a href="#cb95-45" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016OstGress&quot;</span>)</span>
+<span id="cb95-46"><a href="#cb95-46" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016OstSkog&quot;</span>)</span>
+<span id="cb95-47"><a href="#cb95-47" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016SorGress&quot;</span>)</span>
+<span id="cb95-48"><a href="#cb95-48" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2016SorSkog&quot;</span>)</span>
+<span id="cb95-49"><a href="#cb95-49" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015TrondGress&quot;</span>)</span>
+<span id="cb95-50"><a href="#cb95-50" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015TrondSkog&quot;</span>)</span>
+<span id="cb95-51"><a href="#cb95-51" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015OstGress&quot;</span>)</span>
+<span id="cb95-52"><a href="#cb95-52" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015OstSkog&quot;</span>)</span>
+<span id="cb95-53"><a href="#cb95-53" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015SorGress&quot;</span>)</span>
+<span id="cb95-54"><a href="#cb95-54" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2015SorSkog&quot;</span>)</span>
+<span id="cb95-55"><a href="#cb95-55" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014TrondGress&quot;</span>)</span>
+<span id="cb95-56"><a href="#cb95-56" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014TrondSkog&quot;</span>)</span>
+<span id="cb95-57"><a href="#cb95-57" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014OstGress&quot;</span>)</span>
+<span id="cb95-58"><a href="#cb95-58" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014OstSkog&quot;</span>)</span>
+<span id="cb95-59"><a href="#cb95-59" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014SorGress&quot;</span>)</span>
+<span id="cb95-60"><a href="#cb95-60" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2014SorSkog&quot;</span>)</span>
+<span id="cb95-61"><a href="#cb95-61" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013TrondGress&quot;</span>)</span>
+<span id="cb95-62"><a href="#cb95-62" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013TrondSkog&quot;</span>)</span>
+<span id="cb95-63"><a href="#cb95-63" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013OstGress&quot;</span>)</span>
+<span id="cb95-64"><a href="#cb95-64" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013OstSkog&quot;</span>)</span>
+<span id="cb95-65"><a href="#cb95-65" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013SorGress&quot;</span>)</span>
+<span id="cb95-66"><a href="#cb95-66" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2013SorSkog&quot;</span>)</span>
+<span id="cb95-67"><a href="#cb95-67" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2012TrondGress&quot;</span>)</span>
+<span id="cb95-68"><a href="#cb95-68" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2012TrondSkog&quot;</span>)</span>
+<span id="cb95-69"><a href="#cb95-69" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2012OstGress&quot;</span>)</span>
+<span id="cb95-70"><a href="#cb95-70" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2012OstSkog&quot;</span>)</span>
+<span id="cb95-71"><a href="#cb95-71" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2011OstGress&quot;</span>)</span>
+<span id="cb95-72"><a href="#cb95-72" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2011OstSkog&quot;</span>)</span>
+<span id="cb95-73"><a href="#cb95-73" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2010OstGress&quot;</span>)</span>
+<span id="cb95-74"><a href="#cb95-74" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2010OstSkog&quot;</span>)</span>
+<span id="cb95-75"><a href="#cb95-75" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2009OstGress&quot;</span>)</span>
+<span id="cb95-76"><a href="#cb95-76" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;sInd2009OstSkog&quot;</span>)</span>
+<span id="cb95-77"><a href="#cb95-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-78"><a href="#cb95-78" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2022VestGress&quot;</span>)</span>
+<span id="cb95-79"><a href="#cb95-79" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2022VestSkog&quot;</span>)</span>
+<span id="cb95-80"><a href="#cb95-80" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2022TrondGress&quot;</span>)</span>
+<span id="cb95-81"><a href="#cb95-81" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2022TrondSkog&quot;</span>)</span>
+<span id="cb95-82"><a href="#cb95-82" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2022OstGress&quot;</span>)</span>
+<span id="cb95-83"><a href="#cb95-83" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2022OstSkog&quot;</span>)</span>
+<span id="cb95-84"><a href="#cb95-84" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2022SorGress&quot;</span>)</span>
+<span id="cb95-85"><a href="#cb95-85" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2022SorSkog&quot;</span>)</span>
+<span id="cb95-86"><a href="#cb95-86" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2021TrondGress&quot;</span>)</span>
+<span id="cb95-87"><a href="#cb95-87" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2021TrondSkog&quot;</span>)</span>
+<span id="cb95-88"><a href="#cb95-88" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2021OstGress&quot;</span>)</span>
+<span id="cb95-89"><a href="#cb95-89" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2021OstSkog&quot;</span>)</span>
+<span id="cb95-90"><a href="#cb95-90" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2021SorGress&quot;</span>)</span>
+<span id="cb95-91"><a href="#cb95-91" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2021SorSkog&quot;</span>)</span>
+<span id="cb95-92"><a href="#cb95-92" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2020TrondGress&quot;</span>)</span>
+<span id="cb95-93"><a href="#cb95-93" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2020TrondSkog&quot;</span>)</span>
+<span id="cb95-94"><a href="#cb95-94" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2020OstGress&quot;</span>)</span>
+<span id="cb95-95"><a href="#cb95-95" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2020OstSkog&quot;</span>)</span>
+<span id="cb95-96"><a href="#cb95-96" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2020SorGress&quot;</span>)</span>
+<span id="cb95-97"><a href="#cb95-97" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2020SorSkog&quot;</span>)</span>
+<span id="cb95-98"><a href="#cb95-98" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019TrondGress&quot;</span>)</span>
+<span id="cb95-99"><a href="#cb95-99" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019TrondSkog&quot;</span>)</span>
+<span id="cb95-100"><a href="#cb95-100" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019OstGress&quot;</span>)</span>
+<span id="cb95-101"><a href="#cb95-101" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019OstSkog&quot;</span>)</span>
+<span id="cb95-102"><a href="#cb95-102" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019SorGress&quot;</span>)</span>
+<span id="cb95-103"><a href="#cb95-103" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2019SorSkog&quot;</span>)</span>
+<span id="cb95-104"><a href="#cb95-104" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018TrondGress&quot;</span>)</span>
+<span id="cb95-105"><a href="#cb95-105" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018TrondSkog&quot;</span>)</span>
+<span id="cb95-106"><a href="#cb95-106" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018OstGress&quot;</span>)</span>
+<span id="cb95-107"><a href="#cb95-107" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018OstSkog&quot;</span>)</span>
+<span id="cb95-108"><a href="#cb95-108" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018SorGress&quot;</span>)</span>
+<span id="cb95-109"><a href="#cb95-109" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2018SorSkog&quot;</span>)</span>
+<span id="cb95-110"><a href="#cb95-110" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017TrondGress&quot;</span>)</span>
+<span id="cb95-111"><a href="#cb95-111" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017TrondSkog&quot;</span>)</span>
+<span id="cb95-112"><a href="#cb95-112" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017OstGress&quot;</span>)</span>
+<span id="cb95-113"><a href="#cb95-113" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017OstSkog&quot;</span>)</span>
+<span id="cb95-114"><a href="#cb95-114" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017SorGress&quot;</span>)</span>
+<span id="cb95-115"><a href="#cb95-115" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2017SorSkog&quot;</span>)</span>
+<span id="cb95-116"><a href="#cb95-116" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016TrondGress&quot;</span>)</span>
+<span id="cb95-117"><a href="#cb95-117" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016TrondSkog&quot;</span>)</span>
+<span id="cb95-118"><a href="#cb95-118" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016OstGress&quot;</span>)</span>
+<span id="cb95-119"><a href="#cb95-119" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016OstSkog&quot;</span>)</span>
+<span id="cb95-120"><a href="#cb95-120" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016SorGress&quot;</span>)</span>
+<span id="cb95-121"><a href="#cb95-121" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2016SorSkog&quot;</span>)</span>
+<span id="cb95-122"><a href="#cb95-122" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015TrondGress&quot;</span>)</span>
+<span id="cb95-123"><a href="#cb95-123" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015TrondSkog&quot;</span>)</span>
+<span id="cb95-124"><a href="#cb95-124" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015OstGress&quot;</span>)</span>
+<span id="cb95-125"><a href="#cb95-125" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015OstSkog&quot;</span>)</span>
+<span id="cb95-126"><a href="#cb95-126" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015SorGress&quot;</span>)</span>
+<span id="cb95-127"><a href="#cb95-127" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2015SorSkog&quot;</span>)</span>
+<span id="cb95-128"><a href="#cb95-128" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014TrondGress&quot;</span>)</span>
+<span id="cb95-129"><a href="#cb95-129" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014TrondSkog&quot;</span>)</span>
+<span id="cb95-130"><a href="#cb95-130" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014OstGress&quot;</span>)</span>
+<span id="cb95-131"><a href="#cb95-131" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014OstSkog&quot;</span>)</span>
+<span id="cb95-132"><a href="#cb95-132" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014SorGress&quot;</span>)</span>
+<span id="cb95-133"><a href="#cb95-133" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2014SorSkog&quot;</span>)</span>
+<span id="cb95-134"><a href="#cb95-134" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013TrondGress&quot;</span>)</span>
+<span id="cb95-135"><a href="#cb95-135" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013TrondSkog&quot;</span>)</span>
+<span id="cb95-136"><a href="#cb95-136" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013OstGress&quot;</span>)</span>
+<span id="cb95-137"><a href="#cb95-137" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013OstSkog&quot;</span>)</span>
+<span id="cb95-138"><a href="#cb95-138" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013SorGress&quot;</span>)</span>
+<span id="cb95-139"><a href="#cb95-139" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2013SorSkog&quot;</span>)</span>
+<span id="cb95-140"><a href="#cb95-140" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2012TrondGress&quot;</span>)</span>
+<span id="cb95-141"><a href="#cb95-141" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2012TrondSkog&quot;</span>)</span>
+<span id="cb95-142"><a href="#cb95-142" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2012OstGress&quot;</span>)</span>
+<span id="cb95-143"><a href="#cb95-143" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2012OstSkog&quot;</span>)</span>
+<span id="cb95-144"><a href="#cb95-144" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2011OstGress&quot;</span>)</span>
+<span id="cb95-145"><a href="#cb95-145" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2011OstSkog&quot;</span>)</span>
+<span id="cb95-146"><a href="#cb95-146" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2010OstGress&quot;</span>)</span>
+<span id="cb95-147"><a href="#cb95-147" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2010OstSkog&quot;</span>)</span>
+<span id="cb95-148"><a href="#cb95-148" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2009OstGress&quot;</span>)</span>
+<span id="cb95-149"><a href="#cb95-149" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;hInd2009OstSkog&quot;</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>hGressIndVals <span class="ot">&lt;-</span> <span class="fu">collectIndData</span>(<span class="at">taxa =</span> <span class="st">&quot;bumblebees&quot;</span>, </span>
 <span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">habitat =</span> <span class="st">&quot;gressmark&quot;</span>,</span>
 <span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">years =</span> <span class="dv">2009</span><span class="sc">:</span><span class="dv">2022</span>)</span>
