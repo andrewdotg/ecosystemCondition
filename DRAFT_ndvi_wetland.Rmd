@@ -195,7 +195,7 @@ The image collection contains MODIS imagery from June, July and August 2000-2022
 ```{r}
 # Import MODIS NDVI Data
 # MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
-df.m<- read.csv("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_MODIS\\modis_ndvi_ts_2000_2022.csv", )
+df.m<- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_MODIS/modis_ndvi_ts_2000_2022.csv", )
 df.m$mean<-df.m$mean/10000
 df.m
 ```
@@ -267,7 +267,7 @@ nrow(nin %>%
 )
 # 74375 polygons should have only 1 ecosystem type
 
-# there's no information on the proportion of ecosystem types in the polygons, so we got to omit all polygons with multiple ecosystem types :(
+# there's no information on the proportion of ecosystem types in the polygons, so we have to omit all polygons with multiple ecosystem types :(
 nin <- nin %>%
   filter(!grepl(',', ninkartleggingsenheter))
 
@@ -482,8 +482,8 @@ SentinelNDVI.wetland %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
   facet_wrap( ~hovedtype)
-# NDVI largely varies between hovedtyper: higher in seminat wet-meadows (V10), lowest in ombrotrophic bogs (V3)
-# @Tilstand: in seminat types, kaldkilde, and bogs ndvi seems to increase as condition deteriorates, in fens not much of a pattern
+# NDVI largely varies between hovedtyper: NDVI is higher in semi-natural wet-meadows (V10), and lowest in ombrotrophic bogs (V3)
+# @Tilstand: in semi-natural types, NDVI in kaldkilde, and bogs seems to increase as condition deteriorates, in fens there is not much of a pattern
 
 
 ## looking at subtypes for polygons in good condition only (and only for NDVI data matching NiN-mapping)
@@ -498,7 +498,7 @@ SentinelNDVI.wetland %>%
 # -stronger than between condition classes in previous plots
 
 
-## looking at ndvi in different condition classes, separately for main types and regions  (only for NDVI data matching NiN-mapping)
+## looking at NDVI in different condition classes, separately for main types and regions  (only for NDVI data matching NiN-mapping)
 SentinelNDVI.wetland %>%
   group_by(id, year) %>%
 
@@ -506,7 +506,7 @@ SentinelNDVI.wetland %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
   facet_grid( region~hovedtype)
-# V4 has lacking data for quite some condition classes in most regions
+# V4 kaldkilde has lacking data for quite some condition classes in most regions
 
 ```
 
@@ -517,7 +517,7 @@ SentinelNDVI.wetland %>%
 # we can transform the variable to be bounded between 0 and 1 and use beta-regression models
 SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
-# we drop V4 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
+# we drop V4 Kaldkilde for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
 
 SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
   filter(year == kartleggingsaar) %>%
@@ -543,7 +543,7 @@ NDVI values do vary between:
 - Ecosystem types
 - Condition classes
 
-It is evident that there are differences between regions. But since we are not interested in the statistics for region differences, we run separate models for every region for ease of interpretation.
+It is evident that there are differences between regions. But since we are not interested in the statistics for regional differences, we run separate models for every region for ease of interpretation.
 ```{r, include = F}
 rm(model.wetland.cond.Sent)
 ```
@@ -571,9 +571,9 @@ summary(model.wetland.cond.Sent.N)$coefficients
 ```
 NDVI in good condition: V10 > V1 > V9 > V3
 
-V1: NDVI decreases as condition deteriorates
-V3: NDVI does not change as condition deteriorates
-V9 & V10: NDVI increases as condition deteriorates
+V1 Åpen jordvannsmyr: NDVI decreases as condition deteriorates
+V3 Nedbørsmyr: NDVI does not change as condition deteriorates
+V9 Semi-naturlig myr & V10 Semi-naturlig våteng: NDVI increases as condition deteriorates
 
 # Central Norway
 ```{r}
@@ -589,8 +589,8 @@ summary(model.wetland.cond.Sent.C)$coefficients
 ```
 NDVI in good condition: V10 > V1 & V9 > V3
 
-V1: NDVI decreases as condition deteriorates
-V3, V9 & V10: NDVI increases as condition deteriorates
+V1 Åpen jordvannsmyr: NDVI decreases as condition deteriorates
+V3 Nedbørsmyr, V9 Semi-naturlig myr & V10 Semi-naturlig våteng: NDVI increases as condition deteriorates
 
 # Western Norway
 ```{r}
@@ -606,9 +606,9 @@ summary(model.wetland.cond.Sent.W)$coefficients
 ```
 NDVI in good condition: V10 > V9 & V3 > V1
 
-V1 & V10: NDVI increases as condition deteriorates
-V3: NDVI decreases as condition deteriorates (but really insufficient data)
-V9: NDVI does not change as condition deteriorates
+V1 Åpen jordvannsmyr & V10 Semi-naturlig våteng: NDVI increases as condition deteriorates
+V3 Nedbørsmyr: NDVI decreases as condition deteriorates (but really insufficient data)
+V9 Semi-naturlig myr: NDVI does not change as condition deteriorates
 
 # Eastern Norway
 ```{r}
@@ -624,8 +624,8 @@ summary(model.wetland.cond.Sent.E)$coefficients
 ```
 NDVI in good condition: V10 > V1 > V3 & V9
 
-V1 & V3: NDVI does not change as condition deteriorates
-V9 & V10: NDVI increases as condition deteriorates
+V1 Åpen jordvannsmyr & V3 Nedbørsmyr: NDVI does not change as condition deteriorates
+V9 Semi-naturlig myr & V10 Semi-naturlig våteng: NDVI increases as condition deteriorates
 
 # Southern Norway
 ```{r}
@@ -641,16 +641,18 @@ summary(model.wetland.cond.Sent.S)$coefficients
 ```
 NDVI in good condition: V10 > V9 > V1 & V3
 
-V1, V9 & V10: NDVI increases as condition deteriorates
-V3: NDVI does not change as condition deteriorates (but also insuffcient data)
+V1 Åpen jordvannsmyr, V9 Semi-naturlig myr & V10 Semi-nautrlig våteng: NDVI increases as condition deteriorates
+V3 Nedbørsmyr: NDVI does not change as condition deteriorates (but also insuffcient data)
 
+Overall take home messages: 
+NDVI in semi-natural wetlands (V9) and semi-natural wet meadows (V10) increases, or is unaffected by reduced condition in all geographical regions. This is consistent with one of the main drivers of reduced condition in semi-natural landscapes in general, namely overgrowth/ encroachment by shrubs as a result of a reduction in traditional management practices.
 
-Overall take home messages:
+In minerotrophic mires (V1), the relationship between NDVI and condition differs in the northern versus the southern regions of Norway. In both northern and central Norway NDVI decreases as condition decreases, while NDVI increases with lower condition in western, eastern and southern Norway. This may indicate different drivers of poor condition along a latitudinal gradient.
 
-???
+There is no consistent pattern in NDVI and condition in ombrotrophic mires (V3). Neither northern, eastern or southern Norway's ombrotrophic mires exhibit changes in NDVI as condition decreases. In central Norway NDVI increases as condition decreases, while NDVI decreases as condition decreases in western Norway. However, it should be noted that in the latter case the data available is very limited.
 
 ### Regression analyses, NDVI across time
-First, there's again some data handling to do. We merge the Sentinel, Modis, and Landsat data to show the full picture across time. Then we model the time series for each Satellite separately.
+First, there's some data handling to do. We merge the Sentinel, Modis, and Landsat data to show the full picture across time. Then we model the time series for each Satellite separately.
 ```{r}
 ## data handling for time series analysis
 # Sentinel time series checked in exploratory analysis script
