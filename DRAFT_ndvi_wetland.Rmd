@@ -698,7 +698,7 @@ summary(LandsatNDVI.wetland$mean_beta)
 LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
 
-# check if the three Sattelite objects have the same structure (for concatenating them)
+# check if the three Satellite objects have the same structure (for concatenating them)
 names(SentinelNDVI.wetland)
 names(ModisNDVI.wetland)
 names(LandsatNDVI.wetland)
@@ -761,8 +761,8 @@ summary(model.wetland.time.Land)$coefficients$cond
 
 
 
-### Eksport file (final product)
-<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
+### Export file (final product)
+<!-- Export final file. Ideally a georeferenced shape or raster with indicators values (raw and normalised), reference values and errors. -->
 
 
 
