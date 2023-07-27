@@ -48,14 +48,6 @@ head(GRUK2021.condition)
 
 
 
-
-
-## ASO data
-
-
-
-
-
 ## Tyler indicator data
 ind.Tyler <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
                         sep = '\t', header=T, quote = '')
@@ -66,8 +58,8 @@ ind.Grime <- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/functional 
 head(ind.Grime)
 
 ## generalized species lists NiN
-load("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators//reference from NiN/Eco_State.RData")
-str(Eco_State)
+T2_ref <- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/T2_ref.csv",sep=";", header=T)
+head(T2_ref)
 
 #### data handling - functional indicator data ####
 # trimming away sub-species & co, and descriptor info
@@ -538,7 +530,7 @@ head(GRUK.species.ind)
 
 
 
-#### data handling - ASO data ... NOT DONE YET ####
+#### continue here ####
 
 
 
