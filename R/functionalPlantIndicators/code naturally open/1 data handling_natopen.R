@@ -30,14 +30,14 @@ head(ANO.sp)
 head(ANO.geo)
 
 ## GRUK
-excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx")
+#excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx")
 GRUK.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
                              sheet = 2)
 GRUK.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
                            sheet = 3)
 
 # condition evaluation for 2021 data
-excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls")
+#excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls")
 
 GRUK2021.condition <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls", 
                                  sheet = 1)
@@ -530,203 +530,60 @@ head(GRUK.species.ind)
 
 
 
-#### continue here ####
+
 
 
 
 
 #### data handling - reference data ####
-# generalized species lists from NiN
-str(Eco_State)
+head(T2_ref)
 
-# sp
-Eco_State$Concept_Data$Species$Species_List$species
-# env
-t(Eco_State$Concept_Data$Env$Env_Data)
-# abun
-t(Eco_State$Concept_Data$Species$Species_Data)
+T2_ref.sp <- T2_ref %>%
+  filter(artstype=="b") %>%
+  select(KE2,speciesname,abun) %>%
+  pivot_wider(names_from = KE2, values_from = abun, values_fill = 0)
 
-# transposing abundance data for bootstrapping
-NiN.sp <- t(Eco_State$Concept_Data$Species$Species_Data)
-NiN.sp <- as.data.frame(NiN.sp)
-NiN.sp$sp <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$species))
-# only genus and species name
-NiN.sp$sp <- word(NiN.sp$sp, 1,2)
-NiN.sp$spgr <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$art.code))
-# trimming to desired species groups (for forests eg. removing trees)
-#all.dat <- all.dat[all.dat$spgr!="a1a",]
-
-# environment data
-NiN.env <- Eco_State$Concept_Data$Env$Env_Data
+colnames(T2_ref.sp)[1] <- "sp"
+head(T2_ref.sp)
 
 # merging with indicator values
-NiN.sp.ind <- merge(NiN.sp,ind.dat, by.x="sp", by.y="species", all.x=T)
-summary(NiN.sp.ind)
+# only genus and species name
+T2_ref.sp$speciesname <- word(T2_ref.sp$sp, 1,2)
+NiN.natopen <- merge(T2_ref.sp,ind.dat[,c(1,3:5,20,23,27)], by.x="sp", by.y="species", all.x=T)
+head(NiN.natopen)
+summary(NiN.natopen)
 
-NiN.sp.ind[NiN.sp.ind==999] <- NA
+#### continue here ####
+
+
+
+unique(NiN.natopen$sp)
+#NiN.sp$spgr <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$art.code))
 
 # checking which species didn't find a match
-unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) & NiN.sp.ind$spgr %in% list("a1a","a1b","a1c"),'sp'])
+unique(NiN.natopen[is.na(NiN.natopen$Light) & is.na(NiN.natopen$Nitrogen) & is.na(NiN.natopen$RR),'sp'])
 
 # fix species name issues
-ind.dat <- ind.dat %>% 
-  mutate(species=str_replace(species,"Aconitum lycoctonum", "Aconitum septentrionale")) %>% 
-  mutate(species=str_replace(species,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
-  mutate(species=str_replace(species,"Carex myosuroides", "Kobresia myosuroides")) %>%
-  mutate(species=str_replace(species,"Clinopodium acinos", "Acinos arvensis")) %>%
-  mutate(species=str_replace(species,"Artemisia rupestris", "Artemisia norvegica")) %>%
-  mutate(species=str_replace(species,"Cherleria biflora", "Minuartia biflora"))
-
-
-
-NiN.sp <- NiN.sp %>% 
-  mutate(sp=str_replace(sp,"Aconitum lycoctonum", "Aconitum septentrionale")) %>% 
-  mutate(sp=str_replace(sp,"Anagallis minima", "Lysimachia minima")) %>% 
-  mutate(sp=str_replace(sp,"Arctous alpinus", "Arctous alpina")) %>%
-  mutate(sp=str_replace(sp,"Betula tortuosa", "Betula pubescens")) %>%
-  mutate(sp=str_replace(sp,"Blysmopsis rufa", "Blysmus rufus")) %>%
-  mutate(sp=str_replace(sp,"Cardamine nymanii", "Cardamine pratensis")) %>%
-  mutate(sp=str_replace(sp,"Carex adelostoma", "Carex buxbaumii")) %>%
-  mutate(sp=str_replace(sp,"Carex leersii", "Carex echinata")) %>%
-  mutate(sp=str_replace(sp,"Carex paupercula", "Carex magellanica")) %>%
-  mutate(sp=str_replace(sp,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
-  mutate(sp=str_replace(sp,"Carex _vacillans", "Carex vacillans")) %>%
-  mutate(sp=str_replace(sp,"Carex viridula", "Carex flava")) %>%
-  mutate(sp=str_replace(sp,"Chamaepericlymenum suecicum", "Cornus suecia")) %>%
-  mutate(sp=str_replace(sp,"Cornus suecia", "Cornus suecica")) %>%
-  mutate(sp=str_replace(sp,"Cicerbita alpina", "Lactuca alpina")) %>%
-  mutate(sp=str_replace(sp,"Dactylorhiza sphagnicola", "Dactylorhiza majalis")) %>%
-  mutate(sp=str_replace(sp,"Diphasiastrum complanatum", "Lycopodium complanatum")) %>%
-  mutate(sp=str_replace(sp,"Elymus alaskanus", "Elymus kronokensis")) %>%
-  mutate(sp=str_replace(sp,"Empetrum hermaphroditum", "Empetrum nigrum")) %>%
-  mutate(sp=str_replace(sp,"Erigeron eriocephalus", "Erigeron uniflorus")) %>%
-  mutate(sp=str_replace(sp,"Festuca prolifera", "Festuca rubra")) %>%
-  mutate(sp=str_replace(sp,"Galium album", "Galium mollugo")) %>%
-  mutate(sp=str_replace(sp,"Galium elongatum", "Galium palustre")) %>%
-  mutate(sp=str_replace(sp,"Glaux maritima", "Lysimachia maritima")) %>%
-  mutate(sp=str_replace(sp,"Helictotrichon pratense", "Avenula pratensis")) %>%
-  mutate(sp=str_replace(sp,"Helictotrichon pubescens", "Avenula pubescens")) %>%
-  mutate(sp=str_replace(sp,"Hieracium alpina", "Hieracium Alpina")) %>%
-  mutate(sp=str_replace(sp,"Hieracium alpinum", "Hieracium Alpina")) %>%
-  mutate(sp=str_replace(sp,"Hieracium aurantiacum", "Pilosella aurantiaca")) %>%
-  mutate(sp=str_replace(sp,"Hieracium hieracium", "Hieracium Hieracium")) %>%
-  mutate(sp=str_replace(sp,"Hieracium hieracioides", "Hieracium umbellatum")) %>%
-  mutate(sp=str_replace(sp,"Hieracium lactucella", "Pilosella lactucella")) %>%
-  mutate(sp=str_replace(sp,"Hieracium murorum", "Hieracium Vulgata")) %>%
-  mutate(sp=str_replace(sp,"Hieracium oreadea", "Hieracium Oreadea")) %>%
-  mutate(sp=str_replace(sp,"Hieracium prenanthoidea", "Hieracium Prenanthoidea")) %>%
-  mutate(sp=str_replace(sp,"Hieracium vulgata", "Hieracium Vulgata")) %>%
-  mutate(sp=str_replace(sp,"Hieracium pilosella", "Pilosella officinarum")) %>%
-  mutate(sp=str_replace(sp,"Hieracium vulgatum", "Hieracium umbellatum")) %>%
-  mutate(sp=str_replace(sp,"Hierochloã« alpina", "Hierochloë alpina")) %>%
-  mutate(sp=str_replace(sp,"Hierochloã« hirta", "Hierochloë hirta")) %>%
-  mutate(sp=str_replace(sp,"Hierochloã« odorata", "Hierochloë odorata")) %>%
-  mutate(sp=str_replace(sp,"Huperzia appressa", "Huperzia selago")) %>%
+T2_ref.sp <- T2_ref.sp %>% 
+  mutate(sp=str_replace(sp,"Berberis vulgars", "Berberis vulgaris")) %>% 
+  mutate(sp=str_replace(sp,"Cirsium acaulon", "Cirsium acaule")) %>%
+  mutate(sp=str_replace(sp,"Erigeron acris ssp. droebachiensis", "Erigeron acris")) %>%
+  mutate(sp=str_replace(sp,"Erigeron acris subsp. droebachiensis", "Erigeron acris")) %>%
+  mutate(sp=str_replace(sp,"Euphrasia aff. salisburgensis", "Euphrasia salisburgensis")) %>%
   mutate(sp=str_replace(sp,"Hylotelephium maximum", "Hylotelephium telephium")) %>%
-  mutate(sp=str_replace(sp,"Lappula myosotis", "Lappula squarrosa")) %>%
-  mutate(sp=str_replace(sp,"Lepidotheca suaveolens", "Matricaria discoidea")) %>%
-  mutate(sp=str_replace(sp,"Listera cordata", "Neottia cordata")) %>%
-  mutate(sp=str_replace(sp,"Leontodon autumnalis", "Scorzoneroides autumnalis")) %>%
-  mutate(sp=str_replace(sp,"Loiseleuria procumbens", "Kalmia procumbens")) %>%
-  mutate(sp=str_replace(sp,"Logfia arvensis", "Filago arvensis")) %>%
-  mutate(sp=str_replace(sp,"Mentha _verticillata", "Mentha verticillata")) %>%
-  mutate(sp=str_replace(sp,"Minuartia rubella", "Sabulina rubella")) %>%
-  mutate(sp=str_replace(sp,"Minuartia stricta", "Sabulina stricta")) %>%
-  mutate(sp=str_replace(sp,"Mycelis muralis", "Lactuca muralis")) %>%
-  mutate(sp=str_replace(sp,"Omalotheca supina", "Gnaphalium supinum")) %>%
-  mutate(sp=str_replace(sp,"Omalotheca norvegica", "Gnaphalium norvegicum")) %>%
-  mutate(sp=str_replace(sp,"Omalotheca sylvatica", "Gnaphalium sylvaticum")) %>%
-  mutate(sp=str_replace(sp,"Ononis arvensis", "Ononis spinosa")) %>%
-  mutate(sp=str_replace(sp,"Oreopteris limbosperma", "Thelypteris limbosperma")) %>%
-  mutate(sp=str_replace(sp,"Oxycoccus microcarpus", "Vaccinium microcarpum")) %>%
-  mutate(sp=str_replace(sp,"Oxycoccus palustris", "Vaccinium oxycoccos")) %>%
-  mutate(sp=str_replace(sp,"Phalaris minor", "Phalaris arundinacea")) %>%
-  mutate(sp=str_replace(sp,"Phalaroides arundinacea", "Phalaris arundinacea")) %>%
-  mutate(sp=str_replace(sp,"Pinus unicinata", "Pinus mugo")) %>%
-  mutate(sp=str_replace(sp,"Platanthera montana", "Platanthera chlorantha")) %>%
-  mutate(sp=str_replace(sp,"Poa alpigena", "Poa pratensis")) %>%
-  mutate(sp=str_replace(sp,"Poa angustifolia", "Poa pratensis")) %>%
-  mutate(sp=str_replace(sp,"Poa laxa", "Poa flexuosa")) %>%
-  mutate(sp=str_replace(sp,"Poa _herjedalica", "Poa herjedalica")) %>%
-  mutate(sp=str_replace(sp,"Poa _jemtlandica", "Poa jemtlandica")) %>%
-  mutate(sp=str_replace(sp,"Poa lindebergii", "Poa arctica")) %>%
-  mutate(sp=str_replace(sp,"Pyrola grandiflora", "Pyrola rotundifolia")) %>%
-  mutate(sp=str_replace(sp,"Rhamnus catharticus", "Rhamnus cathartica")) %>%
-  mutate(sp=str_replace(sp,"Rumex alpestris", "Rumex acetosa")) %>%
-  mutate(sp=str_replace(sp,"Salix _fragilis", "Salix fragilis")) %>%
-  mutate(sp=str_replace(sp,"Saxifraga _opdalensis", "Saxifraga opdalensis")) %>%
-  mutate(sp=str_replace(sp,"Spergularia salina", "Spergularia marina")) %>%
-  mutate(sp=str_replace(sp,"Syringa emodi", "Syringa vulgaris")) %>%
-  mutate(sp=str_replace(sp,"Taraxacum crocea", "Taraxacum officinale")) %>%
-  mutate(sp=str_replace(sp,"Taraxacum croceum", "Taraxacum officinale")) %>%
-  mutate(sp=str_replace(sp,"Taraxacum erythrospermum", "Taraxacum officinale")) %>%
-  mutate(sp=str_replace(sp,"Taraxacum hamatum", "Taraxacum officinale")) %>%
-  mutate(sp=str_replace(sp,"Trientalis europaea", "Lysimachia europaea")) %>%
-  mutate(sp=str_replace(sp,"Trifolium pallidum", "Trifolium pratense")) %>%
-  mutate(sp=str_replace(sp,"Vicia orobus", "Vicia cassubica"))
+  mutate(sp=str_replace(sp,"Phleum pratense subsp. nodosum", "Phleum pratense")) %>%
+  mutate(sp=str_replace(sp,"Poa alpina var. alpina", "Poa alpina")) %>%
+  mutate(sp=str_replace(sp,"Thymus serpyllum ssp. serpyllum", "Thymus serpyllum")) %>%
+  mutate(sp=str_replace(sp,"Thymus serpyllum subsp. serpyllum", "Thymus serpyllum"))
+
+ind.dat[2556,'species'] <- "Saxifraga osloensis"
 
 
-## merge species data with indicators
-NiN.sp.ind <- merge(NiN.sp,ind.dat, by.x="sp", by.y="species", all.x=T)
-summary(NiN.sp.ind)
-
-NiN.sp.ind[NiN.sp.ind==999] <- NA
-
+# merging with indicator values
+NiN.natopen <- merge(T2_ref.sp,ind.dat[,c(1,3:5,20,23,27)], by.x="sp", by.y="species", all.x=T)
 # checking which species didn't find a match
-unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) & 
-                    is.na(NiN.sp.ind$RR) & 
-                    NiN.sp.ind$spgr %in% list("a1a","a1b","a1c")
-                  ,'sp'])
+unique(NiN.natopen[is.na(NiN.natopen$Light) & is.na(NiN.natopen$Nitrogen & is.na(NiN.natopen$RR)),'sp'])
 # ok now
-
-
-#### matching with NiN ecosystem types - wetlands ####
-# NB! beware of rogue spaces in the 'Nature_type' & 'Sub_Type' variables, e.g. "Spring_Forest "
-NiN.wetland <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type=="Mire","ID"]),colnames(ind.dat)[15:18])]   # Light, Moisture, Soil_reaction_pH, Nitrogen
-NiN.wetland[1,]
-names(NiN.wetland)
-
-cbind(colnames(NiN.wetland),
-      c("",
-        'V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
-        'V1-C1a','V1-C1b','V1-C1c','V1-C1d','V1-C1e',
-        'V1-C2a','V1-C2b','V1-C2c','V1-C2d',
-        'V1-C3a','V1-C3b','V1-C3c','V1-C3d',
-        'V1-C4a','V1-C4b','V1-C4c','V1-C4d',
-        'V1-C4e','V1-C4f','V1-C4g','V1-C4h',
-        'V3-C2','V1-C5',
-        'V1-C6a','V1-C6b',
-        'V1-C7a','V1-C7b',
-        'V1-C8a','V1-C8b',
-        'V2-C1a','V2-C1b',
-        'V2-C2a','V2-C2b',
-        'V2-C3a','V2-C3b',
-        "V4-C2","V4-C3",
-        "","",
-        'V8-C1','V8-C2','V8-C3',
-        rep("",10),
-        rep("",4)
-      )
-)
-
-NiN.wetland <- NiN.wetland[,c(1:43,46:48,59:62)]
-colnames(NiN.wetland)[2:46] <- c( 'V3-C1a','V3-C1b','V3-C1c','V3-C1d','V3-C1e',
-                                  'V1-C1a','V1-C1b','V1-C1c','V1-C1d','V1-C1e',
-                                  'V1-C2a','V1-C2b','V1-C2c','V1-C2d',
-                                  'V1-C3a','V1-C3b','V1-C3c','V1-C3d',
-                                  'V1-C4a','V1-C4b','V1-C4c','V1-C4d',
-                                  'V1-C4e','V1-C4f','V1-C4g','V1-C4h',
-                                  'V3-C2','V1-C5',
-                                  'V1-C6a','V1-C6b',
-                                  'V1-C7a','V1-C7b',
-                                  'V1-C8a','V1-C8b',
-                                  'V2-C1a','V2-C1b',
-                                  'V2-C2a','V2-C2b',
-                                  'V2-C3a','V2-C3b',
-                                  'V4-C2','V4-C3',
-                                  'V8-C1','V8-C2','V8-C3'
-)
-head(NiN.wetland)
 
 
 # translating the abundance classes into %-cover
@@ -734,17 +591,17 @@ coverscale <- data.frame(orig=0:6,
                          cov=c(0, 1/32 ,1/8, 3/8, 0.6, 4/5, 1)
 )
 
-NiN.wetland.cov <- NiN.wetland
-colnames(NiN.wetland.cov)
-for (i in 2:46) {
-  NiN.wetland.cov[,i] <- coverscale[,2][ match(NiN.wetland[,i], 0:6 ) ]
+NiN.natopen.cov <- NiN.natopen
+colnames(NiN.natopen.cov)
+for (i in 2:11) {
+  NiN.natopen.cov[,i] <- coverscale[,2][ match(NiN.natopen[,i], 0:6 ) ]
 }
 
-summary(NiN.wetland)
-summary(NiN.wetland.cov)
+summary(NiN.natopen)
+summary(NiN.natopen.cov)
 
 
 
-save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")
+save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_natopen.RData")
 
-load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_natopen.RData")
