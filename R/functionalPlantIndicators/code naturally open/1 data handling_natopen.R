@@ -9,11 +9,11 @@ library(readxl)
 
 #### download from kartkatalogen to P-drive ####
 # url <- "https://nedlasting.miljodirektoratet.no/naturovervaking/naturovervaking_eksport.gdb.zip"
-download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", mode="w") 
-unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", 
-       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
+#download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", mode="w") 
+#unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", 
+#       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
 
-st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
+#st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
 
 # SOMETHING NOT WORKING YET
 
@@ -21,7 +21,7 @@ st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_e
 
 #### upload data from P-drive ####
 ## ANO
-st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
+#st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
 ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
                   layer="ANO_Art")
 ANO.geo <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
@@ -95,7 +95,7 @@ ind.Tyler <- ind.Tyler[!is.na(ind.Tyler$species),]
 ind.Tyler[,'species.orig'] <- ind.Tyler[,'species']
 ind.Tyler[,'species'] <- word(ind.Tyler[,'species'], 1,2)
 #ind.Tyler2 <- ind.Tyler
-ind.Tyler <- ind.Tyler2
+#ind.Tyler <- ind.Tyler2
 ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
 ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
 ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
