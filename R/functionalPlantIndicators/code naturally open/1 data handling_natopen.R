@@ -553,7 +553,6 @@ NiN.natopen <- merge(T2_ref.sp,ind.dat[,c(1,3:5,20,23,27)], by.x="sp", by.y="spe
 head(NiN.natopen)
 summary(NiN.natopen)
 
-#### continue here ####
 
 
 
@@ -605,3 +604,5 @@ summary(NiN.natopen.cov)
 save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_natopen.RData")
 
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_natopen.RData")
+
+#### continue here ####
