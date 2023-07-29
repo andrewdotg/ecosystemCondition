@@ -9,90 +9,60 @@
 # every NiN-type is represented by one 'generalisert artsliste'
 # some NiN-types are represented by two species lists
 # in some cases two NiN-types are represented by the same species list
-head(seminat.ref.cov[[1]])
-seminat.ref.cov[[1]][0,]
+head(natopen.ref.cov[[1]])
+natopen.ref.cov[[1]][0,]
 
 # NiN-types where each type is represented by one species list (including when one species list represents two NiN-types)
-names(seminat.ref.cov[["Light"]])
-x <- c(1,5,16,17,19,23,28,31:34)
+names(natopen.ref.cov[["Light"]])
+x <- 1:10
 
-# checking the actual NiN-types in the seminat lists
-seminat.NiNtypes <- colnames(seminat.ref.cov[["Light"]])
-seminat.NiNtypes[-x] <- substr(seminat.NiNtypes[-x], 1, nchar(seminat.NiNtypes[-x])-1)
-seminat.NiNtypes
+# checking the actual NiN-types in the natopen lists
+natopen.NiNtypes <- colnames(natopen.ref.cov[["Light"]])
+natopen.NiNtypes[-x] <- substr(natopen.NiNtypes[-x], 1, nchar(natopen.NiNtypes[-x])-1)
+natopen.NiNtypes
 
 # 7 indicator-value indicators: Tyler's Light, Moisture, Soil_reaction_pH, Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance"
-indEll.n=7
+indEll.n=6
 # creating a table to hold:
 # Tyler: the 0.5 quantile (median), 0.05 quantile and  0.95 quantile for each NiN-type
 # for every nature type (nrows)
-tab <- matrix(ncol=3*indEll.n, nrow=length(unique(seminat.NiNtypes)) ) # 34 basic ecosystem types
+tab <- matrix(ncol=3*indEll.n, nrow=length(unique(natopen.NiNtypes)) ) # 10 basic ecosystem types
 # coercing the values into the table
 
 
 for (i in 1:length(x) ) {
-  tab[i,1:3] <- quantile(as.matrix(seminat.ref.cov[["Light"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,4:6] <- quantile(as.matrix(seminat.ref.cov[["Moisture"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,7:9] <- quantile(as.matrix(seminat.ref.cov[["Soil_reaction_pH"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,10:12] <- quantile(as.matrix(seminat.ref.cov[["Nitrogen"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,13:15] <- quantile(as.matrix(seminat.ref.cov[["Phosphorus"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,16:18] <- quantile(as.matrix(seminat.ref.cov[["Grazing_mowing"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,19:21] <- quantile(as.matrix(seminat.ref.cov[["Soil_disturbance"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,1:3] <- quantile(as.matrix(natopen.ref.cov[["CC"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,4:6] <- quantile(as.matrix(natopen.ref.cov[["SS"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,7:9] <- quantile(as.matrix(natopen.ref.cov[["RR"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,10:12] <- quantile(as.matrix(natopen.ref.cov[["Light"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,13:15] <- quantile(as.matrix(natopen.ref.cov[["Nitrogen"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,16:18] <- quantile(as.matrix(natopen.ref.cov[["Soil_disturbance"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
 
 }
 
 tab <- as.data.frame(tab)
 tab$NiN <- NA
-tab$NiN[1:length(x)] <- names(seminat.ref.cov[[1]])[x]
+tab$NiN[1:length(x)] <- names(natopen.ref.cov[[1]])[x]
 tab
 
-# NiN-types represented by several species lists
-seminat.NiNtypes2 <- seminat.NiNtypes[-x]
-unique(seminat.NiNtypes2)
-grep(pattern=unique(seminat.NiNtypes2)[1], x=seminat.NiNtypes) # finds columns in e.g. colnames(seminat.ref.cov[["Continentality"]]) that match the first NiN-type
-
-
-for (i in 1:length(unique(seminat.NiNtypes2)) ) {
-  tab[length(x)+i,1:3] <- quantile(as.matrix(seminat.ref.cov[["Light"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,4:6] <- quantile(as.matrix(seminat.ref.cov[["Moisture"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,7:9] <- quantile(as.matrix(seminat.ref.cov[["Soil_reaction_pH"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,10:12] <- quantile(as.matrix(seminat.ref.cov[["Nitrogen"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,13:15] <- quantile(as.matrix(seminat.ref.cov[["Phosphorus"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,16:18] <- quantile(as.matrix(seminat.ref.cov[["Grazing_mowing"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,19:21] <- quantile(as.matrix(seminat.ref.cov[["Soil_disturbance"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  
-  tab$NiN[length(x)+i] <- unique(seminat.NiNtypes2)[i]
-  
-}
-
-tab
-
-# when species lists represent several NiN-types
-tab <- rbind(tab,tab[c(3:5,8,10,16,18),])
-tab$NiN[c(3:5,8,10,16,18,21:27)] <- c("T32-C1","T32-C3","T32-C7","T45-C1",
-                                      "V10-C1","T32-C5","T32-C21","T32-C2",
-                                      "T32-C4","T32-C8","T45-C2","V10-C2",
-                                      "T32-C20","T32-C6")
-tab
 
 # making it a proper data frame
 dim(tab)
 round(tab[,1:21],digits=2)
 
-colnames(tab) <- c("Light_q2.5","Light_q50","Light_q97.5",
-                   "Moist_q2.5","Moist_q50","Moist_q97.5",
-                   "pH_q2.5","pH_q50","pH_q97.5",
+colnames(tab) <- c("CC_q2.5","CC_q50","CC_q97.5",
+                   "SS_q2.5","SS_q50","SS_q97.5",
+                   "RR_q2.5","RR_q50","RR_q97.5",
+                   "Light_q2.5","Light_q50","Light_q97.5",
                    "Nitrogen_q2.5","Nitrogen_q50","Nitrogen_q97.5",
-                   "Phosphorus_q2.5","Phosphorus_q50","Phosphorus_q97.5",
-                   "Grazing_mowing_q2.5","Grazing_mowing_q50","Grazing_mowing_q97.5",
                    "Soil_disturbance_q2.5","Soil_disturbance_q50","Soil_disturbance_q97.5",
-                   
+
                    "NiN")
 summary(tab)
 tab$NiN <- gsub("C", "C-", tab$NiN) # add extra hyphen after C for NiN-types
 tab
 
-
+#### continue here ####
 
 # restructuring into separate indicators for lower (q2.5) and higher (q97.5) than reference value (=median, q50)
 y.Light <- numeric(length=nrow(tab)*2)
@@ -126,7 +96,7 @@ y.Soil_disturbance[((1:dim(tab)[1])*2)] <- tab$Soil_disturbance_q97.5
 # creating final objects holding the reference and limit values for all indicators
 
 # ref object for indicators
-seminat.ref.cov.val <- data.frame(N1=rep('seminat',(nrow(tab)*2*indEll.n)),
+natopen.ref.cov.val <- data.frame(N1=rep('natopen',(nrow(tab)*2*indEll.n)),
                               hoved=c(rep('NA',(nrow(tab)*2*indEll.n))),
                               grunn=c(rep(rep(tab$NiN,each=2),indEll.n)),
                               county=rep('all',(nrow(tab)*2*indEll.n)),
@@ -158,12 +128,12 @@ seminat.ref.cov.val <- data.frame(N1=rep('seminat',(nrow(tab)*2*indEll.n)),
                               )
 )
 
-seminat.ref.cov.val
-seminat.ref.cov.val$grunn <- as.factor(seminat.ref.cov.val$grunn)
-seminat.ref.cov.val$Ind <- as.factor(seminat.ref.cov.val$Ind)
-summary(seminat.ref.cov.val)
+natopen.ref.cov.val
+natopen.ref.cov.val$grunn <- as.factor(natopen.ref.cov.val$grunn)
+natopen.ref.cov.val$Ind <- as.factor(natopen.ref.cov.val$Ind)
+summary(natopen.ref.cov.val)
 
 
 
-#write.table(seminat.ref, file='output/ref_for_scaling/mount_ref_ANO.txt',quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
+#write.table(natopen.ref, file='output/ref_for_scaling/mount_ref_ANO.txt',quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 
