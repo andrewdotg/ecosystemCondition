@@ -62,32 +62,27 @@ summary(tab)
 tab$NiN <- gsub("C", "C-", tab$NiN) # add extra hyphen after C for NiN-types
 tab
 
-#### continue here ####
 
 # restructuring into separate indicators for lower (q2.5) and higher (q97.5) than reference value (=median, q50)
 y.Light <- numeric(length=nrow(tab)*2)
 y.Light[((1:dim(tab)[1])*2)-1] <- tab$Light_q2.5 
 y.Light[((1:dim(tab)[1])*2)] <- tab$Light_q97.5 
 
-y.Moist <- numeric(length=nrow(tab)*2)
-y.Moist[((1:dim(tab)[1])*2)-1] <- tab$Moist_q2.5 
-y.Moist[((1:dim(tab)[1])*2)] <- tab$Moist_q97.5 
+y.CC <- numeric(length=nrow(tab)*2)
+y.CC[((1:dim(tab)[1])*2)-1] <- tab$CC_q2.5 
+y.CC[((1:dim(tab)[1])*2)] <- tab$CC_q97.5 
 
-y.pH <- numeric(length=nrow(tab)*2)
-y.pH[((1:dim(tab)[1])*2)-1] <- tab$pH_q2.5 
-y.pH[((1:dim(tab)[1])*2)] <- tab$pH_q97.5 
+y.SS <- numeric(length=nrow(tab)*2)
+y.SS[((1:dim(tab)[1])*2)-1] <- tab$SS_q2.5 
+y.SS[((1:dim(tab)[1])*2)] <- tab$SS_q97.5 
 
 y.Nitrogen <- numeric(length=nrow(tab)*2)
 y.Nitrogen[((1:dim(tab)[1])*2)-1] <- tab$Nitrogen_q2.5 
 y.Nitrogen[((1:dim(tab)[1])*2)] <- tab$Nitrogen_q97.5 
 
-y.Phosphorus <- numeric(length=nrow(tab)*2)
-y.Phosphorus[((1:dim(tab)[1])*2)-1] <- tab$Phosphorus_q2.5 
-y.Phosphorus[((1:dim(tab)[1])*2)] <- tab$Phosphorus_q97.5 
-
-y.Grazing_mowing <- numeric(length=nrow(tab)*2)
-y.Grazing_mowing[((1:dim(tab)[1])*2)-1] <- tab$Grazing_mowing_q2.5 
-y.Grazing_mowing[((1:dim(tab)[1])*2)] <- tab$Grazing_mowing_q97.5 
+y.RR <- numeric(length=nrow(tab)*2)
+y.RR[((1:dim(tab)[1])*2)-1] <- tab$RR_q2.5 
+y.RR[((1:dim(tab)[1])*2)] <- tab$RR_q97.5 
 
 y.Soil_disturbance <- numeric(length=nrow(tab)*2)
 y.Soil_disturbance[((1:dim(tab)[1])*2)-1] <- tab$Soil_disturbance_q2.5 
@@ -101,29 +96,26 @@ natopen.ref.cov.val <- data.frame(N1=rep('natopen',(nrow(tab)*2*indEll.n)),
                               grunn=c(rep(rep(tab$NiN,each=2),indEll.n)),
                               county=rep('all',(nrow(tab)*2*indEll.n)),
                               region=rep('all',(nrow(tab)*2*indEll.n)),
-                              Ind=c(rep(c('Light1','Light2'),nrow(tab)),
-                                    rep(c('Moist1','Moist2'),nrow(tab)),
-                                    rep(c('pH1','pH2'),nrow(tab)),
+                              Ind=c(rep(c('CC1','CC2'),nrow(tab)),
+                                    rep(c('SS1','SS2'),nrow(tab)),
+                                    rep(c('RR1','RR2'),nrow(tab)),
+                                    rep(c('Light1','Light2'),nrow(tab)),
                                     rep(c('Nitrogen1','Nitrogen2'),nrow(tab)),
-                                    rep(c('Phosphorus1','Phosphorus2'),nrow(tab)),
-                                    rep(c('Grazing_mowing1','Grazing_mowing2'),nrow(tab)),
                                     rep(c('Soil_disturbance1','Soil_disturbance2'),nrow(tab))
                               ),
-                              Rv=c(rep(tab$Light_q50,each=2),
-                                   rep(tab$Moist_q50,each=2),
-                                   rep(tab$pH_q50,each=2),
+                              Rv=c(rep(tab$CC_q50,each=2),
+                                   rep(tab$SS_q50,each=2),
+                                   rep(tab$RR_q50,each=2),
+                                   rep(tab$Light_q50,each=2),
                                    rep(tab$Nitrogen_q50,each=2),
-                                   rep(tab$Phosphorus_q50,each=2),
-                                   rep(tab$Grazing_mowing_q50,each=2),
                                    rep(tab$Soil_disturbance_q50,each=2)
                               ),
-                              Gv=c(y.Light,y.Moist,y.pH,y.Nitrogen,y.Phosphorus,y.Grazing_mowing,y.Soil_disturbance),
-                              maxmin=c(rep(c(1,7),nrow(tab)), # 7 levels of Light
-                                       rep(c(1,12),nrow(tab)), # 12 levels of Moisture
-                                       rep(c(1,8),nrow(tab)), # 8 levels of Soil_reaction_pH
-                                       rep(c(1,9),nrow(tab)),  # 9 levels of Nitrogen
-                                       rep(c(1,9),nrow(tab)),  # 5 levels of Phosphorus
-                                       rep(c(1,9),nrow(tab)),  # 8 levels of Grazing_mowing
+                              Gv=c(y.CC,y.SS,y.RR,y.Light,y.Nitrogen,y.Soil_disturbance),
+                              maxmin=c(rep(c(0,1),nrow(tab)), # CC
+                                       rep(c(0,1),nrow(tab)), # SS
+                                       rep(c(0,1),nrow(tab)), # RR
+                                       rep(c(1,7),nrow(tab)),  # 9 levels of Light
+                                       rep(c(1,9),nrow(tab)),  # 5 levels of Nitrogen
                                        rep(c(1,9),nrow(tab))  # 9 levels of Soil_disturbance
                               )
 )
