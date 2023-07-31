@@ -88,8 +88,10 @@ summary(as.factor(ANO.natopen$ano_punkt_id))
 ANO.natopen[ANO.natopen$ano_punkt_id=="ANO0084_51",] # double registration, said so in comment. -> choose row 207 over 206
 ANO.geo[ANO.geo$ano_flate_id=="ANO0084","ano_punkt_id"]
 
-ANO.natopen <- ANO.natopen[-206,]
-row.names(ANO.natopen) <- 1:nrow(ANO.natopen) # update row-numbers
+#### continue here ####
+
+#ANO.natopen <- ANO.natopen[-206,]
+#row.names(ANO.natopen) <- 1:nrow(ANO.natopen) # update row-numbers
 
 unique(ANO.natopen$hovedoekosystem_punkt)
 unique(ANO.natopen$hovedtype_rute)
