@@ -48,7 +48,7 @@ tab
 
 # making it a proper data frame
 dim(tab)
-round(tab[,1:21],digits=2)
+round(tab[,1:18],digits=2)
 
 colnames(tab) <- c("CC_q2.5","CC_q50","CC_q97.5",
                    "SS_q2.5","SS_q50","SS_q97.5",
