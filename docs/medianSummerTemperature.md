@@ -17,9 +17,12 @@ March 2023
 
 
 
+
 |Ecosystem |Økologisk.egenskap   |ECT.class                      |
 |:---------|:--------------------|:------------------------------|
 |All       |Abiotiske egenskaper |Physical state characteristics |
+
+
 
 <br /> <br />
 
@@ -159,7 +162,7 @@ Importing a shape file with the regional delineation.
 reg <- sf::st_read("data/regions.shp", options = "ENCODING=UTF8")
 #> options:        ENCODING=UTF8 
 #> Reading layer `regions' from data source 
-#>   `/data/scratch/Matt_bookdown__debug/ecosystemCondition/data/regions.shp' 
+#>   `/data/scratch/Matt_temp/ecosystemCondition/data/regions.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 5 features and 2 fields
 #> Geometry type: POLYGON
@@ -175,7 +178,7 @@ Outline of Norway
 ```r
 nor <- sf::st_read("data/outlineOfNorway_EPSG25833.shp")
 #> Reading layer `outlineOfNorway_EPSG25833' from data source 
-#>   `/data/scratch/Matt_bookdown__debug/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
+#>   `/data/scratch/Matt_temp/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 1 feature and 2 fields
 #> Geometry type: MULTIPOLYGON
