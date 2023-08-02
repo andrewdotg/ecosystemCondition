@@ -16,10 +16,13 @@ May 2023
 
 
 
+
 |Ecosystem |Økologisk.egenskap |ECT.class                       |
 |:---------|:------------------|:-------------------------------|
 |våtmark   |Primærproduksjon   |Functional state characteristic |
 |våtmark   |Abiotiske forhold  |Functional state characteristic |
+
+
 
 <!-- Don't remove these three html lines -->
 <br />
@@ -1393,7 +1396,7 @@ We can also show the results as a map, for instance for pH1 (the lower pH indica
 
 ```
 #> Reading layer `outlineOfNorway_EPSG25833' from data source 
-#>   `/data/scratch/Matt_bookdown__debug/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
+#>   `/data/scratch/Matt_temp/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 1 feature and 2 fields
 #> Geometry type: MULTIPOLYGON
@@ -1401,7 +1404,7 @@ We can also show the results as a map, for instance for pH1 (the lower pH indica
 #> Bounding box:  xmin: -113472.7 ymin: 6448359 xmax: 1114618 ymax: 7939917
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> Reading layer `regions' from data source 
-#>   `/data/scratch/Matt_bookdown__debug/ecosystemCondition/data/regions.shp' 
+#>   `/data/scratch/Matt_temp/ecosystemCondition/data/regions.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 5 features and 2 fields
 #> Geometry type: POLYGON
