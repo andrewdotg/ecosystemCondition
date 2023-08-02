@@ -9,7 +9,7 @@ Anders L. Kolstad
 
 
 ```
-#> [1] "2023-06-08"
+#> [1] "2023-05-05"
 ```
 
 <br />
@@ -22,12 +22,9 @@ Anders L. Kolstad
 
 
 
-
 |Ecosystem          |Økologisk.egenskap |ECT.class                      |
 |:------------------|:------------------|:------------------------------|
 |Semi-naturlig mark |Primærproduksjon   |Structual state characteristic |
-
-
 
 <!-- Don't remove these three html lines -->
 <br />

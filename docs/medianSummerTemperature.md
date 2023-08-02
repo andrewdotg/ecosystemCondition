@@ -17,12 +17,9 @@ March 2023
 
 
 
-
 |Ecosystem |Økologisk.egenskap   |ECT.class                      |
 |:---------|:--------------------|:------------------------------|
 |All       |Abiotiske egenskaper |Physical state characteristics |
-
-
 
 <br /> <br />
 

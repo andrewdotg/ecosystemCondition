@@ -28,8 +28,6 @@ This indicator reflects the relative loss of glacial area between tha last clima
 
 
 
-
-
 ## Indicator X {-}
 And this indicator is about...
 

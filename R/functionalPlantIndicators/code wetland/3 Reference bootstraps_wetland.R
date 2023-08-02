@@ -5,7 +5,7 @@ wetland.ref <- indBoot(sp=NiN.wetland[,1],abun=NiN.wetland[,2:46],ind=NiN.wetlan
 
 
 wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:50],
-                                iter=1000,obl=1,rat=1/3,var.abun=T)
+                                iter=1000,obl=1,rat=2/3,var.abun=F)
 
 ### saving backups
 #wetland.ref.backup <- wetland.ref
@@ -34,22 +34,19 @@ for (i in 1:length(wetland.ref.cov) ) {
 
 #### checking NiN-types with several species lists ####
 str(wetland.ref.cov)
-# V3-C1a has only NA's, too few species in the NiN-list
 
-indID <- colnames(ind.dat[,c("Light", "Moisture", "Soil_reaction_pH", "Nitrogen")])
+indID <- colnames(ind.dat[,c("Continentality", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen")])
 NiNID <- colnames(wetland.ref.cov[[1]])
 
-
-dirOutput <- "C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/testoutput"
-#setwd(dirOutput)
-
 for (i in indID) {
-
-  name <- paste(dirOutput,'/wetland',i,'.jpg',sep='')
+  
+  dirOutput <- "C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition_PP&FPI/R/functionalPlantIndicators/testoutput"
+  setwd(dirOutput)
+  name <- paste('wetland',i,'.jpg',sep='')
   jpeg(filename=name,width=8000,height=4000,res=300)
   
   par(mfrow=c(5,9))
-  for (j in NiNID[-1]) {
+  for (j in NiNID) {
     plot(density(wetland.ref.cov[[i]][,j],na.rm=T),main=j,xlim=c(-2,10))
   }
   dev.off()
@@ -65,11 +62,6 @@ for (i in indID) {
 #### storing reference lists ####
 #rm(list= ls()[!(ls() %in% c('forest.ind.list','mire.ind.list','semiNat.ind.list','heath.ind.list','wetland.ref','ind.dat'))])
 #rm(list= ls()[!(ls() %in% c('wetland.ref.backup','wetland.ref','wetland.ref.cov.backup','wetland.ref.cov', 'ANO.sp.ind', 'NiN.wetland.cov','ind.dat'))])
-settings <- "iter=1000,obl=1,rat=1/3,var.abun=T"
-
-saveRDS(wetland.ref.cov, "data/cache/wetland.ref.cov.RDS")
-
+settings <- "iter=1000,obl=1,rat=2/3,var.abun=T"
 rm(list= ls()[!(ls() %in% c('wetland.ref.cov', 'wetland.ref.cov.backup','settings'))])
-save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_wetland.RData")
-
-load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_wetland.RData")
+save.image("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/ref_lists_wetland.RData")
