@@ -4,7 +4,7 @@
 
 Author. Anders L. Kolstad
 
-Date: 2023-06-08
+Date: 2023-05-05
 
 **Superseeded :** *The functionality explained here is moved over to the [eaTools](https://github.com/NINAnor/eaTools) package. Please see the documentation there for updated examples.*
 

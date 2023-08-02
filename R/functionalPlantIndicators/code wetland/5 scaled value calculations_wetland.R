@@ -278,6 +278,8 @@ summary(results.wetland[['scaled']])
 results.wetland[['2-sided']] <- results.wetland[['non-truncated']]
 
 # check if there are values equalling exactly 1
+results.wetland[['2-sided']]$Cont1[results.wetland[['2-sided']]$Cont1==1]
+results.wetland[['2-sided']]$Cont2[results.wetland[['2-sided']]$Cont2==1]
 results.wetland[['2-sided']]$Light1[results.wetland[['2-sided']]$Light1==1]
 results.wetland[['2-sided']]$Light2[results.wetland[['2-sided']]$Light2==1]
 results.wetland[['2-sided']]$Moist1[results.wetland[['2-sided']]$Moist1==1]
@@ -291,6 +293,9 @@ results.wetland[['2-sided']]$Nitrogen2[results.wetland[['2-sided']]$Nitrogen2==1
 
 
 # remove values >1 for Ellenberg
+results.wetland[['2-sided']]$Cont1[results.wetland[['2-sided']]$Cont1>1] <- NA
+results.wetland[['2-sided']]$Cont2[results.wetland[['2-sided']]$Cont2>1] <- NA
+
 results.wetland[['2-sided']]$Light1[results.wetland[['2-sided']]$Light1>1] <- NA
 results.wetland[['2-sided']]$Light2[results.wetland[['2-sided']]$Light2>1] <- NA
 
@@ -307,6 +312,9 @@ results.wetland[['2-sided']]$Nitrogen2[results.wetland[['2-sided']]$Nitrogen2>1]
 # check distribution
 x11()
 par(mfrow=c(2,5))
+hist(results.wetland[['2-sided']]$Cont1,breaks=40)
+hist(results.wetland[['2-sided']]$Cont2,breaks=40)
+
 hist(results.wetland[['2-sided']]$Light1,breaks=40)
 hist(results.wetland[['2-sided']]$Light2,breaks=40)
 
@@ -333,8 +341,6 @@ write.table(results.wetland[['original']], file='output/scaled data/results.wetl
 write.table(results.wetland[['2-sided']], file='C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/results.wetland_2-sided.txt',
             quote=FALSE,sep="\t",col.names=TRUE,row.names=FALSE,dec=".")
 
-saveRDS(results.wetland, "data/cache/results.wetland.RDS")
-rm(list= ls()[!(ls() %in% c('wetland.ref.cov.val','ANO.wetland','results.wetland','settings'))])
-save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.wetland.RData")
 
-load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.wetland.RData")
+rm(list= ls()[!(ls() %in% c('results.wetland','settings'))])
+save.image("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemCondition/R/functionalPlantIndicators/output large files for markdown/results.wetland.RData")

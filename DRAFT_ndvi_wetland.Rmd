@@ -1,0 +1,768 @@
+# Functional plant indicators, wetland ecosystems (Moisture, Light, pH, Nitrogen) {#Functional-plant-indicators-wetland}
+
+<br />
+
+_Author and date:_
+Joachim Töpper, Tessa Bargmann
+
+June 2023
+
+<br />
+
+<!-- Load all you dependencies here -->
+```{r setup, include=FALSE}
+library(downloader)
+library(data.table)
+library(lubridate)
+library(sf)
+library(plyr)
+library(stringr)
+library(tidyverse)
+library(RColorBrewer)
+library("gridExtra") 
+library(ggridges)
+library(tmap)
+library(tmaptools)
+library(betareg)
+library(StepBeta)
+library(glmmTMB)
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE}
+Ecosystem <- "våtmark"
+Egenskap  <- c("Primærproduksjon")
+ECT       <- "Structural state characteristics"
+Contact   <- "Joachim Töpper"
+```
+
+```{r, echo=FALSE}
+metaData <- data.frame(Ecosystem,
+                       "Økologisk egenskap" = Egenskap,
+                       "ECT class" = ECT)
+knitr::kable(metaData)
+```
+
+<!-- Don't remove these three html lines -->
+<br />
+<br />
+<hr />
+
+## Introduction
+The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and plant productivity in the given area. Different ecosystem types naturally have greenness signals of different intensity but also with a certain variance. Deviations beyond the natural variation in either direction may indicate a reduction in ecological condition of a given ecosystem. E.g. lower than normal NDVI may indicate excessive disturbance, while higher than normal NDVI may indicate regrowth and transitions towards more densely vegetated systems. In recent assessments of ecological condition for forest and mountain ecosystems, two different NDVI-based indicators were developed and applied. For forests, NDVI-values across the country were compared to a spatial reference NDVI-signal from protected areas. For mountains, the extent and consistence of the temporal change of NDVI-values over the last twenty years was assessed. In both cases, MODIS-derived NDVI values (MOD13Q1 V6-product) were used. National maps for forest and mountain ecosystems were used to define the areas of interest.
+Here, we explore the potential for developing an NDVI-indicator for ecological condition representing open wetland ecosystems (i.e. excluding forest swamps). For this task, two initial challenges can be identified early on:
+1) We don't yet have a national wetland map, i.e. we don't know the exact locations of all wetlands in Norway, which is a prerequisite to extract satellite data for the right locations and ecosystems, and thus achieve a good and unbiased spatial representation for the assessment area.
+2) The spatial extent of the single wetland ecosystem occurrences ('polygons' hereafter) includes many wetland areas which are smaller than the resolution of the MODIS imagery (250 x 250 m), which was used for forests and mountains and has a time series going back to the year 2000.
+
+In this draft development for a wetland NDVI indicator for ecological condition we approach these challenges in the following ways:
+1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the correct ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of wetland ecosystems are available.
+2) We include Sentinel-2 imagery for wetland ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m, which is smaller than almost all wetland polygons in the NiN-data. However, since Sentinel-2 only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. Thus, we still explore NDVI data from the MODIS and Landsat satellites (see more details below).
+
+
+## About the underlying data
+In the NDVI project for wetlands, we use four sets of data for building indicators for ecological condition:
+
+(1) NiN ecosystem data from 'Naturtypekartlegging etter Miljødirektoratets innstruks' to guide extraction of NDVI data for the correct locations and to provide information on the field-assessed ecological condition of mapped polygons.
+
+(2) Sentinel-2 satellite-derived NDVI data (10 x 10 m resolution) - See https://code.earthengine.google.com/2ceb0c3e03adade9e6f6d0903184b8c4 for the Google Earth Engine code used to process Sentinel imagery and export NDVI data.
+
+(3) Landsat satellite-derived NDVI data (30 x 30 m resolution). See https://code.earthengine.google.com/da8a9279238ef26d14be08a43788b6b7 for the Google Earth Engine code used to process Landsat imagery and export NDVI data.
+
+(4) MODIS satellite-derived NDVI data (250 x 250 m resolution). The MOD13Q1 data product was used for NDVI values. The product provides a vegetation index value (NDVI) per pixel. MODIS NDVI is calculated from atmospherically-corrected bi-directional surface reflectances that have been masked for water, clouds, heavy aerosols and cloud shadows. The algorithm chooses the best available pixel value from all the acquisitions from the 16 day period. See https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84 for the Google Earth Engine code used to export NDVI data
+
+We have to exclude all polygons smaller than the MODIS pixel size of 250 x 250 m, which greatly reduces the number of available polygons. Thus, to explore temporal trends further back in time, we also include Landsat-derived NDVI data, which span a time frame from 1984 to 2021, and have a resolution of 30 x 30 m, thus excluding only few polygons of insufficient size. 
+
+
+### Representativity in time and space
+For wetlands, the NiN data contain 6503 wetland polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6503 wetland polygons are distributed across regions and main ecosystem types in the following way:
+
+----build a matrix-table----
+
+The NDVI data from either satellite follows the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the wetland occurrences in the NiN data likely are even more spatially biased than is the case for the NDVI data from Sentinel-2 and Landsat satellites. 
+
+### Temporal coverage
+The currently available NiN data on wetland ecosystems span a time period from 2018-2021 and thus represent a contemporary sample of ecosystem occurrences. Note that none of the polygons in the NiN-data has been visited more than once during that period.
+
+Available Sentinel-2 satellite NDVI data span the years 2015-2022.
+Available MODIS satellite NDVI data span the years 2000-2022.
+Available Landsat satellite NDVI data span the years 1984-2021.
+
+
+## Collinearities with other indicators
+The NDVI signal may likely be co-linear with the re-growth indicator based on LiDAr derived canopy height in drained wetland areas under shrub and tree encroachment.
+
+## Reference state and values
+### Reference state
+This indicator project is mainly exploratory, mapping the possibilities of and lacking prerequisites for satellite derived NDVI data to inform ecological condition assessments. Therefore, we lack a concise strategy for how to define the reference state, especially prior to having access to an ecosystem map for wetland ecosystems. In this exploratory work, we will use the condition classification in the NiN-data to explore its applicability for defining a reference state. We will use statistical models to test whether or not NDVI varies systematically with condition and across time.
+
+### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+We will explore (i) if the condition classes in the NiN data can be used to define scaling values, and (ii) the potential for taking a probabilistic approach to scaling original NDVI values to a condition index based on probability density curves derived from above named models.
+
+## Uncertainties
+Given a condition index can be achieved, we can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area.
+
+
+## References
+
+----not referred to in text yet, but likely will :)----
+
+Framstad, E., Kolstad, A. L., Nybø, S., Töpper, J. & Vandvik, V. 2022. The condition of forest and mountain ecosystems in Norway. Assessment by the IBECA method. NINA Report 2100. Norwegian Institute for Nature Research.
+
+Halvorsen, R., Skarpaas, O., Bryn, A., Bratli, H., Erikstad, L., Simensen, T., & Lieungh, E. (2020). Towards a systematics of ecodiversity: The EcoSyst framework. Global Ecology and Biogeography, 29(11), 1887-1906. doi:10.1111/geb.13164
+
+Jakobsson, S., Töpper, J.P., Evju, M., Framstad, E., Lyngstad, A., Pedersen, B., Sickel, H., Sverdrup-Thygeson, A., Vandvik. V., Velle, L.G., Aarrestad, P.A. & Nybø, S. 2020. Setting reference levels and limits for good ecological condition in terrestrial ecosystems. Insights from a case study based on the IBECA approach. Ecological Indicators 116: 106492.
+
+Töpper, J. & Jakobsson, S. 2021. The Index-Based Ecological Condition Assessment (IBECA) - Technical protocol, version 1.0. NINA Report 1967. Norwegian Institute for Nature Research.
+
+NDVI Literature
+
+Cunliffe, A.M., Assmann, J.J., Daskalova, G.N., Kerby, J.T. & Myers-Smith, I.H. 2020. Aboveground biomass corresponds strongly with drone-derived canopy height but weakly with greenness (NDVI) in a shrub tundra landscape. Environmental Research Letters 15(12): 125004.
+
+Karlsen, S.R., Elvebakk, A., Høgda, K.A. & Grydeland, T. 2014. Spatial and temporal variability in the onset of the growing season on Svalbard, Arctic Norway—measured by MODIS-NDVI satellite data. Remote Sensing 6(9): 8088-8106.
+
+Taddeo, S., Dronova, I. & Depsky, N. 2019. Spectral vegetation indices of wetland greenness: Responses to vegetation structure, composition, and spatial distribution. Remote sensing of Environment 234: 111467.
+
+Tshabalala, N.N., Mutanga, O. & Sibanda, M. 2021. The Utility of Sentinel-2 MSI Data to Estimate Wetland Vegetation Leaf Area Index in Natural and Rehabilitated Wetlands. Geographies 1(3): 178-191.
+
+Valøen, K. 2019. Stochastic rain events increase NDVI through moss water content: a High-Arctic field experiment. NTNU.
+
+
+
+## Analyses
+### Data sets
+The analyses in this document make use of the following data sets:
+-NiN data (Naturtyper etter Miljødirektoratets innstruks)
+-Sentinel-2 NDVI data
+-Landsat NDVI data
+-MODIS NDVI data
+
+#### NiN data and geometry for Norway and the five regions
+We read the NiN data for this document from a cache at the NINA server...
+```{r, echo = F}
+# Add NiN data from cache
+nin <- readRDS(paste0(here::here(),"/data/cache/nin.RDS"))
+```
+
+...but it can also be directly downloaded from Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset)
+```{r, echo = T, eval = F}
+
+url <- "https://nedlasting.miljodirektoratet.no/Miljodata//Naturtyper_nin/FILEGDB/4326/Naturtyper_nin_0000_norge_4326_FILEGDB.zip"
+download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", mode="wb") 
+unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", 
+       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/nin_data")
+st_layers("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb")
+nin <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb",
+                 layer="naturtyper_nin_omr")
+```
+And we upload maps for Norway and the five regions: Southern, Western, Eastern, Central, and Northern Norway
+```{r}
+# Import region- og Norgeskart, make sure they have the same geometry as the nin data
+nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
+  st_as_sf() %>%
+  st_transform(crs = st_crs(nin))
+
+reg <- st_read("data/regions.shp")%>%
+  st_as_sf() %>%
+  st_transform(crs = st_crs(nin))
+
+# change region names to something R-friendly
+reg$region
+reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway")
+
+# combine the Norway and the region maps
+regnor <- st_intersection(reg,nor)
+```
+
+#### NDVI data
+All NDVI data are calculated mean NDVI values for each respective NiN polygon from each available Sentinel-2, MODIS, or Landsat image in Google Earth Engine (GEE). 
+
+##### Sentinel-2 NDVI data
+The GEE code can be seen here: https://code.earthengine.google.com/2ceb0c3e03adade9e6f6d0903184b8c4
+The image collection contains Sentinel imagery from June, July and August 2015-2022. The GEE script creates a folder in Google Drive and places the exports there. To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files.
+```{r}
+# Import Sentinel NDVI Data
+df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
+  map_df(~fread(.))
+df.s
+```
+
+##### MODIS NDVI data
+The GEE code can be seen here: https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84
+The image collection contains MODIS imagery from June, July and August 2000-2022. The GEE script creates a folder in Google Drive and places the exported file there.
+
+```{r}
+# Import MODIS NDVI Data
+# MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
+df.m<- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_MODIS/modis_ndvi_ts_2000_2022.csv", )
+df.m$mean<-df.m$mean/10000
+df.m
+```
+
+##### Landsat NDVI data
+The GEE code can be seen here: https://code.earthengine.google.com/da8a9279238ef26d14be08a43788b6b7
+The image collection contains Landsat imagery from June, July and August 1984-2022. The GEE script creates a folder in Google Drive and places the exports there. To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
+```{r}
+# Import Landsat NDVI Data
+# Set up conditional file paths
+dir <- substr(getwd(), 1,2)
+
+path <- ifelse(dir == "C:", 
+               "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
+               "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
+
+pData <- ifelse(dir == "C:", 
+                "P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat",
+                "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat")
+
+
+# Fread doesn't like the weird path to the server version of the P drive
+# hence this horrendous work around
+files=list.files(pData, pattern = "*.csv", full.names = TRUE)
+
+df_list<-list()# initialise a list of dataframes
+# read in a dataframe in each slot of the df_list
+for (i in files){
+  name <- gsub("-",".",i)
+  name <- gsub(".csv","",name)  
+  i <- paste(i,sep="")
+  df_list[[i]]=assign(name,read.csv(i, header=TRUE))
+}  
+
+df.l<-bind_rows(df_list, .id = "column_label")
+df.l
+
+```
+
+### Data handling
+#### NiN data
+```{r, echo = T, eval = F}
+# fixing variable- and ecosystem-names with special characters
+colnames(nin)
+colnames(nin)[c(3,8,17,26,31,33,34)] <- c("hovedoekosystem","kartleggingsaar","noyaktighet",
+                                       "omraadenavn","uk_naertruet","uk_sentraloekosystemfunksjon",
+                                       "uk_spesieltdaarligkartlagt")
+unique(nin$hovedoekosystem)
+
+nin <- nin %>% mutate(hovedoekosystem = recode(hovedoekosystem, 
+                                 "Våtmark" = 'Vaatmark',
+                                 "Semi-naturlig mark" = 'Semi_naturlig',
+                                 "Naturlig åpne områder i lavlandet" = 'Naturlig-aapent',
+                                 "Naturlig åpne områder under skoggrensa" = 'Naturlig_aapent')) %>%
+  mutate(validGeo = st_is_valid(SHAPE))
+
+# checking how many polygons have multiple ecosystem types
+unique(nin$ninkartleggingsenheter)
+
+nrow(nin)
+# 95469 polygons altogether
+nrow(nin %>%
+  filter(grepl(',', ninkartleggingsenheter))
+)
+# 21094 polygons have more than 1 ecosystem type (they are separated by commas in the ninkartleggingsenheter-variable)
+
+nrow(nin %>%
+       filter(!grepl(',', ninkartleggingsenheter))
+)
+# 74375 polygons should have only 1 ecosystem type
+
+# there's no information on the proportion of ecosystem types in the polygons, so we have to omit all polygons with multiple ecosystem types :(
+nin <- nin %>%
+  filter(!grepl(',', ninkartleggingsenheter))
+
+# fix the content in the ninkartleggingsenheter-variable
+summary(as.factor(nin$ninkartleggingsenheter))
+# get rid of the NA- in the beginning
+nin <- nin %>% mutate(ninkartleggingsenheter = str_remove(ninkartleggingsenheter, 'NA_'))
+# making a main ecosystem type variable
+nin <- nin %>% mutate(hovedtype = substr(ninkartleggingsenheter, 1, 3),
+               hovedtype = str_remove(hovedtype, '-'))
+# checking mapping unit against main ecosystem type
+nin[,c("hovedoekosystem","hovedtype")]
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Vaatmark"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Semi_naturlig"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Naturlig_aapne"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Skog"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Fjell"]))
+# making a new variable for the overarching ecosystem types based on the main ecosystem types
+nin$hovedoekosystem.orig <- nin$hovedoekosystem
+
+nin <- nin %>%
+  mutate(hovedoekosystem = case_when(hovedtype %in% paste("V",c(1,3:7,9:10),sep="") ~ 'Vaatmark',
+                                     hovedtype %in% paste("V",11:13,sep="") ~ 'Vaatmark_sterkt_endret',
+                                     hovedtype %in% paste("T",c(31:34,40:41),sep="") ~ 'Semi_naturlig',
+                                     hovedtype %in% paste("T",c(2,12,18,20:21),sep="") ~ 'Naturlig_aapent',
+                                     hovedtype %in% c(paste("T",c(4,30,38),sep=""),paste("V",c(2,8),sep="")) ~ 'Skog',
+                                     hovedtype %in% c(paste("T",c(3,7,9,10,14,22,26),sep=""),paste("V",c(6,7),sep="")) ~ 'Fjell',
+                                     TRUE ~ 'NA'))
+
+
+summary(as.factor(nin$tilstand))
+
+nin <- nin %>% mutate(tilstand = recode(tilstand,
+                                        "Dårlig" = "Redusert",
+                                        "Svært redusert" = "Svaert_redusert"))
+summary(as.factor(nin$tilstand))
+
+
+##############################
+##############################
+# code on ninbeskrivelsesvariabler here if relevant
+##############################
+##############################
+
+
+## filter out only wetland data
+nin.wetland <- nin %>% 
+  filter(hovedoekosystem %in% c('Vaatmark')) %>%
+  mutate(id = identifikasjon_lokalid) %>%
+  filter(validGeo) %>%
+  drop_na(tilstand) %>%
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, ninbeskrivelsesvariabler, kartleggingsaar)
+
+
+# merge NiN-data with region
+nin.wetland = st_join(nin.wetland, regnor, left = TRUE)
+nin.wetland
+
+colnames(nin.wetland)[c(1,9)] <- c("id","region_id")
+
+# check that every nin-polygon still occurs only once
+summary(as.factor(nin.wetland$id))
+nin.wetland[nin.wetland$id=="NINFP2110008060",]
+# this one was assigned to both Western and Central Norway, we drop the latter
+nin.wetland <- nin.wetland[!row.names(nin.wetland) %in% '1144.1',]
+
+nin.wetland <- nin.wetland %>% 
+  mutate(area_meters_nin = st_area(nin.wetland)
+  )
+# check and edit the order of regions
+levels(nin.wetland$region)
+nin.wetland$region <- as.factor(nin.wetland$region)
+levels(nin.wetland$region)
+nin.wetland$region <- factor(nin.wetland$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
+levels(nin.wetland$region)
+
+```
+
+```{r, echo = F}
+
+#load processed NiN-data from cache
+nin.wetland <- readRDS(paste0(here::here(),"/data/cache/nin.wetland.RDS"))
+
+```
+
+#### NDVI data
+```{r}
+## Sentinel-2
+# join nin.wetland & Sentinel NDVI data
+SentinelNDVI.wetland <- full_join(nin.wetland, df.s, by="id")
+#summary(SentinelNDVI.wetland)
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+  mutate(hovedoekosystem = as.factor(hovedoekosystem),
+         hovedtype = as.factor(hovedtype),
+         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
+         lokalitetskvalitet = as.factor(lokalitetskvalitet),
+         tilstand = as.factor(tilstand),
+         area_meters = st_area(SentinelNDVI.wetland))
+#summary(SentinelNDVI.wetland)
+# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(hovedtype))
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(mean))
+#summary(SentinelNDVI.wetland)
+# get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
+dim(SentinelNDVI.wetland)
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(as.numeric(area_meters) >= 100)
+dim(SentinelNDVI.wetland)
+# split date into year, month & day
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
+# add column for sub-ecosystem types
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
+                                                        subtype = str_remove(subtype, '-'))
+# we are using max NDVI per year in every NiN polygon
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+
+summary(SentinelNDVI.wetland)
+
+## MODIS
+# join nin.wetland and Modis NDVI data
+ModisNDVI.wetland <- full_join(nin.wetland, df.m, by="id")
+
+#summary(ModisNDVI.wetland)
+ModisNDVI.wetland <- ModisNDVI.wetland %>%
+  mutate(hovedoekosystem = as.factor(hovedoekosystem),
+         hovedtype = as.factor(hovedtype),
+         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
+         lokalitetskvalitet = as.factor(lokalitetskvalitet),
+         tilstand = as.factor(tilstand),
+         area_meters = st_area(ModisNDVI.wetland))
+#summary(ModisNDVI.wetland)
+# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(hovedtype))
+ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(mean))
+#summary(ModisNDVI.wetland)
+# get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
+dim(ModisNDVI.wetland)
+ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(as.numeric(area_meters) >= 62500)
+dim(ModisNDVI.wetland)
+# split date into year, month & day
+ModisNDVI.wetland <- ModisNDVI.wetland %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
+# we are using max NDVI per year in every NiN polygon
+ModisNDVI.wetland <- ModisNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+#summary(ModisNDVI.wetland)
+
+## Landsat
+# join nin.wetland & Landsat NDVI data
+LandsatNDVI.wetland <- full_join(nin.wetland, df.l, by="id")
+
+#summary(LandsatNDVI.wetland)
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+  mutate(hovedoekosystem = as.factor(hovedoekosystem),
+         hovedtype = as.factor(hovedtype),
+         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
+         lokalitetskvalitet = as.factor(lokalitetskvalitet),
+         tilstand = as.factor(tilstand),
+         area_meters = st_area(LandsatNDVI.wetland))
+#summary(LandsatNDVI.wetland)
+# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(hovedtype))
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(mean))
+#summary(LandsatNDVI.wetland)
+# get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
+dim(LandsatNDVI.wetland)
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(as.numeric(area_meters) >= 900)
+dim(LandsatNDVI.wetland)
+# split date into year, month & day
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+  dplyr::mutate(year = lubridate::year(date), 
+                month = lubridate::month(date), 
+                day = lubridate::day(date))
+# we are using max NDVI per year in every NiN polygon
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+
+#summary(LandsatNDVI.wetland)
+```
+
+
+### Exploratory analyses, Sentinel-2
+
+```{r}
+## how are polygon sizes distributed?
+summary(SentinelNDVI.wetland$area_meters)
+
+hist(SentinelNDVI.wetland$area_meters,xlim=c(0,20000),breaks=50000)
+abline(v=100,lty=2)
+
+## how does NDVI vary over the years (all years)
+SentinelNDVI.wetland %>%
+  ggplot( aes(x=year, y=mean )) + 
+  geom_point() +
+  facet_grid( tilstand~hovedtype)
+# 2022 stands out with the highest NDVI values missing
+# the pattern is strange, suggest to omit 2022 for this analysis
+
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != '2022')
+
+## NDVI across hovedtyper (only for NDVI years data matching NiN-mapping years)
+SentinelNDVI.wetland %>%
+  filter(year == kartleggingsaar) %>%
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  facet_wrap( ~hovedtype)
+# NDVI largely varies between hovedtyper: NDVI is higher in semi-natural wet-meadows (V10), and lowest in ombrotrophic bogs (V3)
+# @Tilstand: in semi-natural types, NDVI in kaldkilde, and bogs seems to increase as condition deteriorates, in fens there is not much of a pattern
+
+
+## looking at subtypes for polygons in good condition only (and only for NDVI data matching NiN-mapping)
+SentinelNDVI.wetland %>%
+  filter(tilstand == 'God') %>%
+  filter(year == kartleggingsaar) %>%
+  ggplot(aes(x=subtype, y=mean )) + 
+  geom_violin() +
+  facet_wrap( ~hovedtype)
+# NDVI varies between ecosystem subtypes
+# -at least equally much as between main ecosystem types
+# -stronger than between condition classes in previous plots
+
+
+## looking at NDVI in different condition classes, separately for main types and regions  (only for NDVI data matching NiN-mapping)
+SentinelNDVI.wetland %>%
+  group_by(id, year) %>%
+
+  filter(year == kartleggingsaar) %>%
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  facet_grid( region~hovedtype)
+# V4 kaldkilde has lacking data for quite some condition classes in most regions
+
+```
+
+
+### Regression analyses Sentinel-2, NDVI as a function of condition
+```{r}
+# NDVI data are bound between -1 and 1, and thus require modelling with an appropriate method that handles bounded data
+# we can transform the variable to be bounded between 0 and 1 and use beta-regression models
+SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
+# NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
+# we drop V4 Kaldkilde for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
+
+SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
+  filter(year == kartleggingsaar) %>%
+  filter(hovedtype != 'V4')
+
+# make an extra numeric condition variable
+unique(SentinelNDVI.wetland.train$tilstand)
+SentinelNDVI.wetland.train <- SentinelNDVI.wetland.train %>% mutate(tilstand_num = recode(tilstand, 
+                                            "God" = '0',
+                                            "Moderat" = '1',
+                                            "Redusert" = '2',
+                                            "Svært redusert" = '3'))
+SentinelNDVI.wetland.train$tilstand_num <- as.numeric(SentinelNDVI.wetland.train$tilstand_num)
+
+
+# We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
+model.wetland.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train)
+model.wetland.cond.Sent <- StepBeta(model.wetland.cond.Sent)
+summary(model.wetland.cond.Sent)
+```
+NDVI values do vary between:
+- Regions
+- Ecosystem types
+- Condition classes
+
+It is evident that there are differences between regions. But since we are not interested in the statistics for regional differences, we run separate models for every region for ease of interpretation.
+```{r, include = F}
+rm(model.wetland.cond.Sent)
+```
+
+```{r}
+model.wetland.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Northern Norway",])
+model.wetland.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Central Norway",])
+model.wetland.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Western Norway",])
+model.wetland.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Eastern Norway",])
+model.wetland.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Southern Norway",])
+
+```
+
+# Northern Norway
+```{r}
+SentinelNDVI.wetland.train %>%
+  filter(region=="Northern Norway") %>%
+
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap(~hovedtype)
+
+summary(model.wetland.cond.Sent.N)$coefficients
+```
+NDVI in good condition: V10 > V1 > V9 > V3
+
+V1 Åpen jordvannsmyr: NDVI decreases as condition deteriorates
+V3 Nedbørsmyr: NDVI does not change as condition deteriorates
+V9 Semi-naturlig myr & V10 Semi-naturlig våteng: NDVI increases as condition deteriorates
+
+# Central Norway
+```{r}
+SentinelNDVI.wetland.train %>%
+  filter(region=="Central Norway") %>%
+
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap(~hovedtype)
+
+summary(model.wetland.cond.Sent.C)$coefficients
+```
+NDVI in good condition: V10 > V1 & V9 > V3
+
+V1 Åpen jordvannsmyr: NDVI decreases as condition deteriorates
+V3 Nedbørsmyr, V9 Semi-naturlig myr & V10 Semi-naturlig våteng: NDVI increases as condition deteriorates
+
+# Western Norway
+```{r}
+SentinelNDVI.wetland.train %>%
+  filter(region=="Western Norway") %>%
+
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap(~hovedtype)
+
+summary(model.wetland.cond.Sent.W)$coefficients
+```
+NDVI in good condition: V10 > V9 & V3 > V1
+
+V1 Åpen jordvannsmyr & V10 Semi-naturlig våteng: NDVI increases as condition deteriorates
+V3 Nedbørsmyr: NDVI decreases as condition deteriorates (but really insufficient data)
+V9 Semi-naturlig myr: NDVI does not change as condition deteriorates
+
+# Eastern Norway
+```{r}
+SentinelNDVI.wetland.train %>%
+  filter(region=="Eastern Norway") %>%
+
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap(~hovedtype)
+
+summary(model.wetland.cond.Sent.E)$coefficients
+```
+NDVI in good condition: V10 > V1 > V3 & V9
+
+V1 Åpen jordvannsmyr & V3 Nedbørsmyr: NDVI does not change as condition deteriorates
+V9 Semi-naturlig myr & V10 Semi-naturlig våteng: NDVI increases as condition deteriorates
+
+# Southern Norway
+```{r}
+SentinelNDVI.wetland.train %>%
+  filter(region=="Southern Norway") %>%
+
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap(~hovedtype)
+
+summary(model.wetland.cond.Sent.S)$coefficients
+```
+NDVI in good condition: V10 > V9 > V1 & V3
+
+V1 Åpen jordvannsmyr, V9 Semi-naturlig myr & V10 Semi-nautrlig våteng: NDVI increases as condition deteriorates
+V3 Nedbørsmyr: NDVI does not change as condition deteriorates (but also insuffcient data)
+
+Overall take home messages: 
+NDVI in semi-natural wetlands (V9) and semi-natural wet meadows (V10) increases, or is unaffected by reduced condition in all geographical regions. This is consistent with one of the main drivers of reduced condition in semi-natural landscapes in general, namely overgrowth/ encroachment by shrubs as a result of a reduction in traditional management practices.
+
+In minerotrophic mires (V1), the relationship between NDVI and condition differs in the northern versus the southern regions of Norway. In both northern and central Norway NDVI decreases as condition decreases, while NDVI increases with lower condition in western, eastern and southern Norway. This may indicate different drivers of poor condition along a latitudinal gradient.
+
+There is no consistent pattern in NDVI and condition in ombrotrophic mires (V3). Neither northern, eastern or southern Norway's ombrotrophic mires exhibit changes in NDVI as condition decreases. In central Norway NDVI increases as condition decreases, while NDVI decreases as condition decreases in western Norway. However, it should be noted that in the latter case the data available is very limited.
+
+### Regression analyses, NDVI across time
+First, there's some data handling to do. We merge the Sentinel, Modis, and Landsat data to show the full picture across time. Then we model the time series for each Satellite separately.
+```{r}
+## data handling for time series analysis
+# Sentinel time series checked in exploratory analysis script
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != '2022')
+
+# checking time series for MODIS
+ModisNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE)) %>%
+  ggplot( aes(x=year, y=mean )) + 
+  geom_point() +
+  facet_wrap(~hovedtype)
+# 2022 does not stand out as in the Sentinel data, so we keep it
+ModisNDVI.wetland <- ModisNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+
+# checking time series for Landsat
+LandsatNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE)) %>%
+  ggplot( aes(x=year, y=mean )) + 
+  geom_point() +
+  facet_wrap(~hovedtype)
+# nothing worrying to see here either
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE))
+
+# transformation of NDVI scale to beta scale
+#SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
+ModisNDVI.wetland$mean_beta <- (ModisNDVI.wetland$mean + 1) / 2
+LandsatNDVI.wetland$mean_beta <- (LandsatNDVI.wetland$mean + 1) / 2
+
+# check if there's any 0s or 1s (which beta cannot handle)
+summary(SentinelNDVI.wetland$mean_beta)
+summary(ModisNDVI.wetland$mean_beta)
+summary(LandsatNDVI.wetland$mean_beta)
+# replace 1s in Landsat data with 0.9999
+LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+  mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
+
+# check if the three Satellite objects have the same structure (for concatenating them)
+names(SentinelNDVI.wetland)
+names(ModisNDVI.wetland)
+names(LandsatNDVI.wetland)
+# Sentinel and Landsat have each an extra column -> omit them when concatenating further below
+# one column is named slightly differently in the Sentinel data -> rename it
+SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+  rename('system.index' = 'system:index')
+
+# check if they have the same geometry
+st_crs(SentinelNDVI.wetland)
+st_crs(ModisNDVI.wetland)
+st_crs(LandsatNDVI.wetland)
+# all good
+
+# add an increment to the year variable to avoid overlapping data being hidden in figures
+SentinelNDVI.wetland$year_jit <- SentinelNDVI.wetland$year + 0.3
+ModisNDVI.wetland$year_jit <- ModisNDVI.wetland$year - 0.3
+LandsatNDVI.wetland$year_jit <- LandsatNDVI.wetland$year
+
+# concatenate the three Satellite objects
+allSatNDVI.wetland <- rbind(
+SentinelNDVI.wetland[,!names(SentinelNDVI.wetland) %in% "subtype"],
+ModisNDVI.wetland,
+LandsatNDVI.wetland[,!names(LandsatNDVI.wetland) %in% "column_label"]
+)
+# add variable for Satellite indentity
+allSatNDVI.wetland$Sat <- c(
+  rep("Sentinel",nrow(SentinelNDVI.wetland)),
+  rep("Modis",nrow(ModisNDVI.wetland)),
+  rep("Landsat",nrow(LandsatNDVI.wetland))
+)
+allSatNDVI.wetland$Sat <- factor(allSatNDVI.wetland$Sat,levels=c("Sentinel","Modis","Landsat"))
+levels(allSatNDVI.wetland$Sat)
+```
+Now we can plot the time series for each main ecosystem type, and for each satellite separately  
+```{r}
+# plot 
+allSatNDVI.wetland %>%
+  ggplot( aes(x=year_jit, y=mean, color=Sat )) + 
+  geom_point() +
+  facet_wrap(~hovedtype, ncol = 1)
+```
+It is quite obvious that the NDVI values from the three satellites are not quantitatively comparable. They vary both in their placement along the y-axis and in their variance. Modis data are absent from the V4-ecosystem type because of a too large pixel size compared to the NiN-polygon sizes. In V10, Modis is poorly represented for the same reason.
+
+As a final step, we model NDVI as a function of year and main ecosystem type separately for each Satellite
+```{r}
+model.wetland.time.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.wetland)
+model.wetland.time.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.wetland)
+model.wetland.time.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.wetland)
+
+summary(model.wetland.time.Sent)$coefficients$cond
+summary(model.wetland.time.Modi)$coefficients$cond
+summary(model.wetland.time.Land)$coefficients$cond
+```
+
+
+
+
+
+
+
+
+### Export file (final product)
+<!-- Export final file. Ideally a georeferenced shape or raster with indicators values (raw and normalised), reference values and errors. -->
+
+
+
