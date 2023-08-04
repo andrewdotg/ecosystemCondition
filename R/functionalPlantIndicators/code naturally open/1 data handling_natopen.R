@@ -246,14 +246,14 @@ ANO.sp$Species <- gsub("( .*)","\\L\\1",ANO.sp$Species,perl=TRUE) # make capital
 
 ## merge species data with indicators
 ANO.sp.ind <- merge(x=ANO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                    y= ind.dat[,c("species","CC", "SS", "RR","Continentality", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                    y= ind.dat[,c("species","CC", "SS", "RR","Light", "Nitrogen", "Soil_disturbance")],
                     by.x="Species", by.y="species", all.x=T)
 summary(ANO.sp.ind)
 
 
 # checking which species didn't find a match
-unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
-#unique(ANO.sp.ind[!is.na(ANO.sp.ind$Moisture),'Species'])
+unique(ANO.sp.ind[is.na(ANO.sp.ind$Light),'Species'])
+#unique(ANO.sp.ind[!is.na(ANO.sp.ind$Light),'Species'])
 
 ANO.sp.ind[ANO.sp.ind$Species=="Taraxacum officinale",]
 ind.dat[ind.dat$species=="Picea sitchensis",]
@@ -327,11 +327,11 @@ ANO.sp <- ANO.sp %>%
 
 ## merge species data with indicators
 ANO.sp.ind <- merge(x=ANO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                    y= ind.dat[,c("species","CC", "SS", "RR","Continentality","Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                    y= ind.dat[,c("species","CC", "SS", "RR","Light", "Nitrogen", "Soil_disturbance")],
                     by.x="Species", by.y="species", all.x=T)
 summary(ANO.sp.ind)
 # checking which species didn't find a match
-unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
+unique(ANO.sp.ind[is.na(ANO.sp.ind$Light),'Species'])
 # don't find synonyms for these in the ind lists
 
 ## adding information on ecosystem and condition variables
@@ -381,7 +381,7 @@ GRUK.species[,'Species'] <- word(GRUK.species[,'Species'], 1,2) # lose subspecie
 
 ## merge species data with indicators
 GRUK.species.ind <- merge(x=GRUK.species[,c("Species", "art_dekning", "ParentGlobalID")], 
-                          y= ind.dat[,c("species","CC", "SS", "RR", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                          y= ind.dat[,c("species","CC", "SS", "RR","Light", "Nitrogen", "Soil_disturbance")],
                           by.x="Species", by.y="species", all.x=T)
 summary(GRUK.species.ind)
 

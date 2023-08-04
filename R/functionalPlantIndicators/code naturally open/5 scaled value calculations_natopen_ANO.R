@@ -85,10 +85,13 @@ length(levels(as.factor(ANO.natopen$ano_flate_id)))
 length(levels(as.factor(ANO.natopen$ano_punkt_id)))
 summary(as.factor(ANO.natopen$ano_punkt_id))
 # one point is double
-ANO.natopen[ANO.natopen$ano_punkt_id=="ANO0084_51",] # double registration, said so in comment. -> choose row 207 over 206
-ANO.geo[ANO.geo$ano_flate_id=="ANO0084","ano_punkt_id"]
-
-#### continue here ####
+ANO.natopen[ANO.natopen$ano_punkt_id=="ANO0084_51",] # double registration of # 51
+ANO.geo[ANO.geo$ano_flate_id=="ANO0084","ano_punkt_id"] # also # 62 is registered double, but this is not a natopen-type
+# seems to be a legit registration of a naturally open type on both ANO-points.
+# Both point #s 22, 35, 44, and 53 are missing, so we simply assign the 2nd # 51 to # 53 for this analysis
+ANO.natopen[ANO.natopen$ano_punkt_id=="ANO0084_51",][2,"ano_punkt_id"] <- "ANO0084_53"
+ANO.natopen[ANO.natopen$ano_flate_id=="ANO0084","ano_punkt_id"]
+summary(as.factor(ANO.natopen$ano_punkt_id))
 
 #ANO.natopen <- ANO.natopen[-206,]
 #row.names(ANO.natopen) <- 1:nrow(ANO.natopen) # update row-numbers
@@ -100,13 +103,8 @@ ANO.natopen$hovedtype_rute <- as.factor(ANO.natopen$hovedtype_rute)
 ANO.natopen$kartleggingsenhet_1m2 <- as.factor(ANO.natopen$kartleggingsenhet_1m2)
 summary(ANO.natopen$hovedtype_rute)
 summary(ANO.natopen$kartleggingsenhet_1m2)
-# we have the T41 reference only for the hovedtype -> make T41-C-1 into T41
-ANO.natopen[ANO.natopen$kartleggingsenhet_1m2=="T41-C-1","kartleggingsenhet_1m2"] <- "T41"
-summary(ANO.natopen$kartleggingsenhet_1m2)
-
-ANO.natopen[ANO.natopen$kartleggingsenhet_1m2=="T32",]
-ANO.natopen[ANO.natopen$kartleggingsenhet_1m2=="T34",]
-# for T32 og T34 without grunntype-registration there's no useful reference, these won't be processed further
+# we have no reference for overall T2 registrations, these 24 observations won't be evaluated
+ANO.natopen[ANO.natopen$kartleggingsenhet_1m2=="T2",] # were largely inaccessible and thus mapped from arial pictures
 
 results.natopen.ANO <- list()
 ind <- unique(natopen.ref.cov.val$Ind)
@@ -149,13 +147,97 @@ for (i in 1:nrow(ANO.natopen) ) {  #
 
 
     # if the ANO.hovedtype exists in the reference
-    if (ANO.natopen$hovedtype_rute[i] %in% unique(substr(natopen.ref.cov.val$grunn,1,3)) ) {
+    if (ANO.natopen$hovedtype_rute[i] %in% unique(substr(natopen.ref.cov.val$grunn,1,2)) ) {
       
       # if there is any species present in current ANO point  
       if ( length(ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),'Species']) > 0 ) {
         
 
+        # Grime's Ci=2
+        
+        dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','CC')]
+        results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$CC),]
+        
+        if ( nrow(dat)>0 ) {
           
+          val <- sum(dat[,'art_dekning'] * dat[,'CC'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'CC1'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'CC1'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'CC1'] <- val 
+          
+          # upper part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'CC2'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'CC2'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'CC2'] <- val
+        }
+          
+        
+        # Grime's S
+        dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','SS')]
+        results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$SS),]
+        
+        if ( nrow(dat)>0 ) {
+          
+          val <- sum(dat[,'art_dekning'] * dat[,'SS'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'SS1'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'SS1'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'SS1'] <- val 
+          
+          # upper part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'SS2'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'SS2'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'SS2'] <- val
+        }
+        
+        
+        # Grime's R
+        dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','RR')]
+        results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$RR),]
+        
+        if ( nrow(dat)>0 ) {
+          
+          val <- sum(dat[,'art_dekning'] * dat[,'RR'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'RR1'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'RR1'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'RR1'] <- val 
+          
+          # upper part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'RR2'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'RR2'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'RR2'] <- val
+        }
+        
+        
           # Light
           dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','Light')]
           results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
@@ -184,61 +266,7 @@ for (i in 1:nrow(ANO.natopen) ) {  #
           }
           
           
-          # Moisture
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','Moisture')]
-          results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Moisture),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Moisture'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Moist1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Moist1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Moist1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.natopen.ANO dataframe
-            results.natopen.ANO[['scaled']][i,'Moist1'] <- scal() 
-            results.natopen.ANO[['non-truncated']][i,'Moist1'] <- scal.2() 
-            results.natopen.ANO[['original']][i,'Moist1'] <- val 
-            
-            # upper part of distribution
-            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Moist2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Moist2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Moist2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.natopen.ANO dataframe
-            results.natopen.ANO[['scaled']][i,'Moist2'] <- scal() 
-            results.natopen.ANO[['non-truncated']][i,'Moist2'] <- scal.2() 
-            results.natopen.ANO[['original']][i,'Moist2'] <- val
-          }
-          
-          
-          # Soil_reaction_pH
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','Soil_reaction_pH')]
-          results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Soil_reaction_pH),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Soil_reaction_pH'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='pH1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='pH1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='pH1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.natopen.ANO dataframe
-            results.natopen.ANO[['scaled']][i,'pH1'] <- scal() 
-            results.natopen.ANO[['non-truncated']][i,'pH1'] <- scal.2() 
-            results.natopen.ANO[['original']][i,'pH1'] <- val 
-            
-            # upper part of distribution
-            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='pH2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='pH2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='pH2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.natopen.ANO dataframe
-            results.natopen.ANO[['scaled']][i,'pH2'] <- scal() 
-            results.natopen.ANO[['non-truncated']][i,'pH2'] <- scal.2() 
-            results.natopen.ANO[['original']][i,'pH2'] <- val
-          }
-          
+         
           
           # Nitrogen
           dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','Nitrogen')]
@@ -268,60 +296,8 @@ for (i in 1:nrow(ANO.natopen) ) {  #
           }
           
           
-          # Phosphorus
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','Phosphorus')]
-          results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Phosphorus),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Phosphorus'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Phosphorus1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Phosphorus1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Phosphorus1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.natopen.ANO dataframe
-            results.natopen.ANO[['scaled']][i,'Phosphorus1'] <- scal() 
-            results.natopen.ANO[['non-truncated']][i,'Phosphorus1'] <- scal.2() 
-            results.natopen.ANO[['original']][i,'Phosphorus1'] <- val 
-            
-            # upper part of distribution
-            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Phosphorus2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Phosphorus2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Phosphorus2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.natopen.ANO dataframe
-            results.natopen.ANO[['scaled']][i,'Phosphorus2'] <- scal() 
-            results.natopen.ANO[['non-truncated']][i,'Phosphorus2'] <- scal.2() 
-            results.natopen.ANO[['original']][i,'Phosphorus2'] <- val
-          }
-          
-          
-          # Grazing_mowing
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','Grazing_mowing')]
-          results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Grazing_mowing),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Grazing_mowing'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Grazing_mowing1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Grazing_mowing1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Grazing_mowing1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.natopen.ANO dataframe
-            results.natopen.ANO[['scaled']][i,'Grazing_mowing1'] <- scal() 
-            results.natopen.ANO[['non-truncated']][i,'Grazing_mowing1'] <- scal.2() 
-            results.natopen.ANO[['original']][i,'Grazing_mowing1'] <- val 
-            
-            # upper part of distribution
-            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Grazing_mowing2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Grazing_mowing2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Grazing_mowing2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.natopen.ANO dataframe
-            results.natopen.ANO[['scaled']][i,'Grazing_mowing2'] <- scal() 
-            results.natopen.ANO[['non-truncated']][i,'Grazing_mowing2'] <- scal.2() 
-            results.natopen.ANO[['original']][i,'Grazing_mowing2'] <- val
-          }
+
+
           
           
           # Soil_disturbance
@@ -370,39 +346,29 @@ results.natopen.ANO[['2-sided']] <- results.natopen.ANO[['non-truncated']]
 # check if there are values equalling exactly 1
 results.natopen.ANO[['2-sided']]$Light1[results.natopen.ANO[['2-sided']]$Light1==1]
 results.natopen.ANO[['2-sided']]$Light2[results.natopen.ANO[['2-sided']]$Light2==1]
-results.natopen.ANO[['2-sided']]$Moist1[results.natopen.ANO[['2-sided']]$Moist1==1]
-results.natopen.ANO[['2-sided']]$Moist2[results.natopen.ANO[['2-sided']]$Moist2==1]
-results.natopen.ANO[['2-sided']]$pH1[results.natopen.ANO[['2-sided']]$pH1==1]
-results.natopen.ANO[['2-sided']]$pH2[results.natopen.ANO[['2-sided']]$pH2==1]
 results.natopen.ANO[['2-sided']]$Nitrogen1[results.natopen.ANO[['2-sided']]$Nitrogen1==1]
 results.natopen.ANO[['2-sided']]$Nitrogen2[results.natopen.ANO[['2-sided']]$Nitrogen2==1]
-results.natopen.ANO[['2-sided']]$Phosphorus1[results.natopen.ANO[['2-sided']]$Phosphorus1==1]
-results.natopen.ANO[['2-sided']]$Phosphorus2[results.natopen.ANO[['2-sided']]$Phosphorus2==1]
-results.natopen.ANO[['2-sided']]$Grazing_mowing1[results.natopen.ANO[['2-sided']]$Grazing_mowing1==1]
-results.natopen.ANO[['2-sided']]$Grazing_mowing2[results.natopen.ANO[['2-sided']]$Grazing_mowing2==1]
 results.natopen.ANO[['2-sided']]$Soil_disturbance1[results.natopen.ANO[['2-sided']]$Soil_disturbance1==1]
 results.natopen.ANO[['2-sided']]$Soil_disturbance2[results.natopen.ANO[['2-sided']]$Soil_disturbance2==1]
 
 
 
 # remove values >1 for Ellenberg
+
+results.natopen.ANO[['2-sided']]$CC1[results.natopen.ANO[['2-sided']]$CC1>1] <- NA
+results.natopen.ANO[['2-sided']]$CC2[results.natopen.ANO[['2-sided']]$CC2>1] <- NA
+
+results.natopen.ANO[['2-sided']]$SS1[results.natopen.ANO[['2-sided']]$SS1>1] <- NA
+results.natopen.ANO[['2-sided']]$SS2[results.natopen.ANO[['2-sided']]$SS2>1] <- NA
+
+results.natopen.ANO[['2-sided']]$RR1[results.natopen.ANO[['2-sided']]$RR1>1] <- NA
+results.natopen.ANO[['2-sided']]$RR2[results.natopen.ANO[['2-sided']]$RR2>1] <- NA
+
 results.natopen.ANO[['2-sided']]$Light1[results.natopen.ANO[['2-sided']]$Light1>1] <- NA
 results.natopen.ANO[['2-sided']]$Light2[results.natopen.ANO[['2-sided']]$Light2>1] <- NA
 
-results.natopen.ANO[['2-sided']]$Moist1[results.natopen.ANO[['2-sided']]$Moist1>1] <- NA
-results.natopen.ANO[['2-sided']]$Moist2[results.natopen.ANO[['2-sided']]$Moist2>1] <- NA
-
-results.natopen.ANO[['2-sided']]$pH1[results.natopen.ANO[['2-sided']]$pH1>1] <- NA
-results.natopen.ANO[['2-sided']]$pH2[results.natopen.ANO[['2-sided']]$pH2>1] <- NA
-
 results.natopen.ANO[['2-sided']]$Nitrogen1[results.natopen.ANO[['2-sided']]$Nitrogen1>1] <- NA
 results.natopen.ANO[['2-sided']]$Nitrogen2[results.natopen.ANO[['2-sided']]$Nitrogen2>1] <- NA
-
-results.natopen.ANO[['2-sided']]$Phosphorus1[results.natopen.ANO[['2-sided']]$Phosphorus1>1] <- NA
-results.natopen.ANO[['2-sided']]$Phosphorus2[results.natopen.ANO[['2-sided']]$Phosphorus2>1] <- NA
-
-results.natopen.ANO[['2-sided']]$Grazing_mowing1[results.natopen.ANO[['2-sided']]$Grazing_mowing1>1] <- NA
-results.natopen.ANO[['2-sided']]$Grazing_mowing2[results.natopen.ANO[['2-sided']]$Grazing_mowing2>1] <- NA
 
 results.natopen.ANO[['2-sided']]$Soil_disturbance1[results.natopen.ANO[['2-sided']]$Soil_disturbance1>1] <- NA
 results.natopen.ANO[['2-sided']]$Soil_disturbance2[results.natopen.ANO[['2-sided']]$Soil_disturbance2>1] <- NA
@@ -410,25 +376,22 @@ results.natopen.ANO[['2-sided']]$Soil_disturbance2[results.natopen.ANO[['2-sided
 
 # check distribution
 x11()
-par(mfrow=c(2,7))
+par(mfrow=c(2,6))
+
+hist(results.natopen.ANO[['2-sided']]$CC1,breaks=40)
+hist(results.natopen.ANO[['2-sided']]$CC2,breaks=40)
+
+hist(results.natopen.ANO[['2-sided']]$SS1,breaks=40)
+hist(results.natopen.ANO[['2-sided']]$SS2,breaks=40)
+
+hist(results.natopen.ANO[['2-sided']]$RR1,breaks=40)
+hist(results.natopen.ANO[['2-sided']]$RR2,breaks=40)
 
 hist(results.natopen.ANO[['2-sided']]$Light1,breaks=40)
 hist(results.natopen.ANO[['2-sided']]$Light2,breaks=40)
 
-hist(results.natopen.ANO[['2-sided']]$Moist1,breaks=40)
-hist(results.natopen.ANO[['2-sided']]$Moist2,breaks=40)
-
-hist(results.natopen.ANO[['2-sided']]$pH1,breaks=40)
-hist(results.natopen.ANO[['2-sided']]$pH2,breaks=40)
-
 hist(results.natopen.ANO[['2-sided']]$Nitrogen1,breaks=40)
 hist(results.natopen.ANO[['2-sided']]$Nitrogen2,breaks=40)
-
-hist(results.natopen.ANO[['2-sided']]$Phosphorus1,breaks=40)
-hist(results.natopen.ANO[['2-sided']]$Phosphorus2,breaks=40)
-
-hist(results.natopen.ANO[['2-sided']]$Grazing_mowing1,breaks=40)
-hist(results.natopen.ANO[['2-sided']]$Grazing_mowing2,breaks=40)
 
 hist(results.natopen.ANO[['2-sided']]$Soil_disturbance1,breaks=40)
 hist(results.natopen.ANO[['2-sided']]$Soil_disturbance2,breaks=40)
