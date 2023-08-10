@@ -148,13 +148,13 @@ levels(regions$region) <- c("Østlandet", "Midt-Norge","Nord-Norge","Sørlandet"
 The [SSB 10km and 50km grids](https://kartkatalog.geonorge.no/metadata/statistisk-rutenett-5000m/32ac0653-d95c-446c-8558-bf9b79f4934e) are used for visualizing the distribution of available data and for aggregating gjengroing index scores.
 
 ```{r}
-ssb10km <- st_read('/data/R/GeoSpatialData/Population_demography/Norway_SSB/Original/ssb_10km/ssb10km.shp')%>%
+ssb10km <- st_read('R:/GeoSpatialData/Population_demography/Norway_SSB/Original/ssb_10km/ssb10km.shp')%>%
   # mutate the id value so that it aligns with the data coming from GEE
   mutate(SSBID = as.numeric(SSBID)/1000)
 # Transform to the correct projection
 ssb10km <- st_transform(ssb10km, st_crs(regions))
 
-ssb50km <- st_read('/data/R/GeoSpatialData/Population_demography/Norway_SSB/Original/ssb_50km/ssb50km.shp')%>%
+ssb50km <- st_read('R:/GeoSpatialData/Population_demography/Norway_SSB/Original/ssb_50km/ssb50km.shp')%>%
   # mutate the id value so that it aligns with the data coming from GEE
   mutate(SSBID = as.numeric(SSBID)/1000)
 # Transform to the correct projection
@@ -165,7 +165,7 @@ ssb50km <- st_transform(ssb50km, st_crs(regions))
 The Moen's bioclimatic regions are imported from NINA R/GeoSpatialData/ server.
 
 ```{r}
-bioclim <- st_read('/data/R/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp') %>%
+bioclim <- st_read('R:/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp') %>%
   mutate(NAVN = ifelse(NAVN == 'S°rboreal', 'Sørboreal', NAVN))
 bioclim <- st_transform(bioclim, st_crs(regions))
 ```
@@ -173,7 +173,7 @@ bioclim <- st_transform(bioclim, st_crs(regions))
 #### NiN polygons
 [NiN polygons](https://kartkatalog.miljodirektoratet.no/dataset/Details/2050) are imported here from the NINA servers:
 ```{r}
-nin <- st_read('/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_NiN_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb')%>%
+nin <- st_read('R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_NiN_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb')%>%
   # Simplify ecosystem names
   mutate(hovedøkosystem = recode(hovedøkosystem, 
                                  "Våtmark" = 'Våtmark',
@@ -265,7 +265,7 @@ Import the CSV files generated in GEE related to area covers and elevation bands
 
 ```{r}
 # Import data coverages per SSB 10km grid cell
-areaCovers <- read_csv('./DATA/From_GEE/area_cover_grid.csv') %>%
+areaCovers <- read_csv('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/From_GEE/area_cover_grid.csv') %>%
   dplyr::select(-'.geo', -'system:index')
 
 # Calculate percentage cover relative to the land area in each cell
@@ -280,7 +280,7 @@ areaCoversPerc <- areaCovers %>%
          areaPerc = ifelse(is.na(areaPerc), 0, areaPerc)) %>%
   dplyr::select(SSBID, key, type,ecosystem, areaPerc)
 
-elevStrata <- st_read('./DATA/From_GEE/elevation_stratified.shp') %>%
+elevStrata <- st_read('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/From_GEE/elevation_stratified.shp') %>%
   mutate(elevBand = ifelse(mode == 1, '0-300',
                            ifelse(mode == 2, '300-600',
                                   ifelse(mode == 3, '600-900',
@@ -316,9 +316,9 @@ if (runFromScratch){
   
   # Export to file for reference
   refVaatmark %>%
-    st_write('./DATA/refVaatmark.csv')
+    st_write('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/refVaatmark.csv')
   refAapne %>%
-    st_write('./DATA/refAapne.csv')
+    st_write('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/refAapne.csv')
   
   # Import median LiDAR heights for AR5 polygons for population measurement
   popVaatmarkHt <- readVegHeightFiles('vaatmark_pop')  %>%
@@ -404,8 +404,8 @@ if (runFromScratch){
   
 } else {
   
-  refVaatmark  <- read_csv('./DATA/refVaatmark.csv')
-  refAapne <- read_csv('./DATA/refAapne.csv')
+  refVaatmark  <- read_csv('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/refVaatmark.csv')
+  refAapne <- read_csv('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/refAapne.csv')
   
 }
 
@@ -563,12 +563,12 @@ if (runFromScratch){
   
 } else {
   
-  vaatmarkIndexPolySpat <- st_read('./OUTPUT/vaatmark_index.shp')%>%
+  vaatmarkIndexPolySpat <- st_read('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/vaatmark_index.shp')%>%
     mutate(`system:index` = id,
            elevation = elev, 
            vegClimZoneLab = vegZn) %>%
     dplyr::select(-id, -elev, -vegZn)
-  aapneIndexPolySpat <- st_read('./OUTPUT/aapne_index.shp')%>%
+  aapneIndexPolySpat <- st_read('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index.shp')%>%
     mutate(`system:index` = id,
            elevation = elev, 
            vegClimZoneLab = vegZn) %>%
@@ -616,14 +616,14 @@ if (runFromScratch){
   
   
   # Write out for import later
-  vaatmarkIndexStrata %>% write_csv('./DATA/vaatmarkIndexStrata.csv')
-  aapneIndexStrata %>% write_csv('./DATA/aapneIndexStrata.csv')
+  vaatmarkIndexStrata %>% write_csv('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/vaatmarkIndexStrata.csv')
+  aapneIndexStrata %>% write_csv('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/aapneIndexStrata.csv')
   
 
 } else {
   
-  vaatmarkIndexStrata <- read_csv('./DATA/vaatmarkIndexStrata.csv')
-  aapneIndexStrata <- read_csv('./DATA/aapneIndexStrata.csv')
+  vaatmarkIndexStrata <- read_csv('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/vaatmarkIndexStrata.csv')
+  aapneIndexStrata <- read_csv('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/aapneIndexStrata.csv')
   
   
 }
@@ -721,8 +721,8 @@ if (runFromScratch){
   
   print('Will import pre-exported data')
   
-  vaatmarkIndexGrid <- st_read('./OUTPUT/vaatmark_index_grid.shp')
-  aapneIndexGrid <- st_read('./OUTPUT/aapne_index_grid.shp')
+  vaatmarkIndexGrid <- st_read('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/vaatmark_index_grid.shp')
+  aapneIndexGrid <- st_read('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index_grid.shp')
   
 }
 
@@ -819,8 +819,8 @@ if (runFromScratch){
   
   print('Will import pre-exported data')
   
-  vaatmarkIndexRegion <- st_read('./OUTPUT/vaatmark_index_region.shp')
-  aapneIndexRegion <- st_read('./OUTPUT/aapne_index_region.shp')
+  vaatmarkIndexRegion <- st_read('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/vaatmark_index_region.shp')
+  aapneIndexRegion <- st_read('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index_region.shp')
   
   
 }
@@ -919,31 +919,31 @@ After exporting the final polygon-level indicator scores, we imported to QGIS an
 In the first example from midt-norge, we see a våtmark polygon colored red (ie. in poor condition) due to the growth of a forest in the northern section. It looks like a plantation forest and possibly occured after the wetland was drained. The height of the forest vegetation equates to a median of 2.4m which is higher than the reference value for this region (1.09m) and almost as high as the mature forest height reference of 2.8m. Therefore it gets a scaped indicator score of 0.1. In contrast the wetland plygon in the middle of the image is in good condition because it has a median vegetation height of 1.1m which is only fractionally higher than the regional reference for good ecological condition.
 
 ```{r}
-include_graphics('./DATA/images/val_1.jpg')
+include_graphics('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_1.jpg')
 ```
 
 The second example from Sørlandet shows three AR5 semi-naturlig åpne polygons with different indicator values. The lower polygon has poor ecological condition because its median vegetation height is 6.2m which is close to the local reference value for mature forest (7.9m). Although the centeral polygon appears to have greater coverage of forest in the orthophoto, the LiDAR data tells us that it is mostly covered by short trees and results in a median vegetation height of 2.8 - therefore good condition.
 
 ```{r}
-include_graphics('./DATA/images/val_2.jpg')
+include_graphics('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_2.jpg')
 ```
 
 The third example from Østlandet shows a range of indicator values for våtmark polygons. Although many of the polygons are partly covered by trees, their indicator values show good condition because the local reference for mature forest (zero on the indicator scale) is very high in this landscape of productive forest.
 
 ```{r}
-include_graphics('./DATA/images/val_3.jpg')
+include_graphics('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_3.jpg')
 ```
 
 The fourth example from Nord-norge shows AR5 semi-naturlig åpne polygons with low and high condition scores. The large polygon with poor condition score has a median vegetation height of 2.7 which is nearly as high as the local reference for mature forest (3.8m).
 
 ```{r}
-include_graphics('./DATA/images/val_4.jpg')
+include_graphics('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_4.jpg')
 ```
 
 The fifth and final example from further north in Nord-norge shows two våtmark polygons with contrasting condition scores, yet exactly the same median vegetation heights of 0.6m. The difference in the scaled iindicator value is due to different local reference values for surrounding forest. The polygon on the left has surrounding forest (within 200m buffer zone) with median height 0.5m, while the polygon on the right has surrounding forest of 0.7m. This creates a contrast in the final indicator valye and illustrates the effect that a local reference value can have on defining good and poor ecological condition.
 
 ```{r}
-include_graphics('./DATA/images/val_5.jpg')
+include_graphics('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_5.jpg')
 ```
 
 ### Eksport file (final product)
@@ -964,7 +964,7 @@ if (runFromScratch){
            elev = elevation, 
            vegZn = vegClimZoneLab) %>%
     dplyr::select(-"system:index", -vegClimZoneLab, -elevation) %>%
-    st_write('./OUTPUT/vaatmark_index.shp', append=FALSE)
+    st_write('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/vaatmark_index.shp', append=FALSE)
   
   aapneIndexPolySpat %>% 
     #mutate(area = as.numeric(st_area(geometry)))%>% 
@@ -973,19 +973,19 @@ if (runFromScratch){
            elev = elevation, 
            vegZn = vegClimZoneLab) %>%
     dplyr::select(-"system:index", -vegClimZoneLab, -elevation) %>%
-    st_write('./OUTPUT/aapne_index.shp', append=FALSE)
+    st_write('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index.shp', append=FALSE)
   
   # Grid level
   vaatmarkIndexGrid %>%
-    st_write('./OUTPUT/vaatmark_index_grid.shp', append = FALSE)
+    st_write('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/vaatmark_index_grid.shp', append = FALSE)
   aapneIndexGrid %>%
-    st_write('./OUTPUT/aapne_index_grid.shp', append = FALSE)
+    st_write('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index_grid.shp', append = FALSE)
   
   # Region level
   vaatmarkIndexRegion %>%
-    st_write('./OUTPUT/vaatmark_index_region.shp', append = FALSE)
+    st_write('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/vaatmark_index_region.shp', append = FALSE)
   aapneIndexRegion %>%
-    st_write('./OUTPUT/aapne_index_region.shp', append = FALSE)
+    st_write('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index_region.shp', append = FALSE)
 }
 
 ```
