@@ -387,7 +387,7 @@ summary(GRUK.species.ind)
 
 
 # checking which species didn't find a match
-unique(GRUK.species.ind[is.na(GRUK.species.ind$Moisture & 
+unique(GRUK.species.ind[is.na(GRUK.species.ind$Light & 
                                 is.na(GRUK.species.ind$RR)),'Species'])
 
 
@@ -469,11 +469,11 @@ GRUK.species <- GRUK.species %>%
 
 ## merge species data with indicators
 GRUK.species.ind <- merge(x=GRUK.species[,c("Species", "art_dekning", "ParentGlobalID")], 
-                          y= ind.dat[,c("species","CC", "SS", "RR", "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Grazing_mowing")],
+                          y= ind.dat[,c("species","CC", "SS", "RR","Light", "Nitrogen", "Soil_disturbance")],
                           by.x="Species", by.y="species", all.x=T)
 summary(GRUK.species.ind)
 # checking which species didn't find a match
-unique(GRUK.species.ind[is.na(GRUK.species.ind$Moisture & 
+unique(GRUK.species.ind[is.na(GRUK.species.ind$Light & 
                                 is.na(GRUK.species.ind$RR)),'Species'])
 
 

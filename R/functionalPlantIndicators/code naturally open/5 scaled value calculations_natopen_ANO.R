@@ -153,7 +153,7 @@ for (i in 1:nrow(ANO.natopen) ) {  #
       if ( length(ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),'Species']) > 0 ) {
         
 
-        # Grime's Ci=2
+        # Grime's C
         
         dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','CC')]
         results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
