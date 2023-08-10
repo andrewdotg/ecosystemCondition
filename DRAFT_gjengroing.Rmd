@@ -100,7 +100,7 @@ There is possibly a collinearity with the primary production indicator (primærp
 The methodology used to calculate the gjengroing indicator is outlined in the schematic below. The workflow in the schematic is conducted for all reference and population polygons in Norway and repeated for each ecosystem type (åpne and våtmark), respectively. The indicator values are aggregated to a 50km grid and regional level at the end. The individual steps are discussed in turn in the following subsections.
 
 ```{r}
-include_graphics('./DATA/images/gjengroing_schematic.jpg')
+include_graphics('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/gjengroing_schematic.jpg')
 ```
 
 ### Reference state
@@ -138,7 +138,7 @@ The remaining datasets will be imported into the R session.
 The regional delineation for Norway (five regions) are used for aggregating and reporting gjengroing condition values.
 
 ```{r}
-regions <- st_read('./DATA/regions.shp') %>%
+regions <- st_read('P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/regions.shp') %>%
   mutate(region = factor(region) )
 # Rename regions with correct Norwegian characters
 levels(regions$region) <- c("Østlandet", "Midt-Norge","Nord-Norge","Sørlandet","Vestlandet")
@@ -221,7 +221,7 @@ Create functions to import vegetation height files and stratify data by elevatio
 ```{r}
 # Function to read in multiple files resulting from GEE exports
 readVegHeightFiles <- function(uniqueString){
-  dir <- './DATA/From_GEE/vegHeights/'
+  dir <- 'P:/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/From_GEE/vegHeights/'
   files <- list.files(dir)[str_detect(list.files(dir), uniqueString)]
   #print(files)
   
