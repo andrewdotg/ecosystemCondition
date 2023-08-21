@@ -306,11 +306,13 @@ ggplot(res.natopen.GRUK[res.natopen.GRUK$reference_type=="BN",], aes(x=factor(Ka
 res.natopen.ANO2 <- results.natopen.ANO[['2-sided']]
 st_geometry(res.natopen.ANO2) <- st_geometry(ANO.natopen)
 
-## similarly for ASO
+#### continue here ####
+
+## similarly for GRUK
 # keep wide format and add geometry again
-res.natopen.ASO2 <- results.natopen.ASO[['2-sided']]
-st_geometry(res.natopen.ASO2) <- st_geometry(ASO.geo)
-res.natopen.ASO2 <- res.natopen.ASO2 %>% st_transform(crs = st_crs(res.natopen.ANO2))
+res.natopen.GRUK2 <- results.natopen.GRUK[['2-sided']]
+st_geometry(res.natopen.GRUK2) <- st_geometry(GRUK.geo)
+res.natopen.GRUK2 <- res.natopen.GRUK2 %>% st_transform(crs = st_crs(res.natopen.ANO2))
 
 
 #nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
