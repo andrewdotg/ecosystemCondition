@@ -2,7 +2,7 @@
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_natopen.RData")
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_natopen.RData")
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.natopen.ANO.RData")
-load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.natopen.ASO.RData")
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.natopen.GRUK.RData")
 
 
 #### comparing the references ####
@@ -35,8 +35,6 @@ plot(density(natopen.ref.cov[["Nitrogen"]]$"T2-C8"),type="l",lty=1,xlim=c(0,9),m
 points(density(natopen.ref.cov[["Nitrogen"]]$"T2-C8_BN"),type="l",lty=2)
 plot(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C8"),type="l",lty=1,xlim=c(0,9),main="",xlab="Soil_disturbance")
 points(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C8_BN"),type="l",lty=2)
-
-
 
 #### references vs. original values ####
 x11()
@@ -186,6 +184,7 @@ points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["origina
 legend("topleft", legend=c("ref regular","ref BN","GRUK tilst=0", "GRUK tilst=1", "GRUK tilst=2"), lty=c(1,2,1,2,3), col=c("black","black","red","red","red"))
 
 
+
 #### plotting scaled values by main ecosystem type ####
 ## continuing with 2-sided
 res.natopen.ANO <- results.natopen.ANO[['2-sided']]
@@ -195,12 +194,11 @@ colnames(res.natopen.ANO)
 res.natopen.ANO <-
   res.natopen.ANO %>% 
   pivot_longer(
-    cols = c("Light1","Light2",
-             "Moist1","Moist2",
-             "pH1","pH2",
+    cols = c("CC1","CC2",
+             "SS1","SS2",
+             "RR1","RR2",
+             "Light1","Light2",
              "Nitrogen1","Nitrogen2",
-             "Phosphorus1","Phosphorus2",
-             "Grazing_mowing1","Grazing_mowing2",
              "Soil_disturbance1","Soil_disturbance2"),
     names_to = "fp_ind",
     values_to = "scaled_value",
@@ -211,12 +209,11 @@ res.natopen.ANO <-
 res.natopen.ANO <- 
   res.natopen.ANO %>% add_column(original = results.natopen.ANO[['original']] %>% 
                                pivot_longer(
-                                 cols = c("Light1","Light2",
-                                          "Moist1","Moist2",
-                                          "pH1","pH2",
+                                 cols = c("CC1","CC2",
+                                          "SS1","SS2",
+                                          "RR1","RR2",
+                                          "Light1","Light2",
                                           "Nitrogen1","Nitrogen2",
-                                          "Phosphorus1","Phosphorus2",
-                                          "Grazing_mowing1","Grazing_mowing2",
                                           "Soil_disturbance1","Soil_disturbance2"),
                                  names_to = NULL,
                                  values_to = "original",
@@ -225,23 +222,22 @@ res.natopen.ANO <-
                                pull(original)
   )
 
-head(res.natopen.ANO[,70:76])
+summary(res.natopen.ANO[,79:81])
 
 
-# similarly for ASO
-res.natopen.ASO <- results.natopen.ASO[['2-sided']]
-colnames(res.natopen.ASO)
+# similarly for GRUK
+res.natopen.GRUK <- results.natopen.GRUK[['2-sided']]
+colnames(res.natopen.GRUK)
 
 # make long version of the scaled value part
-res.natopen.ASO <-
-  res.natopen.ASO %>% 
+res.natopen.GRUK <-
+  res.natopen.GRUK %>% 
   pivot_longer(
-    cols = c("Light1","Light2",
-             "Moist1","Moist2",
-             "pH1","pH2",
+    cols = c("CC1","CC2",
+             "SS1","SS2",
+             "RR1","RR2",
+             "Light1","Light2",
              "Nitrogen1","Nitrogen2",
-             "Phosphorus1","Phosphorus2",
-             "Grazing_mowing1","Grazing_mowing2",
              "Soil_disturbance1","Soil_disturbance2"),
     names_to = "fp_ind",
     values_to = "scaled_value",
@@ -249,15 +245,14 @@ res.natopen.ASO <-
   )
 
 # add original values as well
-res.natopen.ASO <- 
-  res.natopen.ASO %>% add_column(original = results.natopen.ASO[['original']] %>% 
+res.natopen.GRUK <- 
+  res.natopen.GRUK %>% add_column(original = results.natopen.GRUK[['original']] %>% 
                                    pivot_longer(
-                                     cols = c("Light1","Light2",
-                                              "Moist1","Moist2",
-                                              "pH1","pH2",
+                                     cols = c("CC1","CC2",
+                                              "SS1","SS2",
+                                              "RR1","RR2",
+                                              "Light1","Light2",
                                               "Nitrogen1","Nitrogen2",
-                                              "Phosphorus1","Phosphorus2",
-                                              "Grazing_mowing1","Grazing_mowing2",
                                               "Soil_disturbance1","Soil_disturbance2"),
                                      names_to = NULL,
                                      values_to = "original",
@@ -266,36 +261,43 @@ res.natopen.ASO <-
                                    pull(original)
   )
 
-head(res.natopen.ASO[,70:76])
+summary(res.natopen.GRUK[,52:54])
 
 
 
 # making the plot, ANO
-ggplot(res.natopen.ANO, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+ggplot(res.natopen.ANO, aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color=NA) +
 #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=1, shape=16, color="black") +
-  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
-                                     "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
-  xlab("Main ecosystem type") + 
+  facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1","Light1","Nitrogen1","Soil_disturbance1",
+                                     "CC2","SS2","RR2","Light2","Nitrogen2","Soil_disturbance2")), ncol = 6) + 
+  xlab("Basic ecosystem type") + 
   ylab("Scaled indicator value (ANO data)") 
 
 
 
-# making the plot, ASO
-res.natopen.ASO$NiN_grunntype2 <- substring(res.natopen.ASO$NiN_grunntype,5)
-ggplot(res.natopen.ASO, aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
+# making the plot, GRUK (one for each reference)
+ggplot(res.natopen.GRUK[res.natopen.GRUK$reference_type=="regular",], aes(x=factor(Kartleggingsenhet), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color = NA) +
   #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=1, shape=16, color="black") +
-  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
-                                     "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
+  facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1","Light1","Nitrogen1","Soil_disturbance1",
+                                     "CC2","SS2","RR2","Light2","Nitrogen2","Soil_disturbance2")), ncol = 6) + 
   xlab("T32 (semi-natural meadow) basic ecosystem type") + 
-  ylab("Scaled indicator value (ASO data)") 
+  ylab("Scaled indicator value (GRUK data)") 
 
-
+ggplot(res.natopen.GRUK[res.natopen.GRUK$reference_type=="BN",], aes(x=factor(Kartleggingsenhet), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color = NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1","Light1","Nitrogen1","Soil_disturbance1",
+                                     "CC2","SS2","RR2","Light2","Nitrogen2","Soil_disturbance2")), ncol = 6) + 
+  xlab("T32 (semi-natural meadow) basic ecosystem type") + 
+  ylab("Scaled indicator value (GRUK data)") 
 
 
 
