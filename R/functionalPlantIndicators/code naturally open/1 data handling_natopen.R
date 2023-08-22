@@ -6,6 +6,8 @@ library(dplyr)
 library(stringr)
 library(tidyverse)
 library(readxl)
+library(tmap)
+library(tmaptools)
 
 #### download from kartkatalogen to P-drive ####
 # url <- "https://nedlasting.miljodirektoratet.no/naturovervaking/naturovervaking_eksport.gdb.zip"

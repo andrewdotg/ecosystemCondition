@@ -5,184 +5,6 @@ load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for m
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.natopen.GRUK.RData")
 
 
-#### comparing the references ####
-par(mfrow=c(2,6))
-plot(density(natopen.ref.cov[["CC"]]$"T2-C7"),type="l",lty=1,xlim=c(0,1),main="Reference comparison T2-C7",xlab="CSR-C")
-points(density(natopen.ref.cov[["CC"]]$"T2-C7_BN"),type="l",lty=2)
-legend("topright", legend=c("regular","BN"), lty=c(1,2))
-
-plot(density(natopen.ref.cov[["SS"]]$"T2-C7"),type="l",lty=1,xlim=c(0,1),main="",xlab="CSR-S")
-points(density(natopen.ref.cov[["SS"]]$"T2-C7_BN"),type="l",lty=2)
-plot(density(natopen.ref.cov[["RR"]]$"T2-C7"),type="l",lty=1,xlim=c(0,1),main="",xlab="CSR-R")
-points(density(natopen.ref.cov[["RR"]]$"T2-C7_BN"),type="l",lty=2)
-plot(density(natopen.ref.cov[["Light"]]$"T2-C7"),type="l",lty=1,xlim=c(0,7),main="",xlab="Light")
-points(density(natopen.ref.cov[["Light"]]$"T2-C7_BN"),type="l",lty=2)
-plot(density(natopen.ref.cov[["Nitrogen"]]$"T2-C7"),type="l",lty=1,xlim=c(0,9),main="",xlab="Nitrogen")
-points(density(natopen.ref.cov[["Nitrogen"]]$"T2-C7_BN"),type="l",lty=2)
-plot(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C7"),type="l",lty=1,xlim=c(0,9),main="",xlab="Soil_disturbance")
-points(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C7_BN"),type="l",lty=2)
-
-
-plot(density(natopen.ref.cov[["CC"]]$"T2-C8"),type="l",lty=1,xlim=c(0,1),main="Reference comparison T2-C8",xlab="CSR-C")
-points(density(natopen.ref.cov[["CC"]]$"T2-C8_BN"),type="l",lty=2)
-plot(density(natopen.ref.cov[["SS"]]$"T2-C8"),type="l",lty=1,xlim=c(0,1),main="",xlab="CSR-S")
-points(density(natopen.ref.cov[["SS"]]$"T2-C8_BN"),type="l",lty=2)
-plot(density(natopen.ref.cov[["RR"]]$"T2-C8"),type="l",lty=1,xlim=c(0,1),main="",xlab="CSR-R")
-points(density(natopen.ref.cov[["RR"]]$"T2-C8_BN"),type="l",lty=2)
-plot(density(natopen.ref.cov[["Light"]]$"T2-C8"),type="l",lty=1,xlim=c(0,7),main="",xlab="Light")
-points(density(natopen.ref.cov[["Light"]]$"T2-C8_BN"),type="l",lty=2)
-plot(density(natopen.ref.cov[["Nitrogen"]]$"T2-C8"),type="l",lty=1,xlim=c(0,9),main="",xlab="Nitrogen")
-points(density(natopen.ref.cov[["Nitrogen"]]$"T2-C8_BN"),type="l",lty=2)
-plot(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C8"),type="l",lty=1,xlim=c(0,9),main="",xlab="Soil_disturbance")
-points(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C8_BN"),type="l",lty=2)
-
-#### references vs. original values ####
-x11()
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["CC"]]$"T2-C7"),type="l",lty=1,xlim=c(0,1),main="T2-C7 data vs. reference",xlab="CSR-C")
-points(density(natopen.ref.cov[["CC"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular","CC1"], na.rm = TRUE),type="l",lty=1,col="red")
-plot(density(natopen.ref.cov[["CC"]]$"T2-C8"),type="l",lty=1,xlim=c(0,1),main="T2-C8 data vs. reference",xlab="CSR-C")
-points(density(natopen.ref.cov[["CC"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular","CC1"], na.rm = TRUE),type="l",lty=1,col="red")
-legend("topright", legend=c("regular","BN","GRUK data"), lty=c(1,2,1), col=c("black","black","red"))
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["SS"]]$"T2-C7"),type="l",lty=1,xlim=c(0,1),main="T2-C7 data vs. reference",xlab="CSR-S")
-points(density(natopen.ref.cov[["SS"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular","SS1"], na.rm = TRUE),type="l",lty=1,col="red")
-plot(density(natopen.ref.cov[["SS"]]$"T2-C8"),type="l",lty=1,xlim=c(0,1),main="T2-C8 data vs. reference",xlab="CSR-S")
-points(density(natopen.ref.cov[["SS"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular","SS1"], na.rm = TRUE),type="l",lty=1,col="red")
-legend("topright", legend=c("regular","BN","GRUK data"), lty=c(1,2,1), col=c("black","black","red"))
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["RR"]]$"T2-C7"),type="l",lty=1,xlim=c(0,1),main="T2-C7 data vs. reference",xlab="CSR-R")
-points(density(natopen.ref.cov[["RR"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular","RR1"], na.rm = TRUE),type="l",lty=1,col="red")
-plot(density(natopen.ref.cov[["RR"]]$"T2-C8"),type="l",lty=1,xlim=c(0,1),main="T2-C8 data vs. reference",xlab="CSR-R")
-points(density(natopen.ref.cov[["RR"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular","RR1"], na.rm = TRUE),type="l",lty=1,col="red")
-legend("topright", legend=c("regular","BN","GRUK data"), lty=c(1,2,1), col=c("black","black","red"))
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["Light"]]$"T2-C7"),type="l",lty=1,xlim=c(0,7),main="T2-C7 data vs. reference",xlab="Light")
-points(density(natopen.ref.cov[["Light"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular","Light1"], na.rm = TRUE),type="l",lty=1,col="red")
-plot(density(natopen.ref.cov[["Light"]]$"T2-C8"),type="l",lty=1,xlim=c(0,7),main="T2-C8 data vs. reference",xlab="Light")
-points(density(natopen.ref.cov[["Light"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular","Light1"], na.rm = TRUE),type="l",lty=1,col="red")
-legend("topleft", legend=c("regular","BN","GRUK data"), lty=c(1,2,1), col=c("black","black","red"))
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["Nitrogen"]]$"T2-C7"),type="l",lty=1,xlim=c(0,9),main="T2-C7 data vs. reference",xlab="Nitrogen")
-points(density(natopen.ref.cov[["Nitrogen"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular","Nitrogen1"], na.rm = TRUE),type="l",lty=1,col="red")
-plot(density(natopen.ref.cov[["Nitrogen"]]$"T2-C8"),type="l",lty=1,xlim=c(0,9),main="T2-C8 data vs. reference",xlab="Nitrogen")
-points(density(natopen.ref.cov[["Nitrogen"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular","Nitrogen1"], na.rm = TRUE),type="l",lty=1,col="red")
-legend("topright", legend=c("regular","BN","GRUK data"), lty=c(1,2,1), col=c("black","black","red"))
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C7"),type="l",lty=1,xlim=c(0,9),main="T2-C7 data vs. reference",xlab="Soil_disturbance")
-points(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular","Soil_disturbance1"], na.rm = TRUE),type="l",lty=1,col="red")
-plot(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C8"),type="l",lty=1,xlim=c(0,9),main="T2-C8 data vs. reference",xlab="Soil_disturbance")
-points(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular","Soil_disturbance1"], na.rm = TRUE),type="l",lty=1,col="red")
-legend("topright", legend=c("regular","BN","GRUK data"), lty=c(1,2,1), col=c("black","black","red"))
-
-
-#### condition estimates ####
-results.natopen.GRUK[["original"]]$tilstandsvurdering <- as.factor(results.natopen.GRUK[["original"]]$tilstandsvurdering)
-
-x11()
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["CC"]]$"T2-C7"),type="l",lty=1,xlim=c(0,1),main="T2-C7 data vs. reference",xlab="CSR-C")
-points(density(natopen.ref.cov[["CC"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","CC1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","CC1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","CC1"], na.rm = TRUE),type="l",lty=3,col="red")
-
-plot(density(natopen.ref.cov[["CC"]]$"T2-C8"),type="l",lty=1,xlim=c(0,1),main="T2-C8 data vs. reference",xlab="CSR-C")
-points(density(natopen.ref.cov[["CC"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","CC1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","CC1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","CC1"], na.rm = TRUE),type="l",lty=3,col="red")
-legend("topright", legend=c("ref regular","ref BN","GRUK tilst=0", "GRUK tilst=1", "GRUK tilst=2"), lty=c(1,2,1,2,3), col=c("black","black","red","red","red"))
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["SS"]]$"T2-C7"),type="l",lty=1,xlim=c(0,1),main="T2-C7 data vs. reference",xlab="CSR-S")
-points(density(natopen.ref.cov[["SS"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","SS1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","SS1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","SS1"], na.rm = TRUE),type="l",lty=3,col="red")
-
-plot(density(natopen.ref.cov[["SS"]]$"T2-C8"),type="l",lty=1,xlim=c(0,1),main="T2-C8 data vs. reference",xlab="CSR-S")
-points(density(natopen.ref.cov[["SS"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","SS1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","SS1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","SS1"], na.rm = TRUE),type="l",lty=3,col="red")
-legend("topright", legend=c("ref regular","ref BN","GRUK tilst=0", "GRUK tilst=1", "GRUK tilst=2"), lty=c(1,2,1,2,3), col=c("black","black","red","red","red"))
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["RR"]]$"T2-C7"),type="l",lty=1,xlim=c(0,1),main="T2-C7 data vs. reference",xlab="CSR-R")
-points(density(natopen.ref.cov[["RR"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","RR1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","RR1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","RR1"], na.rm = TRUE),type="l",lty=3,col="red")
-
-plot(density(natopen.ref.cov[["RR"]]$"T2-C8"),type="l",lty=1,xlim=c(0,1),main="T2-C8 data vs. reference",xlab="CSR-R")
-points(density(natopen.ref.cov[["RR"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","RR1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","RR1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","RR1"], na.rm = TRUE),type="l",lty=3,col="red")
-legend("topright", legend=c("ref regular","ref BN","GRUK tilst=0", "GRUK tilst=1", "GRUK tilst=2"), lty=c(1,2,1,2,3), col=c("black","black","red","red","red"))
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["Light"]]$"T2-C7"),type="l",lty=1,xlim=c(0,7),main="T2-C7 data vs. reference",xlab="Light")
-points(density(natopen.ref.cov[["Light"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","Light1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","Light1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","Light1"], na.rm = TRUE),type="l",lty=3,col="red")
-
-plot(density(natopen.ref.cov[["Light"]]$"T2-C8"),type="l",lty=1,xlim=c(0,7),main="T2-C8 data vs. reference",xlab="Light")
-points(density(natopen.ref.cov[["Light"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","Light1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","Light1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","Light1"], na.rm = TRUE),type="l",lty=3,col="red")
-legend("topleft", legend=c("ref regular","ref BN","GRUK tilst=0", "GRUK tilst=1", "GRUK tilst=2"), lty=c(1,2,1,2,3), col=c("black","black","red","red","red"))
-
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["Nitrogen"]]$"T2-C7"),type="l",lty=1,xlim=c(0,9),main="T2-C7 data vs. reference",xlab="Nitrogen")
-points(density(natopen.ref.cov[["Nitrogen"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","Nitrogen1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","Nitrogen1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","Nitrogen1"], na.rm = TRUE),type="l",lty=3,col="red")
-
-plot(density(natopen.ref.cov[["Nitrogen"]]$"T2-C8"),type="l",lty=1,xlim=c(0,9),main="T2-C8 data vs. reference",xlab="Nitrogen")
-points(density(natopen.ref.cov[["Nitrogen"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","Nitrogen1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","Nitrogen1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","Nitrogen1"], na.rm = TRUE),type="l",lty=3,col="red")
-legend("topright", legend=c("ref regular","ref BN","GRUK tilst=0", "GRUK tilst=1", "GRUK tilst=2"), lty=c(1,2,1,2,3), col=c("black","black","red","red","red"))
-
-
-par(mfrow=c(1,2))
-plot(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C7"),type="l",lty=1,xlim=c(0,9),main="T2-C7 data vs. reference",xlab="Soil_disturbance")
-points(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C7_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","Soil_disturbance1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","Soil_disturbance1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-7" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","Soil_disturbance1"], na.rm = TRUE),type="l",lty=3,col="red")
-
-plot(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C8"),type="l",lty=1,xlim=c(0,9),main="T2-C8 data vs. reference",xlab="Soil_disturbance")
-points(density(natopen.ref.cov[["Soil_disturbance"]]$"T2-C8_BN"),type="l",lty=2)
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="0","Soil_disturbance1"], na.rm = TRUE),type="l",lty=1,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="1","Soil_disturbance1"], na.rm = TRUE),type="l",lty=2,col="red")
-points(density(results.natopen.GRUK[["original"]][results.natopen.GRUK[["original"]]$Kartleggingsenhet=="T2-C-8" & results.natopen.GRUK[["original"]]$reference_type=="regular" & results.natopen.GRUK[["original"]]$tilstandsvurdering=="2","Soil_disturbance1"], na.rm = TRUE),type="l",lty=3,col="red")
-legend("topleft", legend=c("ref regular","ref BN","GRUK tilst=0", "GRUK tilst=1", "GRUK tilst=2"), lty=c(1,2,1,2,3), col=c("black","black","red","red","red"))
-
 
 
 #### plotting scaled values by main ecosystem type ####
@@ -278,26 +100,17 @@ ggplot(res.natopen.ANO, aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fil
 
 
 
-# making the plot, GRUK (one for each reference)
-ggplot(res.natopen.GRUK[res.natopen.GRUK$reference_type=="regular",], aes(x=factor(Kartleggingsenhet), y=scaled_value, fill=fp_ind)) + 
+# making the plot, GRUK
+ggplot(res.natopen.GRUK, aes(x=factor(Kartleggingsenhet), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color = NA) +
   #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=1, shape=16, color="black") +
   facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1","Light1","Nitrogen1","Soil_disturbance1",
                                      "CC2","SS2","RR2","Light2","Nitrogen2","Soil_disturbance2")), ncol = 6) + 
-  xlab("T32 (semi-natural meadow) basic ecosystem type") + 
+  xlab("Basic ecosystem type") + 
   ylab("Scaled indicator value (GRUK data)") 
 
-ggplot(res.natopen.GRUK[res.natopen.GRUK$reference_type=="BN",], aes(x=factor(Kartleggingsenhet), y=scaled_value, fill=fp_ind)) + 
-  geom_hline(yintercept=0.6, linetype="dashed") + 
-  geom_violin(color = NA) +
-  #  geom_boxplot(width=0.2, color="grey") +
-  geom_point(size=1, shape=16, color="black") +
-  facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1","Light1","Nitrogen1","Soil_disturbance1",
-                                     "CC2","SS2","RR2","Light2","Nitrogen2","Soil_disturbance2")), ncol = 6) + 
-  xlab("T32 (semi-natural meadow) basic ecosystem type") + 
-  ylab("Scaled indicator value (GRUK data)") 
 
 
 
@@ -306,13 +119,18 @@ ggplot(res.natopen.GRUK[res.natopen.GRUK$reference_type=="BN",], aes(x=factor(Ka
 res.natopen.ANO2 <- results.natopen.ANO[['2-sided']]
 st_geometry(res.natopen.ANO2) <- st_geometry(ANO.natopen)
 
-#### continue here ####
+
 
 ## similarly for GRUK
-# keep wide format and add geometry again
+# keep wide format and create geometry from coords in the dataframe
 res.natopen.GRUK2 <- results.natopen.GRUK[['2-sided']]
-st_geometry(res.natopen.GRUK2) <- st_geometry(GRUK.geo)
-res.natopen.GRUK2 <- res.natopen.GRUK2 %>% st_transform(crs = st_crs(res.natopen.ANO2))
+res.natopen.GRUK2 <- st_as_sf(res.natopen.GRUK2, coords = c("x","y"))
+# add CRS
+res.natopen.GRUK2 <- st_set_crs(res.natopen.GRUK2,4326)
+# transform CRS to match ANO
+res.natopen.GRUK2 <- res.natopen.GRUK2 %>%
+  st_as_sf() %>%
+  st_transform(crs = st_crs(ANO.geo))
 
 
 #nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
@@ -339,13 +157,14 @@ regnor <- st_intersection(reg,nor)
 
 ## scaled value maps
 
-# Light1 (lower indicator)
+# ANO
+# CC2 (upper indicator)
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
   tm_shape(res.natopen.ANO2) +
-  tm_dots('Light1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Light index (lower), natopen",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_dots('CC2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Competition index (upper), natopen ANO",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
                 col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
                 labels = c("0.0 - 0.2", "0.2 - 0.4", "0.4 - 0.6", 
@@ -354,92 +173,100 @@ tm_shape(regnor) +
 
 
 
-# Grazing_mowing1 (lower indicator)
+# RR1 (upper indicator)
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
   tm_shape(res.natopen.ANO2) +
-  tm_dots('Grazing_mowing1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Grazing_mowing index (lower), natopen",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_dots('RR2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Ruderal index (upper), natopen ANO",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
                 col = c(tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE),'grey'),
                 labels = c("0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
                            "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
                 title = "index values")
 
-# pH1 (upper indicator)
+
+
+# GRUK
+# CC2 (upper indicator)
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
-  tm_shape(res.natopen.ANO2) +
-  tm_dots('pH1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "pH index (lower), natopen",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_shape(res.natopen.GRUK2) +
+  tm_dots('CC2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Competition index (upper), natopen GRUK",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),'grey'),
+                labels = c("0.0 - 0.2", "0.2 - 0.4", "0.4 - 0.6", 
+                           "0.6 - 0.8", "0.8 - 1.0", "NA"),
+                title = "index values")
+
+
+
+# RR2 (upper indicator)
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(res.natopen.GRUK2) +
+  tm_dots('RR2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Ruderal index (upper), natopen GRUK",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE),'grey'),
+                labels = c("0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
+                           "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
+                title = "index values")
+
+# Nitrogen2 (upper indicator)
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(res.natopen.GRUK2) +
+  tm_dots('Nitrogen2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Nitrogen index (upper), natopen GRUK",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
                 col = c(tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE),'grey'),
                 labels = c("0.3 - 0.4", "0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
                            "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
                 title = "index values")
-
-
-
-
-# ASO nitrogen2 (upper indicator)
-tm_shape(regnor) +
-  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
-  tm_borders() +
-  tm_shape(res.natopen.ASO2) +
-  tm_dots('Nitrogen2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Nitrogen index (upper), natopen",legend.position = c("right", "bottom"), main.title.size=1.2) + 
-  tm_add_legend(type = "fill", 
-                col = c(tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE),'grey'),
-                labels = c("0.3 - 0.4", "0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
-                           "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
-                title = "index values")
-
-# very few spots on the map with only 2022 data from ASO
-
 
 
 # let's look at things by region
 res.natopen.ANO2 = st_join(res.natopen.ANO2, regnor, left = TRUE)
 colnames(res.natopen.ANO2)
 
-res.natopen.ASO2 = st_join(res.natopen.ASO2, regnor, left = TRUE)
-colnames(res.natopen.ASO2)
+res.natopen.GRUK2 = st_join(res.natopen.GRUK2, regnor, left = TRUE)
+colnames(res.natopen.GRUK2)
 
 # simple means, inappropriate for 0-1 bound data
 res.natopen.ANO2 %>% 
   group_by(as.factor(region)) %>% 
+  mutate(CC1.reg.mean = mean(CC1,na.rm=T)) %>%
+  mutate(CC2.reg.mean = mean(CC2,na.rm=T)) %>%
+  mutate(SS1.reg.mean = mean(SS1,na.rm=T)) %>%
+  mutate(SS2.reg.mean = mean(SS1,na.rm=T)) %>%
+  mutate(RR1.reg.mean = mean(RR1,na.rm=T)) %>%
+  mutate(RR2.reg.mean = mean(RR1,na.rm=T)) %>%
   mutate(Light1.reg.mean = mean(Light1,na.rm=T)) %>%
   mutate(Light2.reg.mean = mean(Light1,na.rm=T)) %>%
-  mutate(Moist1.reg.mean = mean(Moist1,na.rm=T)) %>%
-  mutate(Moist2.reg.mean = mean(Moist1,na.rm=T)) %>%
-  mutate(pH1.reg.mean = mean(pH1,na.rm=T)) %>%
-  mutate(pH2.reg.mean = mean(pH1,na.rm=T)) %>%
   mutate(Nitrogen1.reg.mean = mean(Nitrogen1,na.rm=T)) %>%
   mutate(Nitrogen2.reg.mean = mean(Nitrogen2,na.rm=T)) %>%
-  mutate(Phosphorus1.reg.mean = mean(Phosphorus1,na.rm=T)) %>%
-  mutate(Phosphorus2.reg.mean = mean(Phosphorus2,na.rm=T)) %>%
-  mutate(Grazing_mowing1.reg.mean = mean(Grazing_mowing1,na.rm=T)) %>%
-  mutate(Grazing_mowing2.reg.mean = mean(Grazing_mowing2,na.rm=T)) %>%
   mutate(Soil_disturbance1.reg.mean = mean(Soil_disturbance1,na.rm=T)) %>%
   mutate(Soil_disturbance2.reg.mean = mean(Soil_disturbance2,na.rm=T))
   
-# and for ASO
-res.natopen.ASO2 %>% 
+# and for GRUK
+res.natopen.GRUK2 %>% 
   group_by(as.factor(region)) %>% 
+  mutate(CC1.reg.mean = mean(CC1,na.rm=T)) %>%
+  mutate(CC2.reg.mean = mean(CC2,na.rm=T)) %>%
+  mutate(SS1.reg.mean = mean(SS1,na.rm=T)) %>%
+  mutate(SS2.reg.mean = mean(SS1,na.rm=T)) %>%
+  mutate(RR1.reg.mean = mean(RR1,na.rm=T)) %>%
+  mutate(RR2.reg.mean = mean(RR1,na.rm=T)) %>%
   mutate(Light1.reg.mean = mean(Light1,na.rm=T)) %>%
   mutate(Light2.reg.mean = mean(Light1,na.rm=T)) %>%
-  mutate(Moist1.reg.mean = mean(Moist1,na.rm=T)) %>%
-  mutate(Moist2.reg.mean = mean(Moist1,na.rm=T)) %>%
-  mutate(pH1.reg.mean = mean(pH1,na.rm=T)) %>%
-  mutate(pH2.reg.mean = mean(pH1,na.rm=T)) %>%
   mutate(Nitrogen1.reg.mean = mean(Nitrogen1,na.rm=T)) %>%
   mutate(Nitrogen2.reg.mean = mean(Nitrogen2,na.rm=T)) %>%
-  mutate(Phosphorus1.reg.mean = mean(Phosphorus1,na.rm=T)) %>%
-  mutate(Phosphorus2.reg.mean = mean(Phosphorus2,na.rm=T)) %>%
-  mutate(Grazing_mowing1.reg.mean = mean(Grazing_mowing1,na.rm=T)) %>%
-  mutate(Grazing_mowing2.reg.mean = mean(Grazing_mowing2,na.rm=T)) %>%
   mutate(Soil_disturbance1.reg.mean = mean(Soil_disturbance1,na.rm=T)) %>%
   mutate(Soil_disturbance2.reg.mean = mean(Soil_disturbance2,na.rm=T))
 
@@ -499,79 +326,83 @@ indmean.beta <- function(df) {
 
 
 
-indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])
+indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("CC1","ano_flate_id")])
 
-indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Northern Norway",c("Grazing_mowing1","Omradenummer_flatenummer")])
+indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("CC1","Flate_ID")])
 
-
+res.natopen.ANO2$RR1[res.natopen.ANO2$RR1==1] <- 0.999
+res.natopen.ANO2$RR1[res.natopen.ANO2$RR1==0] <- 0.001
 
 regnor <- regnor %>%
   mutate(
-    Grazing_mowing1.ANO.reg.mean = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
+    RR1.ANO.reg.mean = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("RR1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("RR1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("RR1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("RR1","ano_flate_id")])[1],
+                                 indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("RR1","ano_flate_id")])[1]
     ),
-    Grazing_mowing1.ANO.reg.se = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
+    RR1.ANO.reg.se = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("RR1","ano_flate_id")])[2],
+                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("RR1","ano_flate_id")])[2],
+                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("RR1","ano_flate_id")])[2],
+                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("RR1","ano_flate_id")])[2],
+                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("RR1","ano_flate_id")])[2]
     ),
-    Grazing_mowing1.ANO.reg.n = c(nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway" & !is.na(res.natopen.ANO2$Grazing_mowing1),]),
-                              nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway" & !is.na(res.natopen.ANO2$Grazing_mowing1),]),
-                              nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway" & !is.na(res.natopen.ANO2$Grazing_mowing1),]),
-                              nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway" & !is.na(res.natopen.ANO2$Grazing_mowing1),]),
-                              nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway" & !is.na(res.natopen.ANO2$Grazing_mowing1),])
+    RR1.ANO.reg.n = c(nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway" & !is.na(res.natopen.ANO2$RR1),]),
+                              nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway" & !is.na(res.natopen.ANO2$RR1),]),
+                              nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway" & !is.na(res.natopen.ANO2$RR1),]),
+                              nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway" & !is.na(res.natopen.ANO2$RR1),]),
+                              nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway" & !is.na(res.natopen.ANO2$RR1),])
     )
   )
 
-# and adding the values for ASO
+# and adding the values for GRUK
+res.natopen.GRUK2$RR1[res.natopen.GRUK2$Nitrogen2==1] <- 0.999
+res.natopen.GRUK2$RR1[res.natopen.GRUK2$Nitrogen2==0] <- 0.001
+
 regnor <- regnor %>%
   mutate(
-    Nitrogen2.ASO.reg.mean = c(indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Northern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
-                               indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Central Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
-                               indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Eastern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
-                               indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Western Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
-                               indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Southern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1]
+    Nitrogen2.GRUK.reg.mean = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("Nitrogen2","Flate_ID")])[1],
+                               indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("Nitrogen2","Flate_ID")])[1],
+                               indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("Nitrogen2","Flate_ID")])[1],
+                               indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("Nitrogen2","Flate_ID")])[1],
+                               indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("Nitrogen2","Flate_ID")])[1]
     ),
-    Nitrogen2.ASO.reg.se = c(indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Northern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
-                             indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Central Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
-                             indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Eastern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
-                             indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Western Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
-                             indmean.beta(df=res.natopen.ASO2[res.natopen.ASO2$region=="Southern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2]
+    Nitrogen2.GRUK.reg.se = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("Nitrogen2","Flate_ID")])[2],
+                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("Nitrogen2","Flate_ID")])[2],
+                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("Nitrogen2","Flate_ID")])[2],
+                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("Nitrogen2","Flate_ID")])[2],
+                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("Nitrogen2","Flate_ID")])[2]
     ),
-    Nitrogen2.ASO.reg.n = c(nrow(res.natopen.ASO2[res.natopen.ASO2$region=="Northern Norway" & !is.na(res.natopen.ASO2$Nitrogen2),]),
-                            nrow(res.natopen.ASO2[res.natopen.ASO2$region=="Central Norway" & !is.na(res.natopen.ASO2$Nitrogen2),]),
-                            nrow(res.natopen.ASO2[res.natopen.ASO2$region=="Eastern Norway" & !is.na(res.natopen.ASO2$Nitrogen2),]),
-                            nrow(res.natopen.ASO2[res.natopen.ASO2$region=="Western Norway" & !is.na(res.natopen.ASO2$Nitrogen2),]),
-                            nrow(res.natopen.ASO2[res.natopen.ASO2$region=="Southern Norway" & !is.na(res.natopen.ASO2$Nitrogen2),]))
+    Nitrogen2.GRUK.reg.n = c(0,
+                            0,
+                            nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway" & !is.na(res.natopen.GRUK2$Nitrogen2),]),
+                            0,
+                            nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway" & !is.na(res.natopen.GRUK2$Nitrogen2),]))
   )
 
-# Grazing_mowing1 (lower indicator), mean
+# RR1 (lower indicator), mean
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.ANO.reg.mean", title="Grazing_mowing (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Grazing_mowing1.ANO.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="RR1.ANO.reg.mean", title="CSR-R (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("RR1.ANO.reg.n",col="black",bg.color="grey")
 
-# Grazing_mowing1 (lower indicator), se
+# RR1 (lower indicator), se
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.ANO.reg.se", title="Grazing_mowing (lower)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Grazing_mowing1.ANO.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="RR1.ANO.reg.se", title="CSR-R (lower)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("RR1.ANO.reg.n",col="black",bg.color="grey")
 
-#ASO
+# GRUK
 # Nitrogen2 (upper indicator), mean
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.ASO.reg.mean", title="Nitrogen (upper)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
-# Nitrogen2 (lower indicator), se
+  tm_polygons(col="Nitrogen2.GRUK.reg.mean", title="Nitrogen (upper)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Nitrogen2.GRUK.reg.n",col="black",bg.color="grey")
+# Nitrogen2 (upper indicator), se
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.ASO.reg.se", title="Nitrogen (upper)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="Nitrogen2.GRUK.reg.se", title="Nitrogen (upper)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Nitrogen2.GRUK.reg.n",col="black",bg.color="grey")
 
 
 
-
+#### continue here ####
 
 #### how many observations are there? ####
 # total ANO

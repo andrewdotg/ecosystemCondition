@@ -104,14 +104,6 @@ results.natopen.GRUK[['original']]$Flate_ID <- as.factor(results.natopen.GRUK[['
 results.natopen.GRUK[['original']]$uPunkt_ID <- as.factor(results.natopen.GRUK[['original']]$uPunkt_ID)
 results.natopen.GRUK[['original']]$Kartleggingsenhet <- as.factor(results.natopen.GRUK[['original']]$Kartleggingsenhet)
 
-# adding column on type of reference
-results.natopen.GRUK[['original']]$reference_type <- 'regular'
-nrow(results.natopen.GRUK[['original']])
-results.natopen.GRUK[['original']] <- rbind(results.natopen.GRUK[['original']],results.natopen.GRUK[['original']])
-nrow(results.natopen.GRUK[['original']])
-results.natopen.GRUK[['original']][1104:2206,"reference_type"] <- 'BN'
-results.natopen.GRUK[['original']]$reference_type <- as.factor(results.natopen.GRUK[['original']]$reference_type)
-
 # roll out
 results.natopen.GRUK[['scaled']] <- results.natopen.GRUK[['non-truncated']] <- results.natopen.GRUK[['original']]
 
@@ -144,38 +136,23 @@ for (i in 1:nrow(GRUK.natopen) ) {  #
           
           val <- sum(dat[,'art_dekning'] * dat[,'CC'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
           # lower part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'CC1'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'CC1'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'CC1'] <- val 
           
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'CC1'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'CC1'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'CC1'] <- val 
-          
-          
           # upper part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'CC2'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'CC2'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'CC2'] <- val
-          
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'CC2'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'CC2'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'CC2'] <- val 
-          
+
         }
         
         
@@ -188,37 +165,22 @@ for (i in 1:nrow(GRUK.natopen) ) {  #
           
           val <- sum(dat[,'art_dekning'] * dat[,'SS'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
           # lower part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'SS1'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'SS1'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'SS1'] <- val
           
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'SS1'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'SS1'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'SS1'] <- val 
-          
-          
           # upper part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'SS2'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'SS2'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'SS2'] <- val
-          
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'SS2'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'SS2'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'SS2'] <- val 
           
         }
         
@@ -232,37 +194,22 @@ for (i in 1:nrow(GRUK.natopen) ) {  #
           
           val <- sum(dat[,'art_dekning'] * dat[,'RR'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
           # lower part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'RR1'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'RR1'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'RR1'] <- val
           
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'RR1'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'RR1'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'RR1'] <- val 
-          
-          
           # upper part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'RR2'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'RR2'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'RR2'] <- val
-          
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'RR2'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'RR2'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'RR2'] <- val 
           
         }
         
@@ -276,38 +223,24 @@ for (i in 1:nrow(GRUK.natopen) ) {  #
           
           val <- sum(dat[,'art_dekning'] * dat[,'Light'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
           # lower part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'Light1'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'Light1'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'Light1'] <- val
           
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'Light1'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'Light1'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'Light1'] <- val 
-          
-          
           # upper part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'Light2'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'Light2'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'Light2'] <- val
           
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'Light2'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'Light2'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'Light2'] <- val 
-          
+
         }
         
         
@@ -322,37 +255,24 @@ for (i in 1:nrow(GRUK.natopen) ) {  #
           
           val <- sum(dat[,'art_dekning'] * dat[,'Nitrogen'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
           # lower part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'Nitrogen1'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'Nitrogen1'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'Nitrogen1'] <- val
           
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'Nitrogen1'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'Nitrogen1'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'Nitrogen1'] <- val 
-          
-          
+
           # upper part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'Nitrogen2'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'Nitrogen2'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'Nitrogen2'] <- val
           
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'Nitrogen1'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'Nitrogen2'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'Nitrogen2'] <- val 
         }
         
         
@@ -369,37 +289,23 @@ for (i in 1:nrow(GRUK.natopen) ) {  #
           
           val <- sum(dat[,'art_dekning'] * dat[,'Soil_disturbance'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
           # lower part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'Soil_disturbance1'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'Soil_disturbance1'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'Soil_disturbance1'] <- val
           
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'Soil_disturbance1'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'Soil_disturbance1'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'Soil_disturbance1'] <- val 
-          
-          
+
           # upper part of distribution
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'Gv']
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
           maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
           # coercing x into results.natopen.GRUK dataframe
           results.natopen.GRUK[['scaled']][i,'Soil_disturbance2'] <- scal() 
           results.natopen.GRUK[['non-truncated']][i,'Soil_disturbance2'] <- scal.2() 
           results.natopen.GRUK[['original']][i,'Soil_disturbance2'] <- val
-          
-          # repeating the same for the BN-reference
-          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
-          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
-          results.natopen.GRUK[['scaled']][i+nrow(GRUK.natopen),'Soil_disturbance2'] <- scal() 
-          results.natopen.GRUK[['non-truncated']][i+nrow(GRUK.natopen),'Soil_disturbance2'] <- scal.2() 
-          results.natopen.GRUK[['original']][i+nrow(GRUK.natopen),'Soil_disturbance2'] <- val 
           
         }
         
