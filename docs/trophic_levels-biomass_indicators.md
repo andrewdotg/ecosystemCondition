@@ -391,9 +391,11 @@ Since a suitable ecosystem map is still under development, we use the AR50 land-
 ```r
 #Forest
 #AR50 type raster
-artype50<-rast("/data/R/GeoSpatialData/LandCover/Norway_LandResource_AR50/Processed/Raster/AR50_Norge.tif")
-
-#artype50<-rast("Vertebrates/AR50/AR50_artype_25_ETRS_1989_UTM_Zone_33N.tif")
+options(timeout = max(1000, getOption("timeout")))
+filedownload<-"downloadAR50.zip"
+download.file("https://ntnu.box.com/shared/static/mfrqmuyx14gtf8u9b8xlzb391m0f9fhy.zip","downloadAR50.zip")
+unzip('downloadAR50.zip',exdir="AR50")
+artype50<-rast("AR50/AR50_artype_25_ETRS_1989_UTM_Zone_33N.tif")
 
 #Reclassify
 artype50_F<-artype50
