@@ -14,7 +14,7 @@ natopen.ref.cov[[1]][0,]
 
 # NiN-types where each type is represented by one species list (including when one species list represents two NiN-types)
 names(natopen.ref.cov[["Light"]])
-x <- 1:10
+x <- 1:66
 
 # checking the actual NiN-types in the natopen lists
 natopen.NiNtypes <- colnames(natopen.ref.cov[["Light"]])
@@ -26,7 +26,7 @@ indEll.n=6
 # creating a table to hold:
 # Tyler: the 0.5 quantile (median), 0.05 quantile and  0.95 quantile for each NiN-type
 # for every nature type (nrows)
-tab <- matrix(ncol=3*indEll.n, nrow=length(unique(natopen.NiNtypes)) ) # 10 basic ecosystem types
+tab <- matrix(ncol=3*indEll.n, nrow=length(unique(natopen.NiNtypes)) ) # 66 basic ecosystem types
 # coercing the values into the table
 
 
@@ -56,10 +56,10 @@ colnames(tab) <- c("CC_q2.5","CC_q50","CC_q97.5",
                    "Light_q2.5","Light_q50","Light_q97.5",
                    "Nitrogen_q2.5","Nitrogen_q50","Nitrogen_q97.5",
                    "Soil_disturbance_q2.5","Soil_disturbance_q50","Soil_disturbance_q97.5",
-
                    "NiN")
 summary(tab)
-tab$NiN <- gsub("C", "C-", tab$NiN) # add extra hyphen after C for NiN-types
+tab$NiN
+#tab$NiN <- gsub("C", "C-", tab$NiN) # add extra hyphen after C for NiN-types
 tab
 
 
@@ -114,8 +114,8 @@ natopen.ref.cov.val <- data.frame(N1=rep('natopen',(nrow(tab)*2*indEll.n)),
                               maxmin=c(rep(c(0,1),nrow(tab)), # CC
                                        rep(c(0,1),nrow(tab)), # SS
                                        rep(c(0,1),nrow(tab)), # RR
-                                       rep(c(1,7),nrow(tab)),  # 9 levels of Light
-                                       rep(c(1,9),nrow(tab)),  # 5 levels of Nitrogen
+                                       rep(c(1,7),nrow(tab)),  # 7 levels of Light
+                                       rep(c(1,9),nrow(tab)),  # 9 levels of Nitrogen
                                        rep(c(1,9),nrow(tab))  # 9 levels of Soil_disturbance
                               )
 )

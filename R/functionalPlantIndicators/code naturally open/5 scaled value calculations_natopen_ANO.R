@@ -67,13 +67,16 @@ levels(natopen.ref.cov.val$grunn) # NiN types in reference
 #### creating dataframe to hold the results for natopens ####
 # all ANO points
 nrow(ANO.geo)
-# all natopen ANO points (T2)
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T2"),])
+# all natopen ANO points
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T2","T8","T11","T12","T13","T15","T16","T18","T21","T24","T29") & ANO.geo$hovedoekosystem_punkt!='fjell',])
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T2") & ANO.geo$hovedoekosystem_punkt!='fjell',])
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T13") & ANO.geo$hovedoekosystem_punkt!='fjell',])
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T16") & ANO.geo$hovedoekosystem_punkt!='fjell',])
 # all natopen ANO points with a NiN-type represented in the reference
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% unique(substr(natopen.ref.cov.val$grunn,1,2)),])
-# leaving us with a total of 193 ANO-points
-ANO.natopen <- ANO.geo[ANO.geo$hovedtype_rute %in% list("T2"),]
-
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% unique(gsub("-", "",substr(natopen.ref.cov.val$grunn,1,3))) & ANO.geo$hovedoekosystem_punkt!='fjell',])
+# leaving us with a total of 272 ANO-points with naturally open ecosystems that are not in the mountains
+ANO.natopen <- ANO.geo[ANO.geo$hovedtype_rute %in% unique(gsub("-", "",substr(natopen.ref.cov.val$grunn,1,3))) & ANO.geo$hovedoekosystem_punkt!='fjell',]
+ANO.natopen <- ANO.natopen[!is.na(ANO.natopen$kartleggingsenhet_1m2),]
 head(ANO.natopen)
 # update row-numbers
 row.names(ANO.natopen) <- 1:nrow(ANO.natopen)
@@ -86,10 +89,13 @@ length(levels(as.factor(ANO.natopen$ano_punkt_id)))
 summary(as.factor(ANO.natopen$ano_punkt_id))
 # one point is double
 ANO.natopen[ANO.natopen$ano_punkt_id=="ANO0084_51",] # double registration of # 51
-ANO.geo[ANO.geo$ano_flate_id=="ANO0084","ano_punkt_id"] # also # 62 is registered double, but this is not a natopen-type
-# seems to be a legit registration of a naturally open type on both ANO-points.
-# Both point #s 22, 35, 44, and 53 are missing, so we simply assign the 2nd # 51 to # 53 for this analysis
-ANO.natopen[ANO.natopen$ano_punkt_id=="ANO0084_51",][2,"ano_punkt_id"] <- "ANO0084_53"
+ANO.geo[ANO.geo$ano_punkt_id=="ANO0084_51",] # double registration of # 51
+
+ANO.geo[ANO.geo$ano_flate_id=="ANO0084","ano_punkt_id"] # also # 62 is registered double
+ANO.geo[ANO.geo$ano_punkt_id=="ANO0084_62",] # but this is not a natopen-type
+# seems to be a legit registration of a naturally open type on both ANO-points # 51.
+# Both points # 22, 35, 44, and 53 are missing, so we simply assign the 2nd # 51 to # 53 for this analysis
+ANO.natopen[ANO.natopen$ano_punkt_id=="ANO0084_51" & !is.na(ANO.natopen$ano_punkt_id),][2,"ano_punkt_id"] <- "ANO0084_53"
 ANO.natopen[ANO.natopen$ano_flate_id=="ANO0084","ano_punkt_id"]
 summary(as.factor(ANO.natopen$ano_punkt_id))
 
@@ -147,7 +153,7 @@ for (i in 1:nrow(ANO.natopen) ) {  #
 
 
     # if the ANO.hovedtype exists in the reference
-    if (ANO.natopen$hovedtype_rute[i] %in% unique(substr(natopen.ref.cov.val$grunn,1,2)) ) {
+    if (ANO.natopen$hovedtype_rute[i] %in% gsub("-","",unique(substr(natopen.ref.cov.val$grunn,1,3))) ) {
       
       # if there is any species present in current ANO point  
       if ( length(ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),'Species']) > 0 ) {

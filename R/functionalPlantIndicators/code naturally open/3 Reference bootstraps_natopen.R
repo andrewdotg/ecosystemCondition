@@ -1,10 +1,10 @@
 #### running bootstraps - natopens ####
 colnames(NiN.natopen)
-natopen.ref <- indBoot(sp=NiN.natopen[,1],abun=NiN.natopen[,2:11],ind=NiN.natopen[,13:18],
+natopen.ref <- indBoot(sp=NiN.natopen[,1],abun=NiN.natopen[,6:71],ind=NiN.natopen[,74:79],
                        iter=1000,obl=6,rat=1/3,var.abun=T)
 
 
-natopen.ref.cov <- indBoot.freq(sp=NiN.natopen.cov[,1],abun=NiN.natopen.cov[,2:11],ind=NiN.natopen.cov[,13:18],
+natopen.ref.cov <- indBoot.freq(sp=NiN.natopen.cov[,1],abun=NiN.natopen.cov[,6:71],ind=NiN.natopen.cov[,74:79],
                                 iter=1000,obl=1,rat=1/3,var.abun=T)
 
 ### saving backups

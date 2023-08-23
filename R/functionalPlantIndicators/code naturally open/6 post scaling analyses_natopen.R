@@ -1,3 +1,14 @@
+library(downloader)
+library(sf)
+library(tidyr)
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readxl)
+library(tmap)
+library(tmaptools)
+
 #### getting all the data from previous scripts in ####
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_natopen.RData")
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_natopen.RData")
@@ -44,6 +55,9 @@ res.natopen.ANO <-
                                pull(original)
   )
 
+summary(res.natopen.ANO$scaled_value)
+
+
 summary(res.natopen.ANO[,79:81])
 
 
@@ -85,16 +99,40 @@ res.natopen.GRUK <-
 
 summary(res.natopen.GRUK[,52:54])
 
+# making the plot, ANO, all indicators
+ggplot(data=subset(res.natopen.ANO,!is.na(scaled_value)), aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color=NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1","Light1","Nitrogen1","Soil_disturbance1",
+                                     "CC2","SS2","RR2","Light2","Nitrogen2","Soil_disturbance2")), ncol = 6) + 
+  xlab("Basic ecosystem type") + 
+  ylab("Scaled indicator value (ANO data)") 
 
+# making the plot, ANO, CSR-indicators
+ggplot(data=subset(res.natopen.ANO,!is.na(scaled_value) & fp_ind %in% c("CC1","SS1","RR1",
+                                                                        "CC2","SS2","RR2")), 
+       aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color=NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1",
+                                     "CC2","SS2","RR2")), ncol = 3) + 
+  xlab("Basic ecosystem type") + 
+  ylab("Scaled indicator value (ANO data)") 
 
-# making the plot, ANO
-ggplot(res.natopen.ANO, aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fill=fp_ind)) + 
+# making the plot, ANO, Tyler-indicators
+ggplot(data=subset(res.natopen.ANO,!is.na(scaled_value) & fp_ind %in% c("Light1","Nitrogen1","Soil_disturbance1",
+                                                                        "Light2","Nitrogen2","Soil_disturbance2")), 
+       aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color=NA) +
 #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=1, shape=16, color="black") +
-  facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1","Light1","Nitrogen1","Soil_disturbance1",
-                                     "CC2","SS2","RR2","Light2","Nitrogen2","Soil_disturbance2")), ncol = 6) + 
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Nitrogen1","Soil_disturbance1",
+                                     "Light2","Nitrogen2","Soil_disturbance2")), ncol = 3) + 
   xlab("Basic ecosystem type") + 
   ylab("Scaled indicator value (ANO data)") 
 
@@ -124,6 +162,7 @@ st_geometry(res.natopen.ANO2) <- st_geometry(ANO.natopen)
 ## similarly for GRUK
 # keep wide format and create geometry from coords in the dataframe
 res.natopen.GRUK2 <- results.natopen.GRUK[['2-sided']]
+# make spatial object
 res.natopen.GRUK2 <- st_as_sf(res.natopen.GRUK2, coords = c("x","y"))
 # add CRS
 res.natopen.GRUK2 <- st_set_crs(res.natopen.GRUK2,4326)
@@ -178,8 +217,8 @@ tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
   tm_shape(res.natopen.ANO2) +
-  tm_dots('RR2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
-  tm_layout(main.title = "Ruderal index (upper), natopen ANO",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_dots('RR1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Ruderal index (lower), natopen ANO",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
                 col = c(tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE),'grey'),
                 labels = c("0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
@@ -356,8 +395,8 @@ regnor <- regnor %>%
   )
 
 # and adding the values for GRUK
-res.natopen.GRUK2$RR1[res.natopen.GRUK2$Nitrogen2==1] <- 0.999
-res.natopen.GRUK2$RR1[res.natopen.GRUK2$Nitrogen2==0] <- 0.001
+res.natopen.GRUK2$Nitrogen2[res.natopen.GRUK2$Nitrogen2==1] <- 0.999
+res.natopen.GRUK2$Nitrogen2[res.natopen.GRUK2$Nitrogen2==0] <- 0.001
 
 regnor <- regnor %>%
   mutate(
@@ -380,6 +419,30 @@ regnor <- regnor %>%
                             nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway" & !is.na(res.natopen.GRUK2$Nitrogen2),]))
   )
 
+res.natopen.GRUK2$RR2[res.natopen.GRUK2$RR2==1] <- 0.999
+res.natopen.GRUK2$RR2[res.natopen.GRUK2$RR2==0] <- 0.001
+
+regnor <- regnor %>%
+  mutate(
+    RR2.GRUK.reg.mean = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("RR2","Flate_ID")])[1],
+                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("RR2","Flate_ID")])[1],
+                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("RR2","Flate_ID")])[1],
+                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("RR2","Flate_ID")])[1],
+                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("RR2","Flate_ID")])[1]
+    ),
+    RR2.GRUK.reg.se = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("RR2","Flate_ID")])[2],
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("RR2","Flate_ID")])[2],
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("RR2","Flate_ID")])[2],
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("RR2","Flate_ID")])[2],
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("RR2","Flate_ID")])[2]
+    ),
+    RR2.GRUK.reg.n = c(0,
+                             0,
+                             nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway" & !is.na(res.natopen.GRUK2$RR2),]),
+                             0,
+                             nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway" & !is.na(res.natopen.GRUK2$RR2),]))
+  )
+
 # RR1 (lower indicator), mean
 tm_shape(regnor) +
   tm_polygons(col="RR1.ANO.reg.mean", title="CSR-R (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
@@ -391,6 +454,17 @@ tm_shape(regnor) +
   tm_text("RR1.ANO.reg.n",col="black",bg.color="grey")
 
 # GRUK
+
+# RR2 (upper indicator), mean
+tm_shape(regnor) +
+  tm_polygons(col="RR2.GRUK.reg.mean", title="RR (upper)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("RR2.GRUK.reg.n",col="black",bg.color="grey")
+# RR2 (upper indicator), se
+tm_shape(regnor) +
+  tm_polygons(col="RR2.GRUK.reg.se", title="RR (upper)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("RR2.GRUK.reg.n",col="black",bg.color="grey")
+
+
 # Nitrogen2 (upper indicator), mean
 tm_shape(regnor) +
   tm_polygons(col="Nitrogen2.GRUK.reg.mean", title="Nitrogen (upper)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +

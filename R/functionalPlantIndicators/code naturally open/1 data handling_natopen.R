@@ -63,6 +63,16 @@ head(ind.Grime)
 T2_ref <- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/T2_ref.csv",sep=";", header=T)
 head(T2_ref)
 
+natopen_NiN_ref <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/Masterfil_artslister_organisert.xlsx", 
+                             sheet = 1)
+natopen_NiN_ref_spInfo <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/Masterfil_artslister_organisert.xlsx", 
+                              sheet = 2)
+head(natopen_NiN_ref)
+head(natopen_NiN_ref_spInfo)
+
+
+
+
 #### data handling - functional indicator data ####
 # trimming away sub-species & co, and descriptor info
 ind.Grime[,'species.orig'] <- ind.Grime[,'species']
@@ -537,7 +547,7 @@ head(GRUK.species.ind)
 
 
 
-#### data handling - reference data ####
+#### data handling - reference data, T2 only ####
 head(T2_ref)
 
 T2_ref.sp <- T2_ref %>%
@@ -600,6 +610,76 @@ for (i in 2:11) {
 
 summary(NiN.natopen)
 summary(NiN.natopen.cov)
+
+
+
+#### data handling - reference data, all natopen types ####
+head(natopen_NiN_ref)
+head(natopen_NiN_ref_spInfo)
+
+colnames(natopen_NiN_ref)[1] <- "sp"
+head(natopen_NiN_ref)
+
+natopen_NiN_ref <- merge(natopen_NiN_ref,natopen_NiN_ref_spInfo[,c(1,4)], by.x="sp", by.y="ScientificName", all.x=T)
+unique(natopen_NiN_ref[is.na(natopen_NiN_ref$Phylum),'sp']) # Pucinella does not exist in ind.dat, so we don't care
+# we're only interested in vascular plants and ferns, which we have indicators on
+unique(natopen_NiN_ref$Phylum)
+natopen_NiN_ref <- natopen_NiN_ref %>%
+  filter(Phylum %in% c("Magnoliophyta","Pteridophyta"))
+unique(natopen_NiN_ref$Phylum)
+
+
+
+natopen_NiN_ref$sp
+# only genus and species name
+natopen_NiN_ref$sp.orig <- natopen_NiN_ref$sp
+natopen_NiN_ref$sp <- word(natopen_NiN_ref$sp, 1,2)
+natopen_NiN_ref <- natopen_NiN_ref[!is.na(natopen_NiN_ref$sp),]
+# merging with indicator values
+NiN.natopen <- merge(NiN.natopen_ref,ind.dat[,c(1,3:5,20,23,27)], by.x="sp", by.y="species", all.x=T)
+head(natopen_NiN)
+summary(natopen_NiN)
+
+
+
+
+unique(natopen_NiN$sp)
+#NiN.sp$spgr <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$art.code))
+
+# checking which species didn't find a match
+unique(NiN.natopen[is.na(NiN.natopen$Light) & is.na(NiN.natopen$Nitrogen) & is.na(NiN.natopen$RR),'sp'])
+
+# fix species name issues
+natopen_NiN_ref <- natopen_NiN_ref %>% 
+  mutate(sp=str_replace(sp,"Cirsium acaulon", "Cirsium acaule")) %>%
+  mutate(sp=str_replace(sp,"Hylotelephium maximum", "Hylotelephium telephium"))
+
+ind.dat[2556,'species'] <- "Saxifraga osloënsis"
+ind.dat[17,'species'] <- "Hierochloë odorata"
+ind.dat[9,'species'] <- "Hippophaë rhamnoides"
+
+
+# merging with indicator values
+NiN.natopen <- merge(natopen_NiN_ref,ind.dat[,c(1,3:5,20,23,27)], by.x="sp", by.y="species", all.x=T)
+# checking which species didn't find a match
+unique(NiN.natopen[is.na(NiN.natopen$Light) & is.na(NiN.natopen$Nitrogen) & is.na(NiN.natopen$RR),'sp'])
+# ok now
+
+
+# translating the abundance classes into %-cover
+coverscale <- data.frame(orig=0:6,
+                         cov=c(0, 1/32 ,1/8, 3/8, 0.6, 4/5, 1)
+)
+
+NiN.natopen.cov <- NiN.natopen
+colnames(NiN.natopen.cov)
+for (i in 2:71) {
+  NiN.natopen.cov[,i] <- coverscale[,2][ match(NiN.natopen[,i], 0:6 ) ]
+}
+
+summary(NiN.natopen)
+summary(NiN.natopen.cov)
+
 
 
 
