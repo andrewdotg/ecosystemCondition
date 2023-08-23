@@ -4,20 +4,32 @@
 <br />
 
 _Author and date:_
-James D. M. Speed
+James D. M. Speed, Gunnar Austrheim, Erling J. Solberg
 
-June 2023
+August 2023
 
 <br />
 
 <!-- Load all you dependencies here -->
+<!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
+```{r, echo=F}
+Ecosystem <- "All" # e.g. "Skog og fjell"
+Egenskap  <- "Biomass distribution among trophic levels" # e.g. "Primærproduksjon"
+ECT       <- "Structural state characteristic"
+Contact   <- "James Speed" # e.g. "Anders Kolstad"
+```
 
+```{r, echo=F}
+metaData <- data.frame(Ecosystem,
+                       "Økologisk egenskap" = Egenskap,
+                       "ECT class" = ECT)
+knitr::kable(metaData)
+```
 
 <!-- Don't remove these three html lines -->
 <br />
 <br />
 <hr />
-
 
 <!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
 
@@ -74,6 +86,8 @@ Hatton, I. A., McCann, K. S., Fryxell, J. M., Davies, T. J., Smerlak, M., Sincla
 Sobocinski, A. (2022). Mapping large carnivores in Norway across 175 years of changing policy (Master's thesis, NTNU). https://hdl.handle.net/11250/3047580 
 Speed, J. D. M., Austrheim, G., Kolstad, A. L., & Solberg, E. J. (2019). Long-term changes in northern large-herbivore communities reveal differential rewilding rates in space and time. PLoS One, 14(5), e0217166.
 
+## Additional information about the data
+The raw data is available at 10.6084/m9.figshare.24015072 
 
 ## Analyses
 ## Part 1: Total communities
