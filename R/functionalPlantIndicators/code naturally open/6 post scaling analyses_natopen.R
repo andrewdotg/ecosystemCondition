@@ -58,7 +58,7 @@ res.natopen.ANO <-
 summary(res.natopen.ANO$scaled_value)
 
 
-summary(res.natopen.ANO[,79:81])
+#summary(res.natopen.ANO[,79:81])
 
 
 # similarly for GRUK
@@ -97,7 +97,7 @@ res.natopen.GRUK <-
                                    pull(original)
   )
 
-summary(res.natopen.GRUK[,52:54])
+#summary(res.natopen.GRUK[,52:54])
 
 # making the plot, ANO, all indicators
 ggplot(data=subset(res.natopen.ANO,!is.na(scaled_value)), aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fill=fp_ind)) + 
@@ -372,6 +372,9 @@ indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c(
 res.natopen.ANO2$RR1[res.natopen.ANO2$RR1==1] <- 0.999
 res.natopen.ANO2$RR1[res.natopen.ANO2$RR1==0] <- 0.001
 
+res.natopen.ANO2$CC1[res.natopen.ANO2$CC1==1] <- 0.999
+res.natopen.ANO2$CC1[res.natopen.ANO2$CC1==0] <- 0.001
+
 regnor <- regnor %>%
   mutate(
     RR1.ANO.reg.mean = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("RR1","ano_flate_id")])[1],
@@ -380,23 +383,44 @@ regnor <- regnor %>%
                                  indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("RR1","ano_flate_id")])[1],
                                  indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("RR1","ano_flate_id")])[1]
     ),
-    RR1.ANO.reg.se = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("RR1","ano_flate_id")])[2],
-                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("RR1","ano_flate_id")])[2],
-                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("RR1","ano_flate_id")])[2],
-                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("RR1","ano_flate_id")])[2],
-                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("RR1","ano_flate_id")])[2]
+    RR1.ANO.reg.se = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("RR1","ano_flate_id")])[2]*2,
+                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("RR1","ano_flate_id")])[2]*2,
+                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("RR1","ano_flate_id")])[2]*2,
+                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("RR1","ano_flate_id")])[2]*2,
+                               indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("RR1","ano_flate_id")])[2]*2
     ),
     RR1.ANO.reg.n = c(nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway" & !is.na(res.natopen.ANO2$RR1),]),
                               nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway" & !is.na(res.natopen.ANO2$RR1),]),
                               nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway" & !is.na(res.natopen.ANO2$RR1),]),
                               nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway" & !is.na(res.natopen.ANO2$RR1),]),
                               nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway" & !is.na(res.natopen.ANO2$RR1),])
+    ),
+    CC1.ANO.reg.mean = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("CC1","ano_flate_id")])[1],
+                         indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("CC1","ano_flate_id")])[1],
+                         indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("CC1","ano_flate_id")])[1],
+                         indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("CC1","ano_flate_id")])[1],
+                         indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("CC1","ano_flate_id")])[1]
+    ),
+    CC1.ANO.reg.se = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("CC1","ano_flate_id")])[2]*2,
+                       indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("CC1","ano_flate_id")])[2]*2,
+                       indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("CC1","ano_flate_id")])[2]*2,
+                       indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("CC1","ano_flate_id")])[2]*2,
+                       indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("CC1","ano_flate_id")])[2]*2
+    ),
+    CC1.ANO.reg.n = c(nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway" & !is.na(res.natopen.ANO2$CC1),]),
+                      nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway" & !is.na(res.natopen.ANO2$CC1),]),
+                      nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway" & !is.na(res.natopen.ANO2$CC1),]),
+                      nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway" & !is.na(res.natopen.ANO2$CC1),]),
+                      nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway" & !is.na(res.natopen.ANO2$CC1),])
     )
   )
 
 # and adding the values for GRUK
 res.natopen.GRUK2$Nitrogen2[res.natopen.GRUK2$Nitrogen2==1] <- 0.999
 res.natopen.GRUK2$Nitrogen2[res.natopen.GRUK2$Nitrogen2==0] <- 0.001
+
+res.natopen.GRUK2$RR2[res.natopen.GRUK2$RR2==1] <- 0.999
+res.natopen.GRUK2$RR2[res.natopen.GRUK2$RR2==0] <- 0.001
 
 regnor <- regnor %>%
   mutate(
@@ -406,42 +430,43 @@ regnor <- regnor %>%
                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("Nitrogen2","Flate_ID")])[1],
                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("Nitrogen2","Flate_ID")])[1]
     ),
-    Nitrogen2.GRUK.reg.se = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("Nitrogen2","Flate_ID")])[2],
-                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("Nitrogen2","Flate_ID")])[2],
-                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("Nitrogen2","Flate_ID")])[2],
-                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("Nitrogen2","Flate_ID")])[2],
-                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("Nitrogen2","Flate_ID")])[2]
+    Nitrogen2.GRUK.reg.se = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("Nitrogen2","Flate_ID")])[2]*2,
+                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("Nitrogen2","Flate_ID")])[2]*2,
+                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("Nitrogen2","Flate_ID")])[2]*2,
+                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("Nitrogen2","Flate_ID")])[2]*2,
+                             indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("Nitrogen2","Flate_ID")])[2]*2
     ),
     Nitrogen2.GRUK.reg.n = c(0,
                             0,
                             nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway" & !is.na(res.natopen.GRUK2$Nitrogen2),]),
                             0,
-                            nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway" & !is.na(res.natopen.GRUK2$Nitrogen2),]))
-  )
-
-res.natopen.GRUK2$RR2[res.natopen.GRUK2$RR2==1] <- 0.999
-res.natopen.GRUK2$RR2[res.natopen.GRUK2$RR2==0] <- 0.001
-
-regnor <- regnor %>%
-  mutate(
+                            nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway" & !is.na(res.natopen.GRUK2$Nitrogen2),])
+                            ),
     RR2.GRUK.reg.mean = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("RR2","Flate_ID")])[1],
                                 indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("RR2","Flate_ID")])[1],
                                 indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("RR2","Flate_ID")])[1],
                                 indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("RR2","Flate_ID")])[1],
                                 indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("RR2","Flate_ID")])[1]
     ),
-    RR2.GRUK.reg.se = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("RR2","Flate_ID")])[2],
-                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("RR2","Flate_ID")])[2],
-                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("RR2","Flate_ID")])[2],
-                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("RR2","Flate_ID")])[2],
-                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("RR2","Flate_ID")])[2]
+    RR2.GRUK.reg.se = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("RR2","Flate_ID")])[2]*2,
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("RR2","Flate_ID")])[2]*2,
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("RR2","Flate_ID")])[2]*2,
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("RR2","Flate_ID")])[2]*2,
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("RR2","Flate_ID")])[2]*2
     ),
     RR2.GRUK.reg.n = c(0,
                              0,
                              nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway" & !is.na(res.natopen.GRUK2$RR2),]),
                              0,
-                             nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway" & !is.na(res.natopen.GRUK2$RR2),]))
+                             nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway" & !is.na(res.natopen.GRUK2$RR2),])
+    )
   )
+
+
+
+
+
+
 
 # RR1 (lower indicator), mean
 tm_shape(regnor) +
@@ -467,12 +492,60 @@ tm_shape(regnor) +
 
 # Nitrogen2 (upper indicator), mean
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.GRUK.reg.mean", title="Nitrogen (upper)", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_polygons(col="Nitrogen2.GRUK.reg.mean", title="Nitrogen (upper), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Nitrogen2.GRUK.reg.n",col="black",bg.color="grey")
 # Nitrogen2 (upper indicator), se
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.GRUK.reg.se", title="Nitrogen (upper)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_polygons(col="Nitrogen2.GRUK.reg.se", title="Nitrogen (upper), 2 SE", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Nitrogen2.GRUK.reg.n",col="black",bg.color="grey")
+
+
+tm_shape(regnor) +
+  tm_polygons(col="Nitrogen2.GRUK.reg.mean", title="Nitrogen (upper), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Nitrogen2.GRUK.reg.n",col="black",bg.color="grey")
+
+
+#### relating scaled values to NiN condition variables ####
+
+# ANO
+ggplot(res.natopen.ANO, aes(x=fa_total_dekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.ANO, aes(x=vedplanter_total_dekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.ANO, aes(x=busker_dekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.ANO, aes(x=tresjikt_dekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+# GRUK
+colnames(res.natopen.GRUK)[c(27,28,34,35,38)] <- c("driving","erosion","busksjiktsdekning","tresjiktsdekning","fremmedartsdekning")
+ggplot(res.natopen.GRUK, aes(x=fremmedartsdekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.GRUK, aes(x=tresjiktsdekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.GRUK, aes(x=busksjiktsdekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.GRUK, aes(x=erosion, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.GRUK, aes(x=driving, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
 
 
 
@@ -925,11 +998,3 @@ points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
 
-#### relating scaled values to NiN condition variables ####
-ggplot(res.natopen.ANO, aes(x=bruksintensitet, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
-
-ggplot(res.natopen.ASO, aes(x=bruksintensitet, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
