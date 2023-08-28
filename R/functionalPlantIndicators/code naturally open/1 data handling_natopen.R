@@ -24,54 +24,81 @@ library(tmaptools)
 #### upload data from P-drive ####
 ## ANO
 #st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
-ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-                  layer="ANO_Art")
-ANO.geo <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-                   layer="ANO_SurveyPoint")
+#ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
+#                  layer="ANO_Art")
+#ANO.geo <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
+#                   layer="ANO_SurveyPoint")
+
+# load from cache
+ANO.sp<-readRDS(paste0(here::here(),"/data/cache/ANO.sp.RDS"))
+ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
+
 head(ANO.sp)
 head(ANO.geo)
 
 ## GRUK
 #excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx")
-GRUK.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
-                             sheet = 2)
-GRUK.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
-                           sheet = 3)
+#GRUK.variables <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
+#                             sheet = 2)
+#GRUK.species <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/GRUKdata_2020-2022_GJELDENDE.xlsx", 
+#                           sheet = 3)
 
 # condition evaluation for 2021 data
 #excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls")
 
-GRUK2021.condition <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls", 
-                                 sheet = 1)
+#GRUK2021.condition <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/GRUK/NNF_GRUK_GJELDENDE.xls", 
+#                                 sheet = 1)
+
+# save to cache
+#saveRDS(GRUK.variables, "data/cache/GRUK.variables.RDS")
+#saveRDS(GRUK.species, "data/cache/GRUK.species.RDS")
+#saveRDS(GRUK2021.condition, "data/cache/GRUK2021.condition.RDS")
+
+# load from cache
+GRUK.variables<-readRDS(paste0(here::here(),"/data/cache/GRUK.variables.RDS"))
+GRUK.species<-readRDS(paste0(here::here(),"/data/cache/GRUK.species.RDS"))
+GRUK2021.condition<-readRDS(paste0(here::here(),"/data/cache/GRUK2021.condition.RDS"))
 
 head(GRUK.variables)
 head(GRUK.species)
 head(GRUK2021.condition)
 
 
-
 ## Tyler indicator data
-ind.Tyler <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
-                        sep = '\t', header=T, quote = '')
+#ind.Tyler <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
+#                        sep = '\t', header=T, quote = '')
+
+ind.Tyler<-readRDS(paste0(here::here(),"/data/cache/ind.Tyler.RDS"))
+
 head(ind.Tyler)
 
 ## Grime CSR-values
-ind.Grime <- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Grime CSR.csv",sep=";",dec=",", header=T)
+#ind.Grime <- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Grime CSR.csv",sep=";",dec=",", header=T)
+
+#saveRDS(ind.Grime, "data/cache/ind.Grime.RDS")
+
+ind.Grime<-readRDS(paste0(here::here(),"/data/cache/ind.Grime.RDS"))
 head(ind.Grime)
 
 ## generalized species lists NiN
-T2_ref <- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/T2_ref.csv",sep=";", header=T)
-head(T2_ref)
+#T2_ref <- read.csv("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/T2_ref.csv",sep=";", header=T)
+#head(T2_ref)
 
-natopen_NiN_ref <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/Masterfil_artslister_organisert.xlsx", 
-                             sheet = 1)
-natopen_NiN_ref_spInfo <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/Masterfil_artslister_organisert.xlsx", 
-                              sheet = 2)
+#natopen_NiN_ref <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/Masterfil_artslister_organisert.xlsx", 
+#                             sheet = 1)
+#natopen_NiN_ref_spInfo <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/reference from NiN/Masterfil_artslister_organisert.xlsx", 
+#                              sheet = 2)
+
+# save to cache
+#saveRDS(natopen_NiN_ref, "data/cache/natopen_NiN_ref.RDS")
+#saveRDS(natopen_NiN_ref_spInfo, "data/cache/natopen_NiN_ref_spInfo.RDS")
+
+# load from cache
+natopen_NiN_ref<-readRDS(paste0(here::here(),"/data/cache/natopen_NiN_ref.RDS"))
+natopen_NiN_ref_spInfo<-readRDS(paste0(here::here(),"/data/cache/natopen_NiN_ref_spInfo.RDS"))
+
 head(natopen_NiN_ref)
 head(natopen_NiN_ref_spInfo)
-
-
-
 
 #### data handling - functional indicator data ####
 # trimming away sub-species & co, and descriptor info
@@ -240,7 +267,6 @@ length(levels(as.factor(ANO.geo$ano_flate_id)))
 length(levels(as.factor(ANO.geo$ano_punkt_id)))
 summary(as.factor(ANO.geo$ano_punkt_id))
 # there's many double presences, probably some wrong registrations of point numbers,
-# but also double registrations (e.g. ANO0159_55)
 # CHECK THIS when preparing ecosystem-datasets for scaling
 
 
@@ -370,9 +396,9 @@ head(ANO.sp.ind)
 
 
 #### data handling - GRUK data ####
-head(GRUK.variables)
-head(GRUK.species)
-head(GRUK2021.condition)
+names(GRUK.variables)
+names(GRUK.species)
+names(GRUK2021.condition)
 
 colnames(GRUK.species)[5] <- "art_dekning"
 
@@ -488,9 +514,18 @@ summary(GRUK.species.ind)
 unique(GRUK.species.ind[is.na(GRUK.species.ind$Light & 
                                 is.na(GRUK.species.ind$RR)),'Species'])
 
+### make GRUK.variables into spatial object
+names(GRUK.variables)
+GRUK.variables <- st_as_sf(GRUK.variables, coords = c("x","y"),remove=F)
+# add CRS
+GRUK.variables <- st_set_crs(GRUK.variables,4326)
+# transform CRS to match ANO
+GRUK.variables <- GRUK.variables %>%
+  st_as_sf() %>%
+  st_transform(crs = st_crs(ANO.geo))
 
 ### merge GRUK.variables and GRUK2021.condition
-GRUK.variables <- as.data.frame(GRUK.variables)
+#GRUK.variables <- as.data.frame(GRUK.variables)
 GRUK2021.condition <- as.data.frame(GRUK2021.condition)
 
 head(GRUK.variables)
@@ -636,14 +671,14 @@ natopen_NiN_ref$sp.orig <- natopen_NiN_ref$sp
 natopen_NiN_ref$sp <- word(natopen_NiN_ref$sp, 1,2)
 natopen_NiN_ref <- natopen_NiN_ref[!is.na(natopen_NiN_ref$sp),]
 # merging with indicator values
-NiN.natopen <- merge(NiN.natopen_ref,ind.dat[,c(1,3:5,20,23,27)], by.x="sp", by.y="species", all.x=T)
-head(natopen_NiN)
-summary(natopen_NiN)
+NiN.natopen <- merge(natopen_NiN_ref,ind.dat[,c(1,3:5,20,23,27)], by.x="sp", by.y="species", all.x=T)
+head(NiN.natopen)
+summary(NiN.natopen)
 
 
 
-
-unique(natopen_NiN$sp)
+NiN.natopen
+unique(NiN.natopen$sp)
 #NiN.sp$spgr <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$art.code))
 
 # checking which species didn't find a match

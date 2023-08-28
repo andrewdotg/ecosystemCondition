@@ -150,6 +150,79 @@ ggplot(res.natopen.GRUK, aes(x=factor(Kartleggingsenhet), y=scaled_value, fill=f
   ylab("Scaled indicator value (GRUK data)") 
 
 
+#### relating scaled values to NiN condition variables ####
+
+# ANO
+ggplot(res.natopen.ANO, aes(x=fa_total_dekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.ANO, aes(x=vedplanter_total_dekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.ANO, aes(x=busker_dekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.ANO, aes(x=tresjikt_dekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+# GRUK
+colnames(res.natopen.GRUK)[c(27,28,34,35,38)] <- c("driving","erosion","busksjiktsdekning","tresjiktsdekning","fremmedartsdekning")
+ggplot(res.natopen.GRUK, aes(x=fremmedartsdekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.GRUK, aes(x=tresjiktsdekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.GRUK, aes(x=busksjiktsdekning, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.GRUK, aes(x=erosion, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+ggplot(res.natopen.GRUK, aes(x=driving, y=scaled_value)) +
+  geom_point() +
+  facet_wrap(~fp_ind, scale="fixed")
+
+
+plot.erosion.1 <- ggplot(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="RR2",], aes(x=erosion, y=scaled_value)) +
+  geom_point() +
+  xlab("Erosion score") + ylab("Scaled CSR-R2 value (GRUK data)")
+
+
+plot.alien.1 <- ggplot(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen2",], aes(x=fremmedartsdekning, y=scaled_value)) +
+  geom_point() +
+  xlab("Alien species cover (%)") + ylab("Scaled Nitrogen2 value (GRUK data)")
+
+
+# use beta-regression for analysis of response between 0 and 1
+expit <- function(L) exp(L) / (1+exp(L))
+library(betareg)
+library(glmmTMB)
+
+mod.GRUK.R2.erosion <- glmmTMB(scaled_value ~ erosion +(1|Flate_ID), family=beta_family(), data=res.natopen.GRUK[res.natopen.GRUK$fp_ind=="RR2",])
+summary(mod.GRUK.R2.erosion)
+
+mod.GRUK.N2.alien <- glmmTMB(scaled_value ~ fremmedartsdekning +(1|Flate_ID), family=beta_family(), data=res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen2",])
+summary(mod.GRUK.N2.alien)
+pred.mean <- predict(mod.GRUK.N2.alien,newdata=data.frame(fremmedartsdekning=0:100,Flate_ID=NA), re.form=NA, se.fit=F, type="response")
+pred.mean <- data.frame(fremmedartsdekning=0:100,scaled_value=pred.mean)
+
+pred.l <- predict(mod.GRUK.N2.alien,newdata=data.frame(fremmedartsdekning=0:100,Flate_ID=NA), re.form=NA, se.fit=T, type="link")
+pred.ci <- data.frame(fremmedartsdekning=0:100,scaled_value=expit(pred.l$fit),up=expit(pred.l$fit+2*pred.l$se.fit),low=expit(pred.l$fit-2*pred.l$se.fit))
+
+plot.alien.1 +
+  geom_ribbon(aes(x=fremmedartsdekning, ymin=low, ymax=up, fill='red',colour="red"), alpha=0.2, data = pred.ci) +
+  geom_line(aes(x=fremmedartsdekning,y=scaled_value), data = pred.mean)
+
+# pretty shitty model
 
 
 #### scaled value maps ####
@@ -157,13 +230,14 @@ ggplot(res.natopen.GRUK, aes(x=factor(Kartleggingsenhet), y=scaled_value, fill=f
 res.natopen.ANO2 <- results.natopen.ANO[['2-sided']]
 st_geometry(res.natopen.ANO2) <- st_geometry(ANO.natopen)
 
-
+res.natopen.GRUK2 <- results.natopen.GRUK[['2-sided']]
+st_geometry(res.natopen.GRUK2) <- st_geometry(GRUK.natopen)
 
 ## similarly for GRUK
 # keep wide format and create geometry from coords in the dataframe
 res.natopen.GRUK2 <- results.natopen.GRUK[['2-sided']]
 # make spatial object
-res.natopen.GRUK2 <- st_as_sf(res.natopen.GRUK2, coords = c("x","y"))
+res.natopen.GRUK2 <- st_as_sf(res.natopen.GRUK2, coords = c("x","y"),remove=F)
 # add CRS
 res.natopen.GRUK2 <- st_set_crs(res.natopen.GRUK2,4326)
 # transform CRS to match ANO
@@ -212,7 +286,7 @@ tm_shape(regnor) +
 
 
 
-# RR1 (upper indicator)
+# RR1 (lower indicator)
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
@@ -271,11 +345,41 @@ tm_shape(regnor) +
 
 
 # let's look at things by region
+#ANO
 res.natopen.ANO2 = st_join(res.natopen.ANO2, regnor, left = TRUE)
 colnames(res.natopen.ANO2)
 
+nrow(res.natopen.ANO2[is.na(res.natopen.ANO2$region),]) # no NA's for regions
+
+
+#GRUK
 res.natopen.GRUK2 = st_join(res.natopen.GRUK2, regnor, left = TRUE)
 colnames(res.natopen.GRUK2)
+
+nrow(res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),]) # some points don't get assigned to a region. Why?
+
+boks <- st_bbox(c(xmin = 10.3, xmax = 10.8, ymax = 60, ymin = 59.4), crs = st_crs(4326))
+tm_shape(regnor, bbox = boks) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),]) +
+  tm_dots('Nitrogen2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Nitrogen index (upper), natopen GRUK",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE),'grey'),
+                labels = c("0.3 - 0.4", "0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
+                           "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
+                title = "index values")
+# they seem to lie in water
+# all sites but the southernmost one are in Eastern Norway, the remaining one in Southern Norway
+summary(res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),"y"])
+
+res.natopen.GRUK2[is.na(res.natopen.GRUK2$region) & res.natopen.GRUK2$y<59.83,c("y","Flate_ID")] # site 123-4 is in Southern Norway
+res.natopen.GRUK2[res.natopen.GRUK2$Flate_ID=="123-4","region"] <- "Southern Norway"
+# and all the other region=NA observations are in Eastern Norway
+res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),"region"] <- "Eastern Norway"
+
+nrow(res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),]) # no NA's left
 
 # simple means, inappropriate for 0-1 bound data
 res.natopen.ANO2 %>% 
@@ -504,47 +608,6 @@ tm_shape(regnor) +
   tm_polygons(col="Nitrogen2.GRUK.reg.mean", title="Nitrogen (upper), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Nitrogen2.GRUK.reg.n",col="black",bg.color="grey")
 
-
-#### relating scaled values to NiN condition variables ####
-
-# ANO
-ggplot(res.natopen.ANO, aes(x=fa_total_dekning, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
-
-ggplot(res.natopen.ANO, aes(x=vedplanter_total_dekning, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
-
-ggplot(res.natopen.ANO, aes(x=busker_dekning, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
-
-ggplot(res.natopen.ANO, aes(x=tresjikt_dekning, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
-
-# GRUK
-colnames(res.natopen.GRUK)[c(27,28,34,35,38)] <- c("driving","erosion","busksjiktsdekning","tresjiktsdekning","fremmedartsdekning")
-ggplot(res.natopen.GRUK, aes(x=fremmedartsdekning, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
-
-ggplot(res.natopen.GRUK, aes(x=tresjiktsdekning, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
-
-ggplot(res.natopen.GRUK, aes(x=busksjiktsdekning, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
-
-ggplot(res.natopen.GRUK, aes(x=erosion, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
-
-ggplot(res.natopen.GRUK, aes(x=driving, y=scaled_value)) +
-  geom_point() +
-  facet_wrap(~fp_ind, scale="fixed")
 
 
 

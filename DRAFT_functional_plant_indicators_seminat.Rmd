@@ -107,7 +107,7 @@ In this analysis, we derive scaling values from statistical (here, non-parametri
 
 
 ## Uncertainties
-We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area.
+We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error as a measure of spatial uncertainty for a geographical area.
 
 
 ## References

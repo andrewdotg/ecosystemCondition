@@ -21,7 +21,7 @@ natopen.NiNtypes <- colnames(natopen.ref.cov[["Light"]])
 natopen.NiNtypes[-x] <- substr(natopen.NiNtypes[-x], 1, nchar(natopen.NiNtypes[-x])-1)
 natopen.NiNtypes
 
-# 7 indicator-value indicators: Tyler's Light, Moisture, Soil_reaction_pH, Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance"
+# 7 indicator-value indicators: Grimes C, S and R, Tyler's Light, Nitrogen, and Soil_disturbance
 indEll.n=6
 # creating a table to hold:
 # Tyler: the 0.5 quantile (median), 0.05 quantile and  0.95 quantile for each NiN-type

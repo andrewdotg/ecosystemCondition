@@ -60,42 +60,41 @@ In the 'functional plant indicator' project for nat-open ecosystems, we use five
 ANO stands for 'areal-representativ naturovervåking', i.e. 'area representative nature monitoring'. 1000 sites are randomly distributed across mainland Norway and visited within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the analysis in this document, we only use the plots which were classified as one of the nat-open ecosystem types in the Norwegian categorization system for eco-diversity (NiN) and which are not registered as lying in mountain areas above the tree line.
 In the analysis in this document, we use the data available on Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054), which comprises data from the first three ANO-years, 2019-2021, and a total of 8887 plots in 498 sites.
 
-#### continue here ####
-
 (2) GRUK monitoring data
-GRUK stands for 'Grunnlendt åpen kalkmark', and represents a monitoring of open, limestone rich ecosystems with soils too shallow for forest establishment. The limestone rich focus of the scheme is motivated from a high biodiversity value and places all monitoring sites in an area around the Oslofjord. As of spring 2023, the GRUK data comprise 596 vegetation plots in 146 sites.
-
-In ASO ca. 20 areas are chosen annually based on a probabilistic distribution model of semi-natural meadows in Norway (see Johansen et al. 2017 for details). Each ASO area (område) spans a 10 x 10 km grid cell, in which a maximum of up to 10 sites (flate) of 500 x 500 m are chosen. In each site, all semi-natural meadows (eng) with an area of at least 250 sqm are delineated. In up to three meadows per site the plant species composition is sampled using a transect method. For the vegetation transect analyses, both cover and frequency of each vascular plant species along the transect is recorded. For every meadow, the species data collection is accompanied by an assessment of the ecosystem, including ecosystem type and some additional variables related to ecosystem-specific drivers of state.
-In the analysis in this document, we use the ASO data from 2022 only as the data from 2021 and the ASO pilot in 2019 are not in sufficiently good shape. In the future, all ASO data will hopefully be available in Miljødirektoratets kartkatalog.
+GRUK stands for 'Grunnlendt åpen kalkmark', and represents a monitoring of open, limestone rich ecosystems with soils too shallow for forest establishment. The limestone rich focus of the scheme is motivated from a high biodiversity value and places all monitoring sites in an area around the Oslofjord. As of spring 2023, the GRUK data comprise 596 vegetation plots in 146 sites, all of which are mapped to the ecosystem type "åpen grunnlendt mark" (T2) and therein to the limestone-rich subtypes T2-C-7 and T2-C-8 in the Norwegian classification system for ecosystem types.
+The vegetation analysis in GRUK record percent cover for every species of vascular plants in 1 sqm plots. In addition, a range of site variables related to ecosystem-specific drivers of state are recorded.
+In the analysis in this document, we use all GRUK monitoring data data, which span the years 2020-22. The 2022-data also include an assessment of site condition, which is included in the analysis of results in this document. In the future, these data data may become available in Miljødirektoratets kartkatalog.
 
 (3) NiN reference data:
 The generalized species lists underlying the ecosystem categorization in NiN represent expert-compiled species lists based on empirical evidence from the literature and expert knowledge of the systems and their species. In these lists, every species is assigned an abundance value on a 6-step scale, with each step representing a range for the 'expected combination of frequency and cover' of occurrence (1: < 1/32, 2: 1/32 - 1/8 , 3: 1/8 - 3/8, 4: 3/8 - 4/5, 5: 3/8 - 4/5 + dominance, 6: > 4/5). For the purpose of this project, these steps are simplified to maximum 'expected combination of frequency and cover', whereby steps 4 & 5 are assigned 0.6 and 0.8, respectively, in order to distinguish between them.
 
 (4) The Swedish plant indicator set published by Tyler et al. (2021) contains a large collection of plant indicators based on the Swedish flora, which is well representative of the Norwegian flora as well. From this set, we decided to include indicator data for light, moisture, pH, nitrogen, phosphorus, grazing_mowing, and soil disturbance for semi-natural ecosystems as these are thought to be subject to potential change due to abandonment, drainage/flooding, pollution, and erosion.
 
+(5) Grime's system of plant strategy scores (Grime 1974) comprises relative (too one another) scores for the competition-, stress-, and disturbance("ruderality")-related life strategy of plant species. In the analysis, in this document we use all three variables, C, S and R, as different pressures acting on the ecosystem might change every one of the strategies (e.g. alien species for competition, climate change for stress, land use change for ruderality).
+
 
 ### Representativity in time and space
-For semi-natural ecosystems, the ANO data in this analysis contain 233 plots in 83 sites, in principle distributed randomly across the country. As semi-natural ecosystems occur more often in certain regions of Norway than in others, the amount of plots and sites is not equal among Norway's five regions. The 233 plots are distributed across regions in the following way:
+For nat-open ecosystems, the ANO data in this analysis contain 143 plots in 52 sites, in principle distributed randomly across the country. As nat-open ecosystems occur more often in certain regions of Norway than in others, the amount of plots and sites is not equal among Norway's five regions. The 143 plots are distributed across regions in the following way:
 
-- Northern Norway: ?
-- Central Norway:  ?
-- Eastern Norway:  ?
-- Western Norway:  ?
-- Southern Norway: ?
+- Northern Norway: 29
+- Central Norway:  39
+- Eastern Norway:  34
+- Western Norway:  24
+- Southern Norway: 17
 
-For ASO, this analysis covers 381 meadow transects in 96 sites.
+For GRUK, this analysis covers 1103 plots in 146 sites.
 
-The 381 transects are distributed across regions in the following way:
+The 1103 plots are distributed across regions in the following way:
 
-- Northern Norway: ?
-- Central Norway:  ?
-- Eastern Norway:  ?
-- Western Norway:  ?
-- Southern Norway: ?
+- Northern Norway: 0
+- Central Norway:  0
+- Eastern Norway:  1042
+- Western Norway:  0
+- Southern Norway: 61
 
 
 ### Temporal coverage
-The ANO evaluation data cover the first three years, 2019-2021, of the first 5-year-cycle in the ANO monitoring scheme, as well as the 2022 ASO-data. Thus there is no actual time series to these data, and the indicator evaluation does therefore not include any temporal analyses.
+The ANO evaluation data cover the first three years, 2019-2021, of the first 5-year-cycle in the ANO monitoring scheme. GRUK covers 2020-2022. Thus, there is no actual time series to these data, and the indicator evaluation does therefore not include any temporal analyses.
 
 
 ## Collinearities with other indicators
@@ -103,7 +102,7 @@ The ANO evaluation data cover the first three years, 2019-2021, of the first 5-y
 
 ## Reference state and values
 ### Reference state
-The reference state is defined via the functional signature of the generalized species lists in NiN (see also Töpper et al. 2018). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for ecosystem sub-types ("grunntyper" or "kartleggingsenheter" at a 1:5000 mapping scale) within the main wetland types in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
+The reference state is defined via the functional signature of the generalized species lists for NiN ecosystem types (see also Töpper et al. 2018). For the nat-open ecosystem types these lists have been newly prepared by Evju et al. 2023. By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for ecosystem sub-types ("grunntyper" or "kartleggingsenheter" at a 1:5000 mapping scale) within the main wetland types in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
 
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
@@ -111,7 +110,7 @@ In this analysis, we derive scaling values from statistical (here, non-parametri
 
 
 ## Uncertainties
-We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area.
+We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error as a measure of spatial uncertainty for a geographical area.
 
 
 ## References
@@ -122,6 +121,8 @@ Evju, M., Stabbetorp, O.E., Olsen, S.L., Bratli, H., Often, A. & Bakkestuen, V. 
 Evju, M., Stabbetorp, O.E., Olsen, S.L., Bratli, ... . 2023. Generalized species lists for naturally open ecosystem types below the tree line in Norway. in prep.
 
 Framstad, E., Kolstad, A. L., Nybø, S., Töpper, J. & Vandvik, V. 2022. The condition of forest and mountain ecosystems in Norway. Assessment by the IBECA method. NINA Report 2100. Norwegian Institute for Nature Research.
+
+Grime J.P. 1974. Vegetation classification by reference to strategies. Nature 250(5461):26-31.
 
 Halvorsen, R., Skarpaas, O., Bryn, A., Bratli, H., Erikstad, L., Simensen, T., & Lieungh, E. (2020). Towards a systematics of ecodiversity: The EcoSyst framework. Global Ecology and Biogeography, 29(11), 1887-1906. doi:10.1111/geb.13164
 
@@ -141,58 +142,33 @@ Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indic
 ## Analyses
 ### Data sets
 
-ANO data
-
+ANO data: ANO.sp contains the species data, ANO.geo contains site data
 ```{r, echo = F}
 # Add data from cache
 ANO.sp<-readRDS(paste0(here::here(),"/data/cache/ANO.sp.RDS"))
 ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
-
-# st_layers(dsn = "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
-# ANO.sp <- st_read("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-#                    layer="ANO_Art")
-# ANO.geo <- st_read("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
-#                   layer="ANO_SurveyPoint")
-# head(ANO.sp)
-# head(ANO.geo)
 ```
 
-ASO data
-
+GRUK data: GRUK.species contains the species data, GRUK.variable contains site data, GRUK2021.condition contains a field-based condition assessment from the 2021 season
 ```{r, echo = F}
 # Add data from cache
-ASO.sp<-readRDS(paste0(here::here(),"/data/cache/ASO.sp.RDS"))
-ASO.geo<-readRDS(paste0(here::here(),"/data/cache/ASO.geo.RDS"))
-
-#excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_20#22.xlsx")
-
-#ASO.sp <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx",sheet = "transektregistreringer_4")
-#ASO.geo <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx",sheet = "surveyPoint_0")
-#head(ASO.sp)
-#head(ASO.geo)
-
+GRUK.variables<-readRDS(paste0(here::here(),"/data/cache/GRUK.variables.RDS"))
+GRUK.species<-readRDS(paste0(here::here(),"/data/cache/GRUK.species.RDS"))
+GRUK2021.condition<-readRDS(paste0(here::here(),"/data/cache/GRUK2021.condition.RDS"))
 ```
 
-
-Plant indicators from Tyler et al. (2021)
+Plant indicators from Tyler et al. (2021) and Grime (1974)
 ```{r, echo = F}
-## Tyler indicator data
 ## data from cache
-ind.dat <-readRDS(paste0(here::here(),"/data/cache/ind.dat.RDS"))
-
-# ind.dat <- read.table("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
-#                         sep = '\t', header=T, quote = '')
-# head(ind.dat)
-
+ind.Tyler<-readRDS(paste0(here::here(),"/data/cache/ind.Tyler.RDS"))
+ind.Grime<-readRDS(paste0(here::here(),"/data/cache/ind.Grime.RDS"))
 ```
 
-Generalized species lists NiN
+Generalized species lists (reference communities): natopen_NiN_ref contains the reference species lists, natopen_NiN_ref_spInfo contains additional taxonomic information for each species
 ```{r, echo = F}
 # data from cache
-Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
-
-# load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/functional plant indicators/reference from NiN/Eco_State.RData")
-# str(Eco_State)
+natopen_NiN_ref<-readRDS(paste0(here::here(),"/data/cache/natopen_NiN_ref.RDS"))
+natopen_NiN_ref_spInfo<-readRDS(paste0(here::here(),"/data/cache/natopen_NiN_ref_spInfo.RDS"))
 ```
 
 #### Data handling
@@ -201,22 +177,49 @@ Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
 - Merging indicator data with monitoring data and indicator data with reference data
 (not shown here, but documented in the code)
 
+
+
 ```{r, include = F}
 
 ### Plant indicator data
-names(ind.dat)
-names(ind.dat)[1] <- 'species'
-ind.dat$species <- as.factor(ind.dat$species)
-summary(ind.dat$species)
-ind.dat <- ind.dat[!is.na(ind.dat$species),] # removing species-NAs
-ind.dat[,'species.orig'] <- ind.dat[,'species'] # make a backup of the original species variable
-ind.dat[,'species'] <- word(ind.dat[,'species'], 1,2) # trimming away sub-species & co, and descriptor info
+# trimming away sub-species & co, and descriptor info
+ind.Grime[,'species.orig'] <- ind.Grime[,'species']
+ind.Grime[,'species'] <- word(ind.Grime[,'species'], 1,2)
+names(ind.Tyler)[1] <- 'species'
+ind.Tyler$species <- as.factor(ind.Tyler$species)
+#summary(ind.Tyler$species)
+ind.Tyler <- ind.Tyler[!is.na(ind.Tyler$species),]
+ind.Tyler[,'species.orig'] <- ind.Tyler[,'species']
+ind.Tyler[,'species'] <- word(ind.Tyler[,'species'], 1,2)
 
-# the trimming above leaves some duplicates that need to be taken care of
-ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
-ind.dat <- ind.dat %>% filter( !(species.orig %in% list("Ammophila arenaria x Calamagrostis epigejos",
+# dealing with 'duplicates'
+ind.Grime[duplicated(ind.Grime[,'species']),"species"]
+ind.Grime.dup <- ind.Grime[duplicated(ind.Grime[,'species']),c("species")]
+ind.Grime[ind.Grime$species %in% ind.Grime.dup,]
+# getting rid of the duplicates
+ind.Grime <- ind.Grime %>% filter( !(species.orig %in% list("Carex viridula brachyrrhyncha",
+                                                            "Dactylorhiza fuchsii praetermissa",
+                                                            "Medicago sativa varia",
+                                                            "Montia fontana chondrosperma",
+                                                            "Papaver dubium lecoqii",
+                                                            "Sanguisorba minor muricata")
+) )
+#ind.Grime[duplicated(ind.Grime[,'species']),"species"]
+
+
+
+names(ind.Tyler)[1] <- 'species'
+ind.Tyler$species <- as.factor(ind.Tyler$species)
+#summary(ind.Tyler$species)
+ind.Tyler <- ind.Tyler[!is.na(ind.Tyler$species),]
+ind.Tyler[,'species.orig'] <- ind.Tyler[,'species']
+ind.Tyler[,'species'] <- word(ind.Tyler[,'species'], 1,2)
+#ind.Tyler2 <- ind.Tyler
+#ind.Tyler <- ind.Tyler2
+#ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+#ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
+ind.Tyler <- ind.Tyler %>% filter( !(species.orig %in% list("Ammophila arenaria x Calamagrostis epigejos",
                                                             "Anemone nemorosa x ranunculoides",
                                                             "Armeria maritima ssp. elongata",
                                                             "Asplenium trichomanes ssp. quadrivalens",
@@ -251,27 +254,32 @@ ind.dat <- ind.dat %>% filter( !(species.orig %in% list("Ammophila arenaria x Ca
                                                             "Stellaria nemorum L. ssp. montana",
                                                             "Trichophorum cespitosum ssp. germanicum")
 ) )
-
-# checking duplicates again
-ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","Phosphorus","Grazing_mowing","Soil_disturbance","species.orig","species")]
+#ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+#ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
 # getting rid of sect. for Hieracium
-ind.dat <- ind.dat %>% mutate(species=gsub("sect. ","",species.orig))
-ind.dat[,'species'] <- word(ind.dat[,'species'], 1,2)
+ind.Tyler <- ind.Tyler %>% mutate(species=gsub("sect. ","",species.orig))
+ind.Tyler[,'species'] <- word(ind.Tyler[,'species'], 1,2)
 
-ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat.dup <- ind.dat[duplicated(ind.dat[,'species']),"species"]
-ind.dat[ind.dat$species %in% ind.dat.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","Phosphorus","Grazing_mowing","Soil_disturbance","species.orig","species")]
+#ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+ind.Tyler.dup <- ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
+#ind.Tyler[ind.Tyler$species %in% ind.Tyler.dup,c("Light","Moisture","Soil_reaction_pH","Nitrogen","species.orig","species")]
 # only hybrids left -> get rid of these
-ind.dat <- ind.dat[!duplicated(ind.dat[,'species']),]
-ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.Tyler <- ind.Tyler[!duplicated(ind.Tyler[,'species']),]
+#ind.Tyler[duplicated(ind.Tyler[,'species']),"species"]
 
-ind.dat$species <- as.factor(ind.dat$species)
-summary(ind.dat$species)
+ind.Tyler$species <- as.factor(ind.Tyler$species)
+#summary(ind.Tyler$species)
 # no duplicates left
 
+# merge indicator data
+ind.dat <- merge(ind.Grime,ind.Tyler, by="species", all=T)
+#summary(ind.dat)
+#ind.dat[duplicated(ind.dat[,'species']),"species"]
+ind.dat$species <- as.factor(ind.dat$species)
+#summary(ind.dat$species)
 head(ind.dat)
+
 
 
 
@@ -343,7 +351,6 @@ length(levels(as.factor(ANO.geo$ano_flate_id)))
 length(levels(as.factor(ANO.geo$ano_punkt_id)))
 summary(as.factor(ANO.geo$ano_punkt_id))
 # there's many double presences, probably some wrong registrations of point numbers,
-# but also double registrations (e.g. ANO0159_55)
 # CHECK THIS when preparing ecosystem-datasets for scaling
 
 
@@ -352,27 +359,35 @@ summary(as.factor(ANO.geo$ano_punkt_id))
 # fix species names
 ANO.sp$Species <- ANO.sp$art_navn
 unique(as.factor(ANO.sp$Species))
+#ANO.sp$Species <- sub(".*?_", "", ANO.sp$Species) # lose the Norwegian name in the front
 ANO.sp[,'Species'] <- word(ANO.sp[,'Species'], 1,2) # lose subspecies
 ANO.sp$Species <- str_to_title(ANO.sp$Species) # make first letter capital
-ANO.sp$Species <- gsub("( .*)","\\L\\1",ANO.sp$Species,perl=TRUE) # make capital letters after hyphen to lowercase
+#ANO.sp$Species <- gsub("_", " ", ANO.sp$Species) # replace underscore with space
+ANO.sp$Species <- gsub("( .*)","\\L\\1",ANO.sp$Species,perl=TRUE) # make capital letters after hyphon to lowercase
 ANO.sp$Species <- gsub("( .*)","\\L\\1",ANO.sp$Species,perl=TRUE) # make capital letters after space to lowercase
-unique(as.factor(ANO.sp$Species))
-ANO.sp$Species <- gsub("�\u0097", "", ANO.sp$Species) # remove �\0097
-unique(as.factor(ANO.sp$Species))
-# removal does not work
-# \u0097 stands for the special x, so these species are all hybrids that won't find a match with ind.dat anyways -> can be ignored
+
 
 ## merge species data with indicators
 ANO.sp.ind <- merge(x=ANO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                y= ind.dat[,c("species", "Light","Moisture","Soil_reaction_pH","Nitrogen","Phosphorus","Grazing_mowing","Soil_disturbance")],
-                by.x="Species", by.y="species", all.x=T)
+                    y= ind.dat[,c("species","CC", "SS", "RR","Light", "Nitrogen", "Soil_disturbance")],
+                    by.x="Species", by.y="species", all.x=T)
 summary(ANO.sp.ind)
 
 
 ## checking which species didn't find a match
-unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
+unique(ANO.sp.ind[is.na(ANO.sp.ind$Light),'Species'])
 
 # fix species name issues
+ind.dat <- ind.dat %>% 
+  mutate(species=str_replace(species,"Aconitum lycoctonum", "Aconitum septentrionale")) %>% 
+  mutate(species=str_replace(species,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
+  mutate(species=str_replace(species,"Carex myosuroides", "Kobresia myosuroides")) %>%
+  mutate(species=str_replace(species,"Clinopodium acinos", "Acinos arvensis")) %>%
+  mutate(species=str_replace(species,"Artemisia rupestris", "Artemisia norvegica")) %>%
+  mutate(species=str_replace(species,"Cherleria biflora", "Minuartia biflora"))
+
+
+
 ANO.sp <- ANO.sp %>% 
   mutate(Species=str_replace(Species,"Arctous alpinus", "Arctous alpina")) %>%
   mutate(Species=str_replace(Species,"Betula tortuosa", "Betula pubescens")) %>%
@@ -428,14 +443,14 @@ ANO.sp <- ANO.sp %>%
 
 ## merge species data with indicators
 ANO.sp.ind <- merge(x=ANO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                    y= ind.dat[,c("species", "Light","Moisture","Soil_reaction_pH","Nitrogen","Phosphorus","Grazing_mowing","Soil_disturbance")],
+                    y= ind.dat[,c("species","CC", "SS", "RR","Light", "Nitrogen", "Soil_disturbance")],
                     by.x="Species", by.y="species", all.x=T)
 summary(ANO.sp.ind)
 # checking which species didn't find a match
-unique(ANO.sp.ind[is.na(ANO.sp.ind$Moisture),'Species'])
+unique(ANO.sp.ind[is.na(ANO.sp.ind$Light),'Species'])
 # don't find synonyms for these in the ind lists
 
-## trimming away the points without information on NiN, species or cover
+# trimming away the points without information on NiN, species or cover
 ANO.sp.ind <- ANO.sp.ind[!is.na(ANO.sp.ind$Species),]
 ANO.sp.ind <- ANO.sp.ind[!is.na(ANO.sp.ind$art_dekning),]
 
@@ -445,387 +460,263 @@ head(ANO.sp.ind)
 rm(ANO.sp)
 
 
-### ASO data handling
-## make ASO.geo into a spatial object
-names(ASO.geo)
-ASO.geo <- st_as_sf(x = ASO.geo, 
-                        coords = c("x", "y"),
-                        crs = "+proj=longlat +datum=WGS84 +ellps=WGS84")
+### GRUK data handling
+names(GRUK.variables)
+names(GRUK.species)
+names(GRUK2021.condition)
 
-colnames(ASO.geo)
-colnames(ASO.geo)[c(6,7,8,10,14,16,18,23,24)] <- c("Omradenummer_flatenummer","Eng_ID","ASO_ID","NiN_grunntype",
-                                                   "bruksintensitet",
-                                                   "beitetrykk",
-                                                   "slatteintensitet",
-                                                   "tungekjoretoy",
-                                                   "slitasje")
-
-
-## fix NiN-variables
-# remove variable code in the data
-ASO.geo$bruksintensitet
-ASO.geo$bruksintensitet <- gsub("7JB-BA_", "", ASO.geo$bruksintensitet) 
-unique(ASO.geo$bruksintensitet)
-ASO.geo$bruksintensitet <- gsub("X", "NA", ASO.geo$bruksintensitet)
-unique(ASO.geo$bruksintensitet)
-ASO.geo$bruksintensitet <- as.numeric(ASO.geo$bruksintensitet)
-unique(ASO.geo$bruksintensitet)
-
-ASO.geo$beitetrykk
-ASO.geo$beitetrykk <- gsub("7JB-BT_", "", ASO.geo$beitetrykk) 
-unique(ASO.geo$beitetrykk)
-ASO.geo$beitetrykk <- gsub("X", "NA", ASO.geo$beitetrykk)
-unique(ASO.geo$beitetrykk)
-ASO.geo$beitetrykk <- as.numeric(ASO.geo$beitetrykk)
-unique(ASO.geo$beitetrykk)
-
-ASO.geo$slatteintensitet
-ASO.geo$slatteintensitet <- gsub("7JB-SI_", "", ASO.geo$slatteintensitet) 
-unique(ASO.geo$slatteintensitet)
-ASO.geo$slatteintensitet <- gsub("X", "NA", ASO.geo$slatteintensitet)
-unique(ASO.geo$slatteintensitet)
-ASO.geo$slatteintensitet <- as.numeric(ASO.geo$slatteintensitet)
-unique(ASO.geo$slatteintensitet)
-
-ASO.geo$tungekjoretoy
-ASO.geo$tungekjoretoy <- gsub("MDirPRTK_", "", ASO.geo$tungekjoretoy) 
-unique(ASO.geo$tungekjoretoy)
-ASO.geo$tungekjoretoy <- gsub("X", "NA", ASO.geo$tungekjoretoy)
-unique(ASO.geo$tungekjoretoy)
-ASO.geo$tungekjoretoy <- as.numeric(ASO.geo$tungekjoretoy)
-unique(ASO.geo$tungekjoretoy)
-
-ASO.geo$slitasje
-ASO.geo$slitasje <- gsub("MDirPRSE_", "", ASO.geo$slitasje) 
-unique(ASO.geo$slitasje)
-ASO.geo$slitasje <- gsub("X", "NA", ASO.geo$slitasje)
-unique(ASO.geo$slitasje)
-ASO.geo$slitasje <- as.numeric(ASO.geo$slitasje)
-unique(ASO.geo$slitasje)
-
-
-
-## fixing variable names and issues in ASO.sp
-head(as.data.frame(ASO.sp))
-
-colnames(ASO.sp)
-colnames(ASO.sp)[8] <- "art_dekning"
+colnames(GRUK.species)[5] <- "art_dekning"
 
 # fix species names
-ASO.sp <- as.data.frame(ASO.sp)
+GRUK.species <- as.data.frame(GRUK.species)
 
-ASO.sp$Species <- ASO.sp$Navn
-unique(as.factor(ASO.sp$Species))
-ASO.sp$Species <- sub(".*?_", "", ASO.sp$Species) # lose the Norwegian name in the front
-ASO.sp$Species <- gsub("_", " ", ASO.sp$Species) # replace underscore with space
-ASO.sp$Species <- str_to_title(ASO.sp$Species) # make first letter capital
-ASO.sp$Species <- gsub("( .*)","\\L\\1",ASO.sp$Species,perl=TRUE) # make capital letters after hyphon to lowercase
-ASO.sp$Species <- gsub("( .*)","\\L\\1",ASO.sp$Species,perl=TRUE) # make capital letters after space to lowercase
-ASO.sp[,'Species'] <- word(ASO.sp[,'Species'], 1,2) # lose subspecies
+GRUK.species$Species <- GRUK.species$Navn
+unique(as.factor(GRUK.species$Species))
+GRUK.species$Species <- sub(".*?_", "", GRUK.species$Species) # lose the Norwegian name in the front
+GRUK.species$Species <- gsub("_", " ", GRUK.species$Species) # replace underscore with space
+GRUK.species$Species <- str_to_title(GRUK.species$Species) # make first letter capital
+GRUK.species$Species <- gsub("( .*)","\\L\\1",GRUK.species$Species,perl=TRUE) # make capital letters after hyphon to lowercase
+GRUK.species$Species <- gsub("( .*)","\\L\\1",GRUK.species$Species,perl=TRUE) # make capital letters after space to lowercase
+GRUK.species[,'Species'] <- word(GRUK.species[,'Species'], 1,2) # lose subspecies
 
-unique(as.factor(ASO.sp$Species))
+
 
 
 ## merge species data with indicators
-ASO.sp.ind <- merge(x=ASO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                          y= ind.dat[,c("species","Light","Moisture","Soil_reaction_pH","Nitrogen","Phosphorus","Grazing_mowing","Soil_disturbance")],
+GRUK.species.ind <- merge(x=GRUK.species[,c("Species", "art_dekning", "ParentGlobalID")], 
+                          y= ind.dat[,c("species","CC", "SS", "RR","Light", "Nitrogen", "Soil_disturbance")],
                           by.x="Species", by.y="species", all.x=T)
-summary(ASO.sp.ind)
+summary(GRUK.species.ind)
 
 
 # checking which species didn't find a match
-unique(ASO.sp.ind[is.na(ASO.sp.ind$Light & 
-                          is.na(ASO.sp.ind$Nitrogen)),'Species'])
+unique(GRUK.species.ind[is.na(GRUK.species.ind$Light & 
+                                is.na(GRUK.species.ind$RR)),'Species'])
+
 
 
 # fix species name issues
+ind.dat <- ind.dat %>% 
+  #  mutate(species=str_replace(species,"Aconitum lycoctonum", "Aconitum septentrionale")) %>% 
+  #  mutate(species=str_replace(species,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
+  #  mutate(species=str_replace(species,"Carex myosuroides", "Kobresia myosuroides")) %>%
+  #  mutate(species=str_replace(species,"Clinopodium acinos", "Acinos arvensis")) %>%
+  #  mutate(species=str_replace(species,"Artemisia rupestris", "Artemisia norvegica")) %>%
+  mutate(species=str_replace(species,"Rosa vosagica", "Rosa vosagiaca"))
 
-ASO.sp <- ASO.sp %>% 
-  mutate(Species=str_replace(Species,"Cardamine dentata", "Cardamine pratensis")) %>%
-  mutate(Species=str_replace(Species,"Chamaepericlymenum suecicum", "Cornus suecica")) %>%
-  mutate(Species=str_replace(Species,"Chamerion angustifolium", "Chamaenerion angustifolium")) %>%
-  mutate(Species=str_replace(Species,"Cicerbita alpina", "Lactuca alpina")) %>%
+
+
+GRUK.species <- GRUK.species %>% 
+  mutate(Species=str_replace(Species,"Arabis wahlenbergii", "Arabis hirsuta")) %>%
+  #  mutate(Species=str_replace(Species,"Arctous alpinus", "Arctous alpina")) %>%
+  #  mutate(Species=str_replace(Species,"Betula tortuosa", "Betula pubescens")) %>%
+  #  mutate(Species=str_replace(Species,"Blysmopsis rufa", "Blysmus rufus")) %>%
+  #  mutate(Species=str_replace(Species,"Cardamine nymanii", "Cardamine pratensis")) %>%
+  #  mutate(Species=str_replace(Species,"Carex adelostoma", "Carex buxbaumii")) %>%
+  #  mutate(Species=str_replace(Species,"Carex leersii", "Carex echinata")) %>%
+  mutate(Species=str_replace(Species,"Carex paupercula", "Carex magellanica")) %>%
+  #  mutate(Species=str_replace(Species,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
+  mutate(Species=str_replace(Species,"Carex viridula", "Carex flava")) %>%
+  #  mutate(Species=str_replace(Species,"Chamaepericlymenum suecicum", "Cornus suecia")) %>%
+  #  mutate(Species=str_replace(Species,"Cicerbita alpina", "Lactuca alpina")) %>%
+  mutate(Species=str_replace(Species,"Cotoneaster scandinavicus", "Cotoneaster integerrimus")) %>%
+  mutate(Species=str_replace(Species,"Cotoneaster symondsii", "Cotoneaster integrifolius")) %>%
+  mutate(Species=str_replace(Species,"Cyanus montanus", "Centaurea montana")) %>%
+  #  mutate(Species=str_replace(Species,"Empetrum hermaphroditum", "Empetrum nigrum")) %>%
+  mutate(Species=str_replace(Species,"Erysimum virgatum", "Erysimum strictum")) %>%
+  #  mutate(Species=str_replace(Species,"Festuca prolifera", "Festuca rubra")) %>%
+  mutate(Species=str_replace(Species,"Festuca trachyphylla", "Festuca brevipila")) %>%
   mutate(Species=str_replace(Species,"Galium album", "Galium mollugo")) %>%
+  #  mutate(Species=str_replace(Species,"Galium elongatum", "Galium palustre")) %>%
   mutate(Species=str_replace(Species,"Helictotrichon pratense", "Avenula pratensis")) %>%
   mutate(Species=str_replace(Species,"Helictotrichon pubescens", "Avenula pubescens")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium alpina", "Hieracium Alpina")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium alpinum", "Hieracium Alpina")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium hieracium", "Hieracium Hieracium")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium hieracioides", "Hieracium umbellatum")) %>%
   mutate(Species=str_replace(Species,"Hieracium murorum", "Hieracium Vulgata")) %>%
-  mutate(Species=str_replace(Species,"Hieracium vulgatum", "Hieracium umbellatum")) %>%
-  mutate(Species=str_replace(Species,"Hylotelephium maximum", "Hylotelephium telephium")) %>%
-  mutate(Species=str_replace(Species,"Listera cordata", "Neottia cordata")) %>%
-  mutate(Species=str_replace(Species,"Listera ovata", "Neottia ovata")) %>%
-  mutate(Species=str_replace(Species,"Omalotheca norvegica", "Gnaphalium norvegicum")) %>%
-  mutate(Species=str_replace(Species,"Omalotheca sylvatica", "Gnaphalium sylvaticum")) %>%
-  mutate(Species=str_replace(Species,"Oreopteris limbosperma", "Thelypteris limbosperma")) %>%
-  mutate(Species=str_replace(Species,"Potentilla anserina", "Argentina anserina")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium oreadea", "Hieracium Oreadea")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium prenanthoidea", "Hieracium Prenanthoidea")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium vulgata", "Hieracium Vulgata")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium pilosella", "Pilosella officinarum")) %>%
+  #  mutate(Species=str_replace(Species,"Hieracium vulgatum", "Hieracium umbellatum")) %>%
+  #  mutate(Species=str_replace(Species,"Hierochloã« alpina", "Hierochloë alpina")) %>%
+  #  mutate(Species=str_replace(Species,"Hierochloã« hirta", "Hierochloë hirta")) %>%
+  #  mutate(Species=str_replace(Species,"Hierochloã« odorata", "Hierochloë odorata")) %>%
+  mutate(Species=str_replace(Species,"Hylotelephium maximum", "Sedum telephium")) %>%
+  #  mutate(Species=str_replace(Species,"Listera cordata", "Neottia cordata")) %>%
+  #  mutate(Species=str_replace(Species,"Leontodon autumnalis", "Scorzoneroides autumnalis")) %>%
+  mutate(Species=str_replace(Species,"Lepidotheca suaveolens", "Matricaria discoidea")) %>%
+  #  mutate(Species=str_replace(Species,"Loiseleuria procumbens", "Kalmia procumbens")) %>%
+  mutate(Species=str_replace(Species,"Malus ×domestica", "Malus domestica")) %>%
+  #  mutate(Species=str_replace(Species,"Mycelis muralis", "Lactuca muralis")) %>%
+  #  mutate(Species=str_replace(Species,"Omalotheca supina", "Gnaphalium supinum")) %>%
+  #  mutate(Species=str_replace(Species,"Omalotheca norvegica", "Gnaphalium norvegicum")) %>%
+  #  mutate(Species=str_replace(Species,"Omalotheca sylvatica", "Gnaphalium sylvaticum")) %>%
+  #  mutate(Species=str_replace(Species,"Oreopteris limbosperma", "Thelypteris limbosperma")) %>%
+  #  mutate(Species=str_replace(Species,"Oxycoccus microcarpus", "Vaccinium microcarpum")) %>%
+  #  mutate(Species=str_replace(Species,"Oxycoccus palustris", "Vaccinium oxycoccos")) %>%
+  #  mutate(Species=str_replace(Species,"Phalaris minor", "Phalaris arundinacea")) %>%
+  #  mutate(Species=str_replace(Species,"Pinus unicinata", "Pinus mugo")) %>%
+  #  mutate(Species=str_replace(Species,"Poa alpigena", "Poa pratensis")) %>%
+  mutate(Species=str_replace(Species,"Poa angustifolia", "Poa pratensis")) %>%
+  mutate(Species=str_replace(Species,"Poa humilis", "Poa pratensis")) %>%
+  #  mutate(Species=str_replace(Species,"Pyrola grandiflora", "Pyrola rotundifolia")) %>%
   mutate(Species=str_replace(Species,"Rosa dumalis", "Rosa vosagiaca")) %>%
-  mutate(Species=str_replace(Species,"Rubus fruticosus", "Rubus plicatus")) %>%
-  mutate(Species=str_replace(Species,"Rumex alpestris", "Rumex acetosa"))
+  #  mutate(Species=str_replace(Species,"Rumex alpestris", "Rumex acetosa")) %>%
+  #  mutate(Species=str_replace(Species,"Syringa emodi", "Syringa vulgaris")) %>%
+  #  mutate(Species=str_replace(Species,"Taraxacum crocea", "Taraxacum officinale")) %>%
+  #  mutate(Species=str_replace(Species,"Taraxacum croceum", "Taraxacum officinale")) %>%
+  #  mutate(Species=str_replace(Species,"Trientalis europaea", "Lysimachia europaea")) %>%
+  mutate(Species=str_replace(Species,"Trifolium pallidum", "Trifolium pratense"))
 
 ## merge species data with indicators
-ASO.sp.ind <- merge(x=ASO.sp[,c("Species", "art_dekning", "ParentGlobalID")], 
-                    y= ind.dat[,c("species","Light","Moisture","Soil_reaction_pH","Nitrogen","Phosphorus","Grazing_mowing","Soil_disturbance")],
-                    by.x="Species", by.y="species", all.x=T)
-summary(ASO.sp.ind)
+GRUK.species.ind <- merge(x=GRUK.species[,c("Species", "art_dekning", "ParentGlobalID")], 
+                          y= ind.dat[,c("species","CC", "SS", "RR","Light", "Nitrogen", "Soil_disturbance")],
+                          by.x="Species", by.y="species", all.x=T)
+summary(GRUK.species.ind)
 # checking which species didn't find a match
-unique(ASO.sp.ind[is.na(ASO.sp.ind$Light & 
-                          is.na(ASO.sp.ind$Nitrogen)),'Species'])
+unique(GRUK.species.ind[is.na(GRUK.species.ind$Light & 
+                                is.na(GRUK.species.ind$RR)),'Species'])
 
-# the rest can be omitted
+### make GRUK.variables into spatial object
+names(GRUK.variables)
+GRUK.variables <- st_as_sf(GRUK.variables, coords = c("x","y"),remove=F)
+# add CRS
+GRUK.variables <- st_set_crs(GRUK.variables,4326)
+# transform CRS to match ANO
+GRUK.variables <- GRUK.variables %>%
+  st_as_sf() %>%
+  st_transform(crs = st_crs(ANO.geo))
+
+### merge GRUK.variables and GRUK2021.condition
+#GRUK.variables <- as.data.frame(GRUK.variables)
+GRUK2021.condition <- as.data.frame(GRUK2021.condition)
+
+head(GRUK.variables)
+head(GRUK2021.condition)
+
+## fixing site-ID in the condition-data
+GRUK2021.condition$Flate_ID <- GRUK2021.condition$områdenavn
+unique(as.factor(GRUK2021.condition$Flate_ID))
+GRUK2021.condition$Flate_ID <- gsub("_", " ", GRUK2021.condition$Flate_ID) # replace underscore with space
+unique(as.factor(GRUK2021.condition$Flate_ID))
+GRUK2021.condition$Flate_ID <- sub(" .*", "", GRUK2021.condition$Flate_ID) # remove everything after space
+unique(as.factor(GRUK2021.condition$Flate_ID))
+
+#GRUK2021.condition$Flate_ID <- gsub(" ", "-", GRUK2021.condition$Flate_ID) # replace space with hyphon
+#GRUK2021.condition$Flate_ID <- gsub("[^0-9\\-]", "", GRUK2021.condition$Flate_ID) # remove all non-numerics except '-'
+#GRUK2021.condition$Flate_ID <- gsub("--", "-", GRUK2021.condition$Flate_ID) # remove double hyphons
+#GRUK2021.condition$Flate_ID <- substr(GRUK2021.condition$Flate_ID, 1, nchar(GRUK2021.condition$Flate_ID)-1) # remove the last character ('-' for all)
+
+
+colnames(GRUK.variables)
+colnames(GRUK2021.condition)
+
+GRUK.variables <- merge(x=GRUK.variables, 
+                        y=GRUK2021.condition[,c("tilstandsvurdering","tilstandsgrunn","artsmangfoldvurdering","lokalitetskvalitet","Flate_ID")], 
+                        by.x="Flate_ID", by.y="Flate_ID", all.x=T)
+
 
 
 ## adding information on ecosystem and condition variables to species data
-names(ASO.sp.ind)
-names(ASO.geo)
-ASO.sp.ind <- merge(x=ASO.sp.ind, 
-                    y=ASO.geo[,c("GlobalID","Omradenummer_flatenummer","Eng_ID","ASO_ID","NiN_grunntype")], 
-                    by.x="ParentGlobalID", by.y="GlobalID", all.x=T)
+GRUK.species.ind <- merge(x=GRUK.species.ind, 
+                          y=GRUK.variables[,c("GlobalID","year","Flate_ID","Punkt_ID",
+                                              "Total dekning % av karplanter registert","Dekning % av karplanter i feltsjikt","Dekning % av moser",
+                                              "Dekning % av lav","Dekning % av strø","Dekning % av bar jord/grus/stein/berg",
+                                              "Kartleggingsenhet",
+                                              "Spor etter ferdsel med tunge kjøretøy (%)","Spor etter slitasje og slitasjebetinget erosjon (%)","Dekning % av nakent berg","Menneskeskapte objekter i sirkelen?",
+                                              "Total dekning % av vedplanter i feltsjikt","Dekning % av busker i busksjikt","Dekning % av tresjikt","Dekning % av problemarter","Total dekning % av fremmede arter",
+                                              "x","y")], 
+                          by.x="ParentGlobalID", by.y="GlobalID", all.x=T)
 # trimming away the points without information on NiN, species or cover
-ASO.sp.ind <- ASO.sp.ind[!is.na(ASO.sp.ind$NiN_grunntype),]
-ASO.sp.ind <- ASO.sp.ind[!is.na(ASO.sp.ind$Species),]
-ASO.sp.ind <- ASO.sp.ind[!is.na(ASO.sp.ind$art_dekning),]
+GRUK.species.ind <- GRUK.species.ind[!is.na(GRUK.species.ind$Species),]
+GRUK.species.ind <- GRUK.species.ind[!is.na(GRUK.species.ind$art_dekning),]
 
-#rm(ASO.sp)
-#rm(ASO.geo)
+#rm(GRUK.species)
+#rm(GRUK.variables)
 
 
-summary(ASO.sp.ind)
-head(ASO.sp.ind)
-
+summary(GRUK.species.ind)
+head(GRUK.species.ind)
 
 
 
-### NiN reference data - data handling
+### reference data - data handling
 
-## generalized species lists from NiN
-str(Eco_State)
+head(natopen_NiN_ref)
+head(natopen_NiN_ref_spInfo)
 
-# species
-Eco_State$Concept_Data$Species$Species_List$species
-# environments
-t(Eco_State$Concept_Data$Env$Env_Data)
-# abundances
-t(Eco_State$Concept_Data$Species$Species_Data)
+colnames(natopen_NiN_ref)[1] <- "sp"
+head(natopen_NiN_ref)
 
-## transposing abundance data
-NiN.sp <- t(Eco_State$Concept_Data$Species$Species_Data)
-NiN.sp <- as.data.frame(NiN.sp)
-NiN.sp$sp <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$species))
+natopen_NiN_ref <- merge(natopen_NiN_ref,natopen_NiN_ref_spInfo[,c(1,4)], by.x="sp", by.y="ScientificName", all.x=T)
+unique(natopen_NiN_ref[is.na(natopen_NiN_ref$Phylum),'sp']) # Pucinella does not exist in ind.dat, so we don't care
+# we're only interested in vascular plants and ferns, which we have indicators on
+unique(natopen_NiN_ref$Phylum)
+natopen_NiN_ref <- natopen_NiN_ref %>%
+  filter(Phylum %in% c("Magnoliophyta","Pteridophyta"))
+unique(natopen_NiN_ref$Phylum)
+
+
+
+natopen_NiN_ref$sp
 # only genus and species name
-NiN.sp$sp <- word(NiN.sp$sp, 1,2)
-NiN.sp$spgr <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$art.code))
-# if relevant, trimming to desired species groups (for forests e.g. removing trees)
-# here we remove trees as they represent a driver for vegetation change in the field layer
-NiN.sp <- NiN.sp[NiN.sp$spgr!="a1a",]
-
-## environment data
-NiN.env <- Eco_State$Concept_Data$Env$Env_Data
-
-## merging with indicator values
-NiN.sp.ind <- merge(NiN.sp,ind.dat, by.x="sp", by.y="species", all.x=T)
-summary(NiN.sp.ind)
-
-NiN.sp.ind[NiN.sp.ind==999] <- NA
-
-## checking which species didn't find a match
-unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) & NiN.sp.ind$spgr %in% list("a1a","a1b","a1c"),'sp'])
-
-ind.dat <- ind.dat %>% 
-  mutate(species=str_replace(species,"Aconitum lycoctonum", "Aconitum septentrionale")) %>% 
-  mutate(species=str_replace(species,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
-  mutate(species=str_replace(species,"Carex myosuroides", "Kobresia myosuroides")) %>%
-  mutate(species=str_replace(species,"Clinopodium acinos", "Acinos arvensis")) %>%
-  mutate(species=str_replace(species,"Artemisia rupestris", "Artemisia norvegica")) %>%
-  mutate(species=str_replace(species,"Cherleria biflora", "Minuartia biflora"))
+natopen_NiN_ref$sp.orig <- natopen_NiN_ref$sp
+natopen_NiN_ref$sp <- word(natopen_NiN_ref$sp, 1,2)
+natopen_NiN_ref <- natopen_NiN_ref[!is.na(natopen_NiN_ref$sp),]
+# merging with indicator values
+NiN.natopen <- merge(natopen_NiN_ref,ind.dat[,c(1,3:5,20,23,27)], by.x="sp", by.y="species", all.x=T)
+head(NiN.natopen)
+summary(NiN.natopen)
 
 
 
-NiN.sp <- NiN.sp %>% 
-  mutate(sp=str_replace(sp,"Aconitum lycoctonum", "Aconitum septentrionale")) %>% 
-  mutate(sp=str_replace(sp,"Anagallis minima", "Lysimachia minima")) %>% 
-  mutate(sp=str_replace(sp,"Arctous alpinus", "Arctous alpina")) %>%
-  mutate(sp=str_replace(sp,"Betula tortuosa", "Betula pubescens")) %>%
-  mutate(sp=str_replace(sp,"Blysmopsis rufa", "Blysmus rufus")) %>%
-  mutate(sp=str_replace(sp,"Cardamine nymanii", "Cardamine pratensis")) %>%
-  mutate(sp=str_replace(sp,"Carex adelostoma", "Carex buxbaumii")) %>%
-  mutate(sp=str_replace(sp,"Carex leersii", "Carex echinata")) %>%
-  mutate(sp=str_replace(sp,"Carex paupercula", "Carex magellanica")) %>%
-  mutate(sp=str_replace(sp,"Carex simpliciuscula", "Kobresia simpliciuscula")) %>%
-  mutate(sp=str_replace(sp,"Carex _vacillans", "Carex vacillans")) %>%
-  mutate(sp=str_replace(sp,"Carex viridula", "Carex flava")) %>%
-  mutate(sp=str_replace(sp,"Chamaepericlymenum suecicum", "Cornus suecia")) %>%
-  mutate(sp=str_replace(sp,"Cornus suecia", "Cornus suecica")) %>%
-  mutate(sp=str_replace(sp,"Cicerbita alpina", "Lactuca alpina")) %>%
-  mutate(sp=str_replace(sp,"Dactylorhiza sphagnicola", "Dactylorhiza majalis")) %>%
-  mutate(sp=str_replace(sp,"Diphasiastrum complanatum", "Lycopodium complanatum")) %>%
-  mutate(sp=str_replace(sp,"Elymus alaskanus", "Elymus kronokensis")) %>%
-  mutate(sp=str_replace(sp,"Empetrum hermaphroditum", "Empetrum nigrum")) %>%
-  mutate(sp=str_replace(sp,"Erigeron eriocephalus", "Erigeron uniflorus")) %>%
-  mutate(sp=str_replace(sp,"Festuca prolifera", "Festuca rubra")) %>%
-  mutate(sp=str_replace(sp,"Galium album", "Galium mollugo")) %>%
-  mutate(sp=str_replace(sp,"Galium elongatum", "Galium palustre")) %>%
-  mutate(sp=str_replace(sp,"Glaux maritima", "Lysimachia maritima")) %>%
-  mutate(sp=str_replace(sp,"Helictotrichon pratense", "Avenula pratensis")) %>%
-  mutate(sp=str_replace(sp,"Helictotrichon pubescens", "Avenula pubescens")) %>%
-  mutate(sp=str_replace(sp,"Hieracium alpina", "Hieracium Alpina")) %>%
-  mutate(sp=str_replace(sp,"Hieracium alpinum", "Hieracium Alpina")) %>%
-  mutate(sp=str_replace(sp,"Hieracium aurantiacum", "Pilosella aurantiaca")) %>%
-  mutate(sp=str_replace(sp,"Hieracium hieracium", "Hieracium Hieracium")) %>%
-  mutate(sp=str_replace(sp,"Hieracium hieracioides", "Hieracium umbellatum")) %>%
-  mutate(sp=str_replace(sp,"Hieracium lactucella", "Pilosella lactucella")) %>%
-  mutate(sp=str_replace(sp,"Hieracium murorum", "Hieracium Vulgata")) %>%
-  mutate(sp=str_replace(sp,"Hieracium oreadea", "Hieracium Oreadea")) %>%
-  mutate(sp=str_replace(sp,"Hieracium prenanthoidea", "Hieracium Prenanthoidea")) %>%
-  mutate(sp=str_replace(sp,"Hieracium vulgata", "Hieracium Vulgata")) %>%
-  mutate(sp=str_replace(sp,"Hieracium pilosella", "Pilosella officinarum")) %>%
-  mutate(sp=str_replace(sp,"Hieracium vulgatum", "Hieracium umbellatum")) %>%
-  mutate(sp=str_replace(sp,"Hierochloã« alpina", "Hierochloë alpina")) %>%
-  mutate(sp=str_replace(sp,"Hierochloã« hirta", "Hierochloë hirta")) %>%
-  mutate(sp=str_replace(sp,"Hierochloã« odorata", "Hierochloë odorata")) %>%
-  mutate(sp=str_replace(sp,"Huperzia appressa", "Huperzia selago")) %>%
-  mutate(sp=str_replace(sp,"Hylotelephium maximum", "Hylotelephium telephium")) %>%
-  mutate(sp=str_replace(sp,"Lappula myosotis", "Lappula squarrosa")) %>%
-  mutate(sp=str_replace(sp,"Lepidotheca suaveolens", "Matricaria discoidea")) %>%
-  mutate(sp=str_replace(sp,"Listera cordata", "Neottia cordata")) %>%
-  mutate(sp=str_replace(sp,"Leontodon autumnalis", "Scorzoneroides autumnalis")) %>%
-  mutate(sp=str_replace(sp,"Loiseleuria procumbens", "Kalmia procumbens")) %>%
-  mutate(sp=str_replace(sp,"Logfia arvensis", "Filago arvensis")) %>%
-  mutate(sp=str_replace(sp,"Mentha _verticillata", "Mentha verticillata")) %>%
-  mutate(sp=str_replace(sp,"Minuartia rubella", "Sabulina rubella")) %>%
-  mutate(sp=str_replace(sp,"Minuartia stricta", "Sabulina stricta")) %>%
-  mutate(sp=str_replace(sp,"Mycelis muralis", "Lactuca muralis")) %>%
-  mutate(sp=str_replace(sp,"Omalotheca supina", "Gnaphalium supinum")) %>%
-  mutate(sp=str_replace(sp,"Omalotheca norvegica", "Gnaphalium norvegicum")) %>%
-  mutate(sp=str_replace(sp,"Omalotheca sylvatica", "Gnaphalium sylvaticum")) %>%
-  mutate(sp=str_replace(sp,"Ononis arvensis", "Ononis spinosa")) %>%
-  mutate(sp=str_replace(sp,"Oreopteris limbosperma", "Thelypteris limbosperma")) %>%
-  mutate(sp=str_replace(sp,"Oxycoccus microcarpus", "Vaccinium microcarpum")) %>%
-  mutate(sp=str_replace(sp,"Oxycoccus palustris", "Vaccinium oxycoccos")) %>%
-  mutate(sp=str_replace(sp,"Phalaris minor", "Phalaris arundinacea")) %>%
-  mutate(sp=str_replace(sp,"Phalaroides arundinacea", "Phalaris arundinacea")) %>%
-  mutate(sp=str_replace(sp,"Pinus unicinata", "Pinus mugo")) %>%
-  mutate(sp=str_replace(sp,"Platanthera montana", "Platanthera chlorantha")) %>%
-  mutate(sp=str_replace(sp,"Poa alpigena", "Poa pratensis")) %>%
-  mutate(sp=str_replace(sp,"Poa angustifolia", "Poa pratensis")) %>%
-  mutate(sp=str_replace(sp,"Poa laxa", "Poa flexuosa")) %>%
-  mutate(sp=str_replace(sp,"Poa _herjedalica", "Poa herjedalica")) %>%
-  mutate(sp=str_replace(sp,"Poa _jemtlandica", "Poa jemtlandica")) %>%
-  mutate(sp=str_replace(sp,"Poa lindebergii", "Poa arctica")) %>%
-  mutate(sp=str_replace(sp,"Pyrola grandiflora", "Pyrola rotundifolia")) %>%
-  mutate(sp=str_replace(sp,"Rhamnus catharticus", "Rhamnus cathartica")) %>%
-  mutate(sp=str_replace(sp,"Rumex alpestris", "Rumex acetosa")) %>%
-  mutate(sp=str_replace(sp,"Salix _fragilis", "Salix fragilis")) %>%
-  mutate(sp=str_replace(sp,"Saxifraga _opdalensis", "Saxifraga opdalensis")) %>%
-  mutate(sp=str_replace(sp,"Spergularia salina", "Spergularia marina")) %>%
-  mutate(sp=str_replace(sp,"Syringa emodi", "Syringa vulgaris")) %>%
-  mutate(sp=str_replace(sp,"Taraxacum crocea", "Taraxacum officinale")) %>%
-  mutate(sp=str_replace(sp,"Taraxacum croceum", "Taraxacum officinale")) %>%
-  mutate(sp=str_replace(sp,"Taraxacum erythrospermum", "Taraxacum officinale")) %>%
-  mutate(sp=str_replace(sp,"Taraxacum hamatum", "Taraxacum officinale")) %>%
-  mutate(sp=str_replace(sp,"Trientalis europaea", "Lysimachia europaea")) %>%
-  mutate(sp=str_replace(sp,"Trifolium pallidum", "Trifolium pratense")) %>%
-  mutate(sp=str_replace(sp,"Vicia orobus", "Vicia cassubica"))
-
-
-## merge species data with indicators
-NiN.sp.ind <- merge(NiN.sp,ind.dat, by.x="sp", by.y="species", all.x=T)
-summary(NiN.sp.ind)
-
-NiN.sp.ind[NiN.sp.ind==999] <- NA
+NiN.natopen
+unique(NiN.natopen$sp)
+#NiN.sp$spgr <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$art.code))
 
 # checking which species didn't find a match
-unique(NiN.sp.ind[is.na(NiN.sp.ind$Moisture) & NiN.sp.ind$spgr %in% list("a1a","a1b","a1c"),'sp'])
+unique(NiN.natopen[is.na(NiN.natopen$Light) & is.na(NiN.natopen$Nitrogen) & is.na(NiN.natopen$RR),'sp'])
+
+# fix species name issues
+natopen_NiN_ref <- natopen_NiN_ref %>% 
+  mutate(sp=str_replace(sp,"Cirsium acaulon", "Cirsium acaule")) %>%
+  mutate(sp=str_replace(sp,"Hylotelephium maximum", "Hylotelephium telephium"))
+
+ind.dat[2556,'species'] <- "Saxifraga osloënsis"
+ind.dat[17,'species'] <- "Hierochloë odorata"
+ind.dat[9,'species'] <- "Hippophaë rhamnoides"
+
+
+# merging with indicator values
+NiN.natopen <- merge(natopen_NiN_ref,ind.dat[,c(1,3:5,20,23,27)], by.x="sp", by.y="species", all.x=T)
+# checking which species didn't find a match
+unique(NiN.natopen[is.na(NiN.natopen$Light) & is.na(NiN.natopen$Nitrogen) & is.na(NiN.natopen$RR),'sp'])
 # ok now
-
-## matching with NiN ecosystem types - for semi-natural ecosystems
-# NB! beware of rogue spaces in the 'Nature_type' & 'Sub_Type' variables, e.g. "Spring_Forest "
-levels(NiN.env$Nature_Type)
-NiN.seminat <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type %in% list("Semi_Natural ","Coastal_Heath"),"ID"]),colnames(ind.dat)[c(15:19,21,22)])]   # Light, Moisture, Soil_reaction_pH, Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance
-
-NiN.seminat[1,]
-names(NiN.seminat)
-
-cbind(colnames(NiN.seminat),
-      c("",
-        'T34-C1',
-        'T34-C2a','T34-C2b','T34-C2c',
-        '',
-        'T34-C3',
-        'T34-C4a','T34-C4b','T34-C4c','T34-C4d',
-        'T34-C5a','T34-C5b','T34-C5c',
-        'T34-C6a','T34-C6b','T34-C6c',
-        '',
-        rep('',7),
-        'T32-C1C2','T32-C3C4',
-        'T32-C5C20a',
-        'T32-C7C8',
-        'T32-C5C20b',
-        'T32-C9a',
-        'T32-C9b',
-        'T32-C15',
-        'T32-C21C6a',
-        'T32-C21C6b',
-        'T32-C10a',
-        'T32-C10b',
-        'T32-C16',
-        'T41a','T41b',
-        'T45-C1C2','T45-C3',
-        'V10-C1C2','V10-C3',
-        rep("",7)
-      )
-)
-
-
-colnames(NiN.seminat)
-colnames(NiN.seminat)[2:44] <- c( 'T34-C1',
-                                  'T34-C2a','T34-C2b','T34-C2c',
-                                  NA,
-                                  'T34-C3',
-                                  'T34-C4a','T34-C4b','T34-C4c','T34-C4d',
-                                  'T34-C5a','T34-C5b','T34-C5c',
-                                  'T34-C6a','T34-C6b','T34-C6c',
-                                  NA,
-                                  rep(NA,7),
-                                  'T32-C1C2','T32-C3C4',
-                                  'T32-C5C20a',
-                                  'T32-C7C8',
-                                  'T32-C5C20b',
-                                  'T32-C9a',
-                                  'T32-C9b',
-                                  'T32-C15',
-                                  'T32-C21C6a',
-                                  'T32-C21C6b',
-                                  'T32-C10a',
-                                  'T32-C10b',
-                                  'T32-C16',
-                                  'T41a','T41b',
-                                  'T45-C1C2','T45-C3',
-                                  'V10-C1C2','V10-C3'
-)
-head(NiN.seminat)
-colnames(NiN.seminat)
-NiN.seminat <- NiN.seminat[,-c(6,18:25)]
-
 
 
 # translating the abundance classes into %-cover
 coverscale <- data.frame(orig=0:6,
-                         cov=c(0,1/32,1/8,3/8,0.6,4/5,1)
+                         cov=c(0, 1/32 ,1/8, 3/8, 0.6, 4/5, 1)
 )
 
-NiN.seminat.cov <- NiN.seminat
-colnames(NiN.seminat.cov)
-for (i in 2:35) {
-  NiN.seminat.cov[,i] <- coverscale[,2][ match(NiN.seminat[,i], 0:6 ) ]
+NiN.natopen.cov <- NiN.natopen
+colnames(NiN.natopen.cov)
+for (i in 2:71) {
+  NiN.natopen.cov[,i] <- coverscale[,2][ match(NiN.natopen[,i], 0:6 ) ]
 }
 
+summary(NiN.natopen)
+summary(NiN.natopen.cov)
 
-NiN.seminat.cov$sp <- as.factor(NiN.seminat.cov$sp)
 ```
-leaving us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov)
+leaving us with the monitoring data including plant indicators (ANO.sp.ind, GRUK.species.ind) and the reference data including plant indicators (NiN.natopen.cov)
 
 ```{r}
 head(ANO.sp.ind)
-head(NiN.seminat.cov)
+head(GRUK.species.ind)
+head(NiN.natopen.cov)
 ```
 For each ecosystem type with a NiN species list, we can calculate a community weighted mean (CWM) for the relevant functional plant indicators.
 For semi-natural ecosystems, we are testing "Light", "Moisture", "Soil_reaction_pH", "Nitrogen", "Phosphorus", "Grazing_mowing", and "Soil_disturbance". In order to get distributions of CWMs rather than one single value (for comparison with the empirical testing data) the NiN lists can be bootstrapped.
@@ -901,36 +792,33 @@ indBoot.freq <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
 Running the bootstraps
 
 ```{r, echo = T, eval = F}
-colnames(NiN.seminat)
+colnames(NiN.natopen)
 # 1st column is the species
-# 2nd-35th column is the abundances of sp in different ecosystem types
-# 36th-42nd column is the indicator values of the respective species
+# 6th-71st column is the abundances of sp in different ecosystem types
+# 74th-79th column is the indicator values of the respective species
 # we choose 1000 iterations
 # species with abundance 1 (i.e. a max of 100%, must be included in each sample)
 # each sample re-samples 1/3 of the number of species
 # the abundance of the re-sampled species may vary (see bootstrap function for details)
-seminat.ref.cov <- indBoot.freq(sp=NiN.seminat.cov[,1],abun=NiN.seminat.cov[,2:35],ind=NiN.seminat.cov[,36:42],
-                                iter=1000,obl=1,rat=1/3,var.abun=T)
+natopen.ref.cov <- indBoot.freq(sp=NiN.natopen.cov[,1],abun=NiN.natopen.cov[,6:71],ind=NiN.natopen.cov[,74:79],iter=1000,obl=1,rat=1/3,var.abun=T)
 
-# fixing NaNs
-for (i in 1:length(seminat.ref.cov) ) {
-  for (j in 1:ncol(seminat.ref.cov[[i]]) ) {
-    v <- seminat.ref.cov[[i]][,j]
+### fixing NaN's
+for (i in 1:length(natopen.ref.cov) ) {
+  for (j in 1:ncol(natopen.ref.cov[[i]]) ) {
+    v <- natopen.ref.cov[[i]][,j]
     v[is.nan(v)] <- NA
-    seminat.ref.cov[[i]][,j] <- v
+    natopen.ref.cov[[i]][,j] <- v
   }
 }
 ```
 
 ```{r, include = F}
 # Data from cache
-seminat.ref.cov<-readRDS(paste0(here::here(), "/data/cache/seminat.ref.cov.RDS"))
-
-#load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_seminat.RData")
+natopen.ref.cov<-readRDS(paste0(here::here(), "/data/cache/natopen.ref.cov.RDS"))
 ```
 
 ```{r}
-head(seminat.ref.cov[[1]])
+head(natopen.ref.cov[[1]])
 ```
 
 This results in an R-list with a slot for every selected indicator, and in every slot there's a data frame with as many columns as there are NiN species lists and as many rows as there were iterations in the bootstrap.
@@ -942,92 +830,55 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 
 ```{r, echo = F}
 
-# every NiN-type is represented by one 'generalisert artsliste'
-# some NiN-types are represented by two such species lists
-# in some cases two NiN-types are represented by the same species list
-head(seminat.ref.cov[[1]])
-seminat.ref.cov[[1]][0,]
-
 # NiN-types where each type is represented by one species list (including when one species list represents two NiN-types)
-names(seminat.ref.cov[["Light"]])
-x <- c(1,5,16,17,19,23,28,31:34)
+names(natopen.ref.cov[["Light"]])
+x <- 1:66
 
-# checking the actual NiN-types in the seminat lists
-seminat.NiNtypes <- colnames(seminat.ref.cov[["Light"]])
-seminat.NiNtypes[-x] <- substr(seminat.NiNtypes[-x], 1, nchar(seminat.NiNtypes[-x])-1)
-seminat.NiNtypes
+# checking the actual NiN-types in the natopen lists
+natopen.NiNtypes <- colnames(natopen.ref.cov[["Light"]])
+natopen.NiNtypes[-x] <- substr(natopen.NiNtypes[-x], 1, nchar(natopen.NiNtypes[-x])-1)
+natopen.NiNtypes
 
-# 7 indicator-value indicators: Tyler's Light, Moisture, Soil_reaction_pH, Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance"
-indEll.n=7
+# 7 indicator-value indicators: Grimes C, S and R, Tyler's Light, Nitrogen, and Soil_disturbance
+indEll.n=6
 # creating a table to hold:
 # Tyler: the 0.5 quantile (median), 0.05 quantile and  0.95 quantile for each NiN-type
 # for every nature type (nrows)
-tab <- matrix(ncol=3*indEll.n, nrow=length(unique(seminat.NiNtypes)) ) # 34 basic ecosystem types
+tab <- matrix(ncol=3*indEll.n, nrow=length(unique(natopen.NiNtypes)) ) # 66 basic ecosystem types
 # coercing the values into the table
 
 
 for (i in 1:length(x) ) {
-  tab[i,1:3] <- quantile(as.matrix(seminat.ref.cov[["Light"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,4:6] <- quantile(as.matrix(seminat.ref.cov[["Moisture"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,7:9] <- quantile(as.matrix(seminat.ref.cov[["Soil_reaction_pH"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,10:12] <- quantile(as.matrix(seminat.ref.cov[["Nitrogen"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,13:15] <- quantile(as.matrix(seminat.ref.cov[["Phosphorus"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,16:18] <- quantile(as.matrix(seminat.ref.cov[["Grazing_mowing"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[i,19:21] <- quantile(as.matrix(seminat.ref.cov[["Soil_disturbance"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,1:3] <- quantile(as.matrix(natopen.ref.cov[["CC"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,4:6] <- quantile(as.matrix(natopen.ref.cov[["SS"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,7:9] <- quantile(as.matrix(natopen.ref.cov[["RR"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,10:12] <- quantile(as.matrix(natopen.ref.cov[["Light"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,13:15] <- quantile(as.matrix(natopen.ref.cov[["Nitrogen"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
+  tab[i,16:18] <- quantile(as.matrix(natopen.ref.cov[["Soil_disturbance"]][,x[i]]),probs=c(0.025,0.5,0.975),na.rm=T)
 
 }
 
 tab <- as.data.frame(tab)
 tab$NiN <- NA
-tab$NiN[1:length(x)] <- names(seminat.ref.cov[[1]])[x]
+tab$NiN[1:length(x)] <- names(natopen.ref.cov[[1]])[x]
 tab
 
-# NiN-types represented by several species lists
-seminat.NiNtypes2 <- seminat.NiNtypes[-x]
-unique(seminat.NiNtypes2)
-grep(pattern=unique(seminat.NiNtypes2)[1], x=seminat.NiNtypes) # finds columns in e.g. colnames(seminat.ref.cov[["Continentality"]]) that match the first NiN-type
-
-
-for (i in 1:length(unique(seminat.NiNtypes2)) ) {
-  tab[length(x)+i,1:3] <- quantile(as.matrix(seminat.ref.cov[["Light"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,4:6] <- quantile(as.matrix(seminat.ref.cov[["Moisture"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,7:9] <- quantile(as.matrix(seminat.ref.cov[["Soil_reaction_pH"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,10:12] <- quantile(as.matrix(seminat.ref.cov[["Nitrogen"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,13:15] <- quantile(as.matrix(seminat.ref.cov[["Phosphorus"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,16:18] <- quantile(as.matrix(seminat.ref.cov[["Grazing_mowing"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  tab[length(x)+i,19:21] <- quantile(as.matrix(seminat.ref.cov[["Soil_disturbance"]][,grep(pattern=unique(seminat.NiNtypes2)[i], x=seminat.NiNtypes)]),probs=c(0.025,0.5,0.975),na.rm=T)
-  
-  tab$NiN[length(x)+i] <- unique(seminat.NiNtypes2)[i]
-  
-}
-
-tab
-
-# when species lists represent several NiN-types
-tab <- rbind(tab,tab[c(3:5,8,10,16,18),])
-tab$NiN[c(3:5,8,10,16,18,21:27)] <- c("T32-C1","T32-C3","T32-C7","T45-C1",
-                                      "V10-C1","T32-C5","T32-C21","T32-C2",
-                                      "T32-C4","T32-C8","T45-C2","V10-C2",
-                                      "T32-C20","T32-C6")
-tab
 
 # making it a proper data frame
 dim(tab)
-round(tab[,1:21],digits=2)
+round(tab[,1:18],digits=2)
 
-colnames(tab) <- c("Light_q2.5","Light_q50","Light_q97.5",
-                   "Moist_q2.5","Moist_q50","Moist_q97.5",
-                   "pH_q2.5","pH_q50","pH_q97.5",
+colnames(tab) <- c("CC_q2.5","CC_q50","CC_q97.5",
+                   "SS_q2.5","SS_q50","SS_q97.5",
+                   "RR_q2.5","RR_q50","RR_q97.5",
+                   "Light_q2.5","Light_q50","Light_q97.5",
                    "Nitrogen_q2.5","Nitrogen_q50","Nitrogen_q97.5",
-                   "Phosphorus_q2.5","Phosphorus_q50","Phosphorus_q97.5",
-                   "Grazing_mowing_q2.5","Grazing_mowing_q50","Grazing_mowing_q97.5",
                    "Soil_disturbance_q2.5","Soil_disturbance_q50","Soil_disturbance_q97.5",
-                   
                    "NiN")
 summary(tab)
-tab$NiN <- gsub("C", "C-", tab$NiN) # add extra hyphen after C for NiN-types
+tab$NiN
+#tab$NiN <- gsub("C", "C-", tab$NiN) # add extra hyphen after C for NiN-types
 tab
-
 
 
 # restructuring into separate indicators for lower (q2.5) and higher (q97.5) than reference value (=median, q50)
@@ -1035,79 +886,71 @@ y.Light <- numeric(length=nrow(tab)*2)
 y.Light[((1:dim(tab)[1])*2)-1] <- tab$Light_q2.5 
 y.Light[((1:dim(tab)[1])*2)] <- tab$Light_q97.5 
 
-y.Moist <- numeric(length=nrow(tab)*2)
-y.Moist[((1:dim(tab)[1])*2)-1] <- tab$Moist_q2.5 
-y.Moist[((1:dim(tab)[1])*2)] <- tab$Moist_q97.5 
+y.CC <- numeric(length=nrow(tab)*2)
+y.CC[((1:dim(tab)[1])*2)-1] <- tab$CC_q2.5 
+y.CC[((1:dim(tab)[1])*2)] <- tab$CC_q97.5 
 
-y.pH <- numeric(length=nrow(tab)*2)
-y.pH[((1:dim(tab)[1])*2)-1] <- tab$pH_q2.5 
-y.pH[((1:dim(tab)[1])*2)] <- tab$pH_q97.5 
+y.SS <- numeric(length=nrow(tab)*2)
+y.SS[((1:dim(tab)[1])*2)-1] <- tab$SS_q2.5 
+y.SS[((1:dim(tab)[1])*2)] <- tab$SS_q97.5 
 
 y.Nitrogen <- numeric(length=nrow(tab)*2)
 y.Nitrogen[((1:dim(tab)[1])*2)-1] <- tab$Nitrogen_q2.5 
 y.Nitrogen[((1:dim(tab)[1])*2)] <- tab$Nitrogen_q97.5 
 
-y.Phosphorus <- numeric(length=nrow(tab)*2)
-y.Phosphorus[((1:dim(tab)[1])*2)-1] <- tab$Phosphorus_q2.5 
-y.Phosphorus[((1:dim(tab)[1])*2)] <- tab$Phosphorus_q97.5 
-
-y.Grazing_mowing <- numeric(length=nrow(tab)*2)
-y.Grazing_mowing[((1:dim(tab)[1])*2)-1] <- tab$Grazing_mowing_q2.5 
-y.Grazing_mowing[((1:dim(tab)[1])*2)] <- tab$Grazing_mowing_q97.5 
+y.RR <- numeric(length=nrow(tab)*2)
+y.RR[((1:dim(tab)[1])*2)-1] <- tab$RR_q2.5 
+y.RR[((1:dim(tab)[1])*2)] <- tab$RR_q97.5 
 
 y.Soil_disturbance <- numeric(length=nrow(tab)*2)
 y.Soil_disturbance[((1:dim(tab)[1])*2)-1] <- tab$Soil_disturbance_q2.5 
 y.Soil_disturbance[((1:dim(tab)[1])*2)] <- tab$Soil_disturbance_q97.5 
 
-
 # creating final objects holding the reference and limit values for all indicators
 
 # ref object for indicators
-seminat.ref.cov.val <- data.frame(N1=rep('seminat',(nrow(tab)*2*indEll.n)),
+natopen.ref.cov.val <- data.frame(N1=rep('natopen',(nrow(tab)*2*indEll.n)),
                               hoved=c(rep('NA',(nrow(tab)*2*indEll.n))),
                               grunn=c(rep(rep(tab$NiN,each=2),indEll.n)),
                               county=rep('all',(nrow(tab)*2*indEll.n)),
                               region=rep('all',(nrow(tab)*2*indEll.n)),
-                              Ind=c(rep(c('Light1','Light2'),nrow(tab)),
-                                    rep(c('Moist1','Moist2'),nrow(tab)),
-                                    rep(c('pH1','pH2'),nrow(tab)),
+                              Ind=c(rep(c('CC1','CC2'),nrow(tab)),
+                                    rep(c('SS1','SS2'),nrow(tab)),
+                                    rep(c('RR1','RR2'),nrow(tab)),
+                                    rep(c('Light1','Light2'),nrow(tab)),
                                     rep(c('Nitrogen1','Nitrogen2'),nrow(tab)),
-                                    rep(c('Phosphorus1','Phosphorus2'),nrow(tab)),
-                                    rep(c('Grazing_mowing1','Grazing_mowing2'),nrow(tab)),
                                     rep(c('Soil_disturbance1','Soil_disturbance2'),nrow(tab))
                               ),
-                              Rv=c(rep(tab$Light_q50,each=2),
-                                   rep(tab$Moist_q50,each=2),
-                                   rep(tab$pH_q50,each=2),
+                              Rv=c(rep(tab$CC_q50,each=2),
+                                   rep(tab$SS_q50,each=2),
+                                   rep(tab$RR_q50,each=2),
+                                   rep(tab$Light_q50,each=2),
                                    rep(tab$Nitrogen_q50,each=2),
-                                   rep(tab$Phosphorus_q50,each=2),
-                                   rep(tab$Grazing_mowing_q50,each=2),
                                    rep(tab$Soil_disturbance_q50,each=2)
                               ),
-                              Gv=c(y.Light,y.Moist,y.pH,y.Nitrogen,y.Phosphorus,y.Grazing_mowing,y.Soil_disturbance),
-                              maxmin=c(rep(c(1,7),nrow(tab)), # 7 levels of Light
-                                       rep(c(1,12),nrow(tab)), # 12 levels of Moisture
-                                       rep(c(1,8),nrow(tab)), # 8 levels of Soil_reaction_pH
+                              Gv=c(y.CC,y.SS,y.RR,y.Light,y.Nitrogen,y.Soil_disturbance),
+                              maxmin=c(rep(c(0,1),nrow(tab)), # CC
+                                       rep(c(0,1),nrow(tab)), # SS
+                                       rep(c(0,1),nrow(tab)), # RR
+                                       rep(c(1,7),nrow(tab)),  # 7 levels of Light
                                        rep(c(1,9),nrow(tab)),  # 9 levels of Nitrogen
-                                       rep(c(1,9),nrow(tab)),  # 5 levels of Phosphorus
-                                       rep(c(1,9),nrow(tab)),  # 8 levels of Grazing_mowing
                                        rep(c(1,9),nrow(tab))  # 9 levels of Soil_disturbance
                               )
 )
 
-seminat.ref.cov.val
-seminat.ref.cov.val$grunn <- as.factor(seminat.ref.cov.val$grunn)
-seminat.ref.cov.val$Ind <- as.factor(seminat.ref.cov.val$Ind)
-summary(seminat.ref.cov.val)
+natopen.ref.cov.val
+natopen.ref.cov.val$grunn <- as.factor(natopen.ref.cov.val$grunn)
+natopen.ref.cov.val$Ind <- as.factor(natopen.ref.cov.val$Ind)
+summary(natopen.ref.cov.val)
 
 
 ```
 
 ```{r}
-head(seminat.ref.cov.val)
+head(natopen.ref.cov.val)
 ```
 
-Once test data (ANO) and the scaling values from the reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO plot's CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper condition indicators for each  functional plant indicator. An ANO plot can only have a scaled value in either the lower or the upper indicator (the other one will be 'NA'), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.
+Once test data (ANO, GRUK) and the scaling values from the reference data are in place, we can calculate community-weighted means (CWM) of the selected indicators for the ANO and GRUK community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO/GRUK plot's CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper condition indicators for each  functional plant indicator. An ANO/GRUK plot can only have a scaled value in either the lower or the upper indicator (the other one will be 'NA'), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.
 
 Here is the scaling function
 ```{r}
@@ -1153,301 +996,337 @@ This is done separately for ANO and ASO. First for ANO:
 ```{r, include=FALSE}
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
-unique(substr(seminat.ref.cov.val$grunn,1,3)) # NiN types in reference
-#### creating dataframe to hold the results for wetlands ####
+unique(substr(natopen.ref.cov.val$grunn,1,3)) # NiN types in reference
+#### creating dataframe to hold the results for natopens ####
 # all ANO points
 nrow(ANO.geo)
-# all seminat ANO points (incl. T40 and T41)
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T31","T32","T34","T40","T41","V10"),])
-# all seminat ANO points with a NiN-type represented in the reference
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% unique(substr(seminat.ref.cov.val$grunn,1,3)),])
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T32"),])
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T34"),])
-
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T31"),])
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T40"),])
-# ok, we'll be losing 258 T31 and 10 T40, as T31 and T40 are not covered by reference data
-# which leaves us with 329 points, of which...
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T41"),])
-# 29 points are T41 (heavily altered meadows appearing as semi-natural after decades of extensive use)
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("V10"),])
-# 6 points are semi-natural wetlands
-
-nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T32","T34","T41","V10"),])
-# leaving us with a total of 233 ANO-points
-ANO.seminat <- ANO.geo[ANO.geo$hovedtype_rute %in% list("T32","T34","T41","V10"),]
-
-head(ANO.seminat)
+# all natopen ANO points
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T2","T8","T11","T12","T13","T15","T16","T18","T21","T24","T29") & ANO.geo$hovedoekosystem_punkt!='fjell',])
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T2") & ANO.geo$hovedoekosystem_punkt!='fjell',])
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T13") & ANO.geo$hovedoekosystem_punkt!='fjell',])
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% list("T16") & ANO.geo$hovedoekosystem_punkt!='fjell',])
+# all natopen ANO points with a NiN-type represented in the reference
+nrow(ANO.geo[ANO.geo$hovedtype_rute %in% unique(gsub("-", "",substr(natopen.ref.cov.val$grunn,1,3))) & ANO.geo$hovedoekosystem_punkt!='fjell',])
+# leaving us with a total of 272 ANO-points with naturally open ecosystems that are not in the mountains
+ANO.natopen <- ANO.geo[ANO.geo$hovedtype_rute %in% unique(gsub("-", "",substr(natopen.ref.cov.val$grunn,1,3))) & ANO.geo$hovedoekosystem_punkt!='fjell',]
+ANO.natopen <- ANO.natopen[!is.na(ANO.natopen$kartleggingsenhet_1m2),]
+head(ANO.natopen)
 # update row-numbers
-row.names(ANO.seminat) <- 1:nrow(ANO.seminat)
-head(ANO.seminat)
-dim(ANO.seminat)
-colnames(ANO.seminat)
+row.names(ANO.natopen) <- 1:nrow(ANO.natopen)
+head(ANO.natopen)
+dim(ANO.natopen)
+colnames(ANO.natopen)
 
-length(levels(as.factor(ANO.seminat$ano_flate_id)))
-length(levels(as.factor(ANO.seminat$ano_punkt_id)))
-summary(as.factor(ANO.seminat$ano_punkt_id))
-# no points that are double
+length(levels(as.factor(ANO.natopen$ano_flate_id)))
+length(levels(as.factor(ANO.natopen$ano_punkt_id)))
+summary(as.factor(ANO.natopen$ano_punkt_id))
+# one point is double
+ANO.natopen[ANO.natopen$ano_punkt_id=="ANO0084_51",] # double registration of # 51
+ANO.geo[ANO.geo$ano_punkt_id=="ANO0084_51",] # double registration of # 51
 
-unique(ANO.seminat$hovedoekosystem_punkt)
-unique(ANO.seminat$hovedtype_rute)
-unique(ANO.seminat$kartleggingsenhet_1m2)
-ANO.seminat$hovedtype_rute <- as.factor(ANO.seminat$hovedtype_rute)
-ANO.seminat$kartleggingsenhet_1m2 <- as.factor(ANO.seminat$kartleggingsenhet_1m2)
-summary(ANO.seminat$hovedtype_rute)
-summary(ANO.seminat$kartleggingsenhet_1m2)
-# we have the T41 reference only for the hovedtype -> make T41-C-1 into T41
-ANO.seminat[ANO.seminat$kartleggingsenhet_1m2=="T41-C-1","kartleggingsenhet_1m2"] <- "T41"
-summary(ANO.seminat$kartleggingsenhet_1m2)
+ANO.geo[ANO.geo$ano_flate_id=="ANO0084","ano_punkt_id"] # also # 62 is registered double
+ANO.geo[ANO.geo$ano_punkt_id=="ANO0084_62",] # but this is not a natopen-type
+# seems to be a legit registration of a naturally open type on both ANO-points # 51.
+# Both points # 22, 35, 44, and 53 are missing, so we simply assign the 2nd # 51 to # 53 for this analysis
+ANO.natopen[ANO.natopen$ano_punkt_id=="ANO0084_51" & !is.na(ANO.natopen$ano_punkt_id),][2,"ano_punkt_id"] <- "ANO0084_53"
+ANO.natopen[ANO.natopen$ano_flate_id=="ANO0084","ano_punkt_id"]
+summary(as.factor(ANO.natopen$ano_punkt_id))
 
-ANO.seminat[ANO.seminat$kartleggingsenhet_1m2=="T32",]
-ANO.seminat[ANO.seminat$kartleggingsenhet_1m2=="T34",]
-# for T32 og T34 without grunntype-registration there's no useful reference, these won't be processed further
+#ANO.natopen <- ANO.natopen[-206,]
+#row.names(ANO.natopen) <- 1:nrow(ANO.natopen) # update row-numbers
 
+unique(ANO.natopen$hovedoekosystem_punkt)
+unique(ANO.natopen$hovedtype_rute)
+unique(ANO.natopen$kartleggingsenhet_1m2)
+ANO.natopen$hovedtype_rute <- as.factor(ANO.natopen$hovedtype_rute)
+ANO.natopen$kartleggingsenhet_1m2 <- as.factor(ANO.natopen$kartleggingsenhet_1m2)
+summary(ANO.natopen$hovedtype_rute)
+summary(ANO.natopen$kartleggingsenhet_1m2)
+# we have no reference for overall T2 registrations, these 24 observations won't be evaluated
+ANO.natopen[ANO.natopen$kartleggingsenhet_1m2=="T2",] # were largely inaccessible and thus mapped from arial pictures
 
-results.seminat.ANO <- list()
-ind <- unique(seminat.ref.cov.val$Ind)
+results.natopen.ANO <- list()
+ind <- unique(natopen.ref.cov.val$Ind)
 # choose columns for site description
-colnames(ANO.seminat)
-results.seminat.ANO[['original']] <- ANO.seminat
+colnames(ANO.natopen)
+results.natopen.ANO[['original']] <- ANO.natopen
 # drop geometry
-st_geometry(results.seminat.ANO[['original']]) <- NULL
-results.seminat.ANO[['original']]
+st_geometry(results.natopen.ANO[['original']]) <- NULL
+results.natopen.ANO[['original']]
 
 # add columns for indicators
-nvar.site <- ncol(results.seminat.ANO[['original']])
-for (i in 1:length(ind) ) {results.seminat.ANO[['original']][,i+nvar.site] <- NA}
-colnames(results.seminat.ANO[['original']])[(nvar.site+1):(length(ind)+nvar.site)] <- paste(ind)
-for (i in (nvar.site+1):(length(ind)+nvar.site) ) {results.seminat.ANO[['original']][,i] <- as.numeric(results.seminat.ANO[['original']][,i])}
-summary(results.seminat.ANO[['original']])
-#results.seminat.ANO[['original']]$Region <- as.factor(results.seminat.ANO[['original']]$Region)
-results.seminat.ANO[['original']]$GlobalID <- as.factor(results.seminat.ANO[['original']]$GlobalID)
-results.seminat.ANO[['original']]$ano_flate_id <- as.factor(results.seminat.ANO[['original']]$ano_flate_id)
-results.seminat.ANO[['original']]$ano_punkt_id <- as.factor(results.seminat.ANO[['original']]$ano_punkt_id)
-results.seminat.ANO[['original']]$hovedoekosystem_punkt <- as.factor(results.seminat.ANO[['original']]$hovedoekosystem_punkt)
-#results.seminat.ANO[['original']]$Hovedoekosystem_rute  <- as.factor(results.seminat.ANO[['original']]$Hovedoekosystem_rute )
-results.seminat.ANO[['original']]$kartleggingsenhet_1m2 <- as.factor(results.seminat.ANO[['original']]$kartleggingsenhet_1m2)
-results.seminat.ANO[['original']]$hovedtype_rute    <- as.factor(results.seminat.ANO[['original']]$hovedtype_rute)
+nvar.site <- ncol(results.natopen.ANO[['original']])
+for (i in 1:length(ind) ) {results.natopen.ANO[['original']][,i+nvar.site] <- NA}
+colnames(results.natopen.ANO[['original']])[(nvar.site+1):(length(ind)+nvar.site)] <- paste(ind)
+for (i in (nvar.site+1):(length(ind)+nvar.site) ) {results.natopen.ANO[['original']][,i] <- as.numeric(results.natopen.ANO[['original']][,i])}
+summary(results.natopen.ANO[['original']])
+#results.natopen.ANO[['original']]$Region <- as.factor(results.natopen.ANO[['original']]$Region)
+results.natopen.ANO[['original']]$GlobalID <- as.factor(results.natopen.ANO[['original']]$GlobalID)
+results.natopen.ANO[['original']]$ano_flate_id <- as.factor(results.natopen.ANO[['original']]$ano_flate_id)
+results.natopen.ANO[['original']]$ano_punkt_id <- as.factor(results.natopen.ANO[['original']]$ano_punkt_id)
+results.natopen.ANO[['original']]$hovedoekosystem_punkt <- as.factor(results.natopen.ANO[['original']]$hovedoekosystem_punkt)
+#results.natopen.ANO[['original']]$Hovedoekosystem_rute  <- as.factor(results.natopen.ANO[['original']]$Hovedoekosystem_rute )
+results.natopen.ANO[['original']]$kartleggingsenhet_1m2 <- as.factor(results.natopen.ANO[['original']]$kartleggingsenhet_1m2)
+results.natopen.ANO[['original']]$hovedtype_rute    <- as.factor(results.natopen.ANO[['original']]$hovedtype_rute)
 
 
 # roll out
-results.seminat.ANO[['scaled']] <- results.seminat.ANO[['non-truncated']] <- results.seminat.ANO[['original']]
+results.natopen.ANO[['scaled']] <- results.natopen.ANO[['non-truncated']] <- results.natopen.ANO[['original']]
+
 ```
 
 ```{r, echo = T, eval = F}
 
 #### calculating scaled and non-truncated values for the indicators based on the dataset ####
-for (i in 1:nrow(ANO.seminat) ) {  #
+for (i in 1:nrow(ANO.natopen) ) {  #
   tryCatch({
     print(i)
-    print(paste(ANO.seminat$ano_flate_id[i]))
-    print(paste(ANO.seminat$ano_punkt_id[i]))
-#    ANO.seminat$Hovedoekosystem_sirkel[i]
-#    ANO.seminat$Hovedoekosystem_rute[i]
+    print(paste(ANO.natopen$ano_flate_id[i]))
+    print(paste(ANO.natopen$ano_punkt_id[i]))
+#    ANO.natopen$Hovedoekosystem_sirkel[i]
+#    ANO.natopen$Hovedoekosystem_rute[i]
 
 
 
     # if the ANO.hovedtype exists in the reference
-    if (ANO.seminat$hovedtype_rute[i] %in% unique(substr(seminat.ref.cov.val$grunn,1,3)) ) {
+    if (ANO.natopen$hovedtype_rute[i] %in% gsub("-","",unique(substr(natopen.ref.cov.val$grunn,1,3))) ) {
       
       # if there is any species present in current ANO point  
-      if ( length(ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),'Species']) > 0 ) {
+      if ( length(ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),'Species']) > 0 ) {
         
 
+        # Grime's C
+        
+        dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','CC')]
+        results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$CC),]
+        
+        if ( nrow(dat)>0 ) {
           
+          val <- sum(dat[,'art_dekning'] * dat[,'CC'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+          } else {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          }
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'CC1'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'CC1'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'CC1'] <- val 
+          
+          # upper part of distribution
+          if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+          } else {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          }          
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'CC2'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'CC2'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'CC2'] <- val
+        }
+          
+        
+        # Grime's S
+        dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','SS')]
+        results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$SS),]
+        
+        if ( nrow(dat)>0 ) {
+          
+          val <- sum(dat[,'art_dekning'] * dat[,'SS'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+          } else {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          }          
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'SS1'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'SS1'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'SS1'] <- val 
+          
+          # upper part of distribution
+          if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+          } else {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          }          
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'SS2'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'SS2'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'SS2'] <- val
+        }
+        
+        
+        # Grime's R
+        dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','RR')]
+        results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$RR),]
+        
+        if ( nrow(dat)>0 ) {
+          
+          val <- sum(dat[,'art_dekning'] * dat[,'RR'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+          } else {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          }          
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'RR1'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'RR1'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'RR1'] <- val 
+          
+          # upper part of distribution
+          if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+          } else {
+            ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+            lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+          }          
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+          # coercing x into results.natopen.ANO dataframe
+          results.natopen.ANO[['scaled']][i,'RR2'] <- scal() 
+          results.natopen.ANO[['non-truncated']][i,'RR2'] <- scal.2() 
+          results.natopen.ANO[['original']][i,'RR2'] <- val
+        }
+        
+        
           # Light
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Light')]
-          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','Light')]
+          results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Light),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Light'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Light1'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Light1'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Light1'] <- val 
+            if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+            } else {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            }            
+            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.natopen.ANO dataframe
+            results.natopen.ANO[['scaled']][i,'Light1'] <- scal() 
+            results.natopen.ANO[['non-truncated']][i,'Light1'] <- scal.2() 
+            results.natopen.ANO[['original']][i,'Light1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Light2'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Light2'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Light2'] <- val
+            if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+            } else {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            }            
+            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.natopen.ANO dataframe
+            results.natopen.ANO[['scaled']][i,'Light2'] <- scal() 
+            results.natopen.ANO[['non-truncated']][i,'Light2'] <- scal.2() 
+            results.natopen.ANO[['original']][i,'Light2'] <- val
           }
           
           
-          # Moisture
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Moisture')]
-          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Moisture),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Moisture'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Moist1'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Moist1'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Moist1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Moist2'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Moist2'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Moist2'] <- val
-          }
-          
-          
-          # Soil_reaction_pH
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Soil_reaction_pH')]
-          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Soil_reaction_pH),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Soil_reaction_pH'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'pH1'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'pH1'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'pH1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'pH2'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'pH2'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'pH2'] <- val
-          }
-          
+         
           
           # Nitrogen
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Nitrogen')]
-          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','Nitrogen')]
+          results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Nitrogen),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Nitrogen'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Nitrogen1'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Nitrogen1'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Nitrogen1'] <- val 
+            if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+            } else {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            }            
+            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.natopen.ANO dataframe
+            results.natopen.ANO[['scaled']][i,'Nitrogen1'] <- scal() 
+            results.natopen.ANO[['non-truncated']][i,'Nitrogen1'] <- scal.2() 
+            results.natopen.ANO[['original']][i,'Nitrogen1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Nitrogen2'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Nitrogen2'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Nitrogen2'] <- val
+            if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+            } else {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            }            
+            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.natopen.ANO dataframe
+            results.natopen.ANO[['scaled']][i,'Nitrogen2'] <- scal() 
+            results.natopen.ANO[['non-truncated']][i,'Nitrogen2'] <- scal.2() 
+            results.natopen.ANO[['original']][i,'Nitrogen2'] <- val
           }
           
           
-          # Phosphorus
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Phosphorus')]
-          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Phosphorus),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Phosphorus'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Phosphorus1'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Phosphorus1'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Phosphorus1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Phosphorus2'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Phosphorus2'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Phosphorus2'] <- val
-          }
-          
-          
-          # Grazing_mowing
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Grazing_mowing')]
-          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Grazing_mowing),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Grazing_mowing'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Grazing_mowing1'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Grazing_mowing1'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Grazing_mowing1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Grazing_mowing2'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Grazing_mowing2'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Grazing_mowing2'] <- val
-          }
+
+
           
           
           # Soil_disturbance
-          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.seminat$GlobalID[i]),c('art_dekning','Soil_disturbance')]
-          results.seminat.ANO[['original']][i,'richness'] <- nrow(dat)
+          dat <- ANO.sp.ind[ANO.sp.ind$ParentGlobalID==as.character(ANO.natopen$GlobalID[i]),c('art_dekning','Soil_disturbance')]
+          results.natopen.ANO[['original']][i,'richness'] <- nrow(dat)
           dat <- dat[!is.na(dat$Soil_disturbance),]
           
           if ( nrow(dat)>0 ) {
             
             val <- sum(dat[,'art_dekning'] * dat[,'Soil_disturbance'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
             # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Soil_disturbance1'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Soil_disturbance1'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Soil_disturbance1'] <- val 
+            if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+            } else {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            }           
+            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.natopen.ANO dataframe
+            results.natopen.ANO[['scaled']][i,'Soil_disturbance1'] <- scal() 
+            results.natopen.ANO[['non-truncated']][i,'Soil_disturbance1'] <- scal.2() 
+            results.natopen.ANO[['original']][i,'Soil_disturbance1'] <- val 
             
             # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
-            # coercing x into results.seminat.ANO dataframe
-            results.seminat.ANO[['scaled']][i,'Soil_disturbance2'] <- scal() 
-            results.seminat.ANO[['non-truncated']][i,'Soil_disturbance2'] <- scal.2() 
-            results.seminat.ANO[['original']][i,'Soil_disturbance2'] <- val
+            if( ANO.natopen$kartleggingsenhet_1m2[i] %in% c("T2-C-7","T2-C-8") ) {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),"_BN",sep=""),'Gv']
+            } else {
+              ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Rv']
+              lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'Gv']
+            }
+            maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==as.character(results.natopen.ANO[['original']][i,"kartleggingsenhet_1m2"]),'maxmin']
+            # coercing x into results.natopen.ANO dataframe
+            results.natopen.ANO[['scaled']][i,'Soil_disturbance2'] <- scal() 
+            results.natopen.ANO[['non-truncated']][i,'Soil_disturbance2'] <- scal.2() 
+            results.natopen.ANO[['original']][i,'Soil_disturbance2'] <- val
           }
           
           
@@ -1460,342 +1339,317 @@ for (i in 1:nrow(ANO.seminat) ) {  #
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }
 
-
 # for using both sides of the plant indicators
-results.seminat.ANO[['2-sided']] <- results.seminat.ANO[['non-truncated']]
+results.natopen.ANO[['2-sided']] <- results.natopen.ANO[['non-truncated']]
 
 # remove values >1 for 2-sided indicators
-results.seminat.ANO[['2-sided']]$Light1[results.seminat.ANO[['2-sided']]$Light1>1] <- NA
-results.seminat.ANO[['2-sided']]$Light2[results.seminat.ANO[['2-sided']]$Light2>1] <- NA
+results.natopen.ANO[['2-sided']]$CC1[results.natopen.ANO[['2-sided']]$CC1>1] <- NA
+results.natopen.ANO[['2-sided']]$CC2[results.natopen.ANO[['2-sided']]$CC2>1] <- NA
 
-results.seminat.ANO[['2-sided']]$Moist1[results.seminat.ANO[['2-sided']]$Moist1>1] <- NA
-results.seminat.ANO[['2-sided']]$Moist2[results.seminat.ANO[['2-sided']]$Moist2>1] <- NA
+results.natopen.ANO[['2-sided']]$SS1[results.natopen.ANO[['2-sided']]$SS1>1] <- NA
+results.natopen.ANO[['2-sided']]$SS2[results.natopen.ANO[['2-sided']]$SS2>1] <- NA
 
-results.seminat.ANO[['2-sided']]$pH1[results.seminat.ANO[['2-sided']]$pH1>1] <- NA
-results.seminat.ANO[['2-sided']]$pH2[results.seminat.ANO[['2-sided']]$pH2>1] <- NA
+results.natopen.ANO[['2-sided']]$RR1[results.natopen.ANO[['2-sided']]$RR1>1] <- NA
+results.natopen.ANO[['2-sided']]$RR2[results.natopen.ANO[['2-sided']]$RR2>1] <- NA
 
-results.seminat.ANO[['2-sided']]$Nitrogen1[results.seminat.ANO[['2-sided']]$Nitrogen1>1] <- NA
-results.seminat.ANO[['2-sided']]$Nitrogen2[results.seminat.ANO[['2-sided']]$Nitrogen2>1] <- NA
+results.natopen.ANO[['2-sided']]$Light1[results.natopen.ANO[['2-sided']]$Light1>1] <- NA
+results.natopen.ANO[['2-sided']]$Light2[results.natopen.ANO[['2-sided']]$Light2>1] <- NA
 
-results.seminat.ANO[['2-sided']]$Phosphorus1[results.seminat.ANO[['2-sided']]$Phosphorus1>1] <- NA
-results.seminat.ANO[['2-sided']]$Phosphorus2[results.seminat.ANO[['2-sided']]$Phosphorus2>1] <- NA
+results.natopen.ANO[['2-sided']]$Nitrogen1[results.natopen.ANO[['2-sided']]$Nitrogen1>1] <- NA
+results.natopen.ANO[['2-sided']]$Nitrogen2[results.natopen.ANO[['2-sided']]$Nitrogen2>1] <- NA
 
-results.seminat.ANO[['2-sided']]$Grazing_mowing1[results.seminat.ANO[['2-sided']]$Grazing_mowing1>1] <- NA
-results.seminat.ANO[['2-sided']]$Grazing_mowing2[results.seminat.ANO[['2-sided']]$Grazing_mowing2>1] <- NA
-
-results.seminat.ANO[['2-sided']]$Soil_disturbance1[results.seminat.ANO[['2-sided']]$Soil_disturbance1>1] <- NA
-results.seminat.ANO[['2-sided']]$Soil_disturbance2[results.seminat.ANO[['2-sided']]$Soil_disturbance2>1] <- NA
+results.natopen.ANO[['2-sided']]$Soil_disturbance1[results.natopen.ANO[['2-sided']]$Soil_disturbance1>1] <- NA
+results.natopen.ANO[['2-sided']]$Soil_disturbance2[results.natopen.ANO[['2-sided']]$Soil_disturbance2>1] <- NA
 
 ```
 
-and for ASO:
+and for GRUK:
 ```{r, include=FALSE}
 
-colnames(ASO.geo)
-levels(as.factor(ASO.geo$NiN_grunntype)) # NiN types in data
-levels(seminat.ref.cov.val$grunn) # NiN types in reference
-#### creating dataframe to hold the results for seminats ####
-# all ASO meadows
-nrow(ASO.geo)
-# all ASO meadows that are T32-C-13 (the one type we don't have a reference for)
-nrow(ASO.geo[ASO.geo$NiN_grunntype %in% list("T32-C-13"),])
-# only losing 1 meadow
+colnames(GRUK.variables)
+levels(as.factor(GRUK.variables$Kartleggingsenhet)) # NiN types in data
+levels(natopen.ref.cov.val$grunn) # NiN types in reference
+#### creating dataframe to hold the results for natopens ####
+# all GRUK points
+nrow(GRUK.variables)
+GRUK.natopen <- GRUK.variables
 
-length(levels(as.factor(ASO.geo$Omradenummer_flatenummer)))
-length(levels(as.factor(ASO.geo$ASO_ID)))
-length(levels(as.factor(ASO.geo$Eng_ID)))
-summary(as.factor(ASO.geo$ASO_ID))
-# two meadows that are double: 020_142_3 & 029_336_2
-# 020_142_3
-as.data.frame(ASO.geo[ASO.geo$ASO_ID=="020_142_3",]) # GlobalID 91b54a01-77ce-498f-bdbf-f1727b32ec0d is empty -> drop it
-ASO.geo <- ASO.geo[ASO.geo$GlobalID!="91b54a01-77ce-498f-bdbf-f1727b32ec0d",]
-# 029_336_2
-as.data.frame(ASO.geo[ASO.geo$ASO_ID=="029_336_2",]) # both are identical -> drop one
-ASO.geo <- ASO.geo[ASO.geo$GlobalID!="ca0b9892-cbe0-4aee-b3d3-c46973293ce4",]
-summary(as.factor(ASO.geo$ASO_ID))
+head(GRUK.natopen)
+# update row-numbers
+row.names(GRUK.natopen) <- 1:nrow(GRUK.natopen)
+head(GRUK.natopen)
+dim(GRUK.natopen)
+colnames(GRUK.natopen)
 
-unique(ASO.geo$NiN_grunntype)
-ASO.geo$NiN_grunntype <- as.factor(ASO.geo$NiN_grunntype)
-summary(ASO.geo$NiN_grunntype)
-# 230 out of 381 ASO-meadows are not T32
-# for anything that is not T32 no data were registered, these won't be processed further
-# which leaves us with 151 ASO-meadows we can expect a result for
+length(levels(as.factor(GRUK.natopen$Flate_ID)))
+length(levels(as.factor(GRUK.natopen$uPunkt_ID)))
+summary(as.factor(GRUK.natopen$uPunkt_ID))
+# none are double
 
-results.seminat.ASO <- list()
-ind <- unique(seminat.ref.cov.val$Ind)
+unique(GRUK.natopen$Kartleggingsenhet)
+GRUK.natopen$Kartleggingsenhet <- as.factor(GRUK.natopen$Kartleggingsenhet)
+summary(GRUK.natopen$Kartleggingsenhet)
+
+results.natopen.GRUK <- list()
+ind <- unique(natopen.ref.cov.val$Ind)
 # choose columns for site description
-colnames(ASO.geo)
-results.seminat.ASO[['original']] <- ASO.geo
+colnames(GRUK.natopen)
+results.natopen.GRUK[['original']] <- GRUK.natopen
 # drop geometry
-st_geometry(results.seminat.ASO[['original']]) <- NULL
-results.seminat.ASO[['original']] <- as.data.frame(results.seminat.ASO[['original']])
+st_geometry(results.natopen.GRUK[['original']]) <- NULL
+results.natopen.GRUK[['original']] <- as.data.frame(results.natopen.GRUK[['original']])
 
 # add columns for indicators
-nvar.site <- ncol(results.seminat.ASO[['original']])
-for (i in 1:length(ind) ) {results.seminat.ASO[['original']][,i+nvar.site] <- NA}
-colnames(results.seminat.ASO[['original']])[(nvar.site+1):(length(ind)+nvar.site)] <- paste(ind)
-for (i in (nvar.site+1):(length(ind)+nvar.site) ) {results.seminat.ASO[['original']][,i] <- as.numeric(results.seminat.ASO[['original']][,i])}
-summary(results.seminat.ASO[['original']])
-#results.seminat.ASO[['original']]$Region <- as.factor(results.seminat.ASO[['original']]$Region)
-results.seminat.ASO[['original']]$GlobalID <- as.factor(results.seminat.ASO[['original']]$GlobalID)
-results.seminat.ASO[['original']]$Omradenummer_flatenummer <- as.factor(results.seminat.ASO[['original']]$Omradenummer_flatenummer)
-results.seminat.ASO[['original']]$ASO_ID <- as.factor(results.seminat.ASO[['original']]$ASO_ID)
-#results.seminat.ASO[['original']]$hovedoekosystem_punkt <- as.factor(results.seminat.ASO[['original']]$hovedoekosystem_punkt)
-#results.seminat.ASO[['original']]$Hovedoekosystem_rute  <- as.factor(results.seminat.ASO[['original']]$Hovedoekosystem_rute )
-results.seminat.ASO[['original']]$NiN_grunntype <- as.factor(results.seminat.ASO[['original']]$NiN_grunntype)
-#results.seminat.ASO[['original']]$hovedtype_rute    <- as.factor(results.seminat.ASO[['original']]$hovedtype_rute)
-
+nvar.site <- ncol(results.natopen.GRUK[['original']])
+for (i in 1:length(ind) ) {results.natopen.GRUK[['original']][,i+nvar.site] <- NA}
+colnames(results.natopen.GRUK[['original']])[(nvar.site+1):(length(ind)+nvar.site)] <- paste(ind)
+for (i in (nvar.site+1):(length(ind)+nvar.site) ) {results.natopen.GRUK[['original']][,i] <- as.numeric(results.natopen.GRUK[['original']][,i])}
+summary(results.natopen.GRUK[['original']])
+#results.natopen.GRUK[['original']]$Region <- as.factor(results.natopen.GRUK[['original']]$Region)
+results.natopen.GRUK[['original']]$GlobalID <- as.factor(results.natopen.GRUK[['original']]$GlobalID)
+results.natopen.GRUK[['original']]$Flate_ID <- as.factor(results.natopen.GRUK[['original']]$Flate_ID)
+results.natopen.GRUK[['original']]$uPunkt_ID <- as.factor(results.natopen.GRUK[['original']]$uPunkt_ID)
+results.natopen.GRUK[['original']]$Kartleggingsenhet <- as.factor(results.natopen.GRUK[['original']]$Kartleggingsenhet)
 
 # roll out
-results.seminat.ASO[['scaled']] <- results.seminat.ASO[['non-truncated']] <- results.seminat.ASO[['original']]
+results.natopen.GRUK[['scaled']] <- results.natopen.GRUK[['non-truncated']] <- results.natopen.GRUK[['original']]
+
 ```
 
 ```{r, echo = T, eval = F}
 
 #### calculating scaled and non-truncated values for the indicators based on the dataset ####
-for (i in 1:nrow(ASO.geo) ) {  #
+for (i in 1:nrow(GRUK.natopen) ) {  #
   tryCatch({
     print(i)
-    print(paste(ASO.geo$ASO_ID[i]))
-
-
-    # if the ASO.grunntype exists in the reference
-    if (ASO.geo$NiN_grunntype[i] %in% unique(seminat.ref.cov.val$grunn) ) {
+    print(paste(GRUK.natopen$Flate_ID[i]))
+    print(paste(GRUK.natopen$uPunkt_ID[i]))
+    #    GRUK.natopen$Hovedoekosystem_sirkel[i]
+    #    GRUK.natopen$Hovedoekosystem_rute[i]
+    
+    
+    
+    # if the GRUK.hovedtype exists in the reference
+#    if (GRUK.natopen$hovedtype_rute[i] %in% unique(substr(natopen.ref.cov.val$grunn,1,2)) ) {
       
-      # if there is any species present in current ASO point  
-      if ( length(ASO.sp.ind[ASO.sp.ind$ParentGlobalID==as.character(ASO.geo$GlobalID[i]),'Species']) > 0 ) {
+      # if there is any species present in current GRUK point  
+      if ( length(GRUK.species.ind[GRUK.species.ind$ParentGlobalID==as.character(GRUK.natopen$GlobalID[i]),'Species']) > 0 ) {
         
+        
+        # Grime's C
+        
+        dat <- GRUK.species.ind[GRUK.species.ind$ParentGlobalID==as.character(GRUK.natopen$GlobalID[i]),c('art_dekning','CC')]
+        results.natopen.GRUK[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$CC),]
+        
+        if ( nrow(dat)>0 ) {
+          
+          val <- sum(dat[,'art_dekning'] * dat[,'CC'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'CC1'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'CC1'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'CC1'] <- val 
+          
+          # upper part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='CC2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'CC2'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'CC2'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'CC2'] <- val
 
+        }
+        
+        
+        # Grime's S
+        dat <- GRUK.species.ind[GRUK.species.ind$ParentGlobalID==as.character(GRUK.natopen$GlobalID[i]),c('art_dekning','SS')]
+        results.natopen.GRUK[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$SS),]
+        
+        if ( nrow(dat)>0 ) {
           
-          # Light
-          dat <- ASO.sp.ind[ASO.sp.ind$ParentGlobalID==as.character(ASO.geo$GlobalID[i]),c('art_dekning','Light')]
-          results.seminat.ASO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Light),]
+          val <- sum(dat[,'art_dekning'] * dat[,'SS'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'SS1'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'SS1'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'SS1'] <- val
           
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Light'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Light1'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Light1'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Light1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Light2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Light2'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Light2'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Light2'] <- val
-          }
-          
-          
-          # Moisture
-          dat <- ASO.sp.ind[ASO.sp.ind$ParentGlobalID==as.character(ASO.geo$GlobalID[i]),c('art_dekning','Moisture')]
-          results.seminat.ASO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Moisture),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Moisture'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Moist1'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Moist1'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Moist1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Moist2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Moist2'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Moist2'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Moist2'] <- val
-          }
-          
-          
-          # Soil_reaction_pH
-          dat <- ASO.sp.ind[ASO.sp.ind$ParentGlobalID==as.character(ASO.geo$GlobalID[i]),c('art_dekning','Soil_reaction_pH')]
-          results.seminat.ASO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Soil_reaction_pH),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Soil_reaction_pH'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'pH1'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'pH1'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'pH1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='pH2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'pH2'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'pH2'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'pH2'] <- val
-          }
-          
-          
-          # Nitrogen
-          dat <- ASO.sp.ind[ASO.sp.ind$ParentGlobalID==as.character(ASO.geo$GlobalID[i]),c('art_dekning','Nitrogen')]
-          results.seminat.ASO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Nitrogen),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Nitrogen'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Nitrogen1'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Nitrogen1'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Nitrogen1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Nitrogen2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Nitrogen2'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Nitrogen2'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Nitrogen2'] <- val
-          }
-          
-          
-          # Phosphorus
-          dat <- ASO.sp.ind[ASO.sp.ind$ParentGlobalID==as.character(ASO.geo$GlobalID[i]),c('art_dekning','Phosphorus')]
-          results.seminat.ASO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Phosphorus),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Phosphorus'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Phosphorus1'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Phosphorus1'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Phosphorus1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Phosphorus2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Phosphorus2'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Phosphorus2'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Phosphorus2'] <- val
-          }
-          
-          
-          # Grazing_mowing
-          dat <- ASO.sp.ind[ASO.sp.ind$ParentGlobalID==as.character(ASO.geo$GlobalID[i]),c('art_dekning','Grazing_mowing')]
-          results.seminat.ASO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Grazing_mowing),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Grazing_mowing'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Grazing_mowing1'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Grazing_mowing1'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Grazing_mowing1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Grazing_mowing2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Grazing_mowing2'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Grazing_mowing2'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Grazing_mowing2'] <- val
-          }
-          
-          
-          # Soil_disturbance
-          dat <- ASO.sp.ind[ASO.sp.ind$ParentGlobalID==as.character(ASO.geo$GlobalID[i]),c('art_dekning','Soil_disturbance')]
-          results.seminat.ASO[['original']][i,'richness'] <- nrow(dat)
-          dat <- dat[!is.na(dat$Soil_disturbance),]
-          
-          if ( nrow(dat)>0 ) {
-            
-            val <- sum(dat[,'art_dekning'] * dat[,'Soil_disturbance'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
-            # lower part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance1' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Soil_disturbance1'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Soil_disturbance1'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Soil_disturbance1'] <- val 
-            
-            # upper part of distribution
-            ref <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Rv']
-            lim <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'Gv']
-            maxmin <- seminat.ref.cov.val[seminat.ref.cov.val$Ind=='Soil_disturbance2' & seminat.ref.cov.val$grunn==as.character(results.seminat.ASO[['original']][i,"NiN_grunntype"]),'maxmin']
-            # coercing x into results.seminat.ASO dataframe
-            results.seminat.ASO[['scaled']][i,'Soil_disturbance2'] <- scal() 
-            results.seminat.ASO[['non-truncated']][i,'Soil_disturbance2'] <- scal.2() 
-            results.seminat.ASO[['original']][i,'Soil_disturbance2'] <- val
-          }
-          
-          
+          # upper part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='SS2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'SS2'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'SS2'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'SS2'] <- val
           
         }
-      }
-      
+        
+        
+        # Grime's R
+        dat <- GRUK.species.ind[GRUK.species.ind$ParentGlobalID==as.character(GRUK.natopen$GlobalID[i]),c('art_dekning','RR')]
+        results.natopen.GRUK[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$RR),]
+        
+        if ( nrow(dat)>0 ) {
+          
+          val <- sum(dat[,'art_dekning'] * dat[,'RR'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'RR1'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'RR1'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'RR1'] <- val
+          
+          # upper part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='RR2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'RR2'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'RR2'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'RR2'] <- val
+          
+        }
+        
+        
+        # Light
+        dat <- GRUK.species.ind[GRUK.species.ind$ParentGlobalID==as.character(GRUK.natopen$GlobalID[i]),c('art_dekning','Light')]
+        results.natopen.GRUK[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$Light),]
+        
+        if ( nrow(dat)>0 ) {
+          
+          val <- sum(dat[,'art_dekning'] * dat[,'Light'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'Light1'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'Light1'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'Light1'] <- val
+          
+          # upper part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Light2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'Light2'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'Light2'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'Light2'] <- val
+          
 
+        }
+        
+        
+        
+        
+        # Nitrogen
+        dat <- GRUK.species.ind[GRUK.species.ind$ParentGlobalID==as.character(GRUK.natopen$GlobalID[i]),c('art_dekning','Nitrogen')]
+        results.natopen.GRUK[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$Nitrogen),]
+        
+        if ( nrow(dat)>0 ) {
+          
+          val <- sum(dat[,'art_dekning'] * dat[,'Nitrogen'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'Nitrogen1'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'Nitrogen1'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'Nitrogen1'] <- val
+          
+
+          # upper part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Nitrogen2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'Nitrogen2'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'Nitrogen2'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'Nitrogen2'] <- val
+          
+        }
+        
+        
+        
+        
+        
+        
+        # Soil_disturbance
+        dat <- GRUK.species.ind[GRUK.species.ind$ParentGlobalID==as.character(GRUK.natopen$GlobalID[i]),c('art_dekning','Soil_disturbance')]
+        results.natopen.GRUK[['original']][i,'richness'] <- nrow(dat)
+        dat <- dat[!is.na(dat$Soil_disturbance),]
+        
+        if ( nrow(dat)>0 ) {
+          
+          val <- sum(dat[,'art_dekning'] * dat[,'Soil_disturbance'],na.rm=T) / sum(dat[,'art_dekning'],na.rm=T)
+          # lower part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance1' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'Soil_disturbance1'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'Soil_disturbance1'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'Soil_disturbance1'] <- val
+          
+
+          # upper part of distribution
+          ref <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Rv']
+          lim <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==paste(as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),"_BN",sep=""),'Gv']
+          maxmin <- natopen.ref.cov.val[natopen.ref.cov.val$Ind=='Soil_disturbance2' & natopen.ref.cov.val$grunn==as.character(results.natopen.GRUK[['original']][i,"Kartleggingsenhet"]),'maxmin']
+          # coercing x into results.natopen.GRUK dataframe
+          results.natopen.GRUK[['scaled']][i,'Soil_disturbance2'] <- scal() 
+          results.natopen.GRUK[['non-truncated']][i,'Soil_disturbance2'] <- scal.2() 
+          results.natopen.GRUK[['original']][i,'Soil_disturbance2'] <- val
+          
+        }
+        
+        
+        
+      }
+#    }
+    
+    
     
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
 }
 
 # for using both sides of the plant indicators
-results.seminat.ASO[['2-sided']] <- results.seminat.ASO[['non-truncated']]
+results.natopen.GRUK[['2-sided']] <- results.natopen.GRUK[['non-truncated']]
 
 # remove values >1 for 2-sided indicators
-results.seminat.ASO[['2-sided']]$Light1[results.seminat.ASO[['2-sided']]$Light1>1] <- NA
-results.seminat.ASO[['2-sided']]$Light2[results.seminat.ASO[['2-sided']]$Light2>1] <- NA
+results.natopen.GRUK[['2-sided']]$CC1[results.natopen.GRUK[['2-sided']]$CC1>1] <- NA
+results.natopen.GRUK[['2-sided']]$CC2[results.natopen.GRUK[['2-sided']]$CC2>1] <- NA
 
-results.seminat.ASO[['2-sided']]$Moist1[results.seminat.ASO[['2-sided']]$Moist1>1] <- NA
-results.seminat.ASO[['2-sided']]$Moist2[results.seminat.ASO[['2-sided']]$Moist2>1] <- NA
+results.natopen.GRUK[['2-sided']]$SS1[results.natopen.GRUK[['2-sided']]$SS1>1] <- NA
+results.natopen.GRUK[['2-sided']]$SS2[results.natopen.GRUK[['2-sided']]$SS2>1] <- NA
 
-results.seminat.ASO[['2-sided']]$pH1[results.seminat.ASO[['2-sided']]$pH1>1] <- NA
-results.seminat.ASO[['2-sided']]$pH2[results.seminat.ASO[['2-sided']]$pH2>1] <- NA
+results.natopen.GRUK[['2-sided']]$RR1[results.natopen.GRUK[['2-sided']]$RR1>1] <- NA
+results.natopen.GRUK[['2-sided']]$RR2[results.natopen.GRUK[['2-sided']]$RR2>1] <- NA
 
-results.seminat.ASO[['2-sided']]$Nitrogen1[results.seminat.ASO[['2-sided']]$Nitrogen1>1] <- NA
-results.seminat.ASO[['2-sided']]$Nitrogen2[results.seminat.ASO[['2-sided']]$Nitrogen2>1] <- NA
+results.natopen.GRUK[['2-sided']]$Light1[results.natopen.GRUK[['2-sided']]$Light1>1] <- NA
+results.natopen.GRUK[['2-sided']]$Light2[results.natopen.GRUK[['2-sided']]$Light2>1] <- NA
 
-results.seminat.ASO[['2-sided']]$Phosphorus1[results.seminat.ASO[['2-sided']]$Phosphorus1>1] <- NA
-results.seminat.ASO[['2-sided']]$Phosphorus2[results.seminat.ASO[['2-sided']]$Phosphorus2>1] <- NA
+results.natopen.GRUK[['2-sided']]$Nitrogen1[results.natopen.GRUK[['2-sided']]$Nitrogen1>1] <- NA
+results.natopen.GRUK[['2-sided']]$Nitrogen2[results.natopen.GRUK[['2-sided']]$Nitrogen2>1] <- NA
 
-results.seminat.ASO[['2-sided']]$Grazing_mowing1[results.seminat.ASO[['2-sided']]$Grazing_mowing1>1] <- NA
-results.seminat.ASO[['2-sided']]$Grazing_mowing2[results.seminat.ASO[['2-sided']]$Grazing_mowing2>1] <- NA
-
-results.seminat.ASO[['2-sided']]$Soil_disturbance1[results.seminat.ASO[['2-sided']]$Soil_disturbance1>1] <- NA
-results.seminat.ASO[['2-sided']]$Soil_disturbance2[results.seminat.ASO[['2-sided']]$Soil_disturbance2>1] <- NA
+results.natopen.GRUK[['2-sided']]$Soil_disturbance1[results.natopen.GRUK[['2-sided']]$Soil_disturbance1>1] <- NA
+results.natopen.GRUK[['2-sided']]$Soil_disturbance2[results.natopen.GRUK[['2-sided']]$Soil_disturbance2>1] <- NA
 
 ```
 
@@ -1804,17 +1658,13 @@ results.seminat.ASO[['2-sided']]$Soil_disturbance2[results.seminat.ASO[['2-sided
 ```{r, include = F}
 
 # Use cache data
-results.seminat.ANO<-readRDS(paste0(here::here(),"/data/cache/results.seminat.ANO.RDS"))
-results.seminat.ASO<-readRDS(paste0(here::here(),"/data/cache/results.seminat.ASO.RDS"))
-
-#load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ANO.RData")
-
-#load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/results.seminat.ASO.RData")
+results.natopen.ANO<-readRDS(paste0(here::here(),"/data/cache/results.natopen.ANO.RDS"))
+results.natopen.GRUK<-readRDS(paste0(here::here(),"/data/cache/results.natopen.GRUK.RDS"))
 ```
 
 ```{r}
-head(results.seminat.ANO[['2-sided']])
-head(results.seminat.ASO[['2-sided']])
+head(results.natopen.ANO[['2-sided']])
+head(results.natopen.GRUK[['2-sided']])
 ```
 #### Scaled value analyses
 
@@ -1823,18 +1673,17 @@ In order to visualize the results we need to rearrange the results-objects from 
 ```{r, message = FALSE}
 #### plotting scaled values by main ecosystem type ####
 ## continuing with 2-sided
-res.seminat.ANO <- results.seminat.ANO[['2-sided']]
+res.natopen.ANO <- results.natopen.ANO[['2-sided']]
 
 # make long version of the scaled value part
-res.seminat.ANO <-
-  res.seminat.ANO %>% 
+res.natopen.ANO <-
+  res.natopen.ANO %>% 
   pivot_longer(
-    cols = c("Light1","Light2",
-             "Moist1","Moist2",
-             "pH1","pH2",
+    cols = c("CC1","CC2",
+             "SS1","SS2",
+             "RR1","RR2",
+             "Light1","Light2",
              "Nitrogen1","Nitrogen2",
-             "Phosphorus1","Phosphorus2",
-             "Grazing_mowing1","Grazing_mowing2",
              "Soil_disturbance1","Soil_disturbance2"),
     names_to = "fp_ind",
     values_to = "scaled_value",
@@ -1842,15 +1691,14 @@ res.seminat.ANO <-
   )
 
 # add original values as well
-res.seminat.ANO <- 
-  res.seminat.ANO %>% add_column(original = results.seminat.ANO[['original']] %>% 
+res.natopen.ANO <- 
+  res.natopen.ANO %>% add_column(original = results.natopen.ANO[['original']] %>% 
                                pivot_longer(
-                                 cols = c("Light1","Light2",
-                                          "Moist1","Moist2",
-                                          "pH1","pH2",
+                                 cols = c("CC1","CC2",
+                                          "SS1","SS2",
+                                          "RR1","RR2",
+                                          "Light1","Light2",
                                           "Nitrogen1","Nitrogen2",
-                                          "Phosphorus1","Phosphorus2",
-                                          "Grazing_mowing1","Grazing_mowing2",
                                           "Soil_disturbance1","Soil_disturbance2"),
                                  names_to = NULL,
                                  values_to = "original",
@@ -1859,20 +1707,18 @@ res.seminat.ANO <-
                                pull(original)
   )
 
-# similarly for ASO
-res.seminat.ASO <- results.seminat.ASO[['2-sided']]
-#colnames(res.seminat.ASO)
+# similarly for GRUK
+res.natopen.GRUK <- results.natopen.GRUK[['2-sided']]
 
 # make long version of the scaled value part
-res.seminat.ASO <-
-  res.seminat.ASO %>% 
+res.natopen.GRUK <-
+  res.natopen.GRUK %>% 
   pivot_longer(
-    cols = c("Light1","Light2",
-             "Moist1","Moist2",
-             "pH1","pH2",
+    cols = c("CC1","CC2",
+             "SS1","SS2",
+             "RR1","RR2",
+             "Light1","Light2",
              "Nitrogen1","Nitrogen2",
-             "Phosphorus1","Phosphorus2",
-             "Grazing_mowing1","Grazing_mowing2",
              "Soil_disturbance1","Soil_disturbance2"),
     names_to = "fp_ind",
     values_to = "scaled_value",
@@ -1880,15 +1726,14 @@ res.seminat.ASO <-
   )
 
 # add original values as well
-res.seminat.ASO <- 
-  res.seminat.ASO %>% add_column(original = results.seminat.ASO[['original']] %>% 
+res.natopen.GRUK <- 
+  res.natopen.GRUK %>% add_column(original = results.natopen.GRUK[['original']] %>% 
                                    pivot_longer(
-                                     cols = c("Light1","Light2",
-                                              "Moist1","Moist2",
-                                              "pH1","pH2",
+                                     cols = c("CC1","CC2",
+                                              "SS1","SS2",
+                                              "RR1","RR2",
+                                              "Light1","Light2",
                                               "Nitrogen1","Nitrogen2",
-                                              "Phosphorus1","Phosphorus2",
-                                              "Grazing_mowing1","Grazing_mowing2",
                                               "Soil_disturbance1","Soil_disturbance2"),
                                      names_to = NULL,
                                      values_to = "original",
@@ -1897,65 +1742,90 @@ res.seminat.ASO <-
                                    pull(original)
   )
 
-
 ```
 
 ### Ecosystem sub-types
 And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
 ```{r,echo=FALSE,message=FALSE, warning=FALSE}
 
-# making the plot, ANO
-ggplot(res.seminat.ANO, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+# making the plot, ANO, CSR-indicators
+ggplot(data=subset(res.natopen.ANO,!is.na(scaled_value) & fp_ind %in% c("CC1","SS1","RR1",
+                                                                        "CC2","SS2","RR2")), 
+       aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color=NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1",
+                                     "CC2","SS2","RR2"),
+                     labels=c("CSR-C1","CSR-S1","CSR-R1",
+                                     "CSR-C2","CSR-S2","CSR-R2")
+                     ), ncol = 3) + 
+  xlab("Basic ecosystem type") + 
+  ylab("Scaled indicator value (ANO data, CSR indicators)") +
+  scale_fill_discrete(labels=c("CSR-C1","CSR-S1","CSR-R1",
+                                     "CSR-C2","CSR-S2","CSR-R2")) + 
+  theme(legend.position="none") +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
+
+# making the plot, ANO, Tyler-indicators
+ggplot(data=subset(res.natopen.ANO,!is.na(scaled_value) & fp_ind %in% c("Light1","Nitrogen1","Soil_disturbance1",
+                                                                        "Light2","Nitrogen2","Soil_disturbance2")), 
+       aes(x=factor(kartleggingsenhet_1m2), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color=NA) +
 #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=1, shape=16, color="black") +
-  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
-                                     "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
-  xlab("Main ecosystem type") + 
-  ylab("Scaled indicator value (ANO data)") 
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Nitrogen1","Soil_disturbance1",
+                                     "Light2","Nitrogen2","Soil_disturbance2")), ncol = 3) + 
+  xlab("Basic ecosystem type") + 
+  ylab("Scaled indicator value (ANO data, Tyler indicators)") + 
+  theme(legend.position="none") +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
 
-# making the plot, ASO
-res.seminat.ASO$NiN_grunntype2 <- substring(res.seminat.ASO$NiN_grunntype,5)
-ggplot(res.seminat.ASO, aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
+
+
+# making the plot, GRUK
+ggplot(res.natopen.GRUK, aes(x=factor(Kartleggingsenhet), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color = NA) +
   #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=1, shape=16, color="black") +
-  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
-                                     "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
-  xlab("T32 (semi-natural meadow) basic ecosystem type") + 
-  ylab("Scaled indicator value (ASO data)") 
+  facet_wrap(~factor(fp_ind,levels=c("CC1","SS1","RR1","Light1","Nitrogen1","Soil_disturbance1",
+                                     "CC2","SS2","RR2","Light2","Nitrogen2","Soil_disturbance2"),
+                     labels=c("CSR-C1","CSR-S1","CSR-R1","Light1","Nitrogen1","Soil_disturbance1",
+                                     "CSR-C2","CSR-S2","CSR-R2","Light2","Nitrogen2","Soil_disturbance2")), ncol = 6) + 
+  xlab("Basic ecosystem type") + 
+  ylab("Scaled indicator value (GRUK data, all indicators)") + 
+  theme(legend.position="none") +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
 
 
 ```
-The ANO results show that especially some T32s (semi-natural meadows) have reduced light, grazing_mowing, and soil_disturbance values, which indicates abandonment. In addition, the results indicate too acidic conditions in some plant communities. The ASO results show similar outcomes with respect to abandonment and acidity, but in addition also deviations towards too high nitrogen values.
+The ANO results show a high frequency of too low CSR-R values (CSR-R1) and Soil disturbance while also showing signs of higher than expected competition (CSR-C2), which  indicates that a number of naturally open areas are changing in their dominance structure and physical stability. The GRUK data show a generally large spread of scaled values, but the violin plots (the shapes indicate the relative amount of observations across the y-axis) suggest that there is a number of sites with too high nitrogen (Nitrogen2), and some sites with too much disturbance (CSR-R2) and light (Light2). Many GRUK sites are popular outdoor locations with the local population, which could increase disturbance and thus cause deviations towards high CSR-R values (CSR-R2).
+Increased nitrogen may be an effect of alien species, which the GRUK data records as a major pressure and problem for many monitoring sites.
 
+```{r}
+ggplot(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen2",], aes(x=fremmedartsdekning, y=scaled_value)) +
+  geom_point() +
+  xlab("Alien species cover (%)") + ylab("Scaled Nitrogen2 value (GRUK data)")
+```
+And indeed, we can see that very high alien species cover predicts poor scores in the Nitrogen2 indicator.
 
 ### Indicator index maps
-We can also show the results as a map, for instance for Grazing_mowing1 (the lower Grazing_mowing indicator), either by directly plotting the data onto the map...
+We can also show the results as a map, for instance for CSR-R1 (the lower ruderal/disturbance indicator) for ANO and Nitrogen2 (the upper nitrogen indicator) for GRUK, either by directly plotting the data onto the map...
 ```{r, echo=FALSE, warning=FALSE,message = FALSE}
 #### scaled value maps ####
 # keep wide format and add geometry again
-res.seminat.ANO2 <- results.seminat.ANO[['2-sided']]
-st_geometry(res.seminat.ANO2) <- st_geometry(ANO.seminat)
+res.natopen.ANO2 <- results.natopen.ANO[['2-sided']]
+st_geometry(res.natopen.ANO2) <- st_geometry(ANO.natopen)
 
-res.seminat.ASO2 <- results.seminat.ASO[['2-sided']]
-st_geometry(res.seminat.ASO2) <- st_geometry(ASO.geo)
-res.seminat.ASO2 <- res.seminat.ASO2 %>% st_transform(crs = st_crs(res.seminat.ANO2))
+res.natopen.GRUK2 <- results.natopen.GRUK[['2-sided']]
+st_geometry(res.natopen.GRUK2) <- st_geometry(GRUK.natopen)
   
-
-#nor <- readRDS('P:/41201785_okologisk_tilstand_2022_2023/data/rds/norway_outline.RDS')%>%
-#  st_as_sf() %>%
-#  st_transform(crs = crs(ANO.geo))
-
 nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
   st_as_sf() %>%
   st_transform(crs = st_crs(ANO.geo))
-
-#reg <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/regioner/regNorway_wgs84 - MERGED.shp")%>%
-#  st_as_sf() %>%
-#  st_transform(crs = crs(ANO.geo))
 
 reg <- st_read("data/regions.shp")%>%
   st_as_sf() %>%
@@ -1970,13 +1840,13 @@ regnor <- st_intersection(reg,nor)
 
 
 ## scaled value maps
-# ANO Grazing_mowing1 (lower indicator)
+# ANO, RR1 (lower indicator)
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
-  tm_shape(res.seminat.ANO2) +
-  tm_dots('Grazing_mowing1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Grazing_mowing index (lower), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_shape(res.natopen.ANO2) +
+  tm_dots('RR1',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Ruderal index (lower), natopen ANO",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
                 col = c(tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE),'grey'),
                 labels = c("0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
@@ -1984,22 +1854,40 @@ tm_shape(regnor) +
                 title = "index values")
 
 
-# ASO nitrogen2 (upper indicator)
+# GRUK, Nitrogen2 (upper indicator)
 tm_shape(regnor) +
   tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
   tm_borders() +
-  tm_shape(res.seminat.ASO2) +
-  tm_dots('Nitrogen2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=1, legend.show = FALSE) + # 
-  tm_layout(main.title = "Nitrogen index (upper), seminat",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_shape(res.natopen.GRUK2) +
+  tm_dots('Nitrogen2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Nitrogen index (upper), natopen GRUK",legend.position = c("right", "bottom"), main.title.size=1.2) + 
   tm_add_legend(type = "fill", 
                 col = c(tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE),'grey'),
                 labels = c("0.3 - 0.4", "0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
                            "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
                 title = "index values")
 
-
 ```
-...but here the colors and values of the data points on the map are hard to make out.
+For GRUK we can zoom in on the area around the Oslofjord...
+
+```{r}
+boks <- st_bbox(c(xmin = 10.3, xmax = 10.8, ymax = 59.95, ymin = 59.4), crs = st_crs(4326))
+
+tm_shape(regnor,bbox=boks) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(res.natopen.GRUK2) +
+  tm_dots('Nitrogen2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=3, legend.show = FALSE) + # 
+  tm_layout(main.title = "Nitrogen index (upper), natopen GRUK",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE),'grey'),
+                labels = c("0.3 - 0.4", "0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
+                           "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
+                title = "index values")
+```
+...but for ANO the colors and values of the data points on the map are hard to make out.
+
+#### continue here ####
 
 ### Regions - maps and statistics
 Alternatively we can calculate and show the region-wise means and their related standard errors. But note that calculating a simple mean would be inappropriate for these data. This is because:

@@ -90,6 +90,9 @@ ind <- unique(natopen.ref.cov.val$Ind)
 # choose columns for site description
 colnames(GRUK.natopen)
 results.natopen.GRUK[['original']] <- GRUK.natopen
+# drop geometry
+st_geometry(results.natopen.GRUK[['original']]) <- NULL
+results.natopen.GRUK[['original']] <- as.data.frame(results.natopen.GRUK[['original']])
 
 
 # add columns for indicators
