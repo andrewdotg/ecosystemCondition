@@ -22,6 +22,8 @@ library(tmap)
 library(tmaptools)
 library(raster)
 library(stars)
+library(betareg)
+library(glmmTMB)
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -1887,18 +1889,14 @@ tm_shape(regnor,bbox=boks) +
 ```
 ...but for ANO the colors and values of the data points on the map are hard to make out.
 
-#### continue here ####
-
 ### Regions - maps and statistics
 Alternatively we can calculate and show the region-wise means and their related standard errors. But note that calculating a simple mean would be inappropriate for these data. This is because:
 (i) the scaled data are bound between 0 and 1, and thus follow a beta-distribution rather than a Gaussian one
-(ii) both the ANO and the ASO datasets have a nested structure
+(ii) both the ANO and the GRUK datasets have a nested structure
 
 Therefore, we need to (i) use a beta-model, that (ii) can account for the nested structure of the data.
 Here, we apply the following function using either a glmmTMB null-model with a beta-distribution, logit link, and the nesting as a random intercept, or a simple betareg null-model with logit link if the nesting is not extensive enough for a mixed model.
 ```{r}
-library(betareg)
-library(glmmTMB)
 
 expit <- function(L) exp(L) / (1+exp(L)) # since the beta-models use a logit link, we need to calculate the estimates back to the identity scale
 
@@ -1956,95 +1954,121 @@ indmean.beta <- function(df) {
 ```
 
 ```{r}
+# we have to join the ANO and GRUK results spatial objects with the Norway and region mask
+res.natopen.ANO2 = st_join(res.natopen.ANO2, regnor, left = TRUE)
+res.natopen.GRUK2 = st_join(res.natopen.GRUK2, regnor, left = TRUE)
+# we check if all there's any sitethat did not get a region assigned
+nrow(res.natopen.ANO2[is.na(res.natopen.ANO2$region),]) # no NA's for ANO
+nrow(res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),]) # some points didn't get assigned to a region. Why?
 
-res.seminat.ANO2 = st_join(res.seminat.ANO2, regnor, left = TRUE)
-res.seminat.ASO2 = st_join(res.seminat.ASO2, regnor, left = TRUE)
+tm_shape(regnor, bbox = boks) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),]) +
+  tm_dots('Nitrogen2',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE), scale=2, legend.show = FALSE) + # 
+  tm_layout(main.title = "Nitrogen index (upper), natopen GRUK",legend.position = c("right", "bottom"), main.title.size=1.2) + 
+  tm_add_legend(type = "fill", 
+                col = c(tmaptools::get_brewer_pal("YlOrRd", 7, plot = FALSE),'grey'),
+                labels = c("0.3 - 0.4", "0.4 - 0.5", "0.5 - 0.6", "0.6 - 0.7", 
+                           "0.7 - 0.8", "0.8 - 0.9", "0.9 - 1.0", "NA"),
+                title = "index values")
+# they seem to lie in water
+# all sites but the southernmost one are in Eastern Norway, the remaining one in Southern Norway
+summary(res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),"y"])
+res.natopen.GRUK2[is.na(res.natopen.GRUK2$region) & res.natopen.GRUK2$y<59.83,c("y","Flate_ID")] # site 123-4 is in Southern Norway
+res.natopen.GRUK2[res.natopen.GRUK2$Flate_ID=="123-4","region"] <- "Southern Norway"
+# and all the other region=NA observations are in Eastern Norway
+res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),"region"] <- "Eastern Norway"
+nrow(res.natopen.GRUK2[is.na(res.natopen.GRUK2$region),]) # no NA's left
+
+# now we can calculate regionwise means and standard errors with beta-regression null-models
+# note that beta-models cannot handle observations that are exactly 0 or 1
+res.natopen.ANO2$RR1[res.natopen.ANO2$RR1==1] <- 0.999
+res.natopen.ANO2$RR1[res.natopen.ANO2$RR1==0] <- 0.001
+res.natopen.GRUK2$Nitrogen2[res.natopen.GRUK2$Nitrogen2==1] <- 0.999
+res.natopen.GRUK2$Nitrogen2[res.natopen.GRUK2$Nitrogen2==0] <- 0.001
 
 regnor <- regnor %>%
   mutate(
-    Grazing_mowing1.ANO.reg.mean = c(indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
-                                 ),
-    Grazing_mowing1.ANO.reg.se = c(indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
-                               ),
-    Grazing_mowing1.ANO.reg.n = c(nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
-                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
-                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
-                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
-                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),])
-                              )
-  )
-
-# and adding the values for ASO
-regnor <- regnor %>%
-  mutate(
-    Nitrogen2.ASO.reg.mean = c(indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
-                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
-                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
-                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1],
-                               indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[1]
-                               ),
-    Nitrogen2.ASO.reg.se = c(indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
-                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
-                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
-                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2],
-                             indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway",c("Nitrogen2","Omradenummer_flatenummer")])[2]
-                             ),
-    Nitrogen2.ASO.reg.n = c(nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Central Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Eastern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Western Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]),
-                            nrow(res.seminat.ASO2[res.seminat.ASO2$region=="Southern Norway" & !is.na(res.seminat.ASO2$Nitrogen2),]))
+    RR1.ANO.reg.mean = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("RR1","ano_flate_id")])[1],
+                         indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("RR1","ano_flate_id")])[1],
+                         indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("RR1","ano_flate_id")])[1],
+                         indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("RR1","ano_flate_id")])[1],
+                         indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("RR1","ano_flate_id")])[1]
+    ),
+    RR1.ANO.reg.se = c(indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway",c("RR1","ano_flate_id")])[2]*2,
+                       indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway",c("RR1","ano_flate_id")])[2]*2,
+                       indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway",c("RR1","ano_flate_id")])[2]*2,
+                       indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway",c("RR1","ano_flate_id")])[2]*2,
+                       indmean.beta(df=res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway",c("RR1","ano_flate_id")])[2]*2
+    ),
+    RR1.ANO.reg.n = c(nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Northern Norway" & !is.na(res.natopen.ANO2$RR1),]),
+                      nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Central Norway" & !is.na(res.natopen.ANO2$RR1),]),
+                      nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Eastern Norway" & !is.na(res.natopen.ANO2$RR1),]),
+                      nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Western Norway" & !is.na(res.natopen.ANO2$RR1),]),
+                      nrow(res.natopen.ANO2[res.natopen.ANO2$region=="Southern Norway" & !is.na(res.natopen.ANO2$RR1),])
+    ),
+    Nitrogen2.GRUK.reg.mean = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("Nitrogen2","Flate_ID")])[1],
+                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("Nitrogen2","Flate_ID")])[1],
+                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("Nitrogen2","Flate_ID")])[1],
+                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("Nitrogen2","Flate_ID")])[1],
+                                indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("Nitrogen2","Flate_ID")])[1]
+    ),
+    Nitrogen2.GRUK.reg.se = c(indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Northern Norway",c("Nitrogen2","Flate_ID")])[2]*2,
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Central Norway",c("Nitrogen2","Flate_ID")])[2]*2,
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway",c("Nitrogen2","Flate_ID")])[2]*2,
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Western Norway",c("Nitrogen2","Flate_ID")])[2]*2,
+                              indmean.beta(df=res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway",c("Nitrogen2","Flate_ID")])[2]*2
+    ),
+    Nitrogen2.GRUK.reg.n = c(0,
+                             0,
+                             nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Eastern Norway" & !is.na(res.natopen.GRUK2$Nitrogen2),]),
+                             0,
+                             nrow(res.natopen.GRUK2[res.natopen.GRUK2$region=="Southern Norway" & !is.na(res.natopen.GRUK2$Nitrogen2),])
+    )
   )
 
 
-
-## scaled value maps for Grazing_mowing1 (lower indicator), ANO
+## scaled value maps for CSR-R1 (lower indicator), ANO
 # mean
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.ANO.reg.mean", title="Grazing_mowing (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Grazing_mowing1.ANO.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="RR1.ANO.reg.mean", title="CSR-R (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("RR1.ANO.reg.n",col="black",bg.color="grey")
 ```
-Mean index value by region for the upper Grazing_mowing indicator (i.e. index shows deviations towards less grazing or mowing) from the ANO monitoring data. Numbers in grey fields show the number of observations in the respective region.
+Mean index value by region for the lower CSR-R indicator (i.e. index shows deviations towards less ruderal species) from the ANO monitoring data. Numbers in grey fields show the number of observations in the respective region.
 
 ```{r}
 # se
 tm_shape(regnor) +
-  tm_polygons(col="Grazing_mowing1.ANO.reg.se", title="Grazing_mowing (lower), SE", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
-  tm_text("Grazing_mowing1.ANO.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="RR1.ANO.reg.se", title="CSR-R (lower)", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("RR1.ANO.reg.n",col="black",bg.color="grey")
 
 ```
-Standard error to the mean index value by region for the lower Grazing_mowing indicator from the ANO monitoring data. Numbers in grey fields show the number of observations in the respective region.
+Standard error to the mean index value by region for the lower CSR-R indicator from the ANO monitoring data. Numbers in grey fields show the number of observations in the respective region.
 
-And here are the corresponding maps for the upper Nitrogen indicator in the ASO data:
+And here are the corresponding maps for the upper Nitrogen indicator in the GRUK data:
 ```{r}
 ## scaled value maps for Nitrogen2 (upper indicator), ASO
 # mean
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.ASO.reg.mean", title="Nitrogen (upper), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
-  tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="Nitrogen2.GRUK.reg.mean", title="Nitrogen (upper), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Nitrogen2.GRUK.reg.n",col="black",bg.color="grey")
 ```
-Mean index value by region for the upper Nitrogen indicator (i.e. index shows deviations towards increased Nitrogen availability) from the ASO monitoring data. Numbers in grey fields show the number of observations in the respective region.
+Mean index value by region for the upper Nitrogen indicator (i.e. index shows deviations towards increased Nitrogen affinity in the plant community) from the GRUK monitoring data. Numbers in grey fields show the number of observations in the respective region.
 
 ```{r}
 # se
 tm_shape(regnor) +
-  tm_polygons(col="Nitrogen2.ASO.reg.se", title="Nitrogen (upper), SE", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
-  tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
+  tm_polygons(col="Nitrogen2.GRUK.reg.se", title="Nitrogen (upper), 2 SE", style="quantile", palette=(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_text("Nitrogen2.GRUK.reg.n",col="black",bg.color="grey")
 
 ```
-Standard error to the mean index value by region for the upper Nitrogen indicator from the ASO monitoring data. Numbers in grey fields show the number of observations in the respective region.
+Standard error to the mean index value by region for the upper Nitrogen indicator from the GRUK monitoring data. Numbers in grey fields show the number of observations in the respective region.
 
+#### continue here ####
 
 #### Unscaled values vs. reference
-We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since Grazing_mowing for ANO and nitrogen for ASO show some deviations  we exemplify this with these indicators for unscaled values.
+We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since CSR-R for ANO and nitrogen for GRUK show some deviations, we exemplify this with these indicators for unscaled values.
 
 Grazing_mowing, ANO:
 ```{r}
