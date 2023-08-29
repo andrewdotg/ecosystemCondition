@@ -110,7 +110,7 @@ ANO.natopen$kartleggingsenhet_1m2 <- as.factor(ANO.natopen$kartleggingsenhet_1m2
 summary(ANO.natopen$hovedtype_rute)
 summary(ANO.natopen$kartleggingsenhet_1m2)
 # we have no reference for overall T2 registrations, these 24 observations won't be evaluated
-ANO.natopen[ANO.natopen$kartleggingsenhet_1m2=="T2",] # were largely inaccessible and thus mapped from arial pictures
+ANO.natopen[ANO.natopen$kartleggingsenhet_1m2=="T2",] # were largely inaccessible and thus mapped from aerial pictures
 
 results.natopen.ANO <- list()
 ind <- unique(natopen.ref.cov.val$Ind)

@@ -1045,7 +1045,7 @@ ANO.natopen$kartleggingsenhet_1m2 <- as.factor(ANO.natopen$kartleggingsenhet_1m2
 summary(ANO.natopen$hovedtype_rute)
 summary(ANO.natopen$kartleggingsenhet_1m2)
 # we have no reference for overall T2 registrations, these 24 observations won't be evaluated
-ANO.natopen[ANO.natopen$kartleggingsenhet_1m2=="T2",] # were largely inaccessible and thus mapped from arial pictures
+ANO.natopen[ANO.natopen$kartleggingsenhet_1m2=="T2",] # were largely inaccessible and thus mapped from aerial pictures
 
 results.natopen.ANO <- list()
 ind <- unique(natopen.ref.cov.val$Ind)
@@ -1808,11 +1808,12 @@ The ANO results show a high frequency of too low CSR-R values (CSR-R1) and Soil 
 Increased nitrogen may be an effect of alien species, which the GRUK data records as a major pressure and problem for many monitoring sites.
 
 ```{r}
+colnames(res.natopen.GRUK)[38] <- "fremmedartsdekning"
 ggplot(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen2",], aes(x=fremmedartsdekning, y=scaled_value)) +
   geom_point() +
   xlab("Alien species cover (%)") + ylab("Scaled Nitrogen2 value (GRUK data)")
 ```
-And indeed, we can see that very high alien species cover predicts poor scores in the Nitrogen2 indicator.
+And indeed, we can see that very high alien species cover predicts almost only poor scores in the Nitrogen2 indicator.
 
 ### Indicator index maps
 We can also show the results as a map, for instance for CSR-R1 (the lower ruderal/disturbance indicator) for ANO and Nitrogen2 (the upper nitrogen indicator) for GRUK, either by directly plotting the data onto the map...
@@ -2072,31 +2073,29 @@ We can also compare the unscaled values to the reference distribution in order t
 
 CSR-R, ANO:
 ```{r}
-# summary(res.natopen.ANO$kartleggingsenhet_1m2)
-# 15 NiN-types, of which T2, T13 & T18 as main types don't have a reference
-# many T13-types (rasmark) have too few vascular plants in the reference lists for getting a reference distribution
-# C1, C2 and C10 in the ANO data have none
-#-> so, 9 NiN-Types to plot
+#summary(res.natopen.ANO[!is.na(res.natopen.ANO$original),]$kartleggingsenhet_1m2)
+#sort(unique(res.natopen.ANO$kartleggingsenhet_1m2))
+# 8 NiN-types with data to plot
 
-x11()
-par(mfrow=c(3,3))
-
-for ( i in sort(unique(res.natopen.ANO$kartleggingsenhet_1m2)[-c(2,8,9,12,13,15)]) ) {
+par(mfrow=c(2,4))
+for ( i in sort(unique(res.natopen.ANO$kartleggingsenhet_1m2))[c(1,6,7,10,12,13,14,15)] ) {
   
   tryCatch({
     
     plot(density( as.matrix(natopen.ref.cov[['RR']][,i]) ,na.rm=T),
          xlim=c(0,1), ylim=c(0,10), type="l", main=i,xlab='CSR-R value')
-    points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original,na.rm=T),
-           type="l", col="red")
     points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original,
            rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original)),
            col="red")
+    points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original,na.rm=T),
+           type="l", col="red")
+
     
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
   
 }
-legend("topright", legend=c("reference","field data"), pch=c(NULL,1), lty=1, col=c("black","red"))
+legend("topright", legend=c("reference","field data"), pch=c(NULL,1), lty=1, col=c("black","red"),bty="n", cex=1)
+
 
 ```
 
@@ -2105,26 +2104,27 @@ Nitrogen, GRUK
 
 # only two NiN types in GRUK, T2-C-7 and T2-C-8
 par(mfrow=c(1,2))
-
 for ( i in unique(res.natopen.GRUK$Kartleggingsenhet) ) {
   
   tryCatch({
     
     plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,i]) ,na.rm=T),
          xlim=c(1,9), ylim=c(0,2), type="l", main=i,xlab='Nitrogen value')
-    points(density(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original,na.rm=T),
-           type="l", col="red")
     points(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original,
            rep(0,length(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original)),
            col="red")
+    points(density(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original,na.rm=T),
+           type="l", col="red")
+
     
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
   
 }
-legend("topright", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
+legend("topright", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"), cex=1)
 
 ```
-The figure shows that deviations mainly occur in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
+The GRUK figure shows that the distributions for the plant communities' nitrogen affinity in the limestone rich T2-areas (åpen grunnlendt mark) around Oslofjord are shifted towards higher nitrogen affinity. The ANO figure shows shifts towards less ruderal strategy in plant communities limestone poor T2-areas as well as T12 (strandeng) and T16 (rasmarkhei, -eng) types.
+
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->

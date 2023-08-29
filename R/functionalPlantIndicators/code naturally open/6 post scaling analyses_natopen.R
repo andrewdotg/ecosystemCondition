@@ -204,6 +204,8 @@ plot.alien.1 <- ggplot(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen2",], 
   xlab("Alien species cover (%)") + ylab("Scaled Nitrogen2 value (GRUK data)")
 
 
+
+
 # use beta-regression for analysis of response between 0 and 1
 expit <- function(L) exp(L) / (1+exp(L))
 
@@ -629,33 +631,34 @@ length(unique(res.natopen.ANO2$ano_punkt_id[res.natopen.ANO2$region=="Southern N
 #### continue here ####
 
 #### distribution comparison, reference vs. field data ####
-summary(res.natopen.ANO$kartleggingsenhet_1m2)
-length(unique(res.natopen.ANO$kartleggingsenhet_1m2))
+
 ### ANO, CSR-R
-# 15 NiN-types, of which T2, T13 & T18 as main types don't have a reference
-# many T13-types (rasmark) have too few vascular plants in the reference lists for getting a reference distribution
-# C1, C2 and C10 in the ANO data have none
-#-> so, 9 NiN-Types to plot
+summary(res.natopen.ANO[!is.na(res.natopen.ANO$original),]$kartleggingsenhet_1m2)
+sort(unique(res.natopen.ANO$kartleggingsenhet_1m2))
+# 8 NiN-types with data to plot
 
 x11()
 par(mfrow=c(3,3))
 
-for ( i in sort(unique(res.natopen.ANO$kartleggingsenhet_1m2)[-c(2,8,9,12,13,15)]) ) {
+for ( i in sort(unique(res.natopen.ANO$kartleggingsenhet_1m2))[c(1,6,7,10,12,13,14,15)] ) {
   
   tryCatch({
     
     plot(density( as.matrix(natopen.ref.cov[['RR']][,i]) ,na.rm=T),
          xlim=c(0,1), ylim=c(0,10), type="l", main=i,xlab='CSR-R value')
-    points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original,na.rm=T),
-           type="l", col="red")
     points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original,
            rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original)),
            col="red")
+    points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original,na.rm=T),
+           type="l", col="red")
+
     
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
   
 }
-legend("topright", legend=c("reference","field data"), pch=c(NULL,1), lty=1, col=c("black","red"))
+plot(1,1,col="white",xlab='',ylab='',xaxt="n",yaxt="n",bty="n")
+
+legend("center", legend=c("reference","field data"), pch=c(NULL,1), lty=1, col=c("black","red"),bty="n", cex=1.5)
 
 
 
@@ -670,15 +673,17 @@ for ( i in unique(res.natopen.GRUK$Kartleggingsenhet) ) {
     
     plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,i]) ,na.rm=T),
          xlim=c(1,9), ylim=c(0,2), type="l", main=i,xlab='Nitrogen value')
-    points(density(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original,na.rm=T),
-           type="l", col="red")
     points(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original,
            rep(0,length(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original)),
            col="red")
+    points(density(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original,na.rm=T),
+           type="l", col="red")
+
     
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
   
 }
-legend("topright", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
+legend("topright", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"), cex=1.5)
+
 
 
