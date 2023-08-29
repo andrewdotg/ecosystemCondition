@@ -601,7 +601,7 @@ tm_shape(regnor) +
 
 
 
-#### continue here ####
+
 
 #### how many observations are there? ####
 # total ANO
@@ -626,427 +626,59 @@ length(unique(res.natopen.ANO2$ano_punkt_id[res.natopen.ANO2$region=="Southern N
 
 
 
-
+#### continue here ####
 
 #### distribution comparison, reference vs. field data ####
 summary(res.natopen.ANO$kartleggingsenhet_1m2)
 length(unique(res.natopen.ANO$kartleggingsenhet_1m2))
-# 15 NiN-types, of which T2, T13 & T18 as main types don't have a reference -> so, 12 NiN-Types to plot
-colnames(natopen.ref.cov[['RR']])
+### ANO, CSR-R
+# 15 NiN-types, of which T2, T13 & T18 as main types don't have a reference
+# many T13-types (rasmark) have too few vascular plants in the reference lists for getting a reference distribution
+# C1, C2 and C10 in the ANO data have none
+#-> so, 9 NiN-Types to plot
 
-### Light
 x11()
-par(mfrow=c(3,4))
-## T2s
-# T2-C-1
-plot(density( as.matrix(natopen.ref.cov[['RR']][,"T2-C-1"]) ,na.rm=T),
-     xlim=c(0,1), ylim=c(0,10), type="l", main='T2-C-1',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-1",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-1",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-1",]$original)),
-       col="red")
+par(mfrow=c(3,3))
 
-# T2-C-2
-plot(density( as.matrix(natopen.ref.cov[['RR']][,"T2-C-2"]) ,na.rm=T),
-     xlim=c(0,1), ylim=c(0,10), type="l", main='T2-C-2',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-2",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-2",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-2",]$original)),
-       col="red")
-
-# T2-C-3
-plot(density( as.matrix(natopen.ref.cov[['RR']][,"T2-C-3"]) ,na.rm=T),
-     xlim=c(0,1), ylim=c(0,10), type="l", main='T2-C-3',xlab='CSR-R value')
-#points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-3",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-3",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-3",]$original)),
-       col="red")
-
-# T2-C-7
-plot(density( as.matrix(natopen.ref.cov[['RR']][,"T2-C-7"]) ,na.rm=T),
-     xlim=c(0,1), ylim=c(0,10), type="l", main='T2-C-7',xlab='CSR-R value')
-#points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-7",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-7",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T2-C-7",]$original)),
-       col="red")
-
-# T12-C-2
-plot(density( as.matrix(natopen.ref.cov[['RR']][,"T12-C-2"]) ,na.rm=T),
-     xlim=c(0,1), ylim=c(0,10), type="l", main='T12-C-2',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T12-C-2",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T12-C-2",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T12-C-2",]$original)),
-       col="red")
-
-# T32-C-6
-plot(density( as.matrix(natopen.ref.cov[['RR']][,c("T32-C21C6a","T32-C21C6b")]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='T32-C6',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original)),
-       col="red")
-
-# T32-C-9
-plot(density( as.matrix(natopen.ref.cov[['RR']][,c("T32-C9a","T32-C9b")]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='T32-C9',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original)),
-       col="red")
-
-# T32-C-10
-plot(density( as.matrix(natopen.ref.cov[['RR']][,c("T32-C10a","T32-C10b")]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='T32-C10',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original)),
-       col="red")
-
-# T32-C-15
-plot(density( as.matrix(natopen.ref.cov[['RR']][,c("T32-C15")]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='T32-C15',xlab='CSR-R value')
-#points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original)),
-       col="red")
-
-# T32-C-20
-plot(density( as.matrix(natopen.ref.cov[['RR']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='T32-C20',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original)),
-       col="red")
-
-
-## V10s
-# V10-C-1
-plot(density( as.matrix(natopen.ref.cov[['RR']][,"V10-C1C2"]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='V10-C1',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original)),
-       col="red")
-
-# V10-C-3
-plot(density( as.matrix(natopen.ref.cov[['RR']][,"V10-C3"]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='V10-C3',xlab='CSR-R value')
-#points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original)),
-       col="red")
-
-
-## T34s
-# T34-C-1
-plot(density( as.matrix(natopen.ref.cov[['RR']][,"T34-C1"]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='T34-C1',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original)),
-       col="red")
-
-# T34-C-2
-plot(density( as.matrix(natopen.ref.cov[['RR']][,c("T34-C2a","T34-C2b","T34-C2c")]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='T34-C2',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original)),
-       col="red")
-
-# T34-C-4
-plot(density( as.matrix(natopen.ref.cov[['RR']][,c("T34-C4a","T34-C4b","T34-C4c","T34-C4d")]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='T34-C4',xlab='CSR-R value')
-#points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original)),
-       col="red")
-
-
-## T41
-plot(density( as.matrix(natopen.ref.cov[['RR']][,c("T41a","T41b")]) ,na.rm=T),
-     xlim=c(0,1), type="l", main='T41',xlab='CSR-R value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T41",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T41",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2=="T41",]$original)),
-       col="red")
-legend("topleft", legend=c("reference","field data"), pch=c(NULL,1), lty=1, col=c("black","red"))
+for ( i in sort(unique(res.natopen.ANO$kartleggingsenhet_1m2)[-c(2,8,9,12,13,15)]) ) {
+  
+  tryCatch({
+    
+    plot(density( as.matrix(natopen.ref.cov[['RR']][,i]) ,na.rm=T),
+         xlim=c(0,1), ylim=c(0,10), type="l", main=i,xlab='CSR-R value')
+    points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original,na.rm=T),
+           type="l", col="red")
+    points(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original,
+           rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="RR1" & res.natopen.ANO$kartleggingsenhet_1m2==i,]$original)),
+           col="red")
+    
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+  
+}
+legend("topright", legend=c("reference","field data"), pch=c(NULL,1), lty=1, col=c("black","red"))
 
 
 
-### Grazing_mowing
+### GRUK, Nitrogen
+# only two NiN types in GRUK, T2-C-7 and T2-C-8
 x11()
-par(mfrow=c(4,4))
-## T32s
-# T32-C-1
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,"T32-C1C2"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C1',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-1",]$original)),
-       col="red")
+par(mfrow=c(1,2))
 
-# T32-C-2
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,"T32-C1C2"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C2',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-2",]$original)),
-       col="red")
-
-# T32-C-3
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,"T32-C3C4"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C3',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-3",]$original)),
-       col="red")
-
-# T32-C-4
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,"T32-C3C4"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C4',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-4",]$original)),
-       col="red")
-
-# T32-C-5
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C5',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-5",]$original)),
-       col="red")
-
-# T32-C-6
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,c("T32-C21C6a","T32-C21C6b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C6',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-6",]$original)),
-       col="red")
-
-# T32-C-9
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,c("T32-C9a","T32-C9b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C9',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-9",]$original)),
-       col="red")
-
-# T32-C-10
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,c("T32-C10a","T32-C10b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C10',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-10",]$original)),
-       col="red")
-
-# T32-C-15
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,c("T32-C15")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C15',xlab='Grazing_mowing value')
-#points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-15",]$original)),
-       col="red")
-
-# T32-C-20
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C20',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T32-C-20",]$original)),
-       col="red")
-
-
-## V10s
-# V10-C-1
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,"V10-C1C2"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='V10-C1',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-1",]$original)),
-       col="red")
-
-# V10-C-3
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,"V10-C3"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='V10-C3',xlab='Grazing_mowing value')
-#points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="V10-C-3",]$original)),
-       col="red")
-
-
-## T34s
-# T34-C-1
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,"T34-C1"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T34-C1',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-1",]$original)),
-       col="red")
-
-# T34-C-2
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,c("T34-C2a","T34-C2b","T34-C2c")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T34-C2',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-2",]$original)),
-       col="red")
-
-# T34-C-4
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,c("T34-C4a","T34-C4b","T34-C4c","T34-C4d")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T34-C4',xlab='Grazing_mowing value')
-#points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T34-C-4",]$original)),
-       col="red")
-
-
-## T41
-plot(density( as.matrix(natopen.ref.cov[['Grazing_mowing']][,c("T41a","T41b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T41',xlab='Grazing_mowing value')
-points(density(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T41",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T41",]$original,
-       rep(0,length(res.natopen.ANO[res.natopen.ANO$fp_ind=="Grazing_mowing1" & res.natopen.ANO$kartleggingsenhet_1m2=="T41",]$original)),
-       col="red")
-legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
-
-
-
-
-## similarly for ASO, here with just Nitrogen
-summary(res.natopen.ASO$NiN_grunntype)
-length(levels(res.natopen.ASO$NiN_grunntype))
-# 12 NiN-types, of which C-13 and C-2 have 0 observations -> so, 10 NiN-Types to plot
-colnames(natopen.ref.cov[['Nitrogen']])
-
-### Nitrogen
-x11()
-par(mfrow=c(3,4))
-# T32-C-1
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,"T32-C1C2"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C1',xlab='Nitrogen value')
-points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-1",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-1",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-1",]$original)),
-       col="red")
-
-# T32-C-3
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,"T32-C3C4"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C3',xlab='Nitrogen value')
-points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-3",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-3",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-3",]$original)),
-       col="red")
-
-# T32-C-4
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,"T32-C3C4"]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C4',xlab='Nitrogen value')
-points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-4",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-4",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-4",]$original)),
-       col="red")
-
-# T32-C-5
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C5',xlab='Nitrogen value')
-points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-5",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-5",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-5",]$original)),
-       col="red")
-
-# T32-C-6
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,c("T32-C21C6a","T32-C21C6b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C6',xlab='Nitrogen value')
-points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-6",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-6",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-6",]$original)),
-       col="red")
-
-# T32-C-7
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,c("T32-C7C8")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C7',xlab='Nitrogen value')
-#points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-7",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-7",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-7",]$original)),
-       col="red")
-
-# T32-C-8
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,c("T32-C7C8")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C8',xlab='Nitrogen value')
-points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-8",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-8",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-8",]$original)),
-       col="red")
-
-# T32-C-9
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,c("T32-C9a","T32-C9b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C9',xlab='Nitrogen value')
-#points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-9",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-9",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-9",]$original)),
-       col="red")
-
-# T32-C-10
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,c("T32-C10a","T32-C10b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C10',xlab='Nitrogen value')
-#points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-10",]$original,na.rm=T),
-#       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-10",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-10",]$original)),
-       col="red")
-
-
-# T32-C-20
-plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,c("T32-C5C20a","T32-C5C20b")]) ,na.rm=T),
-     xlim=c(1,8), type="l", main='T32-C20',xlab='Nitrogen value')
-points(density(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-20",]$original,na.rm=T),
-       type="l", col="red")
-points(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-20",]$original,
-       rep(0,length(res.natopen.ASO[res.natopen.ASO$fp_ind=="Nitrogen2" & res.natopen.ASO$NiN_grunntype=="T32-C-20",]$original)),
-       col="red")
-
-legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
+for ( i in unique(res.natopen.GRUK$Kartleggingsenhet) ) {
+  
+  tryCatch({
+    
+    plot(density( as.matrix(natopen.ref.cov[['Nitrogen']][,i]) ,na.rm=T),
+         xlim=c(1,9), ylim=c(0,2), type="l", main=i,xlab='Nitrogen value')
+    points(density(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original,na.rm=T),
+           type="l", col="red")
+    points(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original,
+           rep(0,length(res.natopen.GRUK[res.natopen.GRUK$fp_ind=="Nitrogen1" & res.natopen.GRUK$Kartleggingsenhet==i,]$original)),
+           col="red")
+    
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+  
+}
+legend("topright", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
 
