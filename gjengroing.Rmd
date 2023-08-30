@@ -1,9 +1,4 @@
----
-title: "Vegetation regrowth/encroachment (gjengroing)"
-output:
-  pdf_document: default
-  html_document: default
----
+# Vegetation regrowth/encroachment (gjengroing) {#gjengroing}
 
 <br />
 
@@ -104,10 +99,7 @@ There is possibly a collinearity with the primary production indicator (primærp
 
 The methodology used to calculate the gjengroing indicator is outlined in the schematic below. The workflow in the schematic is conducted for all reference and population polygons in Norway and repeated for each ecosystem type (åpne and våtmark), respectively. The indicator values are aggregated to a 50km grid and regional level at the end. The individual steps are discussed in turn in the following subsections.
 
-```{r}
-include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/gjengroing_schematic.jpg')
-```
-
+![](images/gjengroing_schematic.jpg)
 
 ### Reference state
 
@@ -930,33 +922,23 @@ After exporting the final polygon-level indicator scores, we imported to QGIS an
 
 In the first example from midt-norge, we see a våtmark polygon colored red (ie. in poor condition) due to the growth of a forest in the northern section. It looks like a plantation forest and possibly occured after the wetland was drained. The height of the forest vegetation equates to a median of 2.4m which is higher than the reference value for this region (1.09m) and almost as high as the mature forest height reference of 2.8m. Therefore it gets a scaped indicator score of 0.1. In contrast the wetland plygon in the middle of the image is in good condition because it has a median vegetation height of 1.1m which is only fractionally higher than the regional reference for good ecological condition.
 
-```{r}
-include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_1.jpg')
-```
+![](images/val_1.jpg)
 
 The second example from Sørlandet shows three AR5 semi-naturlig åpne polygons with different indicator values. The lower polygon has poor ecological condition because its median vegetation height is 6.2m which is close to the local reference value for mature forest (7.9m). Although the centeral polygon appears to have greater coverage of forest in the orthophoto, the LiDAR data tells us that it is mostly covered by short trees and results in a median vegetation height of 2.8 - therefore good condition.
 
-```{r}
-include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_2.jpg')
-```
+![](images/val_2.jpg)
 
 The third example from Østlandet shows a range of indicator values for våtmark polygons. Although many of the polygons are partly covered by trees, their indicator values show good condition because the local reference for mature forest (zero on the indicator scale) is very high in this landscape of productive forest.
 
-```{r}
-include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_3.jpg')
-```
+![](images/val_3.jpg)
 
 The fourth example from Nord-norge shows AR5 semi-naturlig åpne polygons with low and high condition scores. The large polygon with poor condition score has a median vegetation height of 2.7 which is nearly as high as the local reference for mature forest (3.8m).
 
-```{r}
-include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_4.jpg')
-```
+![](images/val_4.jpg)
 
 The fifth and final example from further north in Nord-norge shows two våtmark polygons with contrasting condition scores, yet exactly the same median vegetation heights of 0.6m. The difference in the scaled iindicator value is due to different local reference values for surrounding forest. The polygon on the left has surrounding forest (within 200m buffer zone) with median height 0.5m, while the polygon on the right has surrounding forest of 0.7m. This creates a contrast in the final indicator valye and illustrates the effect that a local reference value can have on defining good and poor ecological condition.
 
-```{r}
-include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_5.jpg')
-```
+![](images/val_5.jpg)
 
 ### Eksport file (final product)
 
