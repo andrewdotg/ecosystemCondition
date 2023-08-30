@@ -9,42 +9,29 @@ output:
 
 *Author and date:* Zander Venter
 
-```{r}
+
+```r
 Sys.Date()
+#> [1] "2023-08-30"
 ```
 
 <br />
 
 <!-- Load all you dependencies here -->
 
-```{r setup, include=FALSE}
-library(knitr)
-library(sf)
-library(tidyverse)
-library(gridExtra)
-library(RColorBrewer)
 
-# Set global variable defining whether you want to run everything from scratch (very long runtime) or use pre-exported data (short runtime)
-runFromScratch <- FALSE
-
-knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
-```
 
 <!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
 
-```{r, echo=F}
-Ecosystem <- "Våtmark og Semi-/Naturlig-åpne" 
-Egenskap  <- "Gjengroing"
-ECT       <- "Structural state characteristic" 
-Contact   <- "Zander Venter"
-```
 
-```{r, echo=F}
-metaData <- data.frame(Ecosystem,
-                       "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT)
-knitr::kable(metaData)
-```
+
+
+
+|Ecosystem                      |Økologisk.egenskap |ECT.class                       |
+|:------------------------------|:------------------|:-------------------------------|
+|Våtmark og Semi-/Naturlig-åpne |Gjengroing         |Structural state characteristic |
+
+
 
 <!-- Don't remove these three html lines -->
 
@@ -104,9 +91,12 @@ There is possibly a collinearity with the primary production indicator (primærp
 
 The methodology used to calculate the gjengroing indicator is outlined in the schematic below. The workflow in the schematic is conducted for all reference and population polygons in Norway and repeated for each ecosystem type (åpne and våtmark), respectively. The indicator values are aggregated to a 50km grid and regional level at the end. The individual steps are discussed in turn in the following subsections.
 
-```{r}
+
+```r
 include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/gjengroing_schematic.jpg')
 ```
+
+<img src="../../../P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/gjengroing_schematic.jpg" width="1096" />
 
 
 ### Reference state
@@ -149,9 +139,18 @@ The remaining datasets will be imported into the R session.
 
 The regional delineation for Norway (five regions) are used for aggregating and reporting gjengroing condition values.
 
-```{r}
+
+```r
 regions <- st_read('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/regions.shp') %>%
   mutate(region = factor(region) )
+#> Reading layer `regions' from data source 
+#>   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/regions.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 5 features and 2 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -99551.21 ymin: 6426048 xmax: 1121941 ymax: 7962744
+#> Projected CRS: ETRS89 / UTM zone 33N
 # Rename regions with correct Norwegian characters
 levels(regions$region) <- c("Østlandet", "Midt-Norge","Nord-Norge","Sørlandet","Vestlandet")
 ```
@@ -160,16 +159,33 @@ levels(regions$region) <- c("Østlandet", "Midt-Norge","Nord-Norge","Sørlandet"
 
 The [SSB 10km and 50km grids](https://kartkatalog.geonorge.no/metadata/statistisk-rutenett-5000m/32ac0653-d95c-446c-8558-bf9b79f4934e) are used for visualizing the distribution of available data and for aggregating gjengroing index scores.
 
-```{r}
+
+```r
 ssb10km <- st_read('/data/R/GeoSpatialData/Population_demography/Norway_SSB/Original/ssb_10km/ssb10km.shp')%>%
   # mutate the id value so that it aligns with the data coming from GEE
   mutate(SSBID = as.numeric(SSBID)/1000)
+#> Reading layer `ssb10km' from data source 
+#>   `/data/R/GeoSpatialData/Population_demography/Norway_SSB/Original/ssb_10km/ssb10km.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 4218 features and 6 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -80000 ymin: 6440000 xmax: 1120000 ymax: 7940000
+#> Projected CRS: WGS 84 / UTM zone 33N
 # Transform to the correct projection
 ssb10km <- st_transform(ssb10km, st_crs(regions))
 
 ssb50km <- st_read('/data/R/GeoSpatialData/Population_demography/Norway_SSB/Original/ssb_50km/ssb50km.shp')%>%
   # mutate the id value so that it aligns with the data coming from GEE
   mutate(SSBID = as.numeric(SSBID)/1000)
+#> Reading layer `ssb50km' from data source 
+#>   `/data/R/GeoSpatialData/Population_demography/Norway_SSB/Original/ssb_50km/ssb50km.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 273 features and 6 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -150000 ymin: 6400000 xmax: 1150000 ymax: 8e+06
+#> Projected CRS: WGS 84 / UTM zone 33N
 # Transform to the correct projection
 ssb50km <- st_transform(ssb50km, st_crs(regions))
 ```
@@ -178,9 +194,18 @@ ssb50km <- st_transform(ssb50km, st_crs(regions))
 
 The Moen's bioclimatic regions are imported from NINA R/GeoSpatialData/ server.
 
-```{r}
+
+```r
 bioclim <- st_read('/data/R/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp') %>%
   mutate(NAVN = ifelse(NAVN == 'S°rboreal', 'Sørboreal', NAVN))
+#> Reading layer `soner' from data source 
+#>   `/data/R/GeoSpatialData/BiogeographicalRegions/Norway_VegetationZones_Moen/Original/Vector/soner.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 3050 features and 7 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -75844 ymin: 6449504 xmax: 1114610 ymax: 7939790
+#> Projected CRS: WGS 84 / UTM zone 33N
 bioclim <- st_transform(bioclim, st_crs(regions))
 ```
 
@@ -188,7 +213,8 @@ bioclim <- st_transform(bioclim, st_crs(regions))
 
 [NiN polygons](https://kartkatalog.miljodirektoratet.no/dataset/Details/2050) are imported here from the NINA servers:
 
-```{r}
+
+```r
 nin <- st_read('/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_NiN_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb')%>%
   # Simplify ecosystem names
   mutate(hovedøkosystem = recode(hovedøkosystem, 
@@ -211,11 +237,19 @@ nin <- st_read('/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektorate
   # Drop polygons with no condition score
   drop_na(tilstand) %>%
   dplyr::select(id, hovedøkosystem, hovedtype, naturtypekode, tilstand)
+#> Reading layer `Naturtyper_NiN_norge_med_svalbard' from data source `/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_NiN_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb' 
+#>   using driver `OpenFileGDB'
+#> Simple feature collection with 95469 features and 35 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -74953.5 ymin: 6448986 xmax: 1075080 ymax: 7921283
+#> Projected CRS: ETRS89 / UTM zone 33N
 ```
 
 -   **Export the cleaned NiN data and upload to GEE before proceeding**
 
-```{r}
+
+```r
 # Only run if you are repeating this workflow for the first time
 # nin %>%
 #   dplyr::select(id, hovedøkosystem, tilstand) %>%
@@ -234,7 +268,8 @@ Once you have run the GEE script above, and downloaded the data to the /data/gje
 
 Create functions to import vegetation height files and stratify data by elevation band and vegetation/climate zone
 
-```{r}
+
+```r
 # Function to read in multiple files resulting from GEE exports
 readVegHeightFiles <- function(uniqueString){
   dir <- '/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/From_GEE/vegHeights/'
@@ -274,12 +309,12 @@ cleanElevVegType <- function(data){
   
 }
 
-
 ```
 
 Import the CSV files generated in GEE related to area covers and elevation bands:
 
-```{r}
+
+```r
 # Import data coverages per SSB 10km grid cell
 areaCovers <- read_csv('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/From_GEE/area_cover_grid.csv') %>%
   dplyr::select(-'.geo', -'system:index')
@@ -302,13 +337,21 @@ elevStrata <- st_read('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023
                                   ifelse(mode == 3, '600-900',
                                          ifelse(mode == 4, '900-1200', '>1200')))),
          elevBand = factor(elevBand, levels=c('0-300','300-600','600-900','900-1200','>1200')))
+#> Reading layer `elevation_stratified' from data source 
+#>   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/From_GEE/elevation_stratified.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 10293 features and 2 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: 4.078351 ymin: 57.8515 xmax: 31.78239 ymax: 71.29928
+#> Geodetic CRS:  WGS 84
 elevStrata <- st_transform(elevStrata, st_crs(regions))
-
 ```
 
 Import the CSV files generated in GEE of vegetation heights (circa 15 min runtime):
 
-```{r}
+
+```r
 
 if (runFromScratch){
   
@@ -423,14 +466,14 @@ if (runFromScratch){
   refAapne <- read_csv('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/refAapne.csv')
   
 }
-
 ```
 
 ### Explore data coverages
 
 Here we will make maps of NiN, AR5 and LiDAR coverage over Norway to get a feel for the data distributions. These areas were calculated in GEE and exported to CSV in the GEE script provided above. All we need to do now is join them with the SSB 10km grid and visualize.
 
-```{r fig.height=5, fig.width=15}
+
+```r
 
 
 c1 <- ssb10km %>% 
@@ -483,15 +526,16 @@ c3 <- ssb10km %>%
 #c3
 
 coverageFig <- grid.arrange(c1, c2, c3, ncol=3, widths=c(1,1,1), padding = unit(0, "line"), newpage = T) 
-
-
 ```
+
+<img src="gjengroing_files/figure-html/unnamed-chunk-13-1.png" width="1440" />
 
 ### Bioclimatic zone and elevation strata for regional reference values
 
 We will visualize the elevation bands and bioclimatic zones that are used to define regional reference values for poor (forest vegetation height) and good (NiN vegetation height) ecological condition. For each unique spatial combination of these strata (n = 21), we calcualte a mean reference value later on in the analysis. Note that poor ecological condition is preferably calculated using a local reference (forest height within 200m of population polygon), but a regional reference is used where there are no nearby forest patches.
 
-```{r}
+
+```r
 
 bioclimPlot <- bioclim %>%
   ggplot() + 
@@ -509,8 +553,9 @@ elevPlot <- elevStrata %>%
 
 
 strataPlot <- grid.arrange(bioclimPlot, elevPlot, ncol=2, widths=c(1,1), padding = unit(0, "line"), newpage = T) 
-
 ```
+
+<img src="gjengroing_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 
 We can see that while AR5 polygons are well distributed across the country, the NiN polygons are clustered and biased toward low elevation regions of the country. The LiDAR data covers nearly the entire country with some exceptions in the north. Future iterations of this work will need to attempt to quantify the biases introduced by the relative distributions of reference and population polygons and by the datasets used to quantify gjengroing (in this case LiDAR).
 
@@ -518,7 +563,8 @@ We can see that while AR5 polygons are well distributed across the country, the 
 
 We will calculate the gjengroing index for each population polygon over Norway using a Sigmoid scaling function.
 
-```{r}
+
+```r
 
 # Define Sigmoid scaling function
 scaleSigmoid <- function(variable){
@@ -589,13 +635,28 @@ if (runFromScratch){
     dplyr::select(-id, -elev, -vegZn)
   
 }
-
-
+#> Reading layer `vaatmark_index' from data source 
+#>   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/vaatmark_index.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 1069897 features and 8 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -75794.71 ymin: 6449710 xmax: 1108262 ymax: 7939216
+#> Projected CRS: ETRS89 / UTM zone 33N
+#> Reading layer `aapne_index' from data source 
+#>   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 1763446 features and 8 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -76208.98 ymin: 6448886 xmax: 1108352 ymax: 7939986
+#> Projected CRS: ETRS89 / UTM zone 33N
 ```
 
 Here we will visualize the spatial variation in scaled gjengroind indicator values, as well as the vegetation heights for reference (good condition), indicator, and mature forest (poor condition) over the country. We could plot all the polygons, but it is computationally intensive and very difficult to visualize spatial variations over the entire country. Therefore we will calculate the area-weighted mean in values for each bioclimatic-elevation strata (n = 21) over the country.
 
-```{r, fig.width=10}
+
+```r
 
 # Create intersection of the two strata layers
 #elevStrata <- st_transform(elevStrata, st_crs(regions))
@@ -696,9 +757,9 @@ v3 <- makeStrataHeightMap(vaatmarkIndexStrata, "pop", 'G) Våtmark indicator hei
 v4 <- makeStrataHeightMap(vaatmarkIndexStrata, "skog", 'H) Mature forest height', c(0,5))
 
 strataHeightPlot <- grid.arrange(a1,a2,a3,a4, v1,v2,v3,v4, ncol=4, widths=c(1,1,1,1), padding = unit(0, "line"), newpage = T) 
-
-
 ```
+
+<img src="gjengroing_files/figure-html/unnamed-chunk-16-1.png" width="960" />
 
 We can see that overall, the condition scores for both ecosystem types are poor along the coastal areas and lower-altitude zones of the country (A and E). At higher altitudes the gjengroing condition scores are higher.
 
@@ -710,7 +771,8 @@ Using the polygon-level indicator scores, we will aggregate to 50km grid level t
 
 Here we will use a weighted average, but test out the eaTools::ea_spread function! It takes some time to run so best to do this overnight, or to parallelize in some way.
 
-```{r}
+
+```r
 
 if (runFromScratch){
   
@@ -739,12 +801,29 @@ if (runFromScratch){
   aapneIndexGrid <- st_read('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index_grid.shp')
   
 }
-
+#> [1] "Will import pre-exported data"
+#> Reading layer `vaatmark_index_grid' from data source 
+#>   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/vaatmark_index_grid.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 273 features and 3 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -150000 ymin: 6400000 xmax: 1150000 ymax: 8e+06
+#> Projected CRS: ETRS89 / UTM zone 33N
+#> Reading layer `aapne_index_grid' from data source 
+#>   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index_grid.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 273 features and 3 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -150000 ymin: 6400000 xmax: 1150000 ymax: 8e+06
+#> Projected CRS: ETRS89 / UTM zone 33N
 ```
 
 Visualize the spatial distribution of gjengroing indicator scores at grid level.
 
-```{r}
+
+```r
 
 vGrid1 <- aapneIndexGrid %>%
   ggplot() +
@@ -772,8 +851,9 @@ vGrid2 <- vaatmarkIndexGrid %>%
 
 
 indexGridFig <- grid.arrange(vGrid1, vGrid2, ncol=2, widths=c(1,1), padding = unit(0, "line"), newpage = T) 
-
 ```
+
+<img src="gjengroing_files/figure-html/unnamed-chunk-18-1.png" width="672" />
 
 These patterns mirror those in the previous section with higher condition scores at higher elevations and lower scores along the coastal zone and low-lying parts of the country.
 
@@ -783,7 +863,8 @@ We see some very low condition scores for a few coastal 50km grid cells - this m
 
 Now we will aggregate up to the regional level for final reporting. We will use the same method as in the section above, except here we will use a different method to calculate the uncertainty value around the indicator values. The ea_spread function in eaTools uses a bootstrapping method to calculate the standard error in indicator values when aggregating from the polygon to regional level. Because we have hundreds of thousands of polygons per region, the resulting standard errors are extremely small. Therefore we will use the standard deviation in reference values per region. The standard deviation, as a percentage of the average reference value is used to calcualte the uncertainty in the scaled indicator value.
 
-```{r}
+
+```r
 
 if (runFromScratch){
   
@@ -837,12 +918,29 @@ if (runFromScratch){
   
   
 }
-
+#> [1] "Will import pre-exported data"
+#> Reading layer `vaatmark_index_region' from data source 
+#>   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/vaatmark_index_region.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 5 features and 7 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -99551.21 ymin: 6426048 xmax: 1121941 ymax: 7962744
+#> Projected CRS: ETRS89 / UTM zone 33N
+#> Reading layer `aapne_index_region' from data source 
+#>   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index_region.shp' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 5 features and 7 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -99551.21 ymin: 6426048 xmax: 1121941 ymax: 7962744
+#> Projected CRS: ETRS89 / UTM zone 33N
 ```
 
 Present the indicator values as table, plots, and maps:
 
-```{r}
+
+```r
 
 # Join into a table to present values
 aapentTable <- aapneIndexRegion %>% as_tibble() 
@@ -868,6 +966,26 @@ names(indicatorTable_formatted) <- c( "Region", "Ecosystem",
 
 # Use knitr to visualize
 knitr::kable(indicatorTable_formatted)
+```
+
+
+
+|Region     |Ecosystem           | Scaled indicator| Scaled Std.dev| Indicator height| Reference height| Mature forest height|
+|:----------|:-------------------|----------------:|--------------:|----------------:|----------------:|--------------------:|
+|Nord-Norge |Semi-/Naturlig åpne |             0.80|           0.27|             1.42|             0.97|                 2.79|
+|Nord-Norge |Våtmark             |             0.80|           0.32|             0.98|             0.81|                 2.17|
+|Midt-Norge |Semi-/Naturlig åpne |             0.89|           0.32|             1.89|             1.23|                 4.09|
+|Midt-Norge |Våtmark             |             0.85|           0.44|             1.38|             1.09|                 2.80|
+|Østlandet  |Semi-/Naturlig åpne |             0.96|           0.55|             2.32|             1.48|                 5.25|
+|Østlandet  |Våtmark             |             0.87|           0.67|             1.86|             1.27|                 3.63|
+|Vestlandet |Semi-/Naturlig åpne |             0.86|           0.38|             2.63|             1.90|                 4.88|
+|Vestlandet |Våtmark             |             0.75|           0.42|             2.44|             2.09|                 3.83|
+|Sørlandet  |Semi-/Naturlig åpne |             0.94|           0.40|             2.86|             2.03|                 5.62|
+|Sørlandet  |Våtmark             |             0.78|           0.51|             2.55|             2.28|                 3.83|
+
+
+
+```r
 
 # Make plots of regional index values
 getIndicatorPlot <- function(label){
@@ -890,6 +1008,11 @@ getIndicatorPlot <- function(label){
 i1 <- getIndicatorPlot('Semi-/Naturlig åpne')
 i2 <- getIndicatorPlot('Våtmark')
 indicatorGraphFig <- grid.arrange(i1, i2, ncol=2, widths=c(1,1), padding = unit(0, "line"), newpage = T) 
+```
+
+<img src="gjengroing_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+
+```r
 
 
 # Make maps of regional index values
@@ -907,6 +1030,8 @@ m1 <- getIndicatorMap(aapentTable, 'A) Semi-/Naturlig åpne')
 m2 <- getIndicatorMap(vaatmarkTable, 'B) Våtmark')
 indicatorGMapFig <- grid.arrange(m1, m2, ncol=2, widths=c(1,1), padding = unit(0, "line"), newpage = T) 
 ```
+
+<img src="gjengroing_files/figure-html/unnamed-chunk-20-2.png" width="672" />
 
 From these tables, figures and maps we can see that the gjengroing condition indicator scores are on average above 0.8 and therefore indicate a good overall condition in Norway. Østlandet comes out best for våtmark and semi-naturlig åpne ecosystems. Nord-Norge has poorest condition for semi-naturlig åpne ecosystems, while vestlandet has the poorest scores for våtmark.
 
@@ -930,39 +1055,55 @@ After exporting the final polygon-level indicator scores, we imported to QGIS an
 
 In the first example from midt-norge, we see a våtmark polygon colored red (ie. in poor condition) due to the growth of a forest in the northern section. It looks like a plantation forest and possibly occured after the wetland was drained. The height of the forest vegetation equates to a median of 2.4m which is higher than the reference value for this region (1.09m) and almost as high as the mature forest height reference of 2.8m. Therefore it gets a scaped indicator score of 0.1. In contrast the wetland plygon in the middle of the image is in good condition because it has a median vegetation height of 1.1m which is only fractionally higher than the regional reference for good ecological condition.
 
-```{r}
+
+```r
 include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_1.jpg')
 ```
 
+<img src="../../../P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_1.jpg" width="1754" />
+
 The second example from Sørlandet shows three AR5 semi-naturlig åpne polygons with different indicator values. The lower polygon has poor ecological condition because its median vegetation height is 6.2m which is close to the local reference value for mature forest (7.9m). Although the centeral polygon appears to have greater coverage of forest in the orthophoto, the LiDAR data tells us that it is mostly covered by short trees and results in a median vegetation height of 2.8 - therefore good condition.
 
-```{r}
+
+```r
 include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_2.jpg')
 ```
 
+<img src="../../../P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_2.jpg" width="1754" />
+
 The third example from Østlandet shows a range of indicator values for våtmark polygons. Although many of the polygons are partly covered by trees, their indicator values show good condition because the local reference for mature forest (zero on the indicator scale) is very high in this landscape of productive forest.
 
-```{r}
+
+```r
 include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_3.jpg')
 ```
 
+<img src="../../../P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_3.jpg" width="1754" />
+
 The fourth example from Nord-norge shows AR5 semi-naturlig åpne polygons with low and high condition scores. The large polygon with poor condition score has a median vegetation height of 2.7 which is nearly as high as the local reference for mature forest (3.8m).
 
-```{r}
+
+```r
 include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_4.jpg')
 ```
 
+<img src="../../../P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_4.jpg" width="1754" />
+
 The fifth and final example from further north in Nord-norge shows two våtmark polygons with contrasting condition scores, yet exactly the same median vegetation heights of 0.6m. The difference in the scaled iindicator value is due to different local reference values for surrounding forest. The polygon on the left has surrounding forest (within 200m buffer zone) with median height 0.5m, while the polygon on the right has surrounding forest of 0.7m. This creates a contrast in the final indicator valye and illustrates the effect that a local reference value can have on defining good and poor ecological condition.
 
-```{r}
+
+```r
 include_graphics('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_5.jpg')
 ```
+
+<img src="../../../P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/images/val_5.jpg" width="1754" />
 
 ### Eksport file (final product)
 
 We will export gjengroing indicator values at three levels: - polygon level - 50km grid level - regional level
 
-```{r}
+
+```r
 
 if (runFromScratch){
   # Polygon level
@@ -996,5 +1137,4 @@ if (runFromScratch){
   aapneIndexRegion %>%
     st_write('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/OUTPUT/aapne_index_region.shp', append = FALSE)
 }
-
 ```
