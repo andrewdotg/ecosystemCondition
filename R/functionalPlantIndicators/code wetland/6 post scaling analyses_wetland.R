@@ -620,6 +620,10 @@ points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrog
 
 
 
+# ?
+#The figure shows that deviations mainly occur in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen.
+
+
 
 #### regressions vs. ANO variables ####
 

@@ -1,3 +1,16 @@
+library(downloader)
+library(sf)
+library(tidyr)
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readxl)
+library(tmap)
+library(tmaptools)
+library(betareg)
+library(glmmTMB)
+
 #### getting all the data from previous scripts in ####
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_seminat.RData")
@@ -398,19 +411,31 @@ length(unique(ANO.geo$ano_punkt_id))
 length(unique(res.seminat.ANO2$ano_flate_id))
 length(unique(res.seminat.ANO2$ano_punkt_id))
 # by region
-length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Northern Norway"]))
-length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Central Norway"]))
-length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Eastern Norway"]))
-length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Western Norway"]))
-length(unique(res.seminat.ANO2$ano_flate_id[res.seminat.ANO2$region=="Southern Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Northern Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Central Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Eastern Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Western Norway"]))
+length(unique(res.seminat.ANO2$ano_flate_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Southern Norway"]))
 
-length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Northern Norway"]))
-length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Central Norway"]))
-length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Eastern Norway"]))
-length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Western Norway"]))
-length(unique(res.seminat.ANO2$ano_punkt_id[res.seminat.ANO2$region=="Southern Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Northern Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Central Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Eastern Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Western Norway"]))
+length(unique(res.seminat.ANO2$ano_punkt_id[!is.na(res.seminat.ANO2$region) & res.seminat.ANO2$region=="Southern Norway"]))
 
+# total ASO
+nrow(res.seminat.ASO2)
+length(unique(res.seminat.ASO2$Omradenummer_flatenummer))
+length(unique(res.seminat.ASO2$Eng_ID))
+length(unique(res.seminat.ASO2$ASO_ID))
+# by region
+length(unique(res.seminat.ASO2$ASO_ID[!is.na(res.seminat.ASO2$region) & res.seminat.ASO2$region=="Northern Norway"]))
+length(unique(res.seminat.ASO2$ASO_ID[!is.na(res.seminat.ASO2$region) & res.seminat.ASO2$region=="Central Norway"]))
+length(unique(res.seminat.ASO2$ASO_ID[!is.na(res.seminat.ASO2$region) & res.seminat.ASO2$region=="Eastern Norway"]))
+length(unique(res.seminat.ASO2$ASO_ID[!is.na(res.seminat.ASO2$region) & res.seminat.ASO2$region=="Western Norway"]))
+length(unique(res.seminat.ASO2$ASO_ID[!is.na(res.seminat.ASO2$region) & res.seminat.ASO2$region=="Southern Norway"]))
 
+length(unique(res.seminat.ASO2$ASO_ID[is.na(res.seminat.ASO2$region)]))
 
 
 
@@ -833,6 +858,8 @@ points(density(res.seminat.ASO[res.seminat.ASO$fp_ind=="Nitrogen2" & res.seminat
 points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Nitrogen2" & res.seminat.ASO$NiN_grunntype=="T32-C-20",]$original,
        rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Nitrogen2" & res.seminat.ASO$NiN_grunntype=="T32-C-20",]$original)),
        col="red")
+
+plot.new()
 
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
