@@ -1,3 +1,16 @@
+library(downloader)
+library(sf)
+library(tidyr)
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readxl)
+library(tmap)
+library(tmaptools)
+library(betareg)
+library(glmmTMB)
+
 #### getting all the data from previous scripts in ####
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_wetland.RData")
 load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_wetland.RData")
@@ -258,11 +271,21 @@ length(unique(res.wetland2$ano_flate_id[res.wetland2$region=="Eastern Norway"]))
 length(unique(res.wetland2$ano_flate_id[res.wetland2$region=="Western Norway"]))
 length(unique(res.wetland2$ano_flate_id[res.wetland2$region=="Southern Norway"]))
 
-length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Northern Norway"]))
-length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Central Norway"]))
-length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Eastern Norway"]))
-length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Western Norway"]))
-length(unique(res.wetland2$ano_punkt_id[res.wetland2$region=="Southern Norway"]))
+length(unique(res.wetland2$ano_punkt_id[!is.na(res.wetland2$region) & res.wetland2$region=="Northern Norway"]))
+length(unique(res.wetland2$ano_punkt_id[!is.na(res.wetland2$region) & res.wetland2$region=="Central Norway"]))
+length(unique(res.wetland2$ano_punkt_id[!is.na(res.wetland2$region) & res.wetland2$region=="Eastern Norway"]))
+length(unique(res.wetland2$ano_punkt_id[!is.na(res.wetland2$region) & res.wetland2$region=="Western Norway"]))
+length(unique(res.wetland2$ano_punkt_id[!is.na(res.wetland2$region) & res.wetland2$region=="Southern Norway"]))
+
+length(unique(res.wetland2$ano_punkt_id[is.na(res.wetland2$region)])) # not assigned a region, in water?
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(res.wetland2[is.na(res.wetland2$region),]) +
+  tm_dots('Moist1',midpoint=NA, scale=10, legend.show = FALSE) + # 
+  tm_layout(main.title = "Moisture index (lower), wetland",legend.position = c("right", "bottom"), main.title.size=1.2)
+# it's in Northern Norway  
+res.wetland2$region[is.na(res.wetland2$region)] <- "Northern Norway"
 
 
 

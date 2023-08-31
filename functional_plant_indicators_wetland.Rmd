@@ -69,10 +69,10 @@ The generalized species lists underlying the ecosystem categorization in NiN rep
 For wetlands, the ANO data contain 1351 plots in 330 sites, in principle distributed randomly across the country. As wetlands occur more often in certain regions of Norway than in others, the amount of plots and sites is not equal among Norway's five regions. The 1351 plots are distributed across regions in the following way:
 
 - Northern Norway: 416
-- Central Norway:  362
-- Eastern Norway:  295
-- Western Norway:  151
-- Southern Norway: 127
+- Central Norway:  361
+- Eastern Norway:  294
+- Western Norway:  150
+- Southern Norway: 126
 
 ### Temporal coverage
 The evaluation data cover the first three years, 2019-2021, of the first 5-year-cycle in the ANO monitoring scheme. Thus there is no actual time series to these data, and the indicator evaluation does therefore not include any temporal analyses.
@@ -1357,7 +1357,7 @@ Standard error to the mean index value by region for the lower pH indicator. Num
 
 
 ### unscaled values vs. reference
-We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since pH and nitrogen show some deviation of the lower pH indicator we exemplify this with these indicators for unscaled values.
+We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since pH and nitrogen show some deviation in the lower indicator we exemplify this with these two indicators for unscaled values.
 
 ```{r}
 summary(res.wetland$kartleggingsenhet_1m2)
@@ -1677,7 +1677,7 @@ points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrog
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
 ```
-THe figure shows that deviations mainly occur in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
+Deviations from the reference occur mainly in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
