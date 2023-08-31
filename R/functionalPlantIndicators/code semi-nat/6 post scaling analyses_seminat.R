@@ -116,9 +116,39 @@ ggplot(res.seminat.ANO, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_in
   ylab("Scaled indicator value (ANO data)") 
 
 
+# making the plot, ANO Light, Moist & pH
+ggplot(data=subset(res.seminat.ANO,!is.na(scaled_value) & fp_ind %in% c("Light1","Moist1","pH1",
+                                                                        "Light2","Moist2","pH2")),
+       aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color=NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1",
+                                     "Light2","Moist2","pH2")), ncol = 3) + 
+  xlab("Main ecosystem type") + 
+  ylab("Scaled indicator value (ANO data)") +
+  theme(legend.position="none")
+
+# making the plot, ANO Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance
+ggplot(data=subset(res.seminat.ANO,!is.na(scaled_value) & fp_ind %in% c("Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                                                        "Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")),
+       aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color=NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                     "Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 4) + 
+  xlab("Main ecosystem type") + 
+  ylab("Scaled indicator value (ANO data)") +
+  theme(legend.position="none")
+
 
 # making the plot, ASO
-res.seminat.ASO$NiN_grunntype2 <- substring(res.seminat.ASO$NiN_grunntype,5)
+res.seminat.ASO$NiN_grunntype2 <- as.factor(substring(res.seminat.ASO$NiN_grunntype,5))
+res.seminat.ASO$NiN_grunntype2 <- factor(res.seminat.ASO$NiN_grunntype2, levels=c("C-1","C-2","C-3","C-4","C-5","C-6",
+                                                                                  "C-7","C-8","C-9","C-10","C-13","C-20"))
 ggplot(res.seminat.ASO, aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color = NA) +
@@ -130,7 +160,36 @@ ggplot(res.seminat.ASO, aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_in
   ylab("Scaled indicator value (ASO data)") 
 
 
+# making the plot, ASO Light, Moist, pH1
+ggplot(data=subset(res.seminat.ASO,!is.na(scaled_value) & fp_ind %in% c("Light1","Moist1","pH1",
+                                                                        "Light2","Moist2","pH2")),
+       aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color = NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1",
+                                     "Light2","Moist2","pH2")), ncol = 3) + 
+  xlab("T32 (semi-natural meadow) basic ecosystem type") + 
+  ylab("Scaled indicator value (ASO data)") +
+  theme(legend.position="none") +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
 
+
+# making the plot, ASO Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance
+ggplot(data=subset(res.seminat.ASO,!is.na(scaled_value) & fp_ind %in% c("Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                                                        "Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")),
+       aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color = NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                     "Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 4) + 
+  xlab("T32 (semi-natural meadow) basic ecosystem type") + 
+  ylab("Scaled indicator value (ASO data)")  +
+  theme(legend.position="none") +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
 
 
 #### scaled value maps ####
