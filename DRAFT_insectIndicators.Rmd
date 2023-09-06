@@ -61,9 +61,28 @@ Incomplete list of things that will change:
 * Make bombLepiSurv public. After touch-up and fixes of github issues.
 * Fix any comments in this draft inside hard brackets.
 * Write something about the choice of each indicator.
- 
 
 <!-- Load all you dependencies here -->
+
+```{r}
+#Check if Norimon and bombLepiSurv is installed
+
+if (!"Norimon" %in% installed.packages()[,"Package"]){
+  devtools::install_github("jenast/Norimon")
+}
+
+
+if (!"bombLepiSurv" %in% installed.packages()[,"Package"]){
+  devtools::install_github("jenast/bombLepiSurv")
+}
+
+#Alternatively, with pacman 
+#pacman::p_load_gh("NINAnor/Norimon")
+#pacman::p_load_gh("jenast/bombLepiSurv")
+
+```
+
+
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
@@ -110,7 +129,7 @@ We here show how to calculate a set of indicators for terrestrial insects in Nor
 
 This workflow is shortened by putting most of the underlying code in separate R-packages, which are freely available through Github. The relevant packages are `bombLepiSurv` https://github.com/jenast/bombLepiSurv for the bumblebee and butterfly indicators (**Not public yet**), and `Norimon` https://github.com/jenast/Norimon for the rest of the indicators.
 
-For the indicators from the NMBB program, community reference values has been elicitated from experts, and is explained further below. For the indicators from the NorIns program, this is significantly harder to do, because of the size of the communities, lack of historical timeseries and changes in sampling and identification techniques. We therefore currently lack reference values for many of these indicators.
+For the indicators from the NMBB program, community reference values has been elicited from experts, and is explained further below. For the indicators from the NorIns program, this is significantly harder to do, because of the size of the communities, lack of historical timeseries and changes in sampling and identification techniques. We therefore currently lack reference values for many of these indicators.
 
 Below is a list of the indicators calculated in this document, and their state of development. Some details is further expanded on below.
 
@@ -122,13 +141,32 @@ Indicator  <- c("Bumblebees in semi-natural grasslands",
                 "Butterflies in semi-natural grasslands",
                 "Biomass of flying insects",
                 "Species richness of flying insects",
-                "Species richness of pollinators",
-                "Species richness of X",
-                "Species richness Apocrita / Symphyta",
+                "Species richness of pollinating insects",
+                "Species richness of dung associated insects",
+                "Quotent of Apocrita vs Symphyta species richness",
                 "Intraspesific genetic variation")
 
-Geo_scope       <- c(rep("Sørlandet, Østfold-Vestfold, Vestlandet, Trøndelag", 2), 
-                     rep("Sørlandet, Østlandet, Trøndelag, Nord-Norge", 6))
+nor_cat <- c("Funksjonelt viktige arter og biofysiske stukturer",
+             "Funksjonelt viktige arter og biofysiske stukturer",
+             "Funksjonelt viktige arter og biofysiske stukturer",
+             "Biologisk mangfold",
+             "Biologisk mangfold",
+             "Biologisk mangfold",
+             "Funksjonelt viktige arter og biofysiske strukturer",
+             "Biologisk mangfold"
+)
+
+ect_cat <- c("B1",
+             "B1",
+             "B2",
+             "B1",
+             "B1",
+             "B1",
+             "B2",
+             "B1"
+)
+Geo_scope <- c(rep("Sørlandet, Østfold-Vestfold, Vestlandet, Trøndelag", 2), 
+               rep("Sørlandet, Østlandet, Trøndelag, Nord-Norge", 6))
 
 Ind_data <- c(rep("Present", 2),
               rep("Present", 6))
@@ -140,52 +178,64 @@ Ref_val   <- c(rep("Present", 2),
 ```{r, echo=F}
 indList <- tibble("Dataset" = indDataset,
                   "Indicator" = Indicator,
+                  "Norwegian type" = nor_cat,
+                  "ECT" = ect_cat,
                   "Current geographical scope" = Geo_scope,
                   "Indicator data" = Ind_data,
                   "Reference values" = Ref_val)
 
 knitr::kable(indList)
 ```
-
-[Add short motivation for each indicator]
+Many of these indicators are self-explanatory and don't require much justification. **Bumblebees in semi-natural grasslands** and **Butterflies in semi-natural grasslands** are functionally important pollinators, and are as a community dependent on a varied herbaceous flora. They therefore both represent key functionality, as well as indicators of habitat quality. **Biomass of flying insects** represent a key functional characteristic in ecosystem functioning as food for insectivores, and as a response to habitat quality and management. **Species richness of flying insects** represents the total breadth of the insect community, and **Species richness of pollinating insects** complements the butterfly and bumblebee indicators in taxonomic breadth and spatial resolution.
+**Species richness of dung associated insects** represent a key functional group in decomposition, and function as an indicator of grazing intensity and diversity. **Quotent of Apocrita vs Symphyta species richness** tries to go beyond simple amounts, and capture compositional changes in the insect community. Apocrita represents predatory and parasitic wasps, while Symphyta is plant-feeding wasps. A relative decrease in predatory/parasitic wasps could indicate a degradation in insect prey communities, and a decrease in the potential for natural pest control. Lastly, **Intraspecific genetic variation** captures biodiversity that until now has been hidden, due to lack of practical technologies to measure it. The need to conserve genetic diversity is identified in Norwegian law, and decreased intraspecific diversity could signal population decreases, and decreased potential to adapt to environmental changes, before whole species are lost to an area. 
 
 
 ## About the underlying data
-<!-- Text here -->
+The data used here comes from the ongoing monitoring programs "Norwegian insect monitoring" ([NorIns](https://www.nina.no/Naturmangfold/Insekter/Overv%C3%A5king-av-insekter)) and "Norwegian monitoring of bumblebees and butterflies" ([NMBB](https://www.nina.no/V%C3%A5re-fagomr%C3%A5der/Milj%C3%B8overv%C3%A5king-p%C3%A5-land/Humler-og-dagsommerfugler)). Both programs are initiated and financed by the Environmental agency, with the aim to produce continuous, areal representative, time-series of insect community data. The **NorIns** program use malaise and window traps to sample a broad community of insect species, which are identified through metabarcoding of DNA. The **NMBB** program use sweep netting along transect walks where the species are identified manually in the field. More information is available in the links above.
 
 ### Representativity in time and space
-<!-- Text here -->
+The **NorIns** program started in 2020 with monitoring in semi-natural land and forests in the south-eastern region of Norway (Østlandet), with the long-term ambition to cover the entire country. In 2021, the program was expanded to semi-natural land in central Norway (Trøndelag), in 2022 to semi-natural land in south-western Norway (Sørlandet), and in 2023 to semi-natural land in northern Norway (Nord-Norge), with a possible expansion to western Norway (Vestlandet) in 2024. So far, forest habitats are only monitored in south-eastern Norway.
+
+These 5 regions represents the planned spatial precision of the survey. Finer resolution could be evaluated in the future, although it is unlikely to be feasible without more intense sampling. This program uses a staggered sampling scheme where we visit different locations each year, and return to each location every 5 years. This sampling scheme, coupled with the strong yearly variation in insect abundances makes it reasonable to use a temporal resolution of 5 years. [How to deal with this now? average over 5 years? Add 5 year aggregation in bootstrap_value()]
+
+The **NMBB* program started in 2009 in a subset of south-eastern Norway (counties of Vestfold and Østfold), and was expanded to central Norway (Trøndelag) in 2010, south-western Norway in 2013, and to western Norway (Vestland and Møre og Romsdal fylke) in 2022. The spatial resolution aligns with these (as of now) 4 regions, and it is not recommended to downscale the predictions due to the limited number of sampling locations in each region. Since the same locations are visited each year, yearly estimates of the condition could be calculated, but should be interpreted by caution due to natural yearly variability.
+
+Both programs are designed to be area representative, within their respective habitat types and regions. Both use semi-randomized selection schemes of localities, the **NorIns** selects by random draws, and the **NMBB** by a predefined continuous network of survey squares. In both programs however, some subjective decisions are made to define habitat criteria and to discard unpractical survey locations.
+
 
 ### Original units
-<!-- Text here -->
+The original units of **NorIns** include number of species, total biomass as wet weight, and inter-specific genetic diversity (unit to be determined). For the **NMBB** program, original units are number of individuals of each species within a transect, although only presences in transects are used for the indicator calculations.
 
 
 ### Temporal coverage
-<!-- Text here -->
+2009-present for the **NMBB** data, and 2020-present for the **NorIns** data.
 
-
-### Aditional comments about the dataset
-<!-- Text here -->
 
 
 ## Ecosystem characteristic
 ### Norwegian standard
-<!-- Text here -->
+Four of the indicators are tied to the *Økologisk egenskap* (Ecological characteristic) of **Funksjonelt viktige arter og biofysiske stukturer** (Funktionally important species and structures), and the other four to **Biologisk mangfold** (Biodiversity).
+
+### UN standard
+Six of the indicators are tied to the UN standard (ECT-classes) **B1 Compositional state characteristics**, and the two remaining to **B2 Structural state characteristics**.
 
 
 ## Collinearities with other indicators
 None measured so far, but it is reasonable to assume that some of these indicators will share some causal relationships with eachother, and therefore correlate to some degree. This could potentially happen with some other indicators not described here.
 
-## Reference state and values
-Assessing the state of insect communities can be a complicated task, due to their taxonomic and functional breadth and high temporal and spatial variability. Still, the most complicated part for an indicator is to establishing reference values, when the reference states are lacking or prohibitively difficult to measure empirically. We currently lack reference values for all indicators from the **NorIns** program. It is unlikely that this can be solved "simply" by surveying a state in a reference area, since intact reference areas of sufficient size and numbers likely don't exist. The question of how to handle these reference values is currently unresolved, and we present these indicator value calculations with made up reference values as placeholders in the code.
+## Reference condition and values
+The reference condition is one with minimal negative human impact, but this has a special interpretation for semi-natural land. These habitats are formed and maintained through human activities. Thus, "minimal negative human impact" is replaced by a state of "good maintenance", here understood as resembling the traditional agricultural maintenance regime, existing for several hundred years up until the late 1800s. This is characterized by extensive grazing, meadows and lays, crop rotation with legumes to bind nitrogen in addition to fertilization from manure, relatively small field sizes and abundant field margins, and a lack of artificial fertilization and mechanized tilling. 
 
-### Reference state
-<!-- Text here -->
+
+### Reference condition
+Assessing the current state of insect communities may be a complicated task, due to their taxonomic and functional breadth and high temporal and spatial variability. Still, even more challenging is to establishing reference values, when the reference states are extinct or prohibitively difficult to measure empirically. We currently lack reference values for all indicators from the **NorIns** program. It is unlikely that this can be solved "simply" by surveying a state in a reference area, since intact reference areas of sufficient size and numbers likely no longer exist. The question of how to handle these reference values is currently unresolved, and we present these indicator value calculations with made up reference values as placeholders in the code.
+
+For the **NMBB** indicators, the communities are small enough and well known enough to identify reference communities by expert opinion. These communities specify the expected rate of observing each species. The current rates of observation are then compared to the expected rates. The calculations are further explained below.
 
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
 <!-- Text here -->
-
+The specific reference communities for the **NMBB** indicators won't be spelled out here, see instead the scripts below. We have not specified a value for _good ecological condition_ as of yet, since there lack a straightforward empirical basis to do so.
 
 ## Uncertainties
 The uncertainties for the indicator values is calculated by bootstrapping the average values for each locality within a year. This takes the variability between the localities into account.
@@ -198,15 +248,19 @@ Insektovervåking på Østlandet, Sørlandet og i Trøndelag. Rapport fra feltse
 
 * Connor M French, Laura D Bertola, Ana C Carnaval, Evan P Economo, Jamie M Kass, David J Lohman, Katharine A Marske, Rudolf Meier, Isaac Overcast, Andrew J. Rominger, Phillip Staniczenko, Michael J Hickerson. 2023. Global determinants of insect mitochondrial genetic diversity. https://doi.org/10.1101/2022.02.09.479762
 
+* Öberg, S., Gjershaug, J. O., Diserud, O. & Ødegaard, F. 2011. Videreutvikling av metodikk for 
+arealrepresentativ overvåking av dagsommerfugler og humler. Naturindeks for Norge. – NINA 
+Rapport 663. 
+
 
 ## Analyses
 
 ### Calculation principles for NorIns indicators
-The indicators from the Norwegian insect monitoring are calculated with functions in the `Norimon` package. This method is meant to capture a broad variety of insect indicators using data from **NorIns**.
+The indicators from the Norwegian insect monitoring are calculated with functions in the `Norimon` R-package [link](https://github.com/NINAnor/Norimon). This methodology is meant to facilitate the calculation of a broad variety of insect indicators using data from **NorIns**.
 
 **Main steps of workflow:**
 
-1. Fetch data of biomass or community diversity from a centralized database (or GBIF). Diversity data can be subsetted on several taxonomic levels, but biomass is only available for whole samples.
+1. Fetch data of biomass or community diversity from a centralized database. Diversity data can be filtered on several taxonomic levels, but biomass is only available for whole samples.
 2. Bootstrap observations and calculate mean and uncertainty of point estimates.
 3. Compare observations to reference points.
 4. Display and plot the results
@@ -216,7 +270,7 @@ knitr::include_graphics("images/NorIns_flow_chart.png")
 
 ```
 
-Most of the ecology comes into step 1, in choosing what data to use to describe a quality. This can be a custom selection of species, or a set of higher taxa such as specific genuses, families or an order. The goal is to choose a set of taxa that represent specific qualities of the community that can indicate the ecological status of the ecosystem. In addition to the selection of taxa, we have to decide on the level of aggregation, e.g. if we should aggregate the data on the region scale, locality scale, or even the individual sample occasion scale. For ecological indicators, we will aggregate the values to a year locality scale, where the variables summarises all catches in a locality in a year.
+Most of the ecology comes into step 1, in choosing what data to use to describe a quality. This can be a custom selection of species, or a set of higher taxa such as specific genuses, families or even order. The goal is to choose a set of taxa that represent specific qualities of the community that can indicate the ecological status of the ecosystem. In addition to the selection of taxa, we have to decide on the level of aggregation, e.g. if we should aggregate the data on the region scale, locality scale, or even the individual sample occasion scale. For ecological indicators, we will aggregate the values to a year locality scale, where the variables summarises all catches in a locality in a year.[NOTE, implement 5 year/region aggregation]
 
 The second step is to get an estimate of the uncertainty of the data, were we use the bootstrap method. This method is flexible, as we could bootstrap the samples on different sampling levels (samples within localities, regions within country). For the insect indicators, we will bootstrap and summarize the variables to regional values, for example expressing the mean values of insect biomass in Trøndelag in 2021, with uncertainty.
 
@@ -230,7 +284,7 @@ In the example, we start with connecting to the database in order to fetch the d
 connect_to_insect_db()
 ```
 
-For convenience, the pollinator families can be retreived by the `get_pollinators()` function.
+For convenience, the pollinator families can be retrieved by the `get_pollinators()` function.
 
 ```{r}
 pollinators <- get_pollinators()
@@ -244,7 +298,9 @@ pollinators_fam <- pollinators %>%
 ```{r, echo = FALSE}
 kable(pollinators)
 ```
-We then fetch the community data for these families through the `get_observations` function. We additionally subset the habitat type that we are interested in, here semi-natural land. The result is a tibble of the aggregated number of species, shannon diversity, and the mean number of genetic variants per species. The default aggregation level is "year_locality", meaning the total observations for a locality within a year. [The output currently contains some experimental values. Shannon diversity doesn't really make sense without counts/amounts, etc...]
+We then fetch the community data for these families through the `get_observations` function. We additionally subset the habitat type that we are interested in, here semi-natural land. The result is a tibble of the aggregated number of species, shannon diversity, and the mean number of genetic variants per species. The default aggregation level is "year_locality", meaning the total observations for a locality within a year. 
+
+Note that the output currently contains some experimental values, awaiting a more robust methodology. "Shannon diversity" doesn't really make sense without counts or amounts, etc. This will be replaced by measurements of genetic diversity that are based on published peer-reviewed methodology (Connor et al. 2023), in the (hopefully near) future.
 
 ```{r}
 
@@ -259,9 +315,9 @@ kableExtra::kbl()
 ```
 
 #### Bootstrap observations
-The localities in the NorIns program are (semi-)randomly selected and can be viewed as samples of a larger population. Individually, they represent a single measurement of an insect community in a habitat type in a region. To get the sampling uncertainty for this representation, we can bootstrap the values by this simple prosess: we choose a random set of localities within a year and region (with replacement) and calculate the average values. We then repeat this process a large number of times to get a bootstrap sample of values, which can be used to express the uncertainty in the dataset.
+The localities in the NorIns program are (semi-)randomly selected and can be viewed as samples of a larger population. Individually, they represent a single measurement of an insect community in a habitat type in a region. To get the sampling uncertainty for this representation, we can bootstrap the values by this simple process: we choose a random set of localities within a year and region (with replacement) and calculate the average values. We then repeat this process a large number of times to get a bootstrap sample of values, which can be used to express the uncertainty in the dataset.
 
-We typically have 10 localities for a given habitat type and region each year, which is not very much to base our uncertainty estimates on. But bootstrapping works fairly well on small samples and has the advantage that is doesn't make assumptions of the statistical distribution of the errors. Note that once we get a larger dataset with repeating surveys every 5 years, it probably makes sense to do some kind of parametric (hierarcichal) modelling of the values instead of this simple bootstrap.
+We typically have 10 localities for a given habitat type and region each year, which is not very much to base our uncertainty estimates on. But bootstrapping works fairly well on small samples and has the advantage that is doesn't make assumptions of the statistical distribution of the errors. Note that once we get a larger dataset with repeating surveys every 5 years, aggregating and bootstrapping over a whole 5 year period.
 
 When **NorIns** is fully scaled up, it will have 50 localities for each covered habitat type in every country region, with 10 localities every year, in a rotating survey scheme over 5 years. Since the program is rolled out sequentially starting in 2020, for semi-natural land it currently covers 4/5 of the country, with varying amounts of localities within each region. The map below displays the localities surveyed so far. 
 
@@ -300,14 +356,14 @@ This creates an object of type `boot_stat`. Calling it prints a simple summary o
 poll_richness_boot
 ```
 
-But the `boot_stat` object also stores the individual bootstrap values for later computation. [Why is is only 5 994 rows? Fix/figure out]
+But the `boot_stat` object also stores the individual bootstrap values for later computation. By default, we use 999 bootstrap samples, which here results in 999 * 6 = 5994 rows of bootstrap values.
 
 ```{r}
 poll_richness_boot[2]
 ```
 
 #### Comparing bootstrap values to a reference point
-Setting aside the difficulties in establishing robust reference values, the next step is to compare the observed values (with bootstrapped uncertainty) to the chosen reference value. This can be made in several ways. Most simply, if we have a single numeric value as a reference value, we can simply subtract that from the observed values. For example, if we observe 13 species of pollinators in 2022 at a location, and the reference point is 10, the 2022 has increased by 13 - 10 = 3 species. Such subtractions should be made on the set of bootstrapped values, and new summary statistics calculated, preserving the uncertainty from the bootstrap. The `boot_stat` has its own subtraction method do to just that. In this example, we set the reference value arbitrarily to 30 species.
+Setting aside the practical difficulties in establishing robust reference values, the next step in the methodology is to compare the observed values (with bootstrapped uncertainty) to the chosen reference value. This can be made in several ways. Most simply, if we have a single numeric value as a reference value, we can simply subtract that from the observed values. For example, if we observe 13 species of pollinators in 2022 at a location, and the reference point is 10, the 2022 has increased by 13 - 10 = 3 species. Such subtractions should be made on the set of bootstrapped values, and new summary statistics calculated, preserving the uncertainty from the bootstrap. The `boot_stat` has its own subtraction method do to just that. In this example, we set the reference value arbitrarily to 30 species.
 
 ```{r}
 poll_richness_boot
@@ -336,15 +392,23 @@ diff_poll_richness_boot2
 ```
 
 #### Normalizing the values
-After the comparison to a reference value, we need to normalize the indicator values to lie between 0 and 1. This can be done in several ways (insert link to scaling chapter). The simplest case is to use a linear scaling, with a natural zero. This can be done by dividing the indicator values by the highest value state. A `boot_stat` object has a `/` function that divides each bootstap value by a given value, truncates the highest values to 1, and recalculates the summary values.
+After the comparison to a reference value, we need to normalize the indicator values to lie between 0 and 1. This can be done in several ways (se e.g. [eaTools](https://github.com/NINAnor/eaTools)). The simplest case is to use a linear scaling, with a natural zero. This can be done by dividing the indicator values by the highest value state. A `boot_stat` object has a `/` function that divides each bootstrap value by a given value, truncates the highest values to 1, and recalculates the summary values. We can also simply divide by the reference state, to compare the values to the reference state, and normalize them in one go. Here, we exemplify the method by dividing the value by 30.
 
-[Show this, but need to think on how to do this with difference values]
+
+```{r poll_richness_scaling}
+diff_poll_richness_boot3 <- poll_richness_boot / 30
+```
+
+```{r}
+diff_poll_richness_boot3
+```
+
 
 
 #### Display and plot bootstrap values
 The boot_stat class also has its own plot function. It tries to plot a comparison of the bootstrap distributions over years, for each group. For example, if we plot the object `diff_poll_richness_boot`, we can look at the yearly differences in beetles species richness in the two geographic regions: (Note that we have only 1 year of data from Sørlandet so far)
 
-```{r beetle_richness_boot}
+```{r poll_richness_boot}
 plot(diff_poll_richness_boot)
 ```
 
@@ -383,13 +447,13 @@ map_plot(palette = "orange-green",
 This concludes the tour of the `Norimon` functionality.
 
 ### Calculation principles for NBBM indicators
-These indicators were developed for the Nature Index of Norway, back in 2010 by Ola Diserud and Sandra Åström [ref], and is calculated routinely on a yearly basis [see xx for the most current report]. 
+These indicators were developed for the Nature Index of Norway, back in 2010 by Ola Diserud and Sandra Öberg (Öberg et. al 2011), and is calculated routinely on a yearly basis (see Åström et. al 2022 for the latest report). 
 
-These indicators summarize the state of a bumblebee or butterfly community by estimating the difference from a reference community. Formally, the community indicator (CI) is expressed as the relative change of the community from a state of reference (SR), were the change is calculated by a state of change (ST). 
+These indicators summarize the state of a bumblebee or butterfly community by estimating the difference from a reference community. Formally, the community indicator (CI) is expressed as the relative change of the community from a state of reference (SR), were the change is calculated by a state of change (SC). 
 
 
 $$CI = \frac{SR-SC}{SR}$$
-The state of reference (SR) represents a community of species that can be expected to be observed in a given habitat type and region. It is calculated by assigning each species to class of expected commonality; common (C), sporadic (S) and rare (R) species. This classification is done by expert opinion, informed by known present and past species distributions. This state of reference doesn't contain all current possible species, only a subset of species, making up a historical reference community. Potential observations of "new" species therefore doesn't inform the indicator value at all. Common species is expected to be observed in at least 5 % of the surveyed transects in a habitat type and region. Sporadic species similarly is defined as having a presence below 5 % but above 1 %. Rare species is seen in no more than 1 % of the transects, and lastly, species not seen in any transect is assumed as lost (L) for the purpose of this calculation. 
+The state of reference (SR) represents a community of species that can be expected to be observed in a given habitat type and region. It is calculated by assigning each species to class of expected commonality; common (C), sporadic (S) and rare (R) species. This classification is done by expert opinion, informed by known present and past species distributions. Note that this state of reference only contain a subset of highlighted species, making up a historical reference community. Potential observations of "new" species therefore doesn't inform the indicator value at all. Common species is expected to be observed in at least 5 % of the surveyed transects in a habitat type and region. Sporadic species similarly is defined as having a presence below 5 % but above 1 %. Rare species is seen in no more than 1 % of the transects, and lastly, species not seen in any transect is assumed as lost (L) for the purpose of this calculation. 
   
 Each commonality class gets it's own weight, so that common species inform the reference state more than sporadic species, followed by rare species. The state of reference (SR) is thus a value, where each species adds to the state according to its commonality. Formally, it is defined as:
 
@@ -399,12 +463,12 @@ where $n_i$ is the number of species in a commonality class (C, S, R), and the w
 
 The state of change (SC) is calculated as
  $$SC = n_{CS} * w_{CS} + n_{CR} * w_{CR} + n_{CL} * w_{CL} + n_{SR} * w_{SR} + n_{SL} * w_{SL} + n_{RL} * w_{RL}, $$ 
-where $n_{CS}$ is the number of expected common species (C) that is observed sporadically (S), and $w_{CS}$ is the weight of this change. Similarly, $n_{CR}$ is the number of expected species that is observed rarely, $n_{RL}$ is the number of rare species that is lost, and so on. Potential increases in observation rates does not inform the indicator. Changes for common species is weighted more heavily than changes for less common species, and larger decreases is weighted more heavily than smalle decreases, such that $[w_{CS}, w_{CR}, w_{CL}, w_{SR}, w_{SL}, w_{RL}]= [0.50, 0.75, 1.00, 0.50, 0.75, 0.50]$.
+where $n_{CS}$ is the number of expected common species (C) that is observed sporadically (S), and $w_{CS}$ is the weight of this change. Similarly, $n_{CR}$ is the number of expected species that is observed rarely, $n_{RL}$ is the number of rare species that is lost, and so on. Potential increases in observation rates does not inform the indicator. Changes for common species is weighted more heavily than changes for less common species, and larger decreases is weighted more heavily than smaller decreases, such that $[w_{CS}, w_{CR}, w_{CL}, w_{SR}, w_{SL}, w_{RL}]= [0.50, 0.75, 1.00, 0.50, 0.75, 0.50]$.
 
-The indicator values are estimated with uncertainty, by bootstrapping the set of localities within a region, and calculating the indicator for each of 999 such samples.
+The indicator values are estimated with uncertainty, by bootstrapping the set of localities within a region, and calculating the indicator for each of 9999 such samples.
 
 #### Calculation example
-These calculations with bootstrap sampling is implemented in the R-package `bombLepiSurv` (Bombus and Lepidoptera Survey). We briefly show this functionality with bumblebees in semi-natural lands as an example.
+These calculations with bootstrap sampling is implemented in the R-package `bombLepiSurv` (Bombus and Lepidoptera Survey) [link](https://github.com/jenast/bombLepiSurv). We briefly show this functionality with bumblebees in semi-natural lands as an example.
 
 We connect to the internal database with a convenience function `humlesommerfConnect`
 ```{r}
@@ -427,7 +491,7 @@ A summary of the records is most easily plotted by `surveyBarPlot`
 surveyBarplot(allBombusGrassland2022)
 ```
 
-But for calculating the indicators, we only consider the transects that had were surveyed for the standard 3 times per year, to cover the phenology of the entire season. Complete data sets can be fetched by the function `getComplData`, which fetches data from one habitat type and region at a time. 
+Note that for calculating the indicator values, we only consider the transects that had were surveyed for the standard 3 times per year, to cover the phenology of the entire season. Data of these complete survey rounds can be fetched from the database by the function `getComplData`, which fetches data from one habitat type and region at a time. 
 
 ```{r}
 bombus_trond_2022 <- getComplData(type = "Humler",
@@ -443,9 +507,7 @@ The observed relative to the expected occurrences can be visualized through the 
 exp_bombus_trond <- getExpValues(type = "Humler",
                                  region_short = "Trond",
                                  habitat = "Gressmark"
-                                 ) %>% 
-  select(species = species_latin,
-         everything())
+                                 )
 ```
 
 Species in green bars are species that are expected to be common, and should reach the green areas in the plot. Similarly with the blue (sporadic species), and red (rare species). We see in this case that Bombus soroeensis is an exptected sporadic species that only were observed rarely. 
@@ -455,10 +517,10 @@ Species in green bars are species that are expected to be common, and should rea
 plotArt(bombus_trond_2022,
         exp_bombus_trond)
 ```
-[add all species in exp to plot]
 
 
-The actual calculation and bootstrapping is done in the function `calcInd`. This function calls the `getComplData` and `getExpectedValues` functions internally. It also requires the weights for the commonality classes in the reference community (SR), and the weights for the changes in state (CS). This is fetched internally via the functions `getAmountWeights` and `getDiffWeights`, respectively. Here the classes is in norwegian (v = common, m = sporadic, s = rare).
+
+The actual calculation and bootstrapping of the indicator is done in the function `calcInd`. This function calls the `getComplData` and `getExpectedValues` functions internally. It also requires the weights for the commonality classes in the reference community (SR), and the weights for the changes in state (CS). This is fetched internally via the functions `getAmountWeights` and `getDiffWeights`, respectively. Here the classes is coded in norwegian (v = common, m = sporadic, s = rare).
 
 ```{r}
 getDiffWeights()
@@ -467,7 +529,7 @@ getDiffWeights()
 ```{r}
 getAmountWeights()
 ```
-Lastly, we specify the number of samples for the bootstrap 
+Lastly, we specify the number of samples for the bootstrap. To speed up, only 999 samples is shown here.
 
 
 ```{r}
@@ -483,7 +545,15 @@ hInd2022TrondGress <- calcInd(type = "Humler",
                               save.draws = T)
 ```
 
-The result [is going to be] an object of class [xxx]. Add print and plot methods...
+The result is an object of class "comm_index" (community index). It comes with some (still rudimentary) print and plotting functions, showing the point estimate and the limits of a 95% confidence interval.
+
+```{r}
+hInd2022TrondGress
+```
+
+```{r}
+plot(hInd2022TrondGress)
+```
 
 Plotting functions for a series of indicator values is shown below in the indicator calculations.
 
@@ -491,22 +561,18 @@ Plotting functions for a series of indicator values is shown below in the indica
 ### Data sets
 There are a few different ways to access the data required for these indicators. Both the NMBB and the NorIns project stores its data in an internal database at NINA. They both also export most of their data to GBIF, but those exports need to be restructured before they can be processed in the following scripts.
 
-For the time being, we will here use some internal functions in the bombLepiSurv and `Norimon` packages to fetch the required data. [We may add a separate data fetching script later on, describing how to get this data externally in a stable way.]
-
 
 #### NorIns data
 The `Norimon` package has convenience functions to fetch data from the database, housed internally at NINA. This database is currently not available outside NINA, but we will implement a solution for this. Either we will make the database externally available, or we will provide an alternative route to the data from the GBIF export. For now, we will fetch the data through the `Norimon` functions.
 
 
 #### NMBB data
-The data for the bumblebee and butterfly indicators can be accessed through the R-package `bombLepiSurv`. [Replace this with the GBIF version?. At least make the package public.]
-
-
+The data for the bumblebee and butterfly indicators can be accessed through the R-package `bombLepiSurv`. 
 
 
 #### Regions
 <!-- In case you need to map the indicator value to regions, you can do that here. Remove this chapter if not relevant. -->
-Importing a shape file with the regional delineation. The indicators associated with the NorIns project can be attributed to the 5 country regions of Norway. Currently however, the data program only covers 4 of the 5 regions.
+We here show how to import a shape file with the regional delineation. The indicators associated with the NorIns project can be attributed to the 5 country regions of Norway. Currently however, the data program only covers 4 of the 5 regions.
 
 ```{r}
 connect_to_insect_db()
@@ -523,7 +589,22 @@ tm_shape(norway_reg_NorIns) +
   tm_polygons(col = "region") 
 ```
 
-The indicators from the NMBB program is similary connected to regions, with the exception that the south-east region only covers the old fylke's of Vestfold and Østfold, and that Nord-Norge isn't covered yet. [Find the old fylke geometries and add this map to bombLepiSurv]
+The indicators from the NMBB program is similary connected to regions, with the exception that the south-east region only covers the old fylke's of Vestfold and Østfold, and that Nord-Norge isn't covered yet.
+
+
+```{r}
+nbbm_norway_regions <- bombLepiSurv::get_map()
+norway_reg_NBBM <- nbbm_norway_regions %>% 
+  filter(region %in% c("Ost", "Sørlandet", "Trøndelag", "Vestlandet")) %>% 
+  select(region) %>% 
+  group_by(region) %>% 
+  summarize(geom = st_union(geom))
+```
+
+```{r}
+tm_shape(norway_reg_NBBM) + 
+  tm_polygons(col = "region") 
+```
 
 
 ### Calculation of NorIns indicators
@@ -797,10 +878,8 @@ par_sym_sn_exp
 ```
 
 #### Genetic diversity evenness of flying insects in semi-natural land
+This is not fully implemented yet, and the method shown here functions as a placeholder, awaiting a proper calculation. Here, the intraspecific variation is based simply on the number of unique genetic variants (ASVs), and their relative abundance measured as number of DNA-reads in the samples. But to do this properly, we need to use the full COI sequence to calculate the true GDE (see Connor et al. 2023). This temporarily postponed due to lack of software, but will be updated (and amended here) as soon as possible.
 
-[This is not fully implemented yet. Need full COI sequence to calculate the true GDE]. 
-This could also be done for a subset of species.
-(doi: https://doi.org/10.1101/2022.02.09.479762)
 
 Fetch the data.
 ```{r}
@@ -864,9 +943,9 @@ humlesommerfConnect(host = "ninradardata01.nina.no")
 
 ```{r bombusGressBarplot, fig.cap = "Bumblebees in grasslands 2021"}
 allBombusGressmark2022 <- getAllData(type = "bumblebees",
-                        habitat = "gressmark",
-                        year = 2022,
-                        language = "norsk")
+                          habitat = "gressmark",
+                          year = 2022,
+                          language = "norsk")
 
 
 surveyBarplot(allBombusGressmark2022) #+
@@ -905,8 +984,8 @@ hInd2022OstGress <- calcInd(type = "Humler",
                               save.draws = T)
 ```
 
-[Implement this]
-```{r, eval = F}
+
+```{r}
 hInd2022VestGress <- calcInd(type = "Humler",
                               region_short = "Vest",
                               habitat = "Gressmark",
@@ -947,8 +1026,8 @@ sInd2022OstGress <- calcInd(type = "Sommerfugl",
                               save.draws = T)
 ```
 
-[Implement this]
-```{r, eval = F}
+
+```{r}
 sInd2022VestGress <- calcInd(type = "Sommerfugl",
                               region_short = "Vest",
                               habitat = "Gressmark",
@@ -960,10 +1039,6 @@ sInd2022VestGress <- calcInd(type = "Sommerfugl",
 
 The calculations for earlier years is already present as datasets in the R-package and can be fetched individually. Once this is done, we can plot the timeseries of values using the function `indPlot`.
 
-Todo, put these in the new version of the package.
-```{r}
-#load("out/IndicatorValues2020.Rdata")
-```
 
 
 ```{r}
@@ -1119,6 +1194,8 @@ data("hInd2009OstSkog")
 
 ```
 
+Once loaded, the yearly datasets can be organized through the convenience function `collectIndData`, and plotted with `indPlot`.
+
 ```{r bombusGressIndPlot}
 hGressIndVals <- collectIndData(taxa = "bumblebees", 
                                 habitat = "gressmark",
@@ -1154,8 +1231,53 @@ indPlot(input = sGressIndVals,
 
 
 ## Prepare export
-<!-- Text here -->
+We here fetch the indicator regions as an sf and join the calculated indicator values. 
 
+```{r}
+
+norway_reg_NBBM <- bombLepiSurv::get_map() %>% 
+  filter(region %in% c("Sør", "Vestlandet", "Øst", "Trøndelag")) %>% 
+  select(region) %>% 
+  group_by(region) %>% 
+  summarize(geom = st_union(geom))
+
+hGressIndVals_to_exp <- hGressIndVals %>% 
+  select(year = Year,
+         region = Region,
+         ind_value = Indicator_value,
+         ind_sd = NULL,
+         ind_lower2.5 = lower95,
+         ind_upper97.5 = upper95)
+
+hGressIndVals_to_exp <- norway_reg_NBBM  %>% 
+  inner_join(hGressIndVals_to_exp,
+            by = c("region" = "region"),
+            multiple = "all")
+
+hGressIndVals_to_exp
+
+```
+
+
+```{r}
+
+
+sGressIndVals_to_exp <- sGressIndVals %>% 
+  select(year = Year,
+         region = Region,
+         ind_value = Indicator_value,
+         ind_sd = NULL,
+         ind_lower2.5 = lower95,
+         ind_upper97.5 = upper95)
+
+sGressIndVals_to_exp <- norway_reg_NBBM  %>% 
+  inner_join(sGressIndVals_to_exp,
+            by = c("region" = "region"),
+            multiple = "all")
+
+sGressIndVals_to_exp
+
+```
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster with indicators values (raw and normalised), reference values and errors. -->
