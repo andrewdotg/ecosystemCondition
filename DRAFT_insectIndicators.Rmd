@@ -44,9 +44,6 @@ Notice the degree of annotation.
 _Author and date:_
 Jens Åström `r Sys.Date()`
 
-# ```{r}
-# Sys.Date()
-# ```
 
 <br />
 
