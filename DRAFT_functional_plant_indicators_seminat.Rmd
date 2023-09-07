@@ -2354,7 +2354,7 @@ points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.A
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
 ```
-In the ANO data deviations in the grazing/mowing index occur mainly in semi-natural grasslands (T32) on intermediate soils in terms of limestone (C3, C4, C6, C5 [but the latter is one category higher in limestone than intermediate). The deviatons towards low grazing/mowing values indicate that management and use are too extensive.
+In the ANO data, deviations in the grazing/mowing index occur mainly in semi-natural grasslands (T32) on intermediate soils in terms of limestone (C3, C4, C6, C5 [but the latter is one category higher in limestone than intermediate]). The deviations towards low grazing/mowing values indicate that management and use are too extensive.
 
 Nitrogen, ASO
 ```{r}
@@ -2465,7 +2465,7 @@ plot.new()
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
 ```
-In the ASO data the nitrogen deviations indicate too high nitrogen content in limestone richer (intermediate to very rich) semi-natural grasslands. 
+In the ASO data, the nitrogen deviations indicate too high nitrogen content in limestone richer (intermediate to very rich) semi-natural grasslands. 
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
