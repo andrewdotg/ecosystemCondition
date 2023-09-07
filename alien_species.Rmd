@@ -18,6 +18,7 @@ library(units)
 library(eaTools)
 library(tibble)
 library(stars)
+library(gdalUtilities)
 knitr::opts_chunk$set(echo = TRUE)
 
 # Set up conditional file paths
@@ -607,7 +608,7 @@ muni <- sf::read_sf(path, options = "ENCODING=UTF8", layer = "kommune")
 
 ```{r, include=F, eval=FALSE}
 # If I import the manuicipality names:
-muni_names <- sf::read_sf(path, options = "ENCODING=UTF8", layer = "administrativenhetnavn")
+muni_names <- sf::read_sf(path, layer = "administrativenhetnavn")
 #The encoding option fail for gdb-files, so I fix the names again here
 muni_names$navn <- stringi::stri_encode(muni_names$navn, from = "UTF-8", to = "UTF-8")
 
@@ -618,7 +619,18 @@ muni_names$navn <- stringi::stri_encode(muni_names$navn, from = "UTF-8", to = "U
 There are some multi-surfaces in here that I will convert to multi-polygons before plotting.
 
 ```{r kommuner, fig.cap="Municipalities in Norway.", warning=F}
-muni <- st_cast(muni, "MULTIPOLYGON")
+# function to make sure that mutipolygons are returned 
+ensure_multipolygons <- function(X) {
+    tmp1 <- tempfile(fileext = ".gpkg")
+    tmp2 <- tempfile(fileext = ".gpkg")
+    st_write(X, tmp1)
+    gdalUtilities::ogr2ogr(tmp1, tmp2, f = "GPKG", nlt = "MULTIPOLYGON")
+    Y <- st_read(tmp2)
+    st_sf(st_drop_geometry(X), geom = st_geometry(Y))
+}
+
+muni <- ensure_multipolygons(muni)
+
 tm_shape(muni)+
   tm_polygons(col="kommunenummer")+
   tm_layout(legend.outside = T)
