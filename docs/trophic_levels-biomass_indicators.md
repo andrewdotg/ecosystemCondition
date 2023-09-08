@@ -4,20 +4,32 @@
 <br />
 
 _Author and date:_
-James Speed
+James D. M. Speed, Gunnar Austrheim, Erling J. Solberg
 
-June 2023
+August 2023
 
 <br />
 
 <!-- Load all you dependencies here -->
+<!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
+```{r, echo=F}
+Ecosystem <- "All" # e.g. "Skog og fjell"
+Egenskap  <- "Biomass distribution among trophic levels" # e.g. "Primærproduksjon"
+ECT       <- "Structural state characteristic"
+Contact   <- "James Speed" # e.g. "Anders Kolstad"
+```
 
+```{r, echo=F}
+metaData <- data.frame(Ecosystem,
+                       "Økologisk egenskap" = Egenskap,
+                       "ECT class" = ECT)
+knitr::kable(metaData)
+```
 
 <!-- Don't remove these three html lines -->
 <br />
 <br />
 <hr />
-
 
 <!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
 
@@ -25,6 +37,7 @@ June 2023
 
 Here we will develop indicators of ecological condition for Norway, based on the distribution of biomass between trophic levels - specifically between vegetation and vertebrate consumers. This includes three trophic levels, plants, herbivores and carnivores. Indicators of trophic interactions are based on deviation between the observed biomass at each consumer trophic level from the expected biomass based on the biomass at the prey trophic level. The expected biomass estimates are derived from global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://www.science.org/doi/pdf/10.1126/science.aac6284?casa_token=mM3vaCIMkpAAAAAA:bo4aODtkJORM0kIeFfezII4T_0wo7Y7X8ktWxI6vHN64sGmMw9Xi9xCc_g33c437swJaeTeiEE_N))
 
+## About the underlying data
 As the plant biomass level we use Net Primary Productivity. MODIS NPP was selected since it provides the highest temporal extent of available data sources (1999 to present). Spatial resolution is low relative to other remote sensing sources, however, the spatial resolution is still far higher than the consumer data, so the temporal extent was prioritised.
 
 The herbivore data is an extension of the data presented in Austrheim et al. 2008 <https://onlinelibrary.wiley.com/doi/pdf/10.2981/10-038> and Speed et al. 2015 <https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0217166>. For the development of the trophic interaction indicators the same methods were applied to herbivore data going back to 1907 (contra 1949 in the two studies above). This data was extracted by Gunnar Austrheim (livestock) and Erling J. Solberg (wild cervids). In each dataset, the metabolic biomass and the raw biomass of a given species is provided for each year and municipality. The 2007 municipalities were used. The data were rasterized to the same grid as the NPP data.
@@ -37,6 +50,46 @@ The carnivore data is taken from back-cast population modelling for the large ca
 
 We calculate indicators (1) across all ecosystems and the total consumer communities (all localities and all herbivores and all carnivores) and (2) specific indicators for each main ecosystem type
 
+### Representativity in time and space
+The data spans 1907 to 2015, with data points roughly every 10 years. The whole of Norway is covered. Herbivore data is collated at the municipality level (with the exception of semi-domestic reindeer in Finnmark at county level) and carnivore data at the county level. Municipalities and counties valid in 2007 were used. NPP is at a pixel resolution. 
+
+### Original units
+The biomass of the trophic levels is as kg km^-2. 
+
+### Temporal coverage
+The data spans 1907 to 2015, with data points roughly every 10 years.
+
+## Ecosystem characteristic
+### Norwegain standard
+This indicator is within the ecosystem characterstic "biomass distribution among trophic levels"
+
+### SEEA EA (UN standard)
+This indicator alines most closely with B2 Structural state characteristics (although arguments could be made also for B1 and B3).
+
+## Collinearities with other indicators
+Colinearlities are likely to exist with climatic variables and disturbance. 
+
+## Reference condition and values
+### Reference condition
+Reference values are taken from published global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://www.science.org/doi/pdf/10.1126/science.aac6284?casa_token=mM3vaCIMkpAAAAAA:bo4aODtkJORM0kIeFfezII4T_0wo7Y7X8ktWxI6vHN64sGmMw9Xi9xCc_g33c437swJaeTeiEE_N)). 
+
+### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+Deviations from the reference (expected) biomass of consumer based on consumed trophic level biomass are expressed as a two-sided percentage. Good condition was defined as within +/- 40% of the reference value (i.e. that expected from global relationships). Poor condition as over +/- 40% of the reference level. The choice of 40% is arbitary. 
+
+## Uncertainties
+Uncertainty around the estimates have not been estimated. However, there are potential uncertainties around the reported livestock and hunting statistics and the demographic models used to estimate metabolic biomass at the population level. See Austrheim et al. 2011 and Speed et al. 2015 for further details. 
+
+## References
+Austrheim, G., Solberg, E. J., & Mysterud, A. (2011). Spatio‐temporal variation in large herbivore pressure in Norway during 1949‐1999: has decreased grazing by livestock been countered by increased browsing by cervids?. Wildlife Biology, 17(3), 286-298.
+Fløjgaard, C., Pedersen, P. B. M., Sandom, C. J., Svenning, J. C., & Ejrnæs, R. (2022). Exploring a natural baseline for large‐herbivore biomass in ecological restoration. Journal of Applied Ecology, 59(1), 18-24.
+Hatton, I. A., McCann, K. S., Fryxell, J. M., Davies, T. J., Smerlak, M., Sinclair, A. R., & Loreau, M. (2015). The predator-prey power law: Biomass scaling across terrestrial and aquatic biomes. Science, 349(6252), aac6284.
+Sobocinski, A. (2022). Mapping large carnivores in Norway across 175 years of changing policy (Master's thesis, NTNU). https://hdl.handle.net/11250/3047580 
+Speed, J. D. M., Austrheim, G., Kolstad, A. L., & Solberg, E. J. (2019). Long-term changes in northern large-herbivore communities reveal differential rewilding rates in space and time. PLoS One, 14(5), e0217166.
+
+## Additional information about the data
+The raw data is available at 10.6084/m9.figshare.24015072 
+
+## Analyses
 ## Part 1: Total communities
 
 We start by calculation biomass ratios across all herbivores and carnivores, with no regard to the ecosystem type.
@@ -352,9 +405,11 @@ Since a suitable ecosystem map is still under development, we use the AR50 land-
 ```r
 #Forest
 #AR50 type raster
-artype50<-rast("/data/R/GeoSpatialData/LandCover/Norway_LandResource_AR50/Processed/Raster/AR50_Norge.tif")
-
-#artype50<-rast("Vertebrates/AR50/AR50_artype_25_ETRS_1989_UTM_Zone_33N.tif")
+options(timeout = max(1000, getOption("timeout")))
+filedownload<-"downloadAR50.zip"
+download.file("https://ntnu.box.com/shared/static/mfrqmuyx14gtf8u9b8xlzb391m0f9fhy.zip","downloadAR50.zip")
+unzip('downloadAR50.zip',exdir="AR50")
+artype50<-rast("AR50/AR50_artype_25_ETRS_1989_UTM_Zone_33N.tif")
 
 #Reclassify
 artype50_F<-artype50
