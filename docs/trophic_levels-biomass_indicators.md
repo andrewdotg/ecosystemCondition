@@ -304,5 +304,214 @@ Table of the consumer species associated with each habitat.
 Since a suitable ecosystem map is still under development, we use the AR50 land-cover map as a place-holding solution. AR50 does not give a good representation of naturlig åpne områder or semi-naturlig mark, so we demonstrate the habitat specific biomass distributions using the forest class in AR50 and the species outlined above.
 
 
+```r
+#Forest
+#AR50 type raster
+# options(timeout = max(1000, getOption("timeout")))
+# filedownload<-"downloadAR50.zip"
+# download.file("https://ntnu.box.com/shared/static/mfrqmuyx14gtf8u9b8xlzb391m0f9fhy.zip","downloadAR50.zip")
+# unzip('downloadAR50.zip',exdir="AR50")
+
+artype50<-rast(paste0(pData, "AR50/AR50_artype_25_ETRS_1989_UTM_Zone_33N.tif"))
+
+#Reclassify
+artype50_F<-artype50
+arTdf<-data.frame(id=c(10,20,30,50,60,70,81,82,128),label=c("BuiltUp","Pastures/Arable","Forest","Open","Mires","Ice","Freshwater","Sea","Unmapped"))
+levels(artype50_F)<-arTdf
+
+arcols<-c("black","orange","darkgreen","wheat","lightblue","white","blue","blue",NA)
+ggplot()+geom_spatraster(data=artype50_F)+scale_fill_manual(values=arcols,na.value = NA)
+#> SpatRaster resampled to ncells = 500830
+```
+
+<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-1.png" width="672" />
+
+```r
 
 
+#Project the AR50 to the NPP rasters
+
+artype50_FR<-project(resample(artype50_F,npprast,method='near'),npprast)
+
+#Combine herbivores
+allherbivores<-c(viltrast,livestockrast)
+
+#Mask out forest from rasters
+forest_expected_herbivore_biomass<-mask(expected_herbivore_biomass,artype50_FR,maskvalues=30,inverse=TRUE)
+forest_herbivores<-mask(allherbivores,artype50_FR,maskvalues=30,inverse=TRUE)
+forest_carnivores<-mask(carnivorerast,artype50_FR,maskvalues=30,inverse=TRUE)
+forest_expected_carnivore_biomass<-mask(expected_carnivore_biomass,artype50_FR,maskvalues=30,inverse=TRUE)
+
+#Sum up selected forest herbivore species
+#Here we select the relevant herbivore species for the ecosystem type
+allyears_vect<-c(1907,1917,1929,1938,1949,1959,1969,1979,1989,1999,2009,2015)
+
+forest_herbivores_selectspp<-rast(forest_herbivores,nlyrs=12)
+for(i in 1:length(allyears_vect)){
+  print(i)
+  forest_herbivores_selectspp[[i]]<-sum(forest_herbivores[[sapply(strsplit(names(forest_herbivores),"_"),'[',3)
+                                                         %in% allyears_vect[i] &
+                                      sapply(strsplit(names(forest_herbivores),"_"),'[',2)
+                                                          %in% c("roe","hjort","elg","storf")]]
+)
+}
+#> [1] 1
+#> [1] 2
+#> [1] 3
+#> [1] 4
+#> [1] 5
+#> [1] 6
+#> [1] 7
+#> [1] 8
+#> [1] 9
+#> [1] 10
+#> [1] 11
+#> [1] 12
+names(forest_herbivores_selectspp)<-allyears_vect
+ 
+ #Sum up selected forest carnivore species
+ #Here we select the relevant carnivore species for the habitat type
+ forest_carnivores_selectspp<-rast(forest_carnivores,nlyrs=12)
+ for(i in 1:length(allyears_vect)){
+   print(i)
+   forest_carnivores_selectspp[[i]]<-sum(forest_carnivores[[sapply(strsplit(names(forest_carnivores),"_"),'[',3) 
+                                                            %in% allyears_vect[i] &
+                                                              sapply(strsplit(names(forest_carnivores),"_"),'[',2)
+                                                            %in% c("Wolf","Lynx","Bear")]]
+   )
+ }
+#> [1] 1
+#> [1] 2
+#> [1] 3
+#> [1] 4
+#> [1] 5
+#> [1] 6
+#> [1] 7
+#> [1] 8
+#> [1] 9
+#> [1] 10
+#> [1] 11
+#> [1] 12
+ names(forest_carnivores_selectspp)<-allyears_vect
+ 
+ 
+ #Difference in expected and actual biomass in forest
+ forest_herbivores_selectspp_nppyrs<-forest_herbivores_selectspp[[names(forest_herbivores_selectspp)%in% c("1999","2009","2015")]]
+ 
+forest_diffherb<-100*(forest_herbivores_selectspp_nppyrs - forest_expected_herbivore_biomass)/
+ (forest_expected_herbivore_biomass+1)
+
+#norcounty_shp<-st_read("Vertebrates/data/Processed/","ViltdataCounty")
+ #Simplify by county nr
+norcounty<-norcounty_shp %>% 
+   group_by(FylkeNr) %>%
+   summarise(geometry = st_union(geometry)) 
+ 
+ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
+   geom_spatraster(data=forest_diffherb)+
+   ggtitle("Difference in forest herbivores from expectation")+
+   scale_fill_distiller(type="div",palette='RdYlBu',limit=c(-100,100),oob=squish,na.value=NA, "% difference from \nexpected biomass")+
+   facet_wrap(~lyr)+theme_bw()+
+  labs(x="Year", y="Difference")
+#> SpatRaster resampled to ncells = 500703
+```
+
+<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-2.png" width="672" />
+
+```r
+ 
+ 
+forest_diffcarn<-100*(forest_carnivores_selectspp-forest_expected_carnivore_biomass)/
+   (forest_expected_carnivore_biomass+1)
+ 
+ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
+   geom_spatraster(data=forest_diffcarn)+
+   ggtitle("Difference from expected carnivore biomass")+
+   scale_fill_distiller(type="div",palette='RdYlBu',limit=c(-100,100),oob=squish,na.value=NA,"% difference from\nexpected biomass")+
+   facet_wrap(~lyr)+theme_bw()+
+  labs(x="Year", y="Difference")
+#> SpatRaster resampled to ncells = 500703
+```
+
+<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-3.png" width="672" />
+
+```r
+ 
+ 
+ 
+# #Scaling as indicators
+ 
+ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
+   geom_spatraster(data=forest_diffherb)+
+   ggtitle("Difference from expected herbivore biomass")+
+  scale_fill_gradientn(colors= c("blue","yellow",'yellow' ,  "red"),
+                       breaks=c(-100,-40,0,40,100),limits=c(-100,100),na.value=NA,"% difference from\nexpected biomass")+
+   facet_wrap(~lyr)+theme_bw()
+#> SpatRaster resampled to ncells = 500703
+```
+
+<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-4.png" width="672" />
+
+```r
+ 
+ 
+ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
+   geom_spatraster(data=forest_diffcarn)+
+   ggtitle("Difference from expected carnivore biomass")+
+   scale_fill_gradientn(colors= c("blue","yellow",'yellow' ,  "red"),
+                     breaks=c(-100,-40,0,40,100),limits=c(-100,100),na.value=NA,"% difference from\nexpected biomass")+
+   facet_wrap(~lyr)+theme_bw()
+#> SpatRaster resampled to ncells = 500703
+```
+
+<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-5.png" width="672" />
+
+In the above maps, yellow indicates good condition (within 40% of expected biomass between 60% and 140% of expected biomass). Blue indicates poor condition, with \>40% less biomass than expected (i.e. \<60% of expected biomass), while red indicates poor conditions with \>40% biomass than expected (i.e. \>140% of expected biomass).
+
+## Part 3 County averages over time
+
+Finally we summarise the biomass deviations by county over time. 0% deviation represents reference condition. The lines at 40% and -40% show the limits for good condition.
+
+
+```r
+ #Simplify by county nr
+norcounty<-norcounty_shp %>% 
+  group_by(FylkeNr) %>%
+ summarise(geometry = st_union(geometry)) 
+
+#County timegraphs
+#Make spatVect 
+norcounty$CountyName<-norcounty$FylkeNr
+#Provide names (some issues with encoding...)
+norcounty$CountyName<-c("_stfold","Akershus","Oslo","Hedmark","Oppland","Buskerud","Vestfold","Telemark","Aust-Agder","Vest-Agder","Rogaland","Hordaland","Sogn og Fjordane",
+                        "M_re og Romsdal","S_r-Tr_ndelag","Nord-Tr_ndelag","Nordland","Troms","Finnmark")
+norcounty_vect<-vect(norcounty)
+
+forest_carn_herb_county<-terra::extract(forest_diffcarn,norcounty_vect,mean,na.rm=T)
+forest_carn_herb_county$ID<-norcounty_vect$FylkeNr#Replace IDs with Fylke Nrs
+forest_carn_herb_county$CountyName<-norcounty_vect$CountyName#Replace IDs with Fylke Nrs
+forest_carn_herb_countyDF<-gather(forest_carn_herb_county,key="Year",value="Difference",-ID,-CountyName)
+#forest_carn_herb_countyDF$YearN<-as.numeric(substr(forest_carn_herb_countyDF$Year,2,5))
+forest_carn_herb_countyDF$YearN<-as.numeric(forest_carn_herb_countyDF$Year)
+
+ggplot(data=forest_carn_herb_countyDF,aes(x=YearN,y=Difference,color=CountyName))+geom_line()+scale_color_discrete()+
+  ggtitle("Forest: % Difference from expected carnivore biomass")+theme_bw()+xlim(c(1905,2025))+geom_hline(yintercept=c(-40,0),lty=c(2,1))+
+  geom_text(data=forest_carn_herb_countyDF[forest_carn_herb_countyDF$YearN==2015,],aes(label = CountyName, x = 2015, y = Difference), hjust = -.1) 
+```
+
+<img src="trophic_levels-biomass_indicators_files/figure-html/CountySummaries-1.png" width="672" />
+
+```r
+
+
+forest_herb_veg_county<-terra::extract(forest_diffherb,norcounty_vect,mean,na.rm=T)
+forest_herb_veg_county$ID<-norcounty_vect$FylkeNr#Replace IDs with Fylke Nrs
+forest_herb_veg_county$CountyName<-norcounty_vect$CountyName#Replace IDs with Fylke Nrs
+forest_herb_veg_countyDF<-gather(forest_herb_veg_county,key="Year",value="Difference",-ID,-CountyName)
+forest_herb_veg_countyDF$YearN<-as.numeric(forest_herb_veg_countyDF$Year)
+ggplot(data=forest_herb_veg_countyDF,aes(x=YearN,y=Difference,color=CountyName))+geom_line()+scale_color_discrete()+
+  ggtitle("Forest: % Difference from expected herbivore biomass")+theme_bw()+xlim(c(1999,2018))+geom_hline(yintercept=c(-40,0,40),lty=c(2,1,2))+
+  geom_text(data=forest_herb_veg_countyDF[forest_herb_veg_countyDF$YearN==2015,],aes(label = CountyName, x = 2015, y = Difference), hjust = -.1) 
+```
+
+<img src="trophic_levels-biomass_indicators_files/figure-html/CountySummaries-2.png" width="672" />
