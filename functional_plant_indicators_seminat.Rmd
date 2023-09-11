@@ -3,7 +3,6 @@
 <br />
 
 _Author and date:_
-
 Joachim Töpper
 
 May 2023
@@ -15,9 +14,7 @@ May 2023
 library(readxl)
 library(sf)
 library(plyr)
-library(stringr, lib.loc = "/usr/lib/R/site-library")
-library(tidyverse, lib.loc = "/usr/local/lib/R/site-library")
-#library(tidyverse)
+library(tidyverse)
 library(RColorBrewer)
 library("gridExtra") 
 library(ggridges)
@@ -50,47 +47,48 @@ knitr::kable(metaData)
 <hr />
 
 ## Introduction
-Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional plant indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for semi-natural ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH, nitrogen, phosphorus, grazing/mowing, and soil disturbance. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional condition indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021). Note that deviations from the reference may occur in both directions, e.g. the moisture signature from the testing data may be higher or lower than in the reference. Deviations in these two directions indicate very different environmental phenomena and thus have to be treated separately. Therefore, we develop two condition indicators for each functional plant indicator, a lower one and an upper one (see further down for more details).
+Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional plant indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for semi-natural ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH, nitrogen, phosphorus, grazing_mowing, and soil disturbance. These functional signatures are then compared to reference distributions of functional signature, separately for each semi-natural ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional condition indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021). Note that deviations from the reference may occur in both directions, e.g. the soil disturbance signature from the testing data may be higher or lower than in the reference. Deviations in these two directions indicate very different environmental phenomena and thus have to be treated separately. Therefore, we develop two condition indicators for each functional plant indicator, a lower one and an upper one (see further down for more details).
 
 ## About the underlying data
 In the 'functional plant indicator' project for semi-natural ecosystems, we use four sets of data for building indicators for ecological condition:
 
-- as test data we use plant community data from (1) the ANO monitoring scheme (cf. Tingstad et al. 2019, contains semi-natural grasslands T32, semi-natural wet meadows V10, heathlands T34, and we also decided to include near-semi-natural meadows T41) and (2) from the ASO monitoring scheme (cf. Bär et al. 2021, targets semi-natural grasslands T32 only)
+- as test data we use plant community data (1) from the ANO monitoring scheme (cf. Tingstad et al. 2019) and (2) from the ASO monitoring scheme (cf. Bär et al. 2021)
 - as reference data we use (3) generalized species lists from the Norwegian categorization system for eco-diversity (NiN) (cf. Halvorsen et al. 2020)
-- finally, (4) Swedish plant indicator data for light, moisture, pH, and nitrogen from Tyler et al. (2021)
+- (4) Swedish plant indicator data for light, moisture, pH, nitrogen, phosphorus, grazing_mowing, and soil disturbance from Tyler et al. (2021)
 
 (1) ANO monitoring data:
-ANO stands for 'areal-representativ naturovervåking', i.e. 'area representative nature monitoring'. 1000 sites are randomly distributed across mainland Norway and visited within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 [?] evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the analysis in this document, we only use the plots which were classified as one of the semi-natural ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
+ANO stands for 'areal-representativ naturovervåking', i.e. 'area representative nature monitoring'. 1000 sites are randomly distributed across mainland Norway and visited within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 18 evenly distributed vegetation analyses in 1 x 1 m plots (up to 18, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the analysis in this document, we only use the plots which were classified as one of the semi-natural ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
 In the analysis in this document, we use the data available on Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054), which comprises data from the first three ANO-years, 2019-2021, and a total of 8887 plots in 498 sites.
 
-(2) ASO monitoring data:
+(2) ASO monitoring data
 ASO stands for 'arealrepresentativ overvåking av semi-naturlig eng', i.e. 'area representative monitoring of semi-natural meadows'. In ASO ca. 20 areas are chosen annually based on a probabilistic distribution model of semi-natural meadows in Norway (see Johansen et al. 2017 for details). Each ASO area (område) spans a 10 x 10 km grid cell, in which a maximum of up to 10 sites (flate) of 500 x 500 m are chosen. In each site, all semi-natural meadows (eng) with an area of at least 250 sqm are delineated. In up to three meadows per site the plant species composition is sampled using a transect method. For the vegetation transect analyses, both cover and frequency of each vascular plant species along the transect is recorded. For every meadow, the species data collection is accompanied by an assessment of the ecosystem, including ecosystem type and some additional variables related to ecosystem-specific drivers of state.
-In the analysis in this document, we use the ASO data from 2022 only as the data from 2021 and the ASO pilot in 2019 are not in sufficiently good shape. In the future, all ASO data will hopefully be available in Miljødirektoratets kartkatalog.
+In the analysis in this document, we use the ASO data from 2022 only as the data from 2021 and the ASO pilot in 2019 are not in sufficiently good shape yet. In the future, all ASO data will probably be available through Miljødirektoratets kartkatalog.
 
 (3) NiN reference data:
 The generalized species lists underlying the ecosystem categorization in NiN represent expert-compiled species lists based on empirical evidence from the literature and expert knowledge of the systems and their species. In these lists, every species is assigned an abundance value on a 6-step scale, with each step representing a range for the 'expected combination of frequency and cover' of occurrence (1: < 1/32, 2: 1/32 - 1/8 , 3: 1/8 - 3/8, 4: 3/8 - 4/5, 5: 3/8 - 4/5 + dominance, 6: > 4/5). For the purpose of this project, these steps are simplified to maximum 'expected combination of frequency and cover', whereby steps 4 & 5 are assigned 0.6 and 0.8, respectively, in order to distinguish between them.
 
-(4) The Swedish plant indicator set published by Tyler et al. (2021) contains a large collection of plant indicators based on the Swedish flora, which is well representative of the Norwegian flora as well. From this set, we decided to include indicator data for light, moisture, pH, nitrogen, phosphorus, grazing/mowing, and soil disturbance for semi-natural ecosystems, as these are thought to be subject to potential change due to abandonment, drainage/flooding, pollution, and erosion.
+(4) The Swedish plant indicator set published by Tyler et al. (2021) contains a large collection of plant indicators based on the Swedish flora, which is well representative of the Norwegian flora as well. From this set, we decided to include indicator data for light, moisture, pH, nitrogen, phosphorus, grazing_mowing, and soil disturbance for semi-natural ecosystems as these are thought to be subject to potential change due to abandonment, drainage/flooding, pollution, and erosion.
 
 
 ### Representativity in time and space
 For semi-natural ecosystems, the ANO data in this analysis contain 233 plots in 83 sites, in principle distributed randomly across the country. As semi-natural ecosystems occur more often in certain regions of Norway than in others, the amount of plots and sites is not equal among Norway's five regions. The 233 plots are distributed across regions in the following way:
 
-- Northern Norway: ? [?]
-- Central Norway:  ?
-- Eastern Norway:  ?
-- Western Norway:  ?
-- Southern Norway: ?
+- Northern Norway: 74
+- Central Norway:  36
+- Eastern Norway:  30
+- Western Norway:  84
+- Southern Norway: 6
 
 For ASO, this analysis covers 381 meadow transects in 96 sites.
 
-The 381 transects are distributed across regions in the following way:
+Of the 381 transects, 61 were missing coordinates, and the remaining 320 transects are distributed across regions in the following way:
 
-- Northern Norway: ? [?]
-- Central Norway:  ?
-- Eastern Norway:  ?
-- Western Norway:  ?
-- Southern Norway: ?
+- Northern Norway: 107
+- Central Norway:  83
+- Eastern Norway:  49
+- Western Norway:  78
+- Southern Norway: 3
+
 
 
 ### Temporal coverage
@@ -102,7 +100,7 @@ The ANO evaluation data cover the first three years, 2019-2021, of the first 5-y
 
 ## Reference state and values
 ### Reference state
-The reference state is defined via the functional signature of the generalized species lists in NiN (see also Töpper et al. 2018). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for ecosystem sub-types [?] ("grunntyper" or "kartleggingsenheter" at a 1:5000 mapping scale) within the main wetland types in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
+The reference state is defined via the functional signature of the generalized species lists in NiN (see also Töpper et al. 2018). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for minor ecosystem types ("grunntyper" or "kartleggingsenheter" at a 1:5000 mapping scale) within the major ecosystem types (hovedtyper) in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
 
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
@@ -110,7 +108,7 @@ In this analysis, we derive scaling values from statistical (here, non-parametri
 
 
 ## Uncertainties
-We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area.
+We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error as a measure of spatial uncertainty for a geographical area.
 
 
 ## References
@@ -134,7 +132,7 @@ Töpper, J. & Jakobsson, S. 2021. The Index-Based Ecological Condition Assessmen
 
 Töpper, J., Velle, L.G. & Vandvik, V. 2018. Developing a method for assessment of ecological state based on indicator values after Ellenberg and Grime (revised edition). NINA Report 1529b. Norwegian Institute for Nature Research.
 
-Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indicator and traits values for Swedish vascular plants. Ecological Indicators, 120. doi:10.1016/j.ecolind.2020.106923
+Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indicator and traits values for Swedish vascular plants. Ecological In-dicators, 120. doi:10.1016/j.ecolind.2020.106923
 
 
 ## Analyses
@@ -1900,31 +1898,67 @@ res.seminat.ASO <-
 ```
 
 ### Ecosystem sub-types
-And we can show the resulting scaled values as violin plots for each indicator and main ecosystem type: 
+And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
 ```{r,echo=FALSE,message=FALSE, warning=FALSE}
 
-# making the plot, ANO
-ggplot(res.seminat.ANO, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+# making the plot, ANO Light, Moist & pH
+ggplot(data=subset(res.seminat.ANO,!is.na(scaled_value) & fp_ind %in% c("Light1","Moist1","pH1",
+                                                                        "Light2","Moist2","pH2"))
+       , aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color=NA) +
-#  geom_boxplot(width=0.2, color="grey") +
+  #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=1, shape=16, color="black") +
-  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
-                                     "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1",
+                                     "Light2","Moist2","pH2")), ncol = 3) + 
   xlab("Main ecosystem type") + 
-  ylab("Scaled indicator value (ANO data)") 
+  ylab("Scaled indicator value (ANO data)") +
+  theme(legend.position="none")
 
-# making the plot, ASO
-res.seminat.ASO$NiN_grunntype2 <- substring(res.seminat.ASO$NiN_grunntype,5)
-ggplot(res.seminat.ASO, aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
+# making the plot, ANO Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance
+ggplot(data=subset(res.seminat.ANO,!is.na(scaled_value) & fp_ind %in% c("Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                                                        "Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2"))
+       , aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color=NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                     "Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 4) + 
+  xlab("Main ecosystem type") + 
+  ylab("Scaled indicator value (ANO data)") +
+  theme(legend.position="none")
+
+# making the plot, ASO Light, Moist, pH1
+ggplot(data=subset(res.seminat.ASO,!is.na(scaled_value) & fp_ind %in% c("Light1","Moist1","pH1",
+                                                                        "Light2","Moist2","pH2")),
+       aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color = NA) +
   #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=1, shape=16, color="black") +
-  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
-                                     "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1",
+                                     "Light2","Moist2","pH2")), ncol = 3) + 
   xlab("T32 (semi-natural meadow) basic ecosystem type") + 
-  ylab("Scaled indicator value (ASO data)") 
+  ylab("Scaled indicator value (ASO data)") +
+  theme(legend.position="none") +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
+
+
+# making the plot, ASO Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance
+ggplot(data=subset(res.seminat.ASO,!is.na(scaled_value) & fp_ind %in% c("Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                                                        "Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")),
+       aes(x=factor(NiN_grunntype2), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin(color = NA) +
+  #  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=1, shape=16, color="black") +
+  facet_wrap(~factor(fp_ind,levels=c("Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
+                                     "Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 4) + 
+  xlab("T32 (semi-natural meadow) basic ecosystem type") + 
+  ylab("Scaled indicator value (ASO data)")  +
+  theme(legend.position="none") +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
 
 
 ```
@@ -2002,8 +2036,8 @@ tm_shape(regnor) +
 
 ### Regions - maps and statistics
 Alternatively we can calculate and show the region-wise means and their related standard errors. But note that calculating a simple mean would be inappropriate for these data. This is because:
-(i) the scaled data are bound between 0 and 1, and thus follow a beta-distribution rather than a Gaussian one,
-(ii) both the ANO and the ASO datasets have a nested structure.
+(i) the scaled data are bound between 0 and 1, and thus follow a beta-distribution rather than a Gaussian one
+(ii) both the ANO and the ASO datasets have a nested structure
 
 Therefore, we need to (i) use a beta-model, that (ii) can account for the nested structure of the data.
 Here, we apply the following function using either a glmmTMB null-model with a beta-distribution, logit link, and the nesting as a random intercept, or a simple betareg null-model with logit link if the nesting is not extensive enough for a mixed model.
@@ -2142,7 +2176,7 @@ tm_shape(regnor) +
   tm_polygons(col="Nitrogen2.ASO.reg.mean", title="Nitrogen (upper), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
   tm_text("Nitrogen2.ASO.reg.n",col="black",bg.color="grey")
 ```
-Mean index value by region for the upper Nitrogen indicator (i.e. index shows deviations towards increased nitrogen availability) from the ASO monitoring data. Numbers in grey fields show the number of observations in the respective region.
+Mean index value by region for the upper Nitrogen indicator (i.e. index shows deviations towards increased Nitrogen availability) from the ASO monitoring data. Numbers in grey fields show the number of observations in the respective region.
 
 ```{r}
 # se
@@ -2155,7 +2189,7 @@ Standard error to the mean index value by region for the upper Nitrogen indicato
 
 
 #### Unscaled values vs. reference
-We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since Grazing_mowing for ANO and nitrogen for ASO show some deviations, we exemplify this with these indicators for unscaled values.
+We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since Grazing_mowing for ANO and nitrogen for ASO show some deviations  we exemplify this with these indicators for unscaled values.
 
 Grazing_mowing, ANO:
 ```{r}
@@ -2320,8 +2354,9 @@ points(res.seminat.ANO[res.seminat.ANO$fp_ind=="Grazing_mowing1" & res.seminat.A
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
 ```
+In the ANO data, deviations in the grazing/mowing index occur mainly in semi-natural grasslands (T32) on intermediate soils in terms of limestone (C3, C4, C6, C5 [but the latter is one category higher in limestone than intermediate]). The deviations towards low grazing/mowing values indicate that management and use are too extensive.
 
-Nitrogen, ASO:
+Nitrogen, ASO
 ```{r}
 
 #summary(res.seminat.ASO$NiN_grunntype)
@@ -2425,14 +2460,12 @@ points(res.seminat.ASO[res.seminat.ASO$fp_ind=="Nitrogen2" & res.seminat.ASO$NiN
        rep(0,length(res.seminat.ASO[res.seminat.ASO$fp_ind=="Nitrogen2" & res.seminat.ASO$NiN_grunntype=="T32-C-20",]$original)),
        col="red")
 
+plot.new()
+
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 
 ```
-The figure shows that deviations mainly occur in V2-C1 [?], which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
+In the ASO data, the nitrogen deviations indicate too high nitrogen content in limestone richer (intermediate to very rich) semi-natural grasslands. 
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
-
-
-
-
