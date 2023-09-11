@@ -82,8 +82,8 @@
 <span class="header-section-number">7</span> Trophic level biomass ratios<a class="anchor" aria-label="anchor" href="#trophic-level-biomass-ratios"><i class="fas fa-link"></i></a>
 </h1>
 <p><br></p>
-<p><em>Author and date:</em>
-James D. M. Speed, Gunnar Austrheim, Erling J. Solberg</p>
+<p><em>Author and date:</em></p>
+<p>James D. M. Speed, Gunnar Austrheim, Erling J. Solberg</p>
 <p>August 2023</p>
 <p><br></p>
 <!-- Load all you dependencies here -->
@@ -144,9 +144,9 @@ James D. M. Speed, Gunnar Austrheim, Erling J. Solberg</p>
 <h2>
 <span class="header-section-number">7.3</span> Ecosystem characteristic<a class="anchor" aria-label="anchor" href="#ecosystem-characteristic-4"><i class="fas fa-link"></i></a>
 </h2>
-<div id="norwegain-standard-2" class="section level3" number="7.3.1">
+<div id="norwegain-standard-1" class="section level3" number="7.3.1">
 <h3>
-<span class="header-section-number">7.3.1</span> Norwegain standard<a class="anchor" aria-label="anchor" href="#norwegain-standard-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.3.1</span> Norwegain standard<a class="anchor" aria-label="anchor" href="#norwegain-standard-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>This indicator is within the ecosystem characterstic “biomass distribution among trophic levels”</p>
 </div>
@@ -212,7 +212,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span class="header-section-number">7.10</span> Part 1: Total communities<a class="anchor" aria-label="anchor" href="#part-1-total-communities"><i class="fas fa-link"></i></a>
 </h2>
 <p>We start by calculation biomass ratios across all herbivores and carnivores, with no regard to the ecosystem type.</p>
-<div class="sourceCode" id="cb242"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb241"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#NPP</span></span>
 <span><span class="co">#Read in</span></span>
 <span><span class="va">npprast</span><span class="op">&lt;-</span><span class="fu">rast</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">pData</span>,<span class="st">"/Trophic_levels/NPP.tiff"</span><span class="op">)</span><span class="op">)</span></span>
@@ -243,7 +243,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span>  <span class="fu">summarise</span><span class="op">(</span>geometry <span class="op">=</span> <span class="fu">st_union</span><span class="op">(</span><span class="va">geometry</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
 <p>Now we can plot the raw biomass data.</p>
 <p>First NPP:</p>
-<div class="sourceCode" id="cb243"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb242"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Select relevant years for NPP</span></span>
 <span><span class="va">npprast_yrs</span><span class="op">&lt;-</span><span class="va">npprast</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">npprast</span><span class="op">)</span><span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"NPP_2000"</span>,<span class="st">"NPP_2009"</span>,<span class="st">"NPP_2015"</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
@@ -252,7 +252,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span>         <span class="fu">scale_fill_continuous</span><span class="op">(</span>low<span class="op">=</span><span class="st">"lightgreen"</span>,high<span class="op">=</span><span class="st">"darkgreen"</span>,na.value<span class="op">=</span><span class="cn">NA</span>,<span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">'kg C km'</span><span class="op">^</span><span class="op">-</span><span class="fl">2</span><span class="op">~</span><span class="st">'year'</span><span class="op">^</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/Plotting%20basic%20data-1.png" width="672"></div>
 <p>Next total herbivore biomass:</p>
-<div class="sourceCode" id="cb244"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb243"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Total herbivore biomass</span></span>
 <span><span class="co">#For some reason need to read the raster in again</span></span>
 <span><span class="va">livestockrast</span><span class="op">&lt;-</span><span class="fu">rast</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">pData</span>,<span class="st">"/Trophic_levels/Livestock_RawBiomass.tiff"</span><span class="op">)</span><span class="op">)</span></span>
@@ -274,7 +274,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span>  <span class="fu">scale_fill_continuous</span><span class="op">(</span>trans<span class="op">=</span><span class="st">'log10'</span>,low<span class="op">=</span><span class="st">"lightskyblue"</span>,high<span class="op">=</span><span class="st">"darkblue"</span>, na.value<span class="op">=</span><span class="cn">NA</span>,<span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu">atop</span><span class="op">(</span><span class="st">'Herbivore \nbiomass'</span>, <span class="st">'kg km'</span><span class="op">^</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/PlotTotalHerbivoreBiomass-1.png" width="672"></div>
 <p>And finally total carnivore biomass:</p>
-<div class="sourceCode" id="cb245"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb244"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">carnivorerast</span><span class="op">&lt;-</span><span class="fu">rast</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">pData</span>,<span class="st">"/Trophic_levels/Carnivores_RawBiomass.tiff"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">totalcarnivores</span><span class="op">&lt;-</span><span class="va">carnivorerast</span><span class="op">[[</span><span class="fl">49</span><span class="op">:</span><span class="fl">60</span><span class="op">]</span><span class="op">]</span></span>
@@ -286,7 +286,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span>  <span class="fu">theme</span><span class="op">(</span>strip.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/Plot%20carnivore%20biomass-1.png" width="672"></div>
 <p>Now we use the NPP to estimate the expected herbivore biomass (Fløjgaard et al. 2015, Figure 1/Table 1, Global relationship “mean NPP1km”):</p>
-<div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb245"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expected_herbivore_biomass</span><span class="op">&lt;-</span><span class="op">(</span><span class="va">npprast_yrs</span><span class="op">^</span><span class="fl">0.47</span> <span class="op">*</span> <span class="fl">0.643</span><span class="op">)</span><span class="co">#Global </span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu">geom_sf</span><span class="op">(</span>data<span class="op">=</span><span class="va">norcounty</span>,fill<span class="op">=</span><span class="st">"white"</span>,lwd<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Expected herbivore biomass"</span><span class="op">)</span><span class="op">+</span></span>
@@ -298,7 +298,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <p>To display this we truncated to 100%|-100%</p>
 <p>A value of 0 indicates that the locality has expected biomass. Value of 100 indicates that the locality has 100% (or more) higher biomass than expected. Value of -100 indicates that the locality has 100% (or more) lower biomass than expected.</p>
 <p>«Good» condition assumed to be 0 to |40%|</p>
-<div class="sourceCode" id="cb247"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">totalherbivorebiomass</span><span class="op">&lt;-</span><span class="va">livestockrast</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html">strsplit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">livestockrast</span><span class="op">)</span>,<span class="st">"_"</span><span class="op">)</span>,<span class="st">'['</span>,<span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="st">"TotalHerbivoreBiomass"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">totalherbivorebiomass</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">allyears_vect</span></span>
 <span><span class="va">totalherbivorebiomass_npp</span><span class="op">&lt;-</span><span class="va">totalherbivorebiomass</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">totalherbivorebiomass</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1999"</span>,<span class="st">"2009"</span>,<span class="st">"2015"</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
@@ -316,7 +316,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/DifferenceHerbivoreBiomass-1.png" width="672"></div>
 <p>Above we see that on the West coast, Trøndelag, Oppland have double herbivore biomass than expected. There is more herbivore biomass than expected in parts of Finnmark, while Nordland and Lierne have lower herbivore biomass than expected based on NPP. Vestfold &amp; Telemark (and parts of Viken) change from having more herbivore biomass than expected in 2000 to less than expected in 2015 (this is consistent with reduction in moose population in these regions)</p>
 <p>– Next we move on to estimate the expected carnivore biomass based on observed herbivore biomass and calculate the deviation as a % difference from expected as for the herbivores. This is based on Hatton et al. (2015, Figure 1, predator prey biomass relationships).</p>
-<div class="sourceCode" id="cb248"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb247"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">totalherbivorebiomass</span><span class="op">&lt;-</span><span class="va">livestockrast</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html">strsplit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">livestockrast</span><span class="op">)</span>,<span class="st">"_"</span><span class="op">)</span>,<span class="st">'['</span>,<span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="st">"TotalHerbivoreBiomass"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">totalherbivorebiomass</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">allyears_vect</span></span>
 <span><span class="co">#carnivorerast&lt;-rast(paste0(pData,"/Trophic_levels/Carnivores_RawBiomass.tiff"))</span></span>
@@ -333,7 +333,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span><span class="co">#&gt; Warning: Transformation introduced infinite values in discrete</span></span>
 <span><span class="co">#&gt; y-axis</span></span></code></pre></div>
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/Expected%20carnivore%20biomass-1.png" width="672"></div>
-<div class="sourceCode" id="cb249"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb248"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">diffcarn</span><span class="op">&lt;-</span><span class="fl">100</span><span class="op">*</span> <span class="op">(</span><span class="va">totalcarnivores</span><span class="op">-</span><span class="va">expected_carnivore_biomass</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">expected_carnivore_biomass</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">diffcarn</span><span class="op">)</span><span class="op">&lt;-</span><span class="va">allyears_vect</span></span>
@@ -401,7 +401,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 </tbody>
 </table></div>
 <p>Since a suitable ecosystem map is still under development, we use the AR50 land-cover map as a place-holding solution. AR50 does not give a good representation of naturlig åpne områder or semi-naturlig mark, so we demonstrate the habitat specific biomass distributions using the forest class in AR50 and the species outlined above.</p>
-<div class="sourceCode" id="cb250"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb249"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Forest</span></span>
 <span><span class="co">#AR50 type raster</span></span>
 <span><span class="co"># options(timeout = max(1000, getOption("timeout")))</span></span>
@@ -420,7 +420,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu">geom_spatraster</span><span class="op">(</span>data<span class="op">=</span><span class="va">artype50_F</span><span class="op">)</span><span class="op">+</span><span class="fu">scale_fill_manual</span><span class="op">(</span>values<span class="op">=</span><span class="va">arcols</span>,na.value <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
 <span><span class="co">#&gt; SpatRaster resampled to ncells = 500830</span></span></code></pre></div>
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/Habitat%20specific%20rasters-1.png" width="672"></div>
-<div class="sourceCode" id="cb251"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb250"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="co">#Project the AR50 to the NPP rasters</span></span>
@@ -509,7 +509,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span>  <span class="fu">labs</span><span class="op">(</span>x<span class="op">=</span><span class="st">"Year"</span>, y<span class="op">=</span><span class="st">"Difference"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; SpatRaster resampled to ncells = 500703</span></span></code></pre></div>
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/Habitat%20specific%20rasters-2.png" width="672"></div>
-<div class="sourceCode" id="cb252"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb251"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> </span>
 <span> </span>
 <span><span class="va">forest_diffcarn</span><span class="op">&lt;-</span><span class="fl">100</span><span class="op">*</span><span class="op">(</span><span class="va">forest_carnivores_selectspp</span><span class="op">-</span><span class="va">forest_expected_carnivore_biomass</span><span class="op">)</span><span class="op">/</span></span>
@@ -523,7 +523,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span>  <span class="fu">labs</span><span class="op">(</span>x<span class="op">=</span><span class="st">"Year"</span>, y<span class="op">=</span><span class="st">"Difference"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; SpatRaster resampled to ncells = 500703</span></span></code></pre></div>
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/Habitat%20specific%20rasters-3.png" width="672"></div>
-<div class="sourceCode" id="cb253"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb252"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> </span>
 <span> </span>
 <span> </span>
@@ -537,7 +537,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span>   <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">lyr</span><span class="op">)</span><span class="op">+</span><span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; SpatRaster resampled to ncells = 500703</span></span></code></pre></div>
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/Habitat%20specific%20rasters-4.png" width="672"></div>
-<div class="sourceCode" id="cb254"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb253"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> </span>
 <span> </span>
 <span> <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu">geom_sf</span><span class="op">(</span>data<span class="op">=</span><span class="va">norcounty</span>,fill<span class="op">=</span><span class="st">"white"</span>,lwd<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">+</span></span>
@@ -555,7 +555,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span class="header-section-number">7.12</span> Part 3 County averages over time<a class="anchor" aria-label="anchor" href="#part-3-county-averages-over-time"><i class="fas fa-link"></i></a>
 </h2>
 <p>Finally we summarise the biomass deviations by county over time. 0% deviation represents reference condition. The lines at 40% and -40% show the limits for good condition.</p>
-<div class="sourceCode" id="cb255"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb254"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="co">#Simplify by county nr</span></span>
 <span><span class="va">norcounty</span><span class="op">&lt;-</span><span class="va">norcounty_shp</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">FylkeNr</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
@@ -580,7 +580,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Forest: % Difference from expected carnivore biomass"</span><span class="op">)</span><span class="op">+</span><span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu">xlim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1905</span>,<span class="fl">2025</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu">geom_hline</span><span class="op">(</span>yintercept<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">40</span>,<span class="fl">0</span><span class="op">)</span>,lty<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">geom_text</span><span class="op">(</span>data<span class="op">=</span><span class="va">forest_carn_herb_countyDF</span><span class="op">[</span><span class="va">forest_carn_herb_countyDF</span><span class="op">$</span><span class="va">YearN</span><span class="op">==</span><span class="fl">2015</span>,<span class="op">]</span>,<span class="fu">aes</span><span class="op">(</span>label <span class="op">=</span> <span class="va">CountyName</span>, x <span class="op">=</span> <span class="fl">2015</span>, y <span class="op">=</span> <span class="va">Difference</span><span class="op">)</span>, hjust <span class="op">=</span> <span class="op">-</span><span class="fl">.1</span><span class="op">)</span> </span></code></pre></div>
 <div class="inline-figure"><img src="trophic_levels-biomass_indicators_files/figure-html/CountySummaries-1.png" width="672"></div>
-<div class="sourceCode" id="cb256"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb255"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="va">forest_herb_veg_county</span><span class="op">&lt;-</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/extract.html">extract</a></span><span class="op">(</span><span class="va">forest_diffherb</span>,<span class="va">norcounty_vect</span>,<span class="va">mean</span>,na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
@@ -615,7 +615,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 </li>
 <li>
 <a class="nav-link" href="#ecosystem-characteristic-4"><span class="header-section-number">7.3</span> Ecosystem characteristic</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#norwegain-standard-2"><span class="header-section-number">7.3.1</span> Norwegain standard</a></li>
+<li><a class="nav-link" href="#norwegain-standard-1"><span class="header-section-number">7.3.1</span> Norwegain standard</a></li>
 <li><a class="nav-link" href="#seea-ea-un-standard"><span class="header-section-number">7.3.2</span> SEEA EA (UN standard)</a></li>
 </ul>
 </li>
@@ -650,7 +650,7 @@ Speed, J. D. M., Austrheim, G., Kolstad, A. L., &amp; Solberg, E. J. (2019). Lon
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-09-08.</p>
+    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-09-11.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
