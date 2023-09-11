@@ -7,14 +7,10 @@
 <br />
 
 _Author and date:_
-Anders Kolstad
 
+Anders L. Kolstad
 
-
-```
-#> [1] "2023-09-08"
-```
-
+March 2023
 
 <br />
 
@@ -132,7 +128,7 @@ hist(breatlas$area)
 plot(breatlas$area)
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 
 Most polygons are small, and then there are a couple of very big ones. The largest polygon is 50 km2, but note that some polygons are somewhat arbitrarily split.
 
@@ -147,7 +143,7 @@ plot(nor$geometry, axes=T, main = "Breatlas 2018-2019")
   plot(breatlas$geometry, add=T, border = "blue")
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-6-1.png" width="672" />
 
 
 #### N50
@@ -179,7 +175,7 @@ plot(nor$geometry, axes=T, main = "n50 - 1952-1985")
   plot(n50$geometry, add=T, border = "red")
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-8-1.png" width="672" />
 
 Let's now plot it all on top of each other.
 
@@ -212,7 +208,7 @@ plot(nor$geometry, xlim=c(5000, 10000),
     plot(breatlas$geometry, add=T, col = "grey")
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-9-1.png" width="672" />
 
 The red areas in the map to the far right is where the ice has retreated for a selected glacier on the west coast. 
 Now we need to devide the map into regions to then compare the area in n50 with the new glacial extent map _breatlas_.
@@ -300,7 +296,7 @@ plot(nor$geometry, axes=T)
                              "brown"), .2))
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 
 Get the region names
 
@@ -365,7 +361,7 @@ plot(nor$geometry, xlim=c(5000, 10000),
     plot(breatlas$geometry, add=T, col = scales::alpha("yellow",0.5))
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-18-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-17-1.png" width="672" />
 
 This seems to have worked. 
 Notice also how some of these larger polygons are somewhat arbitrarely divided into several adjoining polygons. This is only so for the new map, not the old n50 map.
@@ -406,7 +402,7 @@ plot(brealtas_reg$geometry[brealtas_reg$region=="Vestlandet"],
   plot(nor$geometry, add=T)
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-20-1.png" width="672" />
 
 It worked fine. 
 
@@ -432,7 +428,7 @@ barplot(
 )
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-22-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-21-1.png" width="672" />
 
 Southern Norway has <1km2 of glaciers in 2018-2019.
 
@@ -458,7 +454,7 @@ plot(n50_reg$geometry[n50_reg$region=="Vestlandet"],
   plot(nor$geometry, add=T)
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-24-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-23-1.png" width="672" />
 
 Thats good. 
 Now I will plot the reference values (n50) and the contemporary data together.
@@ -486,7 +482,7 @@ barplot(
 )
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-25-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-24-1.png" width="672" />
 
 In the figure above, the glacial area in the reference periond is in light grey and todays area is in dark grey. The height of the light grey bar depicts the reduction in glacial area.
 
@@ -550,7 +546,7 @@ tm_shape(reg_clipped) +
   tm_polygons(alpha = 0,border.col = "black")
 ```
 
-<img src="breareal_files/figure-html/unnamed-chunk-29-1.png" width="672" />
+<img src="breareal_files/figure-html/unnamed-chunk-28-1.png" width="672" />
 
 
 

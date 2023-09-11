@@ -82,8 +82,8 @@
 <span class="header-section-number">5</span> Functional plant indicators (Moisture, Light, pH, Nitrogen)<a class="anchor" aria-label="anchor" href="#Functional-plant-indicators-wetland"><i class="fas fa-link"></i></a>
 </h1>
 <p><br></p>
-<p><em>Author and date:</em>
-Joachim Töpper</p>
+<p><em>Author and date:</em></p>
+<p>Joachim Töpper</p>
 <p>May 2023</p>
 <p><br></p>
 <!-- Load all you dependencies here -->
@@ -216,7 +216,7 @@ The generalized species lists underlying the ecosystem categorization in NiN rep
 (not shown here, but documented in the code)</li>
 </ul>
 <p>leaving us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov)</p>
-<div class="sourceCode" id="cb211"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb210"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ANO.sp.ind</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Species art_dekning</span></span>
 <span><span class="co">#&gt; 1 Abies alba           0</span></span>
@@ -304,7 +304,7 @@ For wetland ecosystem we are testing “Light”, “Moisture”, “Soil_reacti
 <li>in every bootstrap iteration the abundance of the sampled species can be randomly changed by a limited amount if wished by introducing a re-sampling of abundance values from adjacent abundance steps with a certain probability (var.abun)</li>
 </ul>
 <p>Running the bootstraps</p>
-<div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb211"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">NiN.wetland</span><span class="op">)</span></span>
 <span><span class="co"># 1st column is the species</span></span>
 <span><span class="co"># 2nd-46th column is the abundances of sp in different ecosystem types</span></span>
@@ -324,7 +324,7 @@ For wetland ecosystem we are testing “Light”, “Moisture”, “Soil_reacti
 <span>    <span class="va">wetland.ref.cov</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">v</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">wetland.ref.cov</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     V3-C1a   V3-C1b   V3-C1c   V3-C1d   V3-C1e   V1-C1a</span></span>
 <span><span class="co">#&gt; 1 6.336842 5.702703 5.891986 5.407407 5.284661 5.682713</span></span>
@@ -967,7 +967,7 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 #&gt;  3rd Qu.:5.758   3rd Qu.:5.864   3rd Qu.: 8.25  
 #&gt;  Max.   :8.217   Max.   :9.016   Max.   :12.00  
 #&gt; </code></pre>
-<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb214"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">wetland.ref.cov.val</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        N1 hoved  grunn county region    Ind       Rv</span></span>
 <span><span class="co">#&gt; 1 wetland    NA V3-C-2    all    all Light1 4.900265</span></span>
@@ -985,7 +985,7 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 <span><span class="co">#&gt; 6 5.232242      7</span></span></code></pre></div>
 <p>Once test data (ANO) and the scaling values from the reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO plot’s CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper indicators for each plant functional indicator type. An ANO plot can only have a scaled value in either the lower or the upper indicator (the other one will be ‘NA’), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.</p>
 <p>Here is the scaling function</p>
-<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#### scaled values ####</span></span>
 <span><span class="va">r.s</span> <span class="op">&lt;-</span> <span class="fl">1</span>    <span class="co"># reference value</span></span>
@@ -1021,7 +1021,7 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 <span>  </span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>We then can prepare a list of data frames to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021)</p>
-<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#### calculating scaled and non-truncated values for the indicators based on the dataset ####</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ANO.wetland</span><span class="op">)</span> <span class="op">)</span> <span class="op">{</span>  <span class="co">#</span></span>
@@ -1174,7 +1174,7 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 <span></span>
 <span><span class="va">results.wetland</span><span class="op">[[</span><span class="st">'2-sided'</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Nitrogen1</span><span class="op">[</span><span class="va">results.wetland</span><span class="op">[[</span><span class="st">'2-sided'</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Nitrogen1</span><span class="op">&gt;</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span><span class="va">results.wetland</span><span class="op">[[</span><span class="st">'2-sided'</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Nitrogen2</span><span class="op">[</span><span class="va">results.wetland</span><span class="op">[[</span><span class="st">'2-sided'</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Nitrogen2</span><span class="op">&gt;</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span></code></pre></div>
-<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results.wetland</span><span class="op">[[</span><span class="st">'2-sided'</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                 GlobalID</span></span>
 <span><span class="co">#&gt; 1 {36BAE83E-F412-4C90-8B56-DE6B4225BB17}</span></span>
@@ -1427,7 +1427,7 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 <span class="header-section-number">5.7.2</span> Simple summary statistics<a class="anchor" aria-label="anchor" href="#simple-summary-statistics"><i class="fas fa-link"></i></a>
 </h3>
 <p>We can calculate simple summary statistics like means, standard deviations, and number of observations (note that there is both a lower and an upper indicator for each of the four plant functional indicators)</p>
-<div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#### plotting scaled values by main ecosystem type ####</span></span>
 <span><span class="co">## continuing with 2-sided</span></span>
 <span><span class="va">res.wetland</span> <span class="op">&lt;-</span> <span class="va">results.wetland</span><span class="op">[[</span><span class="st">'2-sided'</span><span class="op">]</span><span class="op">]</span></span>
@@ -1498,7 +1498,7 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 <span class="header-section-number">5.7.5</span> Regions<a class="anchor" aria-label="anchor" href="#regions-2"><i class="fas fa-link"></i></a>
 </h3>
 <p>Alternatively we can calculate and show the region-wise means and standard deviations</p>
-<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">res.wetland2</span> <span class="op">=</span> <span class="fu">st_join</span><span class="op">(</span><span class="va">res.wetland2</span>, <span class="va">regnor</span>, left <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -1522,7 +1522,7 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 <span><span class="fu">tm_shape</span><span class="op">(</span><span class="va">regnor</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tm_polygons</span><span class="op">(</span>col<span class="op">=</span><span class="st">"pH1.reg.mean"</span>, title<span class="op">=</span><span class="st">"pH (lower), mean"</span>, style<span class="op">=</span><span class="st">"quantile"</span>, palette<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="fu">get_brewer_pal</span><span class="op">(</span>palette<span class="op">=</span><span class="st">"OrRd"</span>, n<span class="op">=</span><span class="fl">5</span>, plot<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-22-1.png" width="672"></div>
-<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># sd</span></span>
 <span><span class="fu">tm_shape</span><span class="op">(</span><span class="va">regnor</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1588,7 +1588,7 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-09-08.</p>
+    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-09-11.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

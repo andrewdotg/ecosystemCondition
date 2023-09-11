@@ -57,7 +57,7 @@ fig:unnamed-chunk-67
 fig:unnamed-chunk-72
 fig:unnamed-chunk-76
 fig:unnamed-chunk-78
-fig:unnamed-chunk-6
+fig:unnamed-chunk-5
 fig:unnamed-chunk-9
 fig:unnamed-chunk-12
 fig:unnamed-chunk-17
@@ -73,7 +73,6 @@ fig:unnamed-chunk-77
 fig:unnamed-chunk-82
 fig:unnamed-chunk-26
 fig:test-2
-fig:unnamed-chunk-5
 fig:unnamed-chunk-36
 fig:withMasking
 fig:unnamed-chunk-39
@@ -89,9 +88,9 @@ about-the-underlying-data
 representativity-in-time-and-space
 original-units
 temporal-coverage
-aditional-comments-about-the-dataset
+additional-comments-about-the-dataset
 ecosystem-characteristic
-norwegain-standard
+norwegian-standard
 collinearities-with-other-indicators
 reference-state-and-values
 reference-state
@@ -119,9 +118,9 @@ about-the-underlying-data-1
 representativity-in-time-and-space-1
 original-units-1
 temporal-coverage-1
-aditional-comments-about-the-dataset-1
+aditional-comments-about-the-dataset
 ecosystem-characteristic-1
-norwegain-standard-1
+norwegain-standard
 un-standard
 collinearities-with-other-indicators-1
 reference-condition-and-values
@@ -158,7 +157,7 @@ original-units-2
 temporal-coverage-2
 additional-comments-about-the-data-set
 ecosystem-characteristic-2
-norwegian-standard
+norwegian-standard-1
 seea-ea
 collinearities-with-other-indicators-2
 reference-condition-and-values-1
@@ -183,9 +182,9 @@ about-the-underlying-data-3
 representativity-in-time-and-space-3
 original-units-3
 temporal-coverage-3
-aditional-comments-about-the-dataset-2
+aditional-comments-about-the-dataset-1
 ecosystem-characteristic-3
-norwegian-standard-1
+norwegian-standard-2
 un-standard-1
 collinearities-with-other-indicators-3
 reference-condition-and-values-2
@@ -259,7 +258,7 @@ representativity-in-time-and-space-6
 original-units-4
 temporal-coverage-6
 ecosystem-characteristic-4
-norwegain-standard-2
+norwegain-standard-1
 seea-ea-un-standard
 collinearities-with-other-indicators-6
 reference-condition-and-values-3
@@ -278,9 +277,9 @@ about-the-underlying-data-7
 representativity-in-time-and-space-7
 original-units-5
 temporal-coverage-7
-aditional-comments-about-the-dataset-3
+aditional-comments-about-the-dataset-2
 ecosystem-characteristic-5
-norwegian-standard-2
+norwegian-standard-3
 seea-ect
 collinearities-with-other-indicators-7
 reference-state-and-values-3
@@ -407,7 +406,7 @@ original-units-6
 temporal-coverage-8
 additional-comments-about-the-data-set-1
 ecosystem-characteristic-6
-norwegian-standard-3
+norwegian-standard-4
 seea-ea-1
 collinearities-with-other-indicators-8
 reference-condition-and-values-4
