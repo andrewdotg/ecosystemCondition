@@ -52,7 +52,7 @@ res.wetland <- res.wetland[!is.na(res.wetland$scaled_value) | !is.na(res.wetland
 ggplot(res.wetland[!is.na(res.wetland$scaled_value),], aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin() +
-#  geom_boxplot(width=0.2, color="grey") +
+  #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4) + 
   xlab("Main ecosystem type") + 
@@ -158,7 +158,7 @@ res.wetland2 %>%
   mutate(pH2.reg.mean = mean(pH1,na.rm=T)) %>%
   mutate(Nitrogen1.reg.mean = mean(Nitrogen1,na.rm=T)) %>%
   mutate(Nitrogen2.reg.mean = mean(Nitrogen2,na.rm=T))
-  
+
 
 # rather use beta-regression
 expit <- function(L) exp(L) / (1+exp(L))
@@ -699,5 +699,3 @@ summary( betareg(Moist1 ~ tresjikt_dekning, data=df[!is.na(df$Moist1),]) )
 #points(1:5,predict(lm(Moist1~groeftingsintensitet, data=results.wetland[['scaled']]),
 #                     newdata=data.frame(groeftingsintensitet=1:5) ),
 #       type='l', col='red', lwd=2)
-
-

@@ -260,7 +260,7 @@ I see that the map extends a bit into the fjord. We want to cut away these areas
 ```r
 outline <- st_read("data/outlineOfNorway_EPSG25833.shp")
 #> Reading layer `outlineOfNorway_EPSG25833' from data source 
-#>   `/data/scratch/Matt_bookdown__debug/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
+#>   `/data/scratch/Matt_temp/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 1 feature and 2 fields
 #> Geometry type: MULTIPOLYGON
@@ -280,7 +280,7 @@ infra_trd_reclassed_agg <- st_transform(infra_trd_reclassed_agg, 25833)
 ```r
 infra_trd_reclassed_agg_terrestrial <- st_crop(infra_trd_reclassed_agg, outline)
 #> Warning in st_crop.stars(infra_trd_reclassed_agg, outline):
-#> crop only crops regular grids
+#> crop only crops regular grids: maybe use st_warp() first?
 ```
 
 
@@ -471,10 +471,12 @@ temp$area_km2 <- round(temp$area_km2,0)
 DT::datatable(temp)
 ```
 
+
 ```{=html}
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-9d89054476ace3de6c89" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-9d89054476ace3de6c89">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"],["Midt-Norge","Midt-Norge","Midt-Norge","Midt-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Sørlandet","Sørlandet","Sørlandet","Sørlandet","Vestlandet","Vestlandet","Vestlandet","Vestlandet","Østlandet","Østlandet","Østlandet","Østlandet"],[0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3],[31390,8661,4604,2005,63009,5979,2417,1504,15199,24127,5731,3257,30533,6988,3683,2258,17242,22154,9760,3295]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>region<\/th>\n      <th>infrastructureIndex<\/th>\n      <th>area_km2<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-d72c2c06528a2d5869a1" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-d72c2c06528a2d5869a1">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"],["Midt-Norge","Midt-Norge","Midt-Norge","Midt-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Nord-Norge","Sørlandet","Sørlandet","Sørlandet","Sørlandet","Vestlandet","Vestlandet","Vestlandet","Vestlandet","Østlandet","Østlandet","Østlandet","Østlandet"],[0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3],[31390,8661,4604,2005,63009,5979,2417,1504,15199,24127,5731,3257,30533,6988,3683,2258,17242,22154,9760,3295]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>region<\/th>\n      <th>infrastructureIndex<\/th>\n      <th>area_km2<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 ```
+
 
 
 ## Export

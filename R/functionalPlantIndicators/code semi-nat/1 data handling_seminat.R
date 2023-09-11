@@ -11,11 +11,11 @@ library(tmaptools)
 
 #### download ANO data from kartkatalogen to P-drive ####
 # url <- "https://nedlasting.miljodirektoratet.no/naturovervaking/naturovervaking_eksport.gdb.zip"
-#download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", mode="w") 
-#unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", 
-#       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
+download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", mode="w") 
+unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb.zip", 
+       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
 
-#st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
+st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/naturovervaking_eksport.gdb2")
 
 # SOMETHING NOT WORKING YET
 
@@ -23,7 +23,7 @@ library(tmaptools)
 
 #### upload data from P-drive ####
 ## ANO
-#st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
+st_layers(dsn = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb")
 ANO.sp <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
                    layer="ANO_Art")
 ANO.geo <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb",
@@ -31,11 +31,9 @@ ANO.geo <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/Naturovervakin
 head(ANO.sp)
 head(ANO.geo)
 
-saveRDS(ANO.sp, "data/cache/ANO.sp.RDS")
-saveRDS(ANO.geo, "data/cache/ANO.geo.RDS")
 
 ## ASO data from 2022
-#excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx")
+excel_sheets("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx")
 
 ASO.sp <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-naturlig_eng_S123_2022.xlsx", 
                      sheet = "transektregistreringer_4")
@@ -44,8 +42,6 @@ ASO.geo <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/ASO/Semi-na
 head(ASO.sp)
 head(ASO.geo)
 
-saveRDS(ASO.sp, "data/cache/ASO.sp.RDS")
-saveRDS(ASO.geo, "data/cache/ASO.geo.RDS")
 
 ## Tyler indicator data
 #ind.Tyler <- read.table("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators/Tyler et al_Swedish plant indicators.txt",
@@ -57,14 +53,9 @@ ind.Tyler <- read_excel("P:/41201785_okologisk_tilstand_2022_2023/data/functiona
 ind.Tyler <- as.data.frame(ind.Tyler)
 head(ind.Tyler)
 
-saveRDS(ind.Tyler, "data/cache/ind.Tyler.RDS")
-
 ## generalized species lists NiN
 load("P:/41201785_okologisk_tilstand_2022_2023/data/functional plant indicators//reference from NiN/Eco_State.RData")
 str(Eco_State)
-
-saveRDS(Eco_State, "data/cache/Eco_State.RDS")
-
 
 #### data handling - functional indicator data ####
 names(ind.Tyler)[1] <- 'species'
@@ -342,7 +333,7 @@ ASO.geo <- st_as_sf(x = ASO.geo,
                         crs = "+proj=longlat +datum=WGS84 +ellps=WGS84")
 
 colnames(ASO.geo)
-colnames(ASO.geo)[c(6,7,8,10, 14,16,18,23,24)] <- c("Omradenummer_flatenummer","Eng_ID","ASO_ID","NiN_grunntype",
+colnames(ASO.geo)[c(6,7,8,10,14,16,18,23,24)] <- c("Omradenummer_flatenummer","Eng_ID","ASO_ID","NiN_grunntype",
                                                    "bruksintensitet",
                                                    "beitetrykk",
                                                    "slatteintensitet",
@@ -549,7 +540,6 @@ NiN.sp$sp <- word(NiN.sp$sp, 1,2)
 NiN.sp$spgr <- as.factor(as.vector(Eco_State$Concept_Data$Species$Species_List$art.code))
 levels(NiN.sp$spgr)
 # trimming to desired species groups (for åpen systems eg. removing trees ("a1a") )
-# here we remove trees as they represent a driver for vegetation change in the field layer
 NiN.sp <- NiN.sp[NiN.sp$spgr!="a1a",]
 
 # environment data
@@ -678,7 +668,7 @@ unique(NiN.sp.ind[is.na(NiN.sp.ind$Light) & is.na(NiN.sp.ind$Nitrogen) &
 #### matching with NiN ecosystem types - semi-natural types ####
 # NB! beware of rogue spaces in the 'Nature_type' & 'Sub_Type' variables, e.g. "Spring_Forest "
 levels(NiN.env$Nature_Type)
-NiN.seminat <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type %in% list("Semi_Natural ","Coastal_Heath"),"ID"]),colnames(ind.dat)[c(15:19,21,22)])]   # Light, Moisture, Soil_reaction_pH, Nitrogen, Phosphorus, Grazing_mowing, Soil_disturbance
+NiN.seminat <- NiN.sp.ind[,c("sp",paste(NiN.env[NiN.env$Nature_Type %in% list("Semi_Natural ","Coastal_Heath"),"ID"]),colnames(ind.dat)[c(15:19,21,22)])]   # Light, Moisture, Soil_reaction_pH, Nitrogen, Grazing_mowing, Soil_disturbance
 
 NiN.seminat[1,]
 names(NiN.seminat)
@@ -762,6 +752,6 @@ summary(NiN.seminat.cov)
 
 
 
-#save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")
+save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")
 
-#load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")
+load("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/data_seminat.RData")

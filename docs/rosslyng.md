@@ -5,12 +5,10 @@
 <br />
 
 _Author and date:_
+
 Anders L. Kolstad
 
-
-```
-#> [1] "2023-05-05"
-```
+March 2023
 
 <br />
 
@@ -22,9 +20,12 @@ Anders L. Kolstad
 
 
 
+
 |Ecosystem          |Økologisk.egenskap |ECT.class                      |
 |:------------------|:------------------|:------------------------------|
 |Semi-naturlig mark |Primærproduksjon   |Structual state characteristic |
+
+
 
 <!-- Don't remove these three html lines -->
 <br />
@@ -148,8 +149,8 @@ barplot(table(ano$hovedoekosystem_punkt), las=2)
 ```
 
 <div class="figure">
-<img src="rosslyng_files/figure-html/unnamed-chunk-6-1.png" alt="The distribution of ANO points that fall within different main ecosystems." width="672" />
-<p class="caption">(\#fig:unnamed-chunk-6)The distribution of ANO points that fall within different main ecosystems.</p>
+<img src="rosslyng_files/figure-html/unnamed-chunk-5-1.png" alt="The distribution of ANO points that fall within different main ecosystems." width="672" />
+<p class="caption">(\#fig:unnamed-chunk-5)The distribution of ANO points that fall within different main ecosystems.</p>
 </div>
 
 Sub-setting the data to only consider seni natural areas.

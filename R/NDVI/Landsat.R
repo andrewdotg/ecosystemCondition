@@ -6,7 +6,9 @@
 #To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
 
 library(data.table)
-library(tidyverse)
+library(stringr, lib.loc = "/usr/lib/R/site-library")
+library(tidyverse, lib.loc = "/usr/local/lib/R/site-library")
+#library(tidyverse)
 library(sf)
 
 # Set up conditional file paths

@@ -1,4 +1,4 @@
-library(downloader)
+ibrary(downloader)
 library(sf)
 library(tidyr)
 library(plyr)
@@ -44,19 +44,19 @@ res.seminat.ANO <-
 # add original values as well
 res.seminat.ANO <- 
   res.seminat.ANO %>% add_column(original = results.seminat.ANO[['original']] %>% 
-                               pivot_longer(
-                                 cols = c("Light1","Light2",
-                                          "Moist1","Moist2",
-                                          "pH1","pH2",
-                                          "Nitrogen1","Nitrogen2",
-                                          "Phosphorus1","Phosphorus2",
-                                          "Grazing_mowing1","Grazing_mowing2",
-                                          "Soil_disturbance1","Soil_disturbance2"),
-                                 names_to = NULL,
-                                 values_to = "original",
-                                 values_drop_na = FALSE
-                               ) %>%
-                               pull(original)
+                                   pivot_longer(
+                                     cols = c("Light1","Light2",
+                                              "Moist1","Moist2",
+                                              "pH1","pH2",
+                                              "Nitrogen1","Nitrogen2",
+                                              "Phosphorus1","Phosphorus2",
+                                              "Grazing_mowing1","Grazing_mowing2",
+                                              "Soil_disturbance1","Soil_disturbance2"),
+                                     names_to = NULL,
+                                     values_to = "original",
+                                     values_drop_na = FALSE
+                                   ) %>%
+                                   pull(original)
   )
 
 head(res.seminat.ANO[,70:76])
@@ -108,7 +108,7 @@ head(res.seminat.ASO[,70:76])
 ggplot(res.seminat.ANO, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin(color=NA) +
-#  geom_boxplot(width=0.2, color="grey") +
+  #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=1, shape=16, color="black") +
   facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Phosphorus1","Grazing_mowing1","Soil_disturbance1",
                                      "Light2","Moist2","pH2","Nitrogen2","Phosphorus2","Grazing_mowing2","Soil_disturbance2")), ncol = 7) + 
@@ -313,7 +313,7 @@ res.seminat.ANO2 %>%
   mutate(Grazing_mowing2.reg.mean = mean(Grazing_mowing2,na.rm=T)) %>%
   mutate(Soil_disturbance1.reg.mean = mean(Soil_disturbance1,na.rm=T)) %>%
   mutate(Soil_disturbance2.reg.mean = mean(Soil_disturbance2,na.rm=T))
-  
+
 # and for ASO
 res.seminat.ASO2 %>% 
   group_by(as.factor(region)) %>% 
@@ -397,22 +397,22 @@ indmean.beta(df=res.seminat.ASO2[res.seminat.ASO2$region=="Northern Norway",c("G
 regnor <- regnor %>%
   mutate(
     Grazing_mowing1.ANO.reg.mean = c(indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
+                                     indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                     indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                     indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[1],
+                                     indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[1]
     ),
     Grazing_mowing1.ANO.reg.se = c(indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
-                               indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
+                                   indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                                   indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                                   indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway",c("Grazing_mowing1","ano_flate_id")])[2],
+                                   indmean.beta(df=res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway",c("Grazing_mowing1","ano_flate_id")])[2]
     ),
     Grazing_mowing1.ANO.reg.n = c(nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Northern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
-                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
-                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
-                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
-                              nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),])
+                                  nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Central Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                                  nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Eastern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                                  nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Western Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),]),
+                                  nrow(res.seminat.ANO2[res.seminat.ANO2$region=="Southern Norway" & !is.na(res.seminat.ANO2$Grazing_mowing1),])
     )
   )
 

@@ -64,8 +64,6 @@ setwd("C:/Users/joachim.topper/OneDrive - NINA/work/R projects/github/ecosystemC
 #### storing reference lists ####
 #rm(list= ls()[!(ls() %in% c('seminat.ref.cov.backup','seminat.ref.cov', 'ANO.sp.ind', 'ANO.geo', 'ASO.sp.ind', 'ASO.geo', 'NiN.seminat.cov','ind.dat'))])
 settings <- "iter=1000,obl=1,rat=1/3,var.abun=T"
-
-saveRDS(seminat.ref.cov, "data/cache/seminat.ref.cov.RDS")
 rm(list= ls()[!(ls() %in% c('seminat.ref.cov', 'seminat.ref.cov.backup','settings'))])
 save.image("P:/41201785_okologisk_tilstand_2022_2023/data/FPI_output large files for markdown/ref_lists_seminat.RData")
 
