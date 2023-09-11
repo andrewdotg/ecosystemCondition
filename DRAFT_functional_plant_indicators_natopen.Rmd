@@ -144,14 +144,14 @@ Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indic
 ## Analyses
 ### Data sets
 
-ANO data: ANO.sp contains the species data, ANO.geo contains site data
+ANO data: ANO.sp contains the species data, ANO.geo contains site data.
 ```{r, echo = F}
 # Add data from cache
 ANO.sp<-readRDS(paste0(here::here(),"/data/cache/ANO.sp.RDS"))
 ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
 ```
 
-GRUK data: GRUK.species contains the species data, GRUK.variable contains site data, GRUK2021.condition contains a field-based condition assessment from the 2021 season
+GRUK data: GRUK.species contains the species data, GRUK.variable contains site data, GRUK2021.condition contains a field-based condition assessment from the 2021 season.
 ```{r, echo = F}
 # Add data from cache
 GRUK.variables<-readRDS(paste0(here::here(),"/data/cache/GRUK.variables.RDS"))
@@ -159,14 +159,14 @@ GRUK.species<-readRDS(paste0(here::here(),"/data/cache/GRUK.species.RDS"))
 GRUK2021.condition<-readRDS(paste0(here::here(),"/data/cache/GRUK2021.condition.RDS"))
 ```
 
-Plant indicators from Tyler et al. (2021) and Grime (1974)
+Plant indicators from Tyler et al. (2021) and Grime (1974) are saved as ind.Tyler and ind.Grime.
 ```{r, echo = F}
 ## data from cache
 ind.Tyler<-readRDS(paste0(here::here(),"/data/cache/ind.Tyler.RDS"))
 ind.Grime<-readRDS(paste0(here::here(),"/data/cache/ind.Grime.RDS"))
 ```
 
-Generalized species lists (reference communities): natopen_NiN_ref contains the reference species lists, natopen_NiN_ref_spInfo contains additional taxonomic information for each species
+Generalized species lists (reference communities): natopen_NiN_ref contains the reference species lists, natopen_NiN_ref_spInfo contains additional taxonomic information for each species.
 ```{r, echo = F}
 # data from cache
 natopen_NiN_ref<-readRDS(paste0(here::here(),"/data/cache/natopen_NiN_ref.RDS"))
