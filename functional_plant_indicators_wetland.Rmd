@@ -1148,7 +1148,7 @@ pivot_longer(
 cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
 names_to = "fp_ind",
 values_to = "scaled_value",
-values_drop_na = TRUE
+values_drop_na = FALSE
 )
 
 # add original values as well
