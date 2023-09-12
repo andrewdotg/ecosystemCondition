@@ -547,7 +547,7 @@ Plotting functions for a series of indicator values is shown below in the indica
 
 
 ### Data sets
-There are a few different ways to access the data required for these indicators. Both the NMBB and the NorIns project stores its data in an internal database at NINA. They both also export most of their data to GBIF, but those exports need to be restructured before they can be processed in the following scripts.
+There are a few different ways to access the data required for these indicators. Both the NMBB and the NorIns project store their data in an internal database at NINA. They both also export most of their data to GBIF, but those exports need to be restructured before they can be processed in the following scripts.
 
 
 #### NorIns data
@@ -577,7 +577,7 @@ tm_shape(norway_reg_NorIns) +
   tm_polygons(col = "region") 
 ```
 
-The indicators from the NMBB program is similary connected to regions, with the exception that the south-east region only covers the old fylke's of Vestfold and Østfold, and that Nord-Norge isn't covered yet.
+The indicators from the NMBB program are similary connected to regions, with the exception that the south-east region only covers the old counties of Vestfold and Østfold, and that Nord-Norge isn't covered yet.
 
 
 ```{r}
@@ -614,7 +614,7 @@ biomass_sn_boot <- bootstrap_value(df = biomass_sn,
                                    )
 ```
 
-Compare values to a reference state. The reference state is here set uniformly for all regions, with a made up value just to be able to continue the calculations. Alternatively, we could calculate the indicator values for each region separately, compare to individual reference states, and then put it all together again.
+Compare values to a reference state. The reference state is here set uniformly for all regions, with a made-up value just to be able to continue the calculations. Alternatively, we could calculate the indicator values for each region separately, compare to individual reference states, and then put it all together again.
 
 We here use a single value as a reference state and normalize the values at the same time, using the `/` function.
 
@@ -865,7 +865,7 @@ parasitica_sn <- get_observations(subset_year = 2020:2022,
 parasitica_sn
 ```
 
-Divide the richness of parasitica by symphyta. [Could make a function for this later on.]
+Divide the richness of Parasitica by Symphyta. [Could make a function for this later on.]
 
 ```{r}
 par_sym <- symphyta_sn %>% 
@@ -880,7 +880,7 @@ par_sym <- symphyta_sn %>%
 
 ```
 
-Bootstrap the fraction of parasitica to symphyta.
+Bootstrap the fraction of Parasitica to Symphyta.
 
 ```{r}
 par_sym_sn_boot <- bootstrap_value(par_sym,
@@ -1086,7 +1086,7 @@ sInd2022VestGress <- calcInd(type = "Sommerfugl",
 ```
 
 
-The calculations for earlier years is already present as datasets in the R-package and can be fetched individually. Once this is done, we can plot the timeseries of values using the function `indPlot`.
+The calculations for earlier years are already present as datasets in the R-package and can be fetched individually. Once this is done, we can plot the timeseries of values using the function `indPlot`.
 
 
 
