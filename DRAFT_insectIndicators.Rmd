@@ -438,35 +438,35 @@ map_plot(palette = "orange-green",
 This concludes the tour of the `Norimon` functionality.
 
 ### Calculation principles for NBBM indicators
-These indicators were developed for the Nature Index of Norway, back in 2010 by Ola Diserud and Sandra Öberg (Öberg et. al 2011), and is calculated routinely on a yearly basis (see Åström et. al 2022 for the latest report). 
+These indicators were developed for the Nature Index of Norway, back in 2010 by Ola Diserud and Sandra Öberg (Öberg et. al 2011), and are calculated routinely on a yearly basis (see Åström et. al 2022 for the latest report). 
 
 These indicators summarize the state of a bumblebee or butterfly community by estimating the difference from a reference community. Formally, the community indicator (CI) is expressed as the relative change of the community from a state of reference (SR), were the change is calculated by a state of change (SC). 
 
 
 $$CI = \frac{SR-SC}{SR}$$
-The state of reference (SR) represents a community of species that can be expected to be observed in a given habitat type and region. It is calculated by assigning each species to class of expected commonality; common (C), sporadic (S) and rare (R) species. This classification is done by expert opinion, informed by known present and past species distributions. Note that this state of reference only contain a subset of highlighted species, making up a historical reference community. Potential observations of "new" species therefore doesn't inform the indicator value at all. Common species is expected to be observed in at least 5 % of the surveyed transects in a habitat type and region. Sporadic species similarly is defined as having a presence below 5 % but above 1 %. Rare species is seen in no more than 1 % of the transects, and lastly, species not seen in any transect is assumed as lost (L) for the purpose of this calculation. 
+The state of reference (SR) represents a community of species that can be expected to be observed in a given habitat type and region. It is calculated by assigning each species to class of expected commonality: common (C), sporadic (S) and rare (R) species. This classification is done by expert opinion, informed by known present and past species distributions. Note that this state of reference only contains a subset of highlighted species, making up a historical reference community. Potential observations of "new" species therefore don't inform the indicator value at all. Common species are expected to be observed in at least 5 % of the surveyed transects in a habitat type and region. Sporadic species similarly are defined as having a presence below 5 % but above 1 %. Rare species are seen in no more than 1 % of the transects, and lastly, species not seen in any transect are assumed as lost (L) for the purpose of this calculation. 
   
-Each commonality class gets it's own weight, so that common species inform the reference state more than sporadic species, followed by rare species. The state of reference (SR) is thus a value, where each species adds to the state according to its commonality. Formally, it is defined as:
+Each commonality class gets its own weight, so that common species inform the reference state more than sporadic species, followed by rare species. The state of reference (SR) is thus a value where each species adds to the state according to its commonality. Formally, it is defined as:
 
 $$SR = n_C * w_{C, SR} + n_S * w_{S, SR} + n_R * w_{R, SR} = \sum_{i = (C, S, R)} n_i * w_{i, SR}, $$
-where $n_i$ is the number of species in a commonality class (C, S, R), and the weights $[w_{C, SR}, w_{S, SR}, w_{R, SR}]$ specifies their respective contribution to the reference state (SR). The weights used is $[w_{C, SR}, w_{S, SR}, w_{R, SR}] = [1.0, 0.75, 0.50]$, i.e. a sporadic species has 75 % the weight of a common species, and a rare species has 50 % the weight of a common species. 
+where $n_i$ is the number of species in a commonality class (C, S, R), and the weights $[w_{C, SR}, w_{S, SR}, w_{R, SR}]$ specify their respective contribution to the reference state (SR). The weights used are $[w_{C, SR}, w_{S, SR}, w_{R, SR}] = [1.0, 0.75, 0.50]$, i.e. a sporadic species has 75 % the weight of a common species, and a rare species has 50 % the weight of a common species. 
 
 
 The state of change (SC) is calculated as
  $$SC = n_{CS} * w_{CS} + n_{CR} * w_{CR} + n_{CL} * w_{CL} + n_{SR} * w_{SR} + n_{SL} * w_{SL} + n_{RL} * w_{RL}, $$ 
-where $n_{CS}$ is the number of expected common species (C) that is observed sporadically (S), and $w_{CS}$ is the weight of this change. Similarly, $n_{CR}$ is the number of expected species that is observed rarely, $n_{RL}$ is the number of rare species that is lost, and so on. Potential increases in observation rates does not inform the indicator. Changes for common species is weighted more heavily than changes for less common species, and larger decreases is weighted more heavily than smaller decreases, such that $[w_{CS}, w_{CR}, w_{CL}, w_{SR}, w_{SL}, w_{RL}]= [0.50, 0.75, 1.00, 0.50, 0.75, 0.50]$.
+where $n_{CS}$ is the number of expected common species (C) that is observed sporadically (S), and $w_{CS}$ is the weight of this change. Similarly, $n_{CR}$ is the number of expected species that is observed rarely, $n_{RL}$ is the number of rare species that is lost, and so on. Potential increases in observation rates do not inform the indicator. Changes for common species are weighted more heavily than changes for less common species, and larger decreases are weighted more heavily than smaller decreases, such that $[w_{CS}, w_{CR}, w_{CL}, w_{SR}, w_{SL}, w_{RL}]= [0.50, 0.75, 1.00, 0.50, 0.75, 0.50]$.
 
 The indicator values are estimated with uncertainty, by bootstrapping the set of localities within a region, and calculating the indicator for each of 9999 such samples.
 
 #### Calculation example
-These calculations with bootstrap sampling is implemented in the R-package `bombLepiSurv` (Bombus and Lepidoptera Survey) [link](https://github.com/jenast/bombLepiSurv). We briefly show this functionality with bumblebees in semi-natural lands as an example.
+These calculations with bootstrap sampling are implemented in the R-package `bombLepiSurv` ([Bombus and Lepidoptera Survey](https://github.com/jenast/bombLepiSurv)). We briefly show this functionality with bumblebees in semi-natural lands as an example.
 
 We connect to the internal database with a convenience function.
 ```{r}
 bombLepiSurv::humlesommerfConnect()
 ```
 
-We can fetch the all observations of bumblebees in semi-natural land with the `getAllData` function. Species names is here shown in Norwegian.
+We can fetch all observations of bumblebees in semi-natural land with the `getAllData` function. Species names are here shown in Norwegian.
 
 ```{r, fig.cap = "Bumblebees in grasslands 2021"}
 allBombusGrassland2022 <- getAllData(type = "bumblebees",
@@ -476,7 +476,7 @@ allBombusGrassland2022 <- getAllData(type = "bumblebees",
 
 ```
 
-A summary of the records is most easily plotted by `surveyBarPlot`
+A summary of the records is most easily plotted by `surveyBarPlot`:
 
 ```{r}
 surveyBarplot(allBombusGrassland2022)
@@ -500,7 +500,7 @@ exp_bombus_trond <- getExpValues(type = "Humler",
                                  habitat = "Gressmark")
 ```
 
-Species in green bars are species that are expected to be common, who need to reach the green areas in the plot not to decrease the indicator value (from 1). Similarly with the blue (sporadic species), and red (rare species). We see in this case that Bombus soroeensis is an expected to be a sporadic species, but that it were only observed rarely. 
+Species in green bars are species that are expected to be common, who need to reach the green areas in the plot not to decrease the indicator value (from 1). Similarly with the blue (sporadic species), and red (rare species). We see in this case that _Bombus soroeensis_ is expected to be a sporadic species, but that it was only observed rarely. 
 
 
 ```{r}
@@ -508,7 +508,7 @@ plotArt(bombus_trond_2022,
         exp_bombus_trond)
 ```
 
-The actual calculation and bootstrapping of the indicator is done in the function `calcInd`. This function calls the `getComplData` and `getExpectedValues` functions internally. It also requires the weights for the commonality classes in the reference community (SR), and the weights for the changes in state (CS). This is fetched internally via the functions `getAmountWeights` and `getDiffWeights`, respectively. Here the classes is coded in norwegian (v = common, m = sporadic, s = rare).
+The actual calculation and bootstrapping of the indicator is done in the function `calcInd`. This function calls the `getComplData` and `getExpectedValues` functions internally. It also requires the weights for the commonality classes in the reference community (SR), and the weights for the changes in state (CS). This is fetched internally via the functions `getAmountWeights` and `getDiffWeights`, respectively. Here the classes are coded in Norwegian (v = common, m = sporadic, s = rare).
 
 ```{r}
 getDiffWeights()
@@ -517,7 +517,7 @@ getDiffWeights()
 ```{r}
 getAmountWeights()
 ```
-Lastly, we specify the number of samples for the bootstrap. To speed up, only 999 samples is shown here.
+Lastly, we specify the number of samples for the bootstrap. To speed up, only 999 samples are used here.
 
 
 ```{r}
