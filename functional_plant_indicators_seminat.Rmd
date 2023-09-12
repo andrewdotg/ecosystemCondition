@@ -1900,7 +1900,9 @@ res.seminat.ASO <-
 ### Ecosystem sub-types
 And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
 ```{r,echo=FALSE,message=FALSE, warning=FALSE}
-
+res.seminat.ASO$NiN_grunntype2 <- as.factor(substring(res.seminat.ASO$NiN_grunntype,5))
+res.seminat.ASO$NiN_grunntype2 <- factor(res.seminat.ASO$NiN_grunntype2, levels=c("C-1","C-2","C-3","C-4","C-5","C-6",
+                                                                                  "C-7","C-8","C-9","C-10","C-13","C-20"))
 # making the plot, ANO Light, Moist & pH
 ggplot(data=subset(res.seminat.ANO,!is.na(scaled_value) & fp_ind %in% c("Light1","Moist1","pH1",
                                                                         "Light2","Moist2","pH2"))

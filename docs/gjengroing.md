@@ -1,3 +1,5 @@
+# (PART\*) INDICATORS{-}
+
 # Vegetation regrowth/encroachment (gjengroing) {#gjengroing}
 
 <br />

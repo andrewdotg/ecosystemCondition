@@ -57,7 +57,7 @@ The data spans 1907 to 2015, with data points roughly every 10 years. The whole 
 
 ### Original units
 
-The biomass of the trophic levels is as kg km^-2. 
+The biomass of the trophic levels is as kg km^-2^. 
 
 ### Temporal coverage
 
