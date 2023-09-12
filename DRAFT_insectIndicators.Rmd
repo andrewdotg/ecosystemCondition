@@ -271,7 +271,7 @@ Taken together, this framework is meant to facilitate the calculation of an arbi
 
 In the example, we start with connecting to the database in order to fetch the data.
 
-```{r}
+```{r, eval=FALSE}
 connect_to_insect_db()
 ```
 
@@ -294,13 +294,15 @@ We then fetch the community data for these families through the `get_observation
 
 Note that the output currently contains some experimental values, awaiting a more robust methodology. "Shannon diversity" doesn't really make sense without counts or amounts, etc. This will be replaced by measurements of genetic diversity that are based on published peer-reviewed methodology (Connor et al. 2023), in the (hopefully near) future.
 
-```{r}
+```{r, eval=FALSE}
 
 poll_loc_year <- get_observations(subset_families = pollinators_fam,
                                   subset_habitat = "Semi-nat")
 
 ```
+
 ```{r, echo = FALSE}
+poll_loc_year <- readRDS("data/cache/poll_loc_year.RDS")
 poll_loc_year %>% 
   slice(1:5) %>% 
 kableExtra::kbl()
@@ -313,10 +315,18 @@ We typically have 10 localities for a given habitat type and region each year, w
 
 When **NorIns** is fully scaled up, it will have 50 localities for each covered habitat type in every country region, with 10 localities every year, in a rotating survey scheme over 5 years. Since the program is rolled out sequentially starting in 2020, for semi-natural land it currently covers 4/5 of the country, with varying amounts of localities within each region. The map below displays the localities surveyed so far. 
 
-```{r}
+```{r, eval=FALSE}
 semi_loc <- get_localities(dataset = "NasIns",
                            habitat_type = "Semi-nat")
 
+```
+
+```{r, echo=FALSE}
+semi_loc<-readRDS("data/cache/semi_loc.RDS")
+```
+
+
+```{r}
 norway_regions <- get_map()
 ```
 
@@ -379,6 +389,7 @@ Alternatively, we could use a reference point in the time series itself. Say for
 diff_poll_richness_boot2 <- poll_richness_boot %>%
   boot_contrast(year == 2020 & region_name == 'Østlandet')
 ```
+
 ```{r}
 diff_poll_richness_boot2
 ```
@@ -462,19 +473,24 @@ The indicator values are estimated with uncertainty, by bootstrapping the set of
 These calculations with bootstrap sampling is implemented in the R-package `bombLepiSurv` (Bombus and Lepidoptera Survey) [link](https://github.com/jenast/bombLepiSurv). We briefly show this functionality with bumblebees in semi-natural lands as an example.
 
 We connect to the internal database with a convenience function.
-```{r}
+```{r, eval=FALSE}
 bombLepiSurv::humlesommerfConnect()
 ```
 
 We can fetch the all observations of bumblebees in semi-natural land with the `getAllData` function. Species names is here shown in Norwegian.
 
-```{r, fig.cap = "Bumblebees in grasslands 2021"}
+```{r,eval=FALSE, fig.cap = "Bumblebees in grasslands 2021"}
 allBombusGrassland2022 <- getAllData(type = "bumblebees",
                                      habitat = "gressmark",
                                      year = 2022,
                                      language = "norsk")
 
 ```
+
+```{r, echo=FALSE}
+allBombusGrassland2022<-readRDS("data/cache/allBombusGrassland2022.RDS")
+```
+
 
 A summary of the records is most easily plotted by `surveyBarPlot`
 
@@ -484,20 +500,28 @@ surveyBarplot(allBombusGrassland2022)
 
 Note that for calculating the indicator values, we only consider the transects that were surveyed for the standard 3 times per year, to cover the phenology of the entire season without bias. Data of these complete survey rounds can be fetched from the database by the function `getComplData`, which fetches data from one habitat type and region at a time. 
 
-```{r}
+```{r, eval=FALSE}
 bombus_trond_2022 <- getComplData(type = "Humler",
                                   region_short = "Trond",
                                   habitat = "Gressmark",
                                   year = 2022)
 ```
 
+```{r, echo=FALSE}
+bombus_trond_2022<-readRDS("data/cache/bombus_trond_2022.RDS")
+```
+
 The observed relative to the expected occurrences can be visualized through the `plotArt` function. This requires a reference community, which can be fetched through the `getExpValues` function.
 
 
-```{r}
+```{r, eval=FALSE}
 exp_bombus_trond <- getExpValues(type = "Humler",
                                  region_short = "Trond",
                                  habitat = "Gressmark")
+```
+
+```{r}
+exp_bombus_trond<-readRDS("data/cache/exp_bombus_trond.RDS")
 ```
 
 Species in green bars are species that are expected to be common, who need to reach the green areas in the plot not to decrease the indicator value (from 1). Similarly with the blue (sporadic species), and red (rare species). We see in this case that Bombus soroeensis is an expected to be a sporadic species, but that it were only observed rarely. 
@@ -514,6 +538,7 @@ The actual calculation and bootstrapping of the indicator is done in the functio
 getDiffWeights()
 
 ```
+
 ```{r}
 getAmountWeights()
 ```
