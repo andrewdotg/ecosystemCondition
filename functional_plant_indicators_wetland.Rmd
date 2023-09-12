@@ -1134,8 +1134,7 @@ head(results.wetland[['2-sided']])
 ```
 #### Scaled value analyses
 
-### Simple summary statistics
-We can calculate simple summary statistics like means, standard deviations, and number of observations (note that there is both a lower and an upper indicator for each of the four plant functional indicators)
+In order to visualize the results we need to rearrange the results-objects from wide to long format (note that there is both a lower and an upper condition indicator for each of the functional plant indicators).
 
 ```{r, message = FALSE}
 #### plotting scaled values by main ecosystem type ####
@@ -1144,18 +1143,25 @@ res.wetland <- results.wetland[['2-sided']]
 
 # make long version of the scaled value part
 res.wetland <-
-  res.wetland %>% 
-  pivot_longer(
-    cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
-    names_to = "fp_ind",
-    values_to = "scaled_value",
-    values_drop_na = TRUE
-  )
-
-# summarizing the indicator scores
 res.wetland %>%
-  group_by(fp_ind) %>%
-  dplyr::summarize(Mean = mean(scaled_value, na.rm=TRUE), SD = sd(scaled_value, na.rm=TRUE), N = length(scaled_value))
+pivot_longer(
+cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
+names_to = "fp_ind",
+values_to = "scaled_value",
+values_drop_na = TRUE
+)
+
+# add original values as well
+res.wetland <-
+res.wetland %>% add_column(original = results.wetland[['original']] %>%
+pivot_longer(
+cols = c("Light1","Light2","Moist1","Moist2","pH1","pH2","Nitrogen1","Nitrogen2"),
+names_to = NULL,
+values_to = "original",
+values_drop_na = FALSE
+) %>%
+pull(original)
+)
 
 ```
 
