@@ -386,6 +386,7 @@ SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
                 day = lubridate::day(date))
 # add column for sub-ecosystem types
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
+                                                        subtype = str_remove(subtype, '-'),
                                                         subtype = str_remove(subtype, '-'))
 # we are using max NDVI per year in every NiN polygon
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
@@ -466,9 +467,9 @@ LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
 ```{r}
 ## how are polygon sizes distributed?
 summary(SentinelNDVI.wetland$area_meters)
-
 hist(SentinelNDVI.wetland$area_meters,xlim=c(0,20000),breaks=50000)
 abline(v=100,lty=2)
+# wetland polygons stretch a large number of sizes from just above 100 sqm to mor ethan 4 million sqm. 75% of all polygons are below 14264 sqm.
 
 ## how does NDVI vary over the years (all years)
 SentinelNDVI.wetland %>%
@@ -477,18 +478,16 @@ SentinelNDVI.wetland %>%
   facet_grid( tilstand~hovedtype)
 # 2022 stands out with the highest NDVI values missing
 # the pattern is strange, suggest to omit 2022 for this analysis
-
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != '2022')
 
-## NDVI across hovedtyper (only for NDVI years data matching NiN-mapping years)
+## looking at major types for polygons in good condition only (and only for NDVI data matching NiN-mapping)
 SentinelNDVI.wetland %>%
+  filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
-  ggplot( aes(x=tilstand, y=mean )) + 
+  ggplot(aes(x=hovedtype, y=mean )) + 
   geom_violin() +
-  facet_wrap( ~hovedtype)
-# NDVI largely varies between hovedtyper: higher in seminat wet-meadows (V10), lowest in ombrotrophic bogs (V3)
-# @Tilstand: in seminat types, kaldkilde, and bogs ndvi seems to increase as condition deteriorates, in fens not much of a pattern
-
+  geom_point(size=0.7, shape=16, color="grey")
+# NDVI varies between hovedtyper: highest in seminat wet-meadows (V10), lowest in ombrotrophic bogs (V3)
 
 ## looking at subtypes for polygons in good condition only (and only for NDVI data matching NiN-mapping)
 SentinelNDVI.wetland %>%
@@ -496,21 +495,30 @@ SentinelNDVI.wetland %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x=subtype, y=mean )) + 
   geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap( ~hovedtype)
-# NDVI varies between ecosystem subtypes
-# -at least equally much as between main ecosystem types
-# -stronger than between condition classes in previous plots
+# NDVI varies between ecosystem subtypes in V1. For the other types things seem more constant, but there's also less data and less minor ecosystem types present in the data. 
 
-
-## looking at ndvi in different condition classes, separately for main types and regions  (only for NDVI data matching NiN-mapping)
+## NDVI across regions for polygons in good condition only (for major types and NDVI years data matching NiN-mapping years)
 SentinelNDVI.wetland %>%
-  group_by(id, year) %>%
+  filter(tilstand == 'God') %>%
+  filter(year == kartleggingsaar) %>%
+  filter(!is.na(region)) %>%
+  ggplot(aes(x=region, y=mean )) + 
+  geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap( ~hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
+# no obvious trends in geography
 
+## NDVI across condition classes (for major types and NDVI years data matching NiN-mapping years)
+SentinelNDVI.wetland %>%
   filter(year == kartleggingsaar) %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
-  facet_grid( region~hovedtype)
-# V4 has lacking data for quite some condition classes in most regions
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap( ~hovedtype)
+# in seminat types (V9,V10), kaldkilde (V4), and bogs (V3) ndvi seems to increase as condition deteriorates, in fens (V1) not much of a pattern
 
 ```
 
@@ -651,7 +659,8 @@ V3: NDVI does not change as condition deteriorates (but also insuffcient data)
 
 Overall take home messages:
 
-???
+In semi-natural wetland ecosystems (V9, V10) NDVI increases as ecosystem condition deteriorates, and this is consistent for the entire country.
+In natural fens (V1) NDVI increases in the South but decreases in the North as ecosystem condition deteriorates. In bogs (V3) there is no consistent pattern.
 
 ### Regression analyses, NDVI across time
 First, there's again some data handling to do. We merge the Sentinel, Modis, and Landsat data to show the full picture across time. Then we model the time series for each Satellite separately.
@@ -726,7 +735,7 @@ SentinelNDVI.wetland[,!names(SentinelNDVI.wetland) %in% "subtype"],
 ModisNDVI.wetland,
 LandsatNDVI.wetland[,!names(LandsatNDVI.wetland) %in% "column_label"]
 )
-# add variable for Satellite indentity
+# add variable for Satellite identity
 allSatNDVI.wetland$Sat <- c(
   rep("Sentinel",nrow(SentinelNDVI.wetland)),
   rep("Modis",nrow(ModisNDVI.wetland)),
