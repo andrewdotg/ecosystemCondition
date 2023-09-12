@@ -1,6 +1,4 @@
-# (PART\*) INDICATORS{-}
-
-# Slitasje og kjørespor
+# Slitasje og kjørespor {#slitasje}
 
 *Author and date:* 
 
