@@ -1,4 +1,4 @@
-# Functional plant indicators, wetland ecosystems (Moisture, Light, pH, Nitrogen) {#Functional-plant-indicators-wetland}
+# NDVI (greenness) indicator, wetland ecosystems  {#NDVI-indicator-wetland}
 
 <br />
 
