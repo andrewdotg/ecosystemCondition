@@ -319,6 +319,7 @@ levels(nin.wetland$region)
 #### save and load processed NiN-data from cache ####
 saveRDS(nin, "data/cache/nin.RDS")
 saveRDS(nin.wetland, "data/cache/nin.wetland.RDS")
+saveRDS(nin.wetland2, "data/cache/nin.wetland2.RDS")
 saveRDS(nin.seminat, "data/cache/nin.seminat.RDS")
 saveRDS(nin.natopen, "data/cache/nin.natopen.RDS")
 nin <- readRDS(paste0(here::here(),"/data/cache/nin.RDS"))
