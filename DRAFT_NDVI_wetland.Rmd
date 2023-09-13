@@ -245,15 +245,15 @@ df.l
 # fixing variable- and ecosystem-names with special characters
 colnames(nin)
 colnames(nin)[c(3,8,17,26,31,33,34)] <- c("hovedoekosystem","kartleggingsaar","noyaktighet",
-                                       "omraadenavn","uk_naertruet","uk_sentraloekosystemfunksjon",
-                                       "uk_spesieltdaarligkartlagt")
+                                          "omraadenavn","uk_naertruet","uk_sentraloekosystemfunksjon",
+                                          "uk_spesieltdaarligkartlagt")
 unique(nin$hovedoekosystem)
 
 nin <- nin %>% mutate(hovedoekosystem = recode(hovedoekosystem, 
-                                 "Våtmark" = 'Vaatmark',
-                                 "Semi-naturlig mark" = 'Semi_naturlig',
-                                 "Naturlig åpne områder i lavlandet" = 'Naturlig-aapent',
-                                 "Naturlig åpne områder under skoggrensa" = 'Naturlig_aapent')) %>%
+                                               "Våtmark" = 'Vaatmark',
+                                               "Semi-naturlig mark" = 'Semi_naturlig',
+                                               "Naturlig åpne områder i lavlandet" = 'Naturlig-aapent',
+                                               "Naturlig åpne områder under skoggrensa" = 'Naturlig_aapent')) %>%
   mutate(validGeo = st_is_valid(SHAPE))
 
 # checking how many polygons have multiple ecosystem types
@@ -262,7 +262,7 @@ unique(nin$ninkartleggingsenheter)
 nrow(nin)
 # 95469 polygons altogether
 nrow(nin %>%
-  filter(grepl(',', ninkartleggingsenheter))
+       filter(grepl(',', ninkartleggingsenheter))
 )
 # 21094 polygons have more than 1 ecosystem type (they are separated by commas in the ninkartleggingsenheter-variable)
 
@@ -281,7 +281,7 @@ summary(as.factor(nin$ninkartleggingsenheter))
 nin <- nin %>% mutate(ninkartleggingsenheter = str_remove(ninkartleggingsenheter, 'NA_'))
 # making a main ecosystem type variable
 nin <- nin %>% mutate(hovedtype = substr(ninkartleggingsenheter, 1, 3),
-               hovedtype = str_remove(hovedtype, '-'))
+                      hovedtype = str_remove(hovedtype, '-'))
 # checking mapping unit against main ecosystem type
 nin[,c("hovedoekosystem","hovedtype")]
 summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Vaatmark"]))
@@ -307,14 +307,12 @@ summary(as.factor(nin$tilstand))
 nin <- nin %>% mutate(tilstand = recode(tilstand,
                                         "Dårlig" = "Redusert",
                                         "Svært redusert" = "Svaert_redusert"))
+nin <- nin %>% mutate(tilstand_num = recode(tilstand,
+                                        "God" = 1, "Moderat" = 2, 
+                                        "Redusert" = 3, "Svaert_redusert" = 4))
+
 summary(as.factor(nin$tilstand))
-
-
-##############################
-##############################
-# code on ninbeskrivelsesvariabler here if relevant
-##############################
-##############################
+summary(as.numeric(nin$tilstand_num))
 
 
 ## filter out only wetland data
@@ -323,7 +321,7 @@ nin.wetland <- nin %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
-  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, ninbeskrivelsesvariabler, kartleggingsaar)
+  dplyr::select(id, hovedoekosystem, hovedtype, ninkartleggingsenheter, lokalitetskvalitet, tilstand, tilstand_num, ninbeskrivelsesvariabler, kartleggingsaar)
 
 
 # merge NiN-data with region
@@ -348,12 +346,24 @@ levels(nin.wetland$region)
 nin.wetland$region <- factor(nin.wetland$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
 levels(nin.wetland$region)
 
+# splitting content in the ninbeskrivelsesvariabler-column into separate rows per variable and then separating that column into two for the variable name and value
+nin.wetland2 <- nin.wetland %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
+  separate(col = ninbeskrivelsesvariabler,
+           into = c("NiN_variable_code", "NiN_variable_value"),
+           sep = "_",
+           remove=F) %>%
+  mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
+  mutate(NiN_variable_code = as.factor(NiN_variable_code)) %>%
+  subset(select = -ninbeskrivelsesvariabler)
+nin.wetland2 <- as.data.frame(nin.wetland2)
+
 ```
 
 ```{r, echo = F}
 
 #load processed NiN-data from cache
 nin.wetland <- readRDS(paste0(here::here(),"/data/cache/nin.wetland.RDS"))
+nin.wetland2 <- readRDS(paste0(here::here(),"/data/cache/nin.wetland2.RDS"))
 
 ```
 
@@ -487,7 +497,7 @@ SentinelNDVI.wetland %>%
   ggplot(aes(x=hovedtype, y=mean )) + 
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey")
-# NDVI varies between hovedtyper: highest in seminat wet-meadows (V10), lowest in ombrotrophic bogs (V3)
+# NDVI varies between hovedtyper: highest in seminat wet-meadows (V10), lowest in ombrotrophic bogs (V3). The overlaps are considerable.
 
 ## looking at subtypes for polygons in good condition only (and only for NDVI data matching NiN-mapping)
 SentinelNDVI.wetland %>%
@@ -497,7 +507,7 @@ SentinelNDVI.wetland %>%
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap( ~hovedtype)
-# NDVI varies between ecosystem subtypes in V1. For the other types things seem more constant, but there's also less data and less minor ecosystem types present in the data. 
+# NDVI appears to increase with increasing limestone level (C1-C4, C5-C8, and E1-E3 in V1, C1-C3 in the other major types), but the overlap is large. 
 
 ## NDVI across regions for polygons in good condition only (for major types and NDVI years data matching NiN-mapping years)
 SentinelNDVI.wetland %>%
@@ -518,14 +528,70 @@ SentinelNDVI.wetland %>%
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap( ~hovedtype)
-# in seminat types (V9,V10), kaldkilde (V4), and bogs (V3) ndvi seems to increase as condition deteriorates, in fens (V1) not much of a pattern
-
+# in seminat types (V9,V10), kaldkilde (V4), and bogs (V3) ndvi seems to increase as condition deteriorates, in fens (V1) not much of a pattern. Overlaps between condition classes are generally very large.
 ```
 
+Which ecological relevant variable(s) is the condition measure in the NiN data related to?
+```{r}
+nin.wetland2 %>%
+  filter(hovedtype=='V9') %>%
+  filter(NiN_variable_code %in% c("1AG-B","7GR-GI","1AG-A-G","1AR-C-L","7TK","PRSL")) %>%
+  mutate(NiN_variable_des=recode(NiN_variable_code,
+                                 "1AG-B"="Shrub cover",
+                                 "7GR-GI"="Abundance of ditches",
+                                 "1AG-A-G"="Tree cover",
+                                 "1AR-C-L"="Woody plants in field layer",
+                                 "7TK"="Heavy vehicles",
+                                 "PRSL"="Wear/tear")) %>%
+  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
+  geom_point(size=2) +  
+  geom_jitter(width = 0.25, height=0.25) +
+  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
+  theme(legend.position="none")
+
+
+nin.wetland2 %>%
+  filter(hovedtype=='V10') %>%
+  filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7JB-GJ")) %>%
+  mutate(NiN_variable_des=recode(NiN_variable_code,
+                                 "7JB-BA"="Land use intensity",
+                                 "7RA-SJ"="Succession",
+                                 "7FA"="Alien species",
+                                 "7JB-GJ"="Fertilization")) %>%
+  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
+  geom_point(size=2) +  
+  geom_jitter(width = 0.25, height=0.25) +
+  facet_wrap(~NiN_variable_des,nrow=2, ncol=2) +
+  theme(legend.position="none")
+
+
+nin.wetland2 %>%
+  filter(hovedtype=='V1') %>%
+  filter(NiN_variable_code %in% c("7GR-GI","PRTK","7FA","7TK","7SE","PRSL")) %>%
+  mutate(NiN_variable_des=recode(NiN_variable_code,
+                                 "7GR-GI"="Abundance of ditches",
+                                 "PRTK"="Heavy vehicles",
+                                 "7FA"="Alien species",
+                                 "7TK"="Heavy vehicles2",
+                                 "7SE"="Wear/tear",
+                                 "PRSL"="Wear/tear2")) %>%
+  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
+  geom_point(size=2) +  
+  geom_jitter(width = 0.25, height=0.25) +
+  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
+  theme(legend.position="none")
+
+```
+In these plots, condition=1 is best and 4 is worst (degraded). The panels for V1, V9 and V10 differ because Mdir-instruks uses different variables in these major ecosystem types to define condition.
+
+In V9, semi-natural mires, reduced condition is mainly related to increasing cover of shrubs and trees. In V10, semi-natural wet-meadows, reduced condition is related to insufficient land-use intensity and succession. In both cases, we'd expect an increase in the greenness signal. Thus, NDVI can, in principle, be indicative of ecological condition in semi-natural wetlands due to a direct connection to the main pressures on the ecosystems.
+
+In V1 (minerotrophic mires), reduced condition is mainly related to the abundance of ditches, but also increased use of heavy vehicles and high alien species abundance are related to very reduce condition. Under these drivers, greenness would not directly be affected. although drainage due to ditches may lead to succession and woody plant encroachment, and thus greening, in the longer run. Currently, NDVI seems poorly linked to ecological condition in and the major pressures on minerotrophic mires.
 
 ### Regression analyses Sentinel-2, NDVI as a function of condition
+We can investigate further how NDVI and condition are connected using regression analyses.
 ```{r}
-# NDVI data are bound between -1 and 1, and thus require modelling with an appropriate method that handles bounded data
+# NDVI data are bound between -1 and 1, and thus require modelling with an appropriate method that can handle bounded data
 # we can transform the variable to be bounded between 0 and 1 and use beta-regression models
 SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
@@ -659,10 +725,12 @@ V3: NDVI does not change as condition deteriorates (but also insuffcient data)
 
 Overall take home messages:
 
-In semi-natural wetland ecosystems (V9, V10) NDVI increases as ecosystem condition deteriorates, and this is consistent for the entire country.
-In natural fens (V1) NDVI increases in the South but decreases in the North as ecosystem condition deteriorates. In bogs (V3) there is no consistent pattern.
+In semi-natural wetland ecosystems (V9, V10) NDVI increases as ecosystem condition deteriorates, and this is consistent for the entire country. This supports the conclusion from the exploratory analyses that NDVI is indicative of ecological condition in semi-natural wetland ecosystems.
+In natural fens (V1) NDVI increases in the South but decreases in the North as ecosystem condition deteriorates. A factor with potential for affecting vegetation composition and productivity, and thus NDVI, is Nitrogen deposition. Nitrogen deposition is higher in Southern parts of Norway than further north, and could thus be responsible for increased NDVI with reduced condition in the South, but it is not clear how Nitrogen deposition and the variables underlying the condition assessment in V1 (Ditches, Alien species, Heavy vehicles, Wear/tear) are connected. In bogs (V3) there is no consistent pattern.
 
 ### Regression analyses, NDVI across time
+As a last step, we can investigate how NDVI has changed over time.
+
 First, there's again some data handling to do. We merge the Sentinel, Modis, and Landsat data to show the full picture across time. Then we model the time series for each Satellite separately.
 ```{r}
 ## data handling for time series analysis
@@ -709,7 +777,7 @@ summary(LandsatNDVI.wetland$mean_beta)
 LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
 
-# check if the three Sattelite objects have the same structure (for concatenating them)
+# check if the three Satelite objects have the same structure (for concatenating them)
 names(SentinelNDVI.wetland)
 names(ModisNDVI.wetland)
 names(LandsatNDVI.wetland)
