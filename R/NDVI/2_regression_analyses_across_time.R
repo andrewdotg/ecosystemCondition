@@ -86,6 +86,16 @@ allSatNDVI.wetland %>%
 
 
 # modeling NDVI as a function of year and main ecosystem type separately for each Satellite
+# only good condition
+model.wetland.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.wetland[SentinelNDVI.wetland$tilstand=="God",])
+model.wetland.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.wetland[ModisNDVI.wetland$tilstand=="God",])
+model.wetland.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.wetland[LandsatNDVI.wetland$tilstand=="God",])
+
+summary(model.wetland.time.GodTilst.Sent)$coefficients$cond
+summary(model.wetland.time.GodTilst.Modi)$coefficients$cond
+summary(model.wetland.time.GodTilst.Land)$coefficients$cond
+
+# all condition
 model.wetland.time.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.wetland)
 model.wetland.time.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.wetland)
 model.wetland.time.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.wetland)

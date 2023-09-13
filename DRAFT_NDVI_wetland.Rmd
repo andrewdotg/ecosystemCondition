@@ -728,8 +728,8 @@ Overall take home messages:
 In semi-natural wetland ecosystems (V9, V10) NDVI increases as ecosystem condition deteriorates, and this is consistent for the entire country. This supports the conclusion from the exploratory analyses that NDVI is indicative of ecological condition in semi-natural wetland ecosystems.
 In natural fens (V1) NDVI increases in the South but decreases in the North as ecosystem condition deteriorates. A factor with potential for affecting vegetation composition and productivity, and thus NDVI, is Nitrogen deposition. Nitrogen deposition is higher in Southern parts of Norway than further north, and could thus be responsible for increased NDVI with reduced condition in the South, but it is not clear how Nitrogen deposition and the variables underlying the condition assessment in V1 (Ditches, Alien species, Heavy vehicles, Wear/tear) are connected. In bogs (V3) there is no consistent pattern.
 
-### Regression analyses, NDVI across time
-As a last step, we can investigate how NDVI has changed over time.
+### NDVI across time - Sentinel, MODIS & LandSat
+As a last step, we can investigate how NDVI has changed over time. For this we include data from the MODIS and LandSat satellites in addition to Sentinel.
 
 First, there's again some data handling to do. We merge the Sentinel, Modis, and Landsat data to show the full picture across time. Then we model the time series for each Satellite separately.
 ```{r}
@@ -812,7 +812,7 @@ allSatNDVI.wetland$Sat <- c(
 allSatNDVI.wetland$Sat <- factor(allSatNDVI.wetland$Sat,levels=c("Sentinel","Modis","Landsat"))
 levels(allSatNDVI.wetland$Sat)
 ```
-Now we can plot the time series for each main ecosystem type, and for each satellite separately  
+Now we can plot the time series for each main ecosystem type, showing each satellite separately  
 ```{r}
 # plot 
 allSatNDVI.wetland %>%
@@ -822,7 +822,20 @@ allSatNDVI.wetland %>%
 ```
 It is quite obvious that the NDVI values from the three satellites are not quantitatively comparable. They vary both in their placement along the y-axis and in their variance. Modis data are absent from the V4-ecosystem type because of a too large pixel size compared to the NiN-polygon sizes. In V10, Modis is poorly represented for the same reason.
 
-As a final step, we model NDVI as a function of year and main ecosystem type separately for each Satellite
+We can test if there is consistent tempral changes in NDVI by running regressions including year as a covariate.
+
+We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for each satellite.
+```{r}
+model.wetland.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.wetland[SentinelNDVI.wetland$tilstand=="God",])
+model.wetland.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.wetland[ModisNDVI.wetland$tilstand=="God",])
+model.wetland.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.wetland[LandsatNDVI.wetland$tilstand=="God",])
+
+summary(model.wetland.time.GodTilst.Sent)$coefficients$cond
+summary(model.wetland.time.GodTilst.Modi)$coefficients$cond
+summary(model.wetland.time.GodTilst.Land)$coefficients$cond
+```
+
+
 ```{r}
 model.wetland.time.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.wetland)
 model.wetland.time.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.wetland)
