@@ -973,7 +973,7 @@ saveRDS(all_stats, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/da
 all_stats <- readRDS(paste0(pData, "cache/all_stats.rds"))
 ```
 
-```{r dense-stats, fig.height= 12, fig.cap="Barplot showing the number of data points, the area weighted indicator values and the sd for the slitasje indicator. Transparrent bars represents categories with less than 150 data points."}
+```{r dense-stats, fig.height= 12, fig.cap="Barplot showing the number of data points, the area weighted indicator values and the sd for the ADSV indicator. Transparent bars represents categories with less than 150 data points."}
 temp_plot <- all_stats %>%
   mutate(HIF_NA = case_when(
     n > 150 ~ HIF
@@ -986,23 +986,26 @@ ggarrange(
 ggplot(temp_plot, aes(x = region, y = n, group = HIF, fill = HIF_NA))+
   geom_bar(position = "dodge", stat = "identity", col="black")+
   theme_bw(base_size = 10)+
-  scale_fill_brewer(palette="Oranges")+
+  scale_fill_brewer(palette="Oranges", na.translate=F)+
   theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
+  labs(fill = "HIF")+
   facet_wrap(.~eco),
 ggplot(temp_plot, aes(x = region, y = w_mean, group = HIF, fill = HIF_NA))+
   geom_bar(position = "dodge", stat = "identity", col="black")+
   theme_bw(base_size = 10)+
-  scale_fill_brewer(palette="Oranges")+
+  scale_fill_brewer(palette="Oranges",  na.translate=F)+
   theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
+  labs(fill = "HIF")+
   facet_wrap(.~eco),
 ggplot(temp_plot, aes(x = region, y = sd, group = HIF, fill = HIF_NA))+
   geom_bar(position = "dodge", stat = "identity", col="black")+
   theme_bw(base_size = 10)+
-  scale_fill_brewer(palette="Oranges")+
+  scale_fill_brewer(palette="Oranges",  na.translate=F)+
   theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
+  labs(fill = "HIF")+
   facet_wrap(.~eco),
 ncol = 1)
 
