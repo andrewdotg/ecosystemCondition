@@ -1,4 +1,4 @@
-# NDVI (greenness) indicator, wetland ecosystems  {#NDVI-indicator-wetland}
+# NDVI (greenness) indicator, semi-natural ecosystems  {#NDVI-indicator-seminat}
 
 <br />
 
@@ -51,17 +51,17 @@ knitr::kable(metaData)
 <hr />
 
 ## Introduction
-The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and plant productivity in the given area. Different ecosystem types naturally have greenness signals of different intensity but also with a certain variance. Deviations beyond the natural variation in either direction may indicate a reduction in ecological condition of a given ecosystem. E.g. lower than normal NDVI may indicate excessive disturbance, while higher than normal NDVI may indicate regrowth and transitions towards more densely vegetated systems. In recent assessments of ecological condition for forest and mountain ecosystems, two different NDVI-based indicators were developed and applied. For forests, NDVI-values across the country were compared to a spatial reference NDVI-signal from protected areas (Framstad et al. 2020). For mountains, the extent and consistence of the temporal change of NDVI-values over the last twenty years was assessed (Framstad et al 2021). In both cases, the NDVI-product from the MODIS satellite reflectance imagery was used based on available maps of spatial ecosystem extent in Norway (i.e. national maps for the forest and mountain ecosystems). Here, we explore the potential for developing an NDVI-indicator for ecological condition representing open wetland ecosystems (i.e. excluding forest swamps). For this task, two initial challenges can be identified early on:
-1) We don't yet have a national wetland map, i.e. we don't know the exact locations of all wetlands in Norway, which is a prerequisite to extract satellite data for the right locations and ecosystems, and thus achieve a good and unbiased spatial representation for the assessment area.
-2) The spatial extent of the single wetland ecosystem occurrences (hereafter 'polygons') includes many wetland areas which are way smaller than the pixel size in the MODIS imagery (250 x 250 m) which was used for forests and mountains and has a time series back to year 2000.
+The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and plant productivity in the given area. Different ecosystem types naturally have greenness signals of different intensity but also with a certain variance. Deviations beyond the natural variation in either direction may indicate a reduction in ecological condition of a given ecosystem. E.g. lower than normal NDVI may indicate excessive disturbance, while higher than normal NDVI may indicate regrowth and transitions towards more densely vegetated systems. In recent assessments of ecological condition for forest and mountain ecosystems, two different NDVI-based indicators were developed and applied. For forests, NDVI-values across the country were compared to a spatial reference NDVI-signal from protected areas (Framstad et al. 2020). For mountains, the extent and consistence of the temporal change of NDVI-values over the last twenty years was assessed (Framstad et al 2021). In both cases, the NDVI-product from the MODIS satellite reflectance imagery was used based on available maps of spatial ecosystem extent in Norway (i.e. national maps for the forest and mountain ecosystems). Here, we explore the potential for developing an NDVI-indicator for ecological condition representing open semi-natural ecosystems. For this task, two initial challenges can be identified early on:
+1) We don't yet have a national map for semi-natural ecosystems, i.e. we don't know the exact locations of all semi-natural areas in Norway, which is a prerequisite to extract satellite data for the right locations and ecosystems, and thus achieve a good and unbiased spatial representation for the assessment area.
+2) The spatial extent of the single semi-natural ecosystem occurrences (hereafter 'polygons') includes many areas which are way smaller than the pixel size in the MODIS imagery (250 x 250 m) which was used for forests and mountains and has a time series back to year 2000.
 
-In this draft development for a wetland NDVI indicator for ecological condition we approach these challenges in the following ways:
-1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the right ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of wetland ecosystems are available.
-2) We include Sentinel-2 imagery for wetland ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m which is smaller than almost all wetland polygons in the NiN-data. However, since Sentinel-2 only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. In addition, we include Landsat imagery which goes back to 1984 and has a resolution of 30 x 30 m, but also has more variable data due to less frequent seasonal measurements. We also still explore NDVI data from MODIS (see more details below).
+In this draft development for a NDVI indicator for ecological condition in semi-natural  systems we approach these challenges in the following ways:
+1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the right ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of semi-natural ecosystems are available.
+2) We include Sentinel-2 imagery for semi-natural ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m which is smaller than almost all semi-natural polygons in the NiN-data. However, since Sentinel-2 only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. In addition, we include Landsat imagery which goes back to 1984 and has a resolution of 30 x 30 m, but also has more variable data due to less frequent seasonal measurements. We also still explore NDVI data from MODIS (see more details below).
 
 
 ## About the underlying data
-In the NDVI project for wetlands, we use two kinds of data (coming as four datasets) for building indicators for ecological condition:
+In the NDVI project for semi-natural systems, we use two kinds of data (coming as four datasets) for building indicators for ecological condition:
 
 - NiN ecosystem data from 'Naturtypekartlegging etter Miljødirektoratets instruks' to guide extraction of NDVI data for the right locations and to provide information on the field-assessed ecological condition of mapped polygons
 - remote sensed NDVI data
@@ -87,7 +87,7 @@ The Landsat data have a resolution of 30 x 30 m, and we thus excluded all NiN-po
 
 
 ### Representativity in time and space
-For wetlands, the NiN data contain 6502 wetland polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6502 wetland polygons are distributed across regions and major ecosystem types in the following way:
+For semi-natural systems, the NiN data contain 6502 semi-natural polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6502 semi-natural polygons are distributed across regions and major ecosystem types in the following way:
 
                   V1    V3    V4    V6    V9    V10
 Northern Norway   638   275   55    102   360   315
@@ -99,10 +99,10 @@ Southern Norway   58    44    5     0     155   102
 In addition, there is 3 V3s, 1 V4, 4 V9s, and 9 V10s that are not assigned to any region.
 
 
-The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the wetland occurrences in the NiN data are likely even more spatially biased than it is the case for the NDVI data from Sentinel-2 and Landsat. 
+The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the semi-natural occurrences in the NiN data are likely even more spatially biased than it is the case for the NDVI data from Sentinel-2 and Landsat. 
 
 ### Temporal coverage
-The currently available NiN data on wetland ecosystems span a time period from 2018-2021 and thus represent a contemporary sample of ecosystem occurrences. Note that none of the polygons in the NiN-data has been visited more than once during that period.
+The currently available NiN data on semi-natural ecosystems span a time period from 2018-2021 and thus represent a contemporary sample of ecosystem occurrences. Note that none of the polygons in the NiN-data has been visited more than once during that period.
 
 Available Sentinel-2 satellite NDVI data span the years 2015-2022.
 Available MODIS satellite NDVI data span the years 2000-2022.
@@ -110,11 +110,11 @@ Available Landsat satellite NDVI data span the years 1984-2021.
 
 
 ## Collinearities with other indicators
-The NDVI signal may likely be co-linear with the re-growth indicator based on LiDAr derived canopy height in drained wetland areas under shrub and tree encroachment.
+The NDVI signal may likely be co-linear with the re-growth indicator based on LiDAr derived canopy height in abandoned semi-natural areas under shrub and tree encroachment.
 
 ## Reference state and values
 ### Reference state and scaling values
-This indicator project is mainly exploratory, mapping the possibilities of and lacking prerequisites for satellite derived NDVI data to inform ecological condition assessments. Therefore, we lack a concise strategy for how to define the reference state, especially prior to having access to an ecosystem map for wetland ecosystems (cf. Jakobsson et al. 2020, Töpper & Jakobsson 2021). In this exploratory work, we will use the condition classification in the NiN-data to explore (1) how NDVI connects to wetland ecology and condition and (2) its applicability for defining a reference state. We will use statistical models to test whether or not NDVI varies systematically with condition and across time.
+This indicator project is mainly exploratory, mapping the possibilities of and lacking prerequisites for satellite derived NDVI data to inform ecological condition assessments. Therefore, we lack a concise strategy for how to define the reference state, especially prior to having access to an ecosystem map for semi-natural ecosystems (cf. Jakobsson et al. 2020, Töpper & Jakobsson 2021). In this exploratory work, we will use the condition classification in the NiN-data to explore (1) how NDVI connects to semi-natural ecology and condition and (2) its applicability for defining a reference state. We will use statistical models to test whether or not NDVI varies systematically with condition and across time.
 
 ## Uncertainties
 Given a condition index can be achieved, we can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area (see Töpper & Jakobsson 2021).
@@ -314,8 +314,8 @@ summary(as.factor(nin$tilstand))
 summary(as.numeric(nin$tilstand_num))
 
 
-## filter out only wetland data
-nin.wetland <- nin %>% 
+## filter out only semi-natural data
+nin.semi-natural <- nin %>% 
   filter(hovedoekosystem %in% c('Vaatmark')) %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
@@ -324,29 +324,29 @@ nin.wetland <- nin %>%
 
 
 # merge NiN-data with region
-nin.wetland = st_join(nin.wetland, regnor, left = TRUE)
-nin.wetland
+nin.semi-natural = st_join(nin.semi-natural, regnor, left = TRUE)
+nin.semi-natural
 
-colnames(nin.wetland)[c(1,9)] <- c("id","region_id")
+colnames(nin.semi-natural)[c(1,9)] <- c("id","region_id")
 
 # check that every nin-polygon still occurs only once
-summary(as.factor(nin.wetland$id))
-nin.wetland[nin.wetland$id=="NINFP2110008060",]
+summary(as.factor(nin.semi-natural$id))
+nin.semi-natural[nin.semi-natural$id=="NINFP2110008060",]
 # this one was assigned to both Western and Central Norway, we drop the latter
-nin.wetland <- nin.wetland[!row.names(nin.wetland) %in% '1144.1',]
+nin.semi-natural <- nin.semi-natural[!row.names(nin.semi-natural) %in% '1144.1',]
 
-nin.wetland <- nin.wetland %>% 
-  mutate(area_meters_nin = st_area(nin.wetland)
+nin.semi-natural <- nin.semi-natural %>% 
+  mutate(area_meters_nin = st_area(nin.semi-natural)
   )
 # check and edit the order of regions
-levels(nin.wetland$region)
-nin.wetland$region <- as.factor(nin.wetland$region)
-levels(nin.wetland$region)
-nin.wetland$region <- factor(nin.wetland$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
-levels(nin.wetland$region)
+levels(nin.semi-natural$region)
+nin.semi-natural$region <- as.factor(nin.semi-natural$region)
+levels(nin.semi-natural$region)
+nin.semi-natural$region <- factor(nin.semi-natural$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
+levels(nin.semi-natural$region)
 
 # splitting content in the ninbeskrivelsesvariabler-column into separate rows per variable and then separating that column into two for the variable name and value
-nin.wetland2 <- nin.wetland %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
+nin.semi-natural2 <- nin.semi-natural %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
   separate(col = ninbeskrivelsesvariabler,
            into = c("NiN_variable_code", "NiN_variable_value"),
            sep = "_",
@@ -354,120 +354,120 @@ nin.wetland2 <- nin.wetland %>% separate_rows(ninbeskrivelsesvariabler, sep=",")
   mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
   mutate(NiN_variable_code = as.factor(NiN_variable_code)) %>%
   subset(select = -ninbeskrivelsesvariabler)
-nin.wetland2 <- as.data.frame(nin.wetland2)
+nin.semi-natural2 <- as.data.frame(nin.semi-natural2)
 
 ```
 
 ```{r, echo = F}
 
 #load processed NiN-data from cache
-nin.wetland <- readRDS(paste0(here::here(),"/data/cache/nin.wetland.RDS"))
-nin.wetland2 <- readRDS(paste0(here::here(),"/data/cache/nin.wetland2.RDS"))
+nin.semi-natural <- readRDS(paste0(here::here(),"/data/cache/nin.semi-natural.RDS"))
+nin.semi-natural2 <- readRDS(paste0(here::here(),"/data/cache/nin.semi-natural2.RDS"))
 
 ```
 
 #### NDVI data
 ```{r, results='hide'}
 ## Sentinel-2
-# join nin.wetland & Sentinel NDVI data
-SentinelNDVI.wetland <- full_join(nin.wetland, df.s, by="id")
-#summary(SentinelNDVI.wetland)
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+# join nin.semi-natural & Sentinel NDVI data
+SentinelNDVI.semi-natural <- full_join(nin.semi-natural, df.s, by="id")
+#summary(SentinelNDVI.semi-natural)
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(SentinelNDVI.wetland))
-#summary(SentinelNDVI.wetland)
-# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(hovedtype))
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(!is.na(mean))
-#summary(SentinelNDVI.wetland)
+         area_meters = st_area(SentinelNDVI.semi-natural))
+#summary(SentinelNDVI.semi-natural)
+# get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(!is.na(hovedtype))
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(!is.na(mean))
+#summary(SentinelNDVI.semi-natural)
 # get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
-dim(SentinelNDVI.wetland)
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(as.numeric(area_meters) >= 100)
-dim(SentinelNDVI.wetland)
+dim(SentinelNDVI.semi-natural)
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(as.numeric(area_meters) >= 100)
+dim(SentinelNDVI.semi-natural)
 # split date into year, month & day
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 # add column for sub-ecosystem types
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
                                                         subtype = str_remove(subtype, '-'),
                                                         subtype = str_remove(subtype, '-'))
 # we are using max NDVI per year in every NiN polygon
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
-summary(SentinelNDVI.wetland)
+summary(SentinelNDVI.semi-natural)
 
 ## MODIS
-# join nin.wetland and Modis NDVI data
-ModisNDVI.wetland <- full_join(nin.wetland, df.m, by="id")
+# join nin.semi-natural and Modis NDVI data
+ModisNDVI.semi-natural <- full_join(nin.semi-natural, df.m, by="id")
 
-#summary(ModisNDVI.wetland)
-ModisNDVI.wetland <- ModisNDVI.wetland %>%
+#summary(ModisNDVI.semi-natural)
+ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(ModisNDVI.wetland))
-#summary(ModisNDVI.wetland)
-# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
-ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(hovedtype))
-ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(!is.na(mean))
-#summary(ModisNDVI.wetland)
+         area_meters = st_area(ModisNDVI.semi-natural))
+#summary(ModisNDVI.semi-natural)
+# get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
+ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>% filter(!is.na(hovedtype))
+ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>% filter(!is.na(mean))
+#summary(ModisNDVI.semi-natural)
 # get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
-dim(ModisNDVI.wetland)
-ModisNDVI.wetland <- ModisNDVI.wetland %>% filter(as.numeric(area_meters) >= 62500)
-dim(ModisNDVI.wetland)
+dim(ModisNDVI.semi-natural)
+ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>% filter(as.numeric(area_meters) >= 62500)
+dim(ModisNDVI.semi-natural)
 # split date into year, month & day
-ModisNDVI.wetland <- ModisNDVI.wetland %>%
+ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 # we are using max NDVI per year in every NiN polygon
-ModisNDVI.wetland <- ModisNDVI.wetland %>%
+ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
-#summary(ModisNDVI.wetland)
+#summary(ModisNDVI.semi-natural)
 
 ## Landsat
-# join nin.wetland & Landsat NDVI data
-LandsatNDVI.wetland <- full_join(nin.wetland, df.l, by="id")
+# join nin.semi-natural & Landsat NDVI data
+LandsatNDVI.semi-natural <- full_join(nin.semi-natural, df.l, by="id")
 
-#summary(LandsatNDVI.wetland)
-LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+#summary(LandsatNDVI.semi-natural)
+LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(LandsatNDVI.wetland))
-#summary(LandsatNDVI.wetland)
-# get rid of NAs (i.e. NDVI cells that were not in wetland polygons)
-LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(hovedtype))
-LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(!is.na(mean))
-#summary(LandsatNDVI.wetland)
+         area_meters = st_area(LandsatNDVI.semi-natural))
+#summary(LandsatNDVI.semi-natural)
+# get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
+LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>% filter(!is.na(hovedtype))
+LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>% filter(!is.na(mean))
+#summary(LandsatNDVI.semi-natural)
 # get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
-dim(LandsatNDVI.wetland)
-LandsatNDVI.wetland <- LandsatNDVI.wetland %>% filter(as.numeric(area_meters) >= 900)
-dim(LandsatNDVI.wetland)
+dim(LandsatNDVI.semi-natural)
+LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>% filter(as.numeric(area_meters) >= 900)
+dim(LandsatNDVI.semi-natural)
 # split date into year, month & day
-LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 # we are using max NDVI per year in every NiN polygon
-LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
-#summary(LandsatNDVI.wetland)
+#summary(LandsatNDVI.semi-natural)
 ```
 
 
@@ -475,15 +475,15 @@ LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
 
 # How are polygon sizes distributed?
 ```{r}
-summary(SentinelNDVI.wetland$area_meters)
-hist(SentinelNDVI.wetland$area_meters,xlim=c(0,20000),breaks=50000)
+summary(SentinelNDVI.semi-natural$area_meters)
+hist(SentinelNDVI.semi-natural$area_meters,xlim=c(0,20000),breaks=50000)
 abline(v=100,lty=2)
 ```
-Wetland polygons stretch a large number of sizes from just above 100 sqm to more than 4 million sqm. 75% of all polygons are below 14264 sqm.
+semi-natural polygons stretch a large number of sizes from just above 100 sqm to more than 4 million sqm. 75% of all polygons are below 14264 sqm.
 
 # How does NDVI vary over the years
 ```{r}
-SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural %>%
   ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_grid( tilstand~hovedtype)
@@ -491,19 +491,19 @@ SentinelNDVI.wetland %>%
 2022 stands out with the highest NDVI values missing.
 WE omit 2022 for this analysis
 ```{r}
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != '2022')
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(year != '2022')
 ```
 
 # How do NDVI values vary between major and basic ecosystem types for sites in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r}
-SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x=hovedtype, y=mean )) + 
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey")
 
-SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x=subtype, y=mean )) + 
@@ -514,9 +514,9 @@ SentinelNDVI.wetland %>%
 NDVI varies between major ecosystem types with the highest values in semi-natural wet-meadows (V10), and lowest values in ombrotrophic bogs (V3). The overlaps between the ecosystem types are considerable.
 With respect to basic ecosystem types within the major types, NDVI appears to increase with increasing limestone level (C1-C4, C5-C8, and E1-E3 in V1, C1-C3 in the other major types), and also here the overlap is large. 
 
-# How does NDVI vary across regions in wetlands (major types) in good condition? (using only NDVI data matching NiN-mapping years)
+# How does NDVI vary across regions in semi-naturals (major types) in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r}
-SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   filter(!is.na(region)) %>%
@@ -530,7 +530,7 @@ There is no obvious trends in geography.
 
 # How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)
 ```{r}
-SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural %>%
   filter(year == kartleggingsaar) %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
@@ -541,7 +541,7 @@ In semi-natural types (V9,V10), kaldkilde (V4), and ombrotrophic bogs (V3) NDVI 
 
 # Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 ```{r}
-nin.wetland2 %>%
+nin.semi-natural2 %>%
   filter(hovedtype=='V9') %>%
   filter(NiN_variable_code %in% c("1AG-B","7GR-GI","1AG-A-G","1AR-C-L","7TK","PRSL")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -560,7 +560,7 @@ nin.wetland2 %>%
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 
-nin.wetland2 %>%
+nin.semi-natural2 %>%
   filter(hovedtype=='V10') %>%
   filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7JB-GJ")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -577,7 +577,7 @@ nin.wetland2 %>%
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 
-nin.wetland2 %>%
+nin.semi-natural2 %>%
   filter(hovedtype=='V1') %>%
   filter(NiN_variable_code %in% c("7GR-GI","PRTK","7FA","7TK","7SE","PRSL")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -598,7 +598,7 @@ nin.wetland2 %>%
 ```
 In these plots, the panels for V1, V9 and V10 differ because Miljødirektoratets mapping manual (see reference list above) uses different variables in these major ecosystem types to define condition.
 
-In V9, semi-natural mires, reduced condition is mainly related to increasing cover of shrubs and trees. In V10, semi-natural wet-meadows, reduced condition is related to insufficient land-use intensity and succession. In both cases, we'd expect an increase in the greenness signal. Thus, NDVI can, in principle, be indicative of ecological condition in semi-natural wetlands due to a direct connection to the main pressures on the ecosystems.
+In V9, semi-natural mires, reduced condition is mainly related to increasing cover of shrubs and trees. In V10, semi-natural wet-meadows, reduced condition is related to insufficient land-use intensity and succession. In both cases, we'd expect an increase in the greenness signal. Thus, NDVI can, in principle, be indicative of ecological condition in semi-natural semi-naturals due to a direct connection to the main pressures on the ecosystems.
 In V1 (minerotrophic fens), reduced condition is mainly related to the abundance of ditches, but also increased use of heavy vehicles and high alien species abundance are related to very reduce condition. Under these drivers, greenness would not directly be affected. although drainage due to ditches may lead to succession and woody plant encroachment, and thus greening, in the longer run. Currently, NDVI seems poorly linked to ecological condition in, and the major pressures on, minerotrophic fens.
 
 ### Regression analyses Sentinel-2, NDVI as a function of condition
@@ -606,26 +606,26 @@ We can investigate further how NDVI and condition are connected using regression
 
 NDVI data are bounded between -1 and 1, and thus require modelling with an appropriate method that can handle bounded data. We can transform the variable to be bounded between 0 and 1 and use beta-regression models:
 ```{r}
-SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
+SentinelNDVI.semi-natural$mean_beta <- (SentinelNDVI.semi-natural$mean + 1) / 2
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
 # we drop V4 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
-SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural.train <- SentinelNDVI.semi-natural %>%
   filter(year == kartleggingsaar) %>%
   filter(hovedtype != 'V4')
 
 # make an extra numeric condition variable
-unique(SentinelNDVI.wetland.train$tilstand)
-SentinelNDVI.wetland.train <- SentinelNDVI.wetland.train %>% mutate(tilstand_num = recode(tilstand, 
+unique(SentinelNDVI.semi-natural.train$tilstand)
+SentinelNDVI.semi-natural.train <- SentinelNDVI.semi-natural.train %>% mutate(tilstand_num = recode(tilstand, 
                                             "God" = '0',
                                             "Moderat" = '1',
                                             "Redusert" = '2',
                                             "Svært redusert" = '3'))
-SentinelNDVI.wetland.train$tilstand_num <- as.numeric(SentinelNDVI.wetland.train$tilstand_num)
+SentinelNDVI.semi-natural.train$tilstand_num <- as.numeric(SentinelNDVI.semi-natural.train$tilstand_num)
 
 # We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
-model.wetland.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train)
-model.wetland.cond.Sent <- StepBeta(model.wetland.cond.Sent)
-summary(model.wetland.cond.Sent)
+model.semi-natural.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.semi-natural.train)
+model.semi-natural.cond.Sent <- StepBeta(model.semi-natural.cond.Sent)
+summary(model.semi-natural.cond.Sent)
 ```
 NDVI values do vary between:
 - Regions
@@ -634,21 +634,21 @@ NDVI values do vary between:
 
 It is evident that there are differences between regions. But since we are not interested in the statistics for region differences, we run separate models for every region for ease of interpretation.
 ```{r, include = F}
-rm(model.wetland.cond.Sent)
+rm(model.semi-natural.cond.Sent)
 ```
 
 ```{r message=FALSE, warning=FALSE}
-model.wetland.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Northern Norway",])
-model.wetland.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Central Norway",])
-model.wetland.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Western Norway",])
-model.wetland.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Eastern Norway",])
-model.wetland.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.wetland.train[SentinelNDVI.wetland.train$region=="Southern Norway",])
+model.semi-natural.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Northern Norway",])
+model.semi-natural.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Central Norway",])
+model.semi-natural.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Western Norway",])
+model.semi-natural.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Eastern Norway",])
+model.semi-natural.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Southern Norway",])
 
 ```
 
 # Northern Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.wetland.train %>%
+SentinelNDVI.semi-natural.train %>%
   filter(region=="Northern Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -656,7 +656,7 @@ SentinelNDVI.wetland.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.wetland.cond.Sent.N)$coefficients
+summary(model.semi-natural.cond.Sent.N)$coefficients
 ```
 NDVI in good condition: V10 > V1 > V9 > V3
 
@@ -666,7 +666,7 @@ V9 & V10: NDVI increases as condition deteriorates
 
 # Central Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.wetland.train %>%
+SentinelNDVI.semi-natural.train %>%
   filter(region=="Central Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -674,7 +674,7 @@ SentinelNDVI.wetland.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.wetland.cond.Sent.C)$coefficients
+summary(model.semi-natural.cond.Sent.C)$coefficients
 ```
 NDVI in good condition: V10 > V1 & V9 > V3
 
@@ -683,7 +683,7 @@ V3, V9 & V10: NDVI increases as condition deteriorates
 
 # Western Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.wetland.train %>%
+SentinelNDVI.semi-natural.train %>%
   filter(region=="Western Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -691,7 +691,7 @@ SentinelNDVI.wetland.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.wetland.cond.Sent.W)$coefficients
+summary(model.semi-natural.cond.Sent.W)$coefficients
 ```
 NDVI in good condition: V10 > V9 & V3 > V1
 
@@ -701,7 +701,7 @@ V9: NDVI does not change as condition deteriorates
 
 # Eastern Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.wetland.train %>%
+SentinelNDVI.semi-natural.train %>%
   filter(region=="Eastern Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -709,7 +709,7 @@ SentinelNDVI.wetland.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.wetland.cond.Sent.E)$coefficients
+summary(model.semi-natural.cond.Sent.E)$coefficients
 ```
 NDVI in good condition: V10 > V1 > V3 & V9
 
@@ -718,7 +718,7 @@ V9 & V10: NDVI increases as condition deteriorates
 
 # Southern Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.wetland.train %>%
+SentinelNDVI.semi-natural.train %>%
   filter(region=="Southern Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -726,7 +726,7 @@ SentinelNDVI.wetland.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.wetland.cond.Sent.S)$coefficients
+summary(model.semi-natural.cond.Sent.S)$coefficients
 ```
 NDVI in good condition: V10 > V9 > V1 & V3
 
@@ -736,8 +736,8 @@ V3: NDVI does not change as condition deteriorates (but also insuffcient data)
 
 Overall take home messages:
 
-In semi-natural wetland ecosystems (V9, V10) NDVI increases as ecosystem condition deteriorates, and this is consistent for the entire country. This supports the conclusion from the exploratory analyses that NDVI is indicative of ecological condition in semi-natural wetland ecosystems.
-In natural minerotrophic fens (V1) NDVI increases in the South but decreases in the North as ecosystem condition deteriorates. A factor with potential for affecting vegetation composition and productivity, and thus NDVI, is Nitrogen deposition. Nitrogen deposition is higher in Southern parts of Norway than further north, and could thus be responsible for increased NDVI with reduced condition in the South, but it is not clear how Nitrogen deposition and the variables underlying the condition assessment in V1 (Ditches, Alien species, Heavy vehicles, Wear/tear) are connected. Furthermore we are to date lacking documented empirical ground-truthed information about the connection between NDVI and Nitrogen effects in wetlands. In bogs (V3) there is no consistent pattern.
+In semi-natural semi-natural ecosystems (V9, V10) NDVI increases as ecosystem condition deteriorates, and this is consistent for the entire country. This supports the conclusion from the exploratory analyses that NDVI is indicative of ecological condition in semi-natural semi-natural ecosystems.
+In natural minerotrophic fens (V1) NDVI increases in the South but decreases in the North as ecosystem condition deteriorates. A factor with potential for affecting vegetation composition and productivity, and thus NDVI, is Nitrogen deposition. Nitrogen deposition is higher in Southern parts of Norway than further north, and could thus be responsible for increased NDVI with reduced condition in the South, but it is not clear how Nitrogen deposition and the variables underlying the condition assessment in V1 (Ditches, Alien species, Heavy vehicles, Wear/tear) are connected. Furthermore we are to date lacking documented empirical ground-truthed information about the connection between NDVI and Nitrogen effects in semi-naturals. In bogs (V3) there is no consistent pattern.
 
 ### NDVI across time - Sentinel, MODIS & LandSat
 As a last step, we can investigate how NDVI has changed over time. For this we include data from both MODIS and Landsat in addition to Sentinel-2.
@@ -746,87 +746,87 @@ First, there's again some data handling to do. We merge the Sentinel, MODIS, and
 ```{r results='hide'}
 ## data handling for time series analysis
 # Sentinel time series checked in exploratory analysis script
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != '2022')
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(year != '2022')
 
 # checking time series for MODIS
-ModisNDVI.wetland %>%
+ModisNDVI.semi-natural %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_wrap(~hovedtype)
 # 2022 does not stand out as in the Sentinel data, so we keep it
-ModisNDVI.wetland <- ModisNDVI.wetland %>%
+ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
 # checking time series for Landsat
-LandsatNDVI.wetland %>%
+LandsatNDVI.semi-natural %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_wrap(~hovedtype)
 # nothing worrying to see here either
-LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
 # transformation of NDVI scale to beta scale
-#SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
-ModisNDVI.wetland$mean_beta <- (ModisNDVI.wetland$mean + 1) / 2
-LandsatNDVI.wetland$mean_beta <- (LandsatNDVI.wetland$mean + 1) / 2
+#SentinelNDVI.semi-natural$mean_beta <- (SentinelNDVI.semi-natural$mean + 1) / 2
+ModisNDVI.semi-natural$mean_beta <- (ModisNDVI.semi-natural$mean + 1) / 2
+LandsatNDVI.semi-natural$mean_beta <- (LandsatNDVI.semi-natural$mean + 1) / 2
 
 # check if there's any 0s or 1s (which beta cannot handle)
-summary(SentinelNDVI.wetland$mean_beta)
-summary(ModisNDVI.wetland$mean_beta)
-summary(LandsatNDVI.wetland$mean_beta)
+summary(SentinelNDVI.semi-natural$mean_beta)
+summary(ModisNDVI.semi-natural$mean_beta)
+summary(LandsatNDVI.semi-natural$mean_beta)
 # replace 1s in Landsat data with 0.9999
-LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
+LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
 
 # check if the three Satellite objects have the same structure (for concatenating them)
-names(SentinelNDVI.wetland)
-names(ModisNDVI.wetland)
-names(LandsatNDVI.wetland)
+names(SentinelNDVI.semi-natural)
+names(ModisNDVI.semi-natural)
+names(LandsatNDVI.semi-natural)
 # Sentinel and Landsat have each an extra column -> omit them when concatenating further below
 # one column is named slightly differently in the Sentinel data -> rename it
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
+SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
   rename('system.index' = 'system:index')
 
 # check if they have the same geometry
-st_crs(SentinelNDVI.wetland)
-st_crs(ModisNDVI.wetland)
-st_crs(LandsatNDVI.wetland)
+st_crs(SentinelNDVI.semi-natural)
+st_crs(ModisNDVI.semi-natural)
+st_crs(LandsatNDVI.semi-natural)
 # all good
 
 # add an increment to the year variable to avoid overlapping data being hidden in figures
-SentinelNDVI.wetland$year_jit <- SentinelNDVI.wetland$year + 0.3
-ModisNDVI.wetland$year_jit <- ModisNDVI.wetland$year - 0.3
-LandsatNDVI.wetland$year_jit <- LandsatNDVI.wetland$year
+SentinelNDVI.semi-natural$year_jit <- SentinelNDVI.semi-natural$year + 0.3
+ModisNDVI.semi-natural$year_jit <- ModisNDVI.semi-natural$year - 0.3
+LandsatNDVI.semi-natural$year_jit <- LandsatNDVI.semi-natural$year
 
 # concatenate the three Satellite objects
-allSatNDVI.wetland <- rbind(
-SentinelNDVI.wetland[,!names(SentinelNDVI.wetland) %in% "subtype"],
-ModisNDVI.wetland,
-LandsatNDVI.wetland[,!names(LandsatNDVI.wetland) %in% "column_label"]
+allSatNDVI.semi-natural <- rbind(
+SentinelNDVI.semi-natural[,!names(SentinelNDVI.semi-natural) %in% "subtype"],
+ModisNDVI.semi-natural,
+LandsatNDVI.semi-natural[,!names(LandsatNDVI.semi-natural) %in% "column_label"]
 )
 # add variable for Satellite identity
-allSatNDVI.wetland$Sat <- c(
-  rep("Sentinel",nrow(SentinelNDVI.wetland)),
-  rep("Modis",nrow(ModisNDVI.wetland)),
-  rep("Landsat",nrow(LandsatNDVI.wetland))
+allSatNDVI.semi-natural$Sat <- c(
+  rep("Sentinel",nrow(SentinelNDVI.semi-natural)),
+  rep("Modis",nrow(ModisNDVI.semi-natural)),
+  rep("Landsat",nrow(LandsatNDVI.semi-natural))
 )
-allSatNDVI.wetland$Sat <- factor(allSatNDVI.wetland$Sat,levels=c("Sentinel","Modis","Landsat"))
-levels(allSatNDVI.wetland$Sat)
+allSatNDVI.semi-natural$Sat <- factor(allSatNDVI.semi-natural$Sat,levels=c("Sentinel","Modis","Landsat"))
+levels(allSatNDVI.semi-natural$Sat)
 ```
 Now we can plot the time series for each main ecosystem type, showing each satellite time series separately:
 ```{r}
 # plot 
-allSatNDVI.wetland %>%
+allSatNDVI.semi-natural %>%
   ggplot( aes(x=year_jit, y=mean, color=Sat )) + 
   geom_point() +
   facet_wrap(~hovedtype, ncol = 1)
@@ -837,42 +837,42 @@ We can test if there are consistent temporal changes in NDVI by running regressi
 
 We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for each satellite.
 ```{r message=FALSE, warning=FALSE}
-model.wetland.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.wetland[SentinelNDVI.wetland$tilstand=="God",])
-model.wetland.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.wetland[ModisNDVI.wetland$tilstand=="God",])
-model.wetland.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.wetland[LandsatNDVI.wetland$tilstand=="God",])
+model.semi-natural.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.semi-natural[SentinelNDVI.semi-natural$tilstand=="God",])
+model.semi-natural.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.semi-natural[ModisNDVI.semi-natural$tilstand=="God",])
+model.semi-natural.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.semi-natural[LandsatNDVI.semi-natural$tilstand=="God",])
 
-summary(model.wetland.time.GodTilst.Sent)$coefficients$cond
-summary(model.wetland.time.GodTilst.Modi)$coefficients$cond
-summary(model.wetland.time.GodTilst.Land)$coefficients$cond
+summary(model.semi-natural.time.GodTilst.Sent)$coefficients$cond
+summary(model.semi-natural.time.GodTilst.Modi)$coefficients$cond
+summary(model.semi-natural.time.GodTilst.Land)$coefficients$cond
 ```
-There's an increase in NDVI over time in all three satellite time series in essentially all major wetland ecosystem types in good condition. It is worth pointing out though that the model on the MODIS data shows 1/10 of the effect size for the time slope and has way less statistical power compared to Sentinel and Landsat.
+There's an increase in NDVI over time in all three satellite time series in essentially all major semi-natural ecosystem types in good condition. It is worth pointing out though that the model on the MODIS data shows 1/10 of the effect size for the time slope and has way less statistical power compared to Sentinel and Landsat.
 
-Given the systematically higher NDVI-values with decreasing condition in semi-natural wetlands, We may ask the question if the temporal NDVI increase might be stronger in semi-natural wetlands?
+Given the systematically higher NDVI-values with decreasing condition in semi-natural semi-naturals, We may ask the question if the temporal NDVI increase might be stronger in semi-natural semi-naturals?
 ```{r message=FALSE, warning=FALSE}
-model.wetland.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.wetland[SentinelNDVI.wetland$hovedtype %in% c("V9","V10"),])
-model.wetland.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.wetland[ModisNDVI.wetland$hovedtype %in% c("V9","V10"),])
-model.wetland.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.wetland[LandsatNDVI.wetland$hovedtype %in% c("V9","V10"),])
-summary(model.wetland.time.tilst.V9V10.Sent)$coefficients$cond
-summary(model.wetland.time.tilst.V9V10.Modi)$coefficients$cond
-summary(model.wetland.time.tilst.V9V10.Land)$coefficients$cond
+model.semi-natural.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.semi-natural[SentinelNDVI.semi-natural$hovedtype %in% c("V9","V10"),])
+model.semi-natural.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.semi-natural[ModisNDVI.semi-natural$hovedtype %in% c("V9","V10"),])
+model.semi-natural.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.semi-natural[LandsatNDVI.semi-natural$hovedtype %in% c("V9","V10"),])
+summary(model.semi-natural.time.tilst.V9V10.Sent)$coefficients$cond
+summary(model.semi-natural.time.tilst.V9V10.Modi)$coefficients$cond
+summary(model.semi-natural.time.tilst.V9V10.Land)$coefficients$cond
 ```
-Indeed, the temporal NDVI increase has been stronger in semi-natural wetlands with reduced ecological condition, in both Sentinel and Landsat. For MODIS, the time slope is again 1/10 of the slopes in the other two satellite time series, and it is not significant.
+Indeed, the temporal NDVI increase has been stronger in semi-natural semi-naturals with reduced ecological condition, in both Sentinel and Landsat. For MODIS, the time slope is again 1/10 of the slopes in the other two satellite time series, and it is not significant.
 
 # Overall conclusion
-NDVI in wetland ecosystem does vary with condition and also with ecosystem type but the variance and thus overlap between condition classes and ecosystem types is large. Especially the semi-natural wetland ecosystems show a very consistent pattern of higher NDVI and larger temporal NDVI increase in sites in reduced ecological condition, which also links well to the registered condition variables behind the lower condition scores (shrub/tree encroachment, low land-use intensity, succession) and thus reduced land-use as the main pressure identified for these systems.
+NDVI in semi-natural ecosystem does vary with condition and also with ecosystem type but the variance and thus overlap between condition classes and ecosystem types is large. Especially the semi-natural semi-natural ecosystems show a very consistent pattern of higher NDVI and larger temporal NDVI increase in sites in reduced ecological condition, which also links well to the registered condition variables behind the lower condition scores (shrub/tree encroachment, low land-use intensity, succession) and thus reduced land-use as the main pressure identified for these systems.
 The large variance and thus overlap between condition classes and ecosystem types makes it generally difficult to define useful scaling values for absolute NDVI values.
 Since ecological condition also relates to the temporal development of NDVI values in the analyses above, an alternative approach can be to define scaling values for time slopes as for instance has been done for the NDVI indicator in the ecological condition assessment for Norwegian mountains (Framstad et al. 2022, see references above).
 
 Beyond these considerations, there are two general issues which limit a more comprehensive and robust application of satellite based NDVI-data in an ecological condition context:
 
-# 1) We are lacking ecosystem maps for wetland ecosystems
-The study at hand clearly shows that different wetland ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values for at least the different major ecosystem types within wetlands separately.
-# 2) We are lacking a good ecological understanding and ground-truthing for NDVI in wetland ecosystems
-Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in wetlands. Here, we need field studies investigating:
+# 1) We are lacking ecosystem maps for semi-natural ecosystems
+The study at hand clearly shows that different semi-natural ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values for at least the different major ecosystem types within semi-naturals separately.
+# 2) We are lacking a good ecological understanding and ground-truthing for NDVI in semi-natural ecosystems
+Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in semi-naturals. Here, we need field studies investigating:
 - The connection between NDVI and ecological drivers like for example potential effects of Nitrogen deposition
 
-- How reflectance in different wetland types is affected by how moist the moss layer is at the time of measuring.
-The literature suggests a high variability in NDVI measurements from mosses in particular, in part due to moisture content (REF). Minerotrophic wetlands (V1) are more dominated by graminoids than V3, and the moss-layer is generally more visible from above. At the same time, wetlands are generally drier in the western parts of Norway than in the East (REF), so NDVI patterns may, at least in part, be determined by moisture.
+- How reflectance in different semi-natural types is affected by how moist the moss layer is at the time of measuring.
+The literature suggests a high variability in NDVI measurements from mosses in particular, in part due to moisture content (REF). Minerotrophic semi-naturals (V1) are more dominated by graminoids than V3, and the moss-layer is generally more visible from above. At the same time, semi-naturals are generally drier in the western parts of Norway than in the East (REF), so NDVI patterns may, at least in part, be determined by moisture.
 
 In addition, further investigations should test how NDVI-condition pattern vary across biogeographic regions in addition to administrative regions (which are ecologically irrelevant), in order to better understand the results for the administrative regions.
 
