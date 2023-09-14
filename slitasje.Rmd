@@ -1,10 +1,15 @@
-# Slitasje og kjørespor {#slitasje}
+# Anthropogenic disturbance to soils and vegetation ADSV {#slitasje}
+
 
 *Author and date:* 
 
 Anders L. Kolstad
 
-March 2023
+September 2023
+
+
+Norwegian indicator name: Slitasje
+
 
 ```{r setup, include=FALSE}
 library(knitr)
@@ -973,7 +978,7 @@ saveRDS(all_stats, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/da
 all_stats <- readRDS(paste0(pData, "cache/all_stats.rds"))
 ```
 
-```{r dense-stats, fig.height= 12, fig.cap="Barplot showing the number of data points, the area weighted indicator values and the sd for the ADSV indicator. Transparent bars represents categories with less than 150 data points."}
+```{r dense-stats, fig.height= 12, fig.cap="Barplot showing the number of data points, the area weighted scaled indicator values and the sd for the ADSV indicator. Transparent bars represents categories with less than 150 data points, indicated by the vertical line in the top row of panes."}
 temp_plot <- all_stats %>%
   mutate(HIF_NA = case_when(
     n > 150 ~ HIF
@@ -990,6 +995,7 @@ ggplot(temp_plot, aes(x = region, y = n, group = HIF, fill = HIF_NA))+
   theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
   labs(fill = "HIF")+
+  geom_hline(yintercept=150)+
   facet_wrap(.~eco),
 ggplot(temp_plot, aes(x = region, y = w_mean, group = HIF, fill = HIF_NA))+
   geom_bar(position = "dodge", stat = "identity", col="black")+
@@ -1204,12 +1210,12 @@ seminat_slitasje_extr_trd <- sf::st_crop(seminat_slitasje_extr, myBB)
 natOpen_slitasje_extr_trd <- sf::st_crop(natOpen_slitasje_extr, myBB)
 ```
 
-```{r extrapolated-slitasje, fig.cap="Slitasje indicator extrapolated over Trondheim, with one map for each ecosystem. The map is not masked against ecosystem delineation maps, which make them easy to missinterpret."}
+```{r extrapolated-slitasje, fig.cap="ADSV indicator extrapolated over Trondheim, with one map for each ecosystem. The map is not masked against ecosystem delineation maps, which make them easy to missinterpret."}
 myCol <- "RdYlGn"
 tmap_arrange(
 tm_shape(wetlands_slitasje_extr_trd)+
   tm_polygons(col = "w_mean",
-    title="Slitasje indicator",
+    title="Indicator value",
     palette = myCol,
     style="cont",
     breaks = c(0,1))+
@@ -1220,7 +1226,7 @@ tm_shape(wetlands_slitasje_extr_trd)+
 
 tm_shape(seminat_slitasje_extr_trd)+
   tm_polygons(col = "w_mean",
-    title="Slitasje indicator",
+    title="Indicator value",
     palette = myCol,
     style="cont",
     breaks = c(0,1))+
@@ -1231,7 +1237,7 @@ tm_shape(seminat_slitasje_extr_trd)+
 
 tm_shape(natOpen_slitasje_extr_trd)+
   tm_polygons(col = "w_mean",
-    title="Slitasje indicator",
+    title="Indicator value",
     palette = myCol,
     style="cont",
     breaks = c(0,1))+
@@ -1312,7 +1318,7 @@ wall-to-wall indicator value and errors (e.g. Fig \@ref(fig:wall-to-wall-summer-
 covering other ETs. Otherwise the maps would not we visually
 interpretative.
 
-### Slitasje in wetlands
+### ADSV in wetlands
 
 This is how I plan to export the final product.
 
