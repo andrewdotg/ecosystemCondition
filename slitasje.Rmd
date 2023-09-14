@@ -1,4 +1,4 @@
-# Anthropogenic disturbance to soils and vegetation ADSV {#slitasje}
+# Anthropogenic disturbance to soils and vegetation (ADSV) {#slitasje}
 
 
 *Author and date:* 
@@ -59,7 +59,7 @@ Since the data is not sampled in a systematic or random way, we must take extra 
 
 Here is a general workflow for the calculation of the indicator.
 
-1.  Import [Nature type data](#NTM) data set (incl. GRUK) and [ANO data
+1.  Import [Nature type data](#NTM) data set and [ANO data
     set](#ANO-import)
 
 2.  Identify the [relevant](#naturtype) nature types and [subset](#NTM)
@@ -67,10 +67,10 @@ Here is a general workflow for the calculation of the indicator.
 
 3.  Convert [ANO points to polygons](#ANO-points-to-poly)
 
-4.  For each polygon, extract the NiN-variable that has the lowest value
-    (one-out all-out principle), e.g. Fig. \@ref(fig:slitasje-naturetype).
+4.  For each polygon, extract the variable that has the lowest value
+    (one-out all-out principle), e.g. Fig. \@ref(fig:slitasje-naturetype). The four variables are 7TK, 7SE (both NiN2-variables) and PRTK and PRSL (both defined by the Norwegain Environmental Agency)
 
-5.  [Combine](#combine-nt-ano) data sets
+5.  [Combine](#combine-nt-ano) data sets (nature types and ANO) but keep ecosystems separate. 
 
 6.  [Scale](#scale-slitasje-ind) the `slitasje` variable based on
     reference values.
@@ -81,7 +81,7 @@ Here is a general workflow for the calculation of the indicator.
     and assessment regions
 
 9.  Confirm relationship between infrastructure index and indicator
-    values to justify the extrapolation
+    values to [justify the extrapolation](#validate-slitasje)
 
 10. TO DO: Prepare ecosystem delineation maps and us ethese to mask the extrapolated indicator maps
 
@@ -113,7 +113,7 @@ The variables are recorded on a coarse four-step ordinal scale (Fig.
 
 ### Temporal coverage
 
-The data goes back to 2018. I therefore bulk all the data from 2018 to 2022 into one time step. I then use the mean date for the raw data,
+The data goes back to 2018. I therefore [bulk all the data from 2018 to 2022](https://github.com/NINAnor/ecosystemCondition/issues/101#issuecomment-1719170208) into one time step. I then use the mean date for the raw data,
 and define the variable as belonging to the year 2020 (read more
 [here](#scaled-slitasje-variable)).
 
@@ -126,9 +126,9 @@ For a run through of the nature type data set, see [here](#naturtype).
 ### Norwegain standard
 
 The indicator is tagged to the *Økologisk egenskap* called
-**Primærproduksjon** (Primary productivity). This is tentative, and
+**Primærproduksjon** (Primary productivity). This is [somewhat tentative](https://github.com/NINAnor/ecosystemCondition/issues/96), and
 perhaps *abiotiske forhold* is more suited. But the thought behind the
-choice is that *slitasje* affect the potential for primary productivity.
+choice is that *ADSV* affect the potential for primary productivity.
 
 ### UN standard
 
@@ -139,7 +139,7 @@ composition.
 
 ## Collinearities with other indicators
 
-_Slitasje_ is not thought to exhibit collinearity with any other indicator at
+_ADSV_ is not thought to exhibit collinearity with any other indicator at
 the present.
 
 ## Reference condition and values
@@ -148,10 +148,11 @@ the present.
 
 The reference condition is one with minimal negative human impact. This
 is also true for semi-natural ecosystems. For example, in the reference
-condition, *slitasje* in semi-natural ecosystems is defined to be zero,
+condition, *ADSV* in semi-natural ecosystems is defined to be zero,
 even though at no point in time would this condition be realized.
 
 ### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
+For a further discussion on this topic, see [GitHub issue 88](https://github.com/NINAnor/ecosystemCondition/issues/88). 
 
 * Upper = 0%
 
@@ -159,18 +160,18 @@ even though at no point in time would this condition be realized.
 
 * Lower = 100%
 
-The upper reference value is 0 (no *slitasje*), and the lower reference
-value is 100%. Note that 100% _slitasje_ does not mean that all the area
+The upper reference value is 0% (no *damage*), and the lower reference
+value is 100%. Note that 100% _damage_ does not mean that all the area
 must be scarred or damaged, but that all hypothetical quadrats around a
 point is affected (the variable is frequency-driven, and not
-amount-driven). The threshold for good ecosystem condition is 10%
-damage. Perhaps is should be set somewhat higher, like 20 or 30%.
-The indicator value could be interpretted differently at the polygon
-vs at the landscape scale. At the polygon scale, 10% damage may seem 
-like not that much, whilst at the landscape scale, 10% seems more serious.
-This final threshold value should be debated and illustrated with examples.
+amount-driven). The threshold for good ecosystem condition is set to 10%
+damage. 
 
-Read about the normalisation [here](##scaled-slitasje-variable).
+The indicator value could be interpreted differently at the polygon
+_vs_ landscape scale. At the polygon scale, 10% damage may seem 
+like not that much, whilst at the landscape scale, 10% seems more serious.
+
+Read about the normalisation [here](#scaled-slitasje-variable).
 
 ## Uncertainties
 
@@ -285,7 +286,7 @@ The variables use slightly different scales. PRSL and PRTK use this 8
 step scale:
 
 ```{r eight-step, fig.cap="Eight step condition scale"}
-knitr::include_graphics("images/mdirPRscale.PNG")
+knitr::include_graphics("images/ninAR8.PNG")
 ```
 
 7TK and 7SE use a 4 step scale
@@ -294,7 +295,7 @@ knitr::include_graphics("images/mdirPRscale.PNG")
 knitr::include_graphics("images/ninAR4b.PNG")
 ```
 
-I here transfer these ordinal variables over to a continuous scale.
+I here transfer these ordinal variables over to a continuous scale based on the mean value of each step, but we acknowledge that there are important assumptions being made here, for example that the mean _real_ value for 7TK or 7SE 3 is the mid-point in the range from 0.5 to 1 (i.e. 0.75). This is probably not correct. The large range of the steps, particularly for the 7SE and 7TK variables, poses a problem for assessing ecological condition at the polygon scale, but less so at aggregated scales. Hence, the indicator should not be presented and interpreted at the polygon scale.  
 
 ```{r}
 naturetypes <- naturetypes %>%
@@ -332,7 +333,7 @@ naturetypes_wide <- as.data.frame(naturetypes_wide)
 head(naturetypes_wide, 10)
 ```
 
-First I will combine 7TK and PRTK, and also 7SE and PRSL
+First I will combine 7TK and PRTK, and also 7SE and PRSL using the one-out-all-out principle. This is a more conservative approach than for example simply adding these together, but we do it this way because the two variables are likely to overlap considerably at small spatial scales. 
 
 ```{r}
 naturetypes_wide <- naturetypes_wide %>%
@@ -449,10 +450,11 @@ naturetypes <- naturetypes[!is.na(naturetypes$slitasje),]
 
 This variable is also recorded in
 [GRUK](https://www.nina.no/Naturmangfold/Trua-natur/%C3%85pen-grunnlendt-kalkmark).
-The nature type data set I'm working on here includes this data already
-(presently only 2021 included). GRUK also records a related variable:
-`% cover in 5m radii circles`, which is much more detailed. This data is
-not published. In any case it is better to use the harmonized data set
+This is a stratified and intensive monitoring program for calcareous naturally open areas around the Oslo fjord. 
+The nature type data set I'm working on here includes some data from GRUK already
+(presently only 2021 included). The full GRUK data set also contains a related variable:
+`% cover in 5m radii circles`, which is much more detailed than the four variable we have looked at so far. This data is
+not published. In any case it might be better to use the harmonized data set
 in our case.
 
 #### ANO {#ANO-import}
@@ -461,8 +463,8 @@ Arealrepresentativ Naturovervåking (ANO) consist of 1000 systematically
 placed locations each with 18 sample points. In each sample point a
 circle of 250 m2 is visualised, and the main ecosystem is recorded.
 Depending on the main ecosystem, certain NiN variables are also
-recorded. 7SE is recorded for våtmark, but not semi-natural areas or
-naturally open areas. 7TK is recorded in våtmark and naturally open
+recorded. 7SE is recorded for våtmark (wetlands), but not semi-natural areas or
+naturally open areas. 7TK is recorded in wetlands and naturally open
 areas only.
 
 | Variable | Våtmark | Naturlig åpne områder | Semi-naturlige områder |
@@ -498,7 +500,7 @@ table(ano$aar)
 
 This data set only contains data from year 2019 and 2021. We need to
 update this data set later. It is not clear why there is no data from
-2020.
+2020. This topic is maintained as a [GitHub issue](https://github.com/NINAnor/ecosystemCondition/issues/101).
 
 Each point/row here is 250 square meters. The data also contains
 information about how big a proportion of this area is made up of the
@@ -618,7 +620,7 @@ barplot(table(ano$var_7SE), xlab="7SE scores")
 
 The ANO sites seem to be in an even better condition than the localities in the naturtype data set.
 
-Combining these two variables 7TJ and 7SE into one, same as for the nature
+Combining these two variables 7TK and 7SE into one, same as for the nature
 type data.
 
 ```{r}
@@ -909,7 +911,7 @@ HIA_regions <- HIA_regions %>%
   mutate(region_HIF = paste(region, infrastructureIndex))
 ```
 
-#### Validate
+#### Validate {#validate-slitasje}
 
 I now have `r length(unique(HIA_regions$region_HIF))` unique areas (for each main ecosystem) that I will, given
 there is data, extrapolate indicator values over.
