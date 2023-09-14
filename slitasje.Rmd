@@ -280,7 +280,9 @@ barplot(table(naturetypes$kartleggingsår))
 
 Now I need to create a single row per locality with a new variable which
 is a product/function of the four variables "7SE", "7TK", "PRTK" and
-"PRSL". I want to base this indicator on whichever of the variables have the highest value (worst condition). Therefore I first convert the ordinal scale to a continuous scale, using the median value of each ordinal step.
+"PRSL". 
+
+I initially baseed this indicator on whichever of the variables have the highest value (worst condition), but after some thought and discussion I now use an additive approach (adding the variable values togther). I first convert the ordinal scale to a continuous scale, using the median value of each ordinal step.
 
 The variables use slightly different scales. PRSL and PRTK use this 8
 step scale:
@@ -333,7 +335,7 @@ naturetypes_wide <- as.data.frame(naturetypes_wide)
 head(naturetypes_wide, 10)
 ```
 
-First I will combine 7TK and PRTK, and also 7SE and PRSL using the one-out-all-out principle. This is a more conservative approach than for example simply adding these together, but we do it this way because the two variables are likely to overlap considerably at small spatial scales. 
+First I will combine 7TK and PRTK, and also 7SE and PRSL.
 
 ```{r}
 naturetypes_wide <- naturetypes_wide %>%
@@ -382,42 +384,44 @@ ggplot(temp, aes(x = factor(TK),
        y = "Number of localities")
 ```
 
-Then I can combine these two variables into a composite variable called
+Then I can add these two variables together into a composite variable called
 `slitasje`
 
 ```{r, warning=F}
-naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("TK", "SE")], 1, max, na.rm=T)
+naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("TK", "SE")], 1, sum, na.rm=T)
 ```
 
-When both variables are NA, we get -Inf. There were `r nrow(naturetypes_wide[naturetypes_wide$slitasje<0,])` cases of this. Removing these now.
-
+Chekhing for -Inf
 ```{r}
-naturetypes_wide <- naturetypes_wide[naturetypes_wide$slitasje>=0,]
+nrow(naturetypes_wide[naturetypes_wide$slitasje<0,])
 ```
+No issues with that.
 
-```{r slitasje-naturetype, fig.cap="Slitasje scores.", fig.width=3}
+```{r slitasje-naturetype, fig.cap="ADSV scores.", fig.width=3}
 temp <- naturetypes_wide %>%
   group_by(slitasje) %>%
   summarise(sum = n())
 
-ggplot(temp, aes(x = factor(slitasje),
+ggplot(temp, aes(x = slitasje,
                  y = sum))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "Slitasje score converted to percentage",
+  labs(x = "ADSV score converted to percentage",
        y = "Number of localities") + 
-  theme(axis.text.x = element_text(angle=90, vjust=0.5))
+  theme(axis.text.x = element_text(angle=90, vjust=0.5))+
+  scale_x_continuous(
+    labels = scales::label_number(accuracy = 1))
 ```
 
-It appears most localities are in good condition.
+It appears most localities are in good condition. Note also that we can get >100% for the unscaled variable.  
 
-I would also like to know, when both tk and SE was recordedm
-how often TK was defining of the slitasje-indicator, and how 
-often it was SE. I can do this by taking the difference.
+I would also like to know, when both TK and SE was recorded,
+which one is likely to be in the worst (or best) condition. 
+I can do this by taking the difference.
 
-```{r, fig.cap="Counting the number of cases where TK or SE was defining of the slitasje indicator score.", fig.width=3}
+```{r, fig.cap="Counting the number of cases where TK or SE was in the worst condition for a given locality.", fig.width=3}
 
 
 diff <- naturetypes_wide$SE - naturetypes_wide$TK
@@ -432,13 +436,13 @@ ggplot(diff_tbl, aes(x = diff, y = Freq))+
            colour = "black",
            fill = "grey")+
   theme_bw(base_size = 12)+
-  labs(x = "Defining variable",
+  labs(x = "Variable indicating the worst state",
        y = "Number of localities")
 ```
 
 Looks like SE (= 7SE or PRSL) is more likely to be in a detrimental state.
 
-Now I will copy these slitasje-values into the sf object.
+Now I will copy these ADVS-values into the sf object.
 
 ```{r}
 naturetypes$slitasje <- naturetypes_wide$slitasje[match(naturetypes$identifikasjon_lokalId, naturetypes_wide$identifikasjon_lokalId)]
@@ -478,10 +482,10 @@ is recorded in withing the ANO data set.
 It would be very nice to have 7SE recorded for naturally open areas.
 This variable is very relevant here.
 
-I think I will only use våtmark here since my approach will be to the
+I think I will only use wetlands here since my approach will be to the
 'worst value' of the variable 7SE and 7TK (see below). I think not
 having 7SE for naturally open areas will underestimate the degree of
-degredation in these areas.
+degradation in these areas.
 
 
 > *ANO could harmonise better with the Naturetype data set if it included
@@ -623,26 +627,32 @@ The ANO sites seem to be in an even better condition than the localities in the 
 Combining these two variables 7TK and 7SE into one, same as for the nature
 type data.
 
-```{r}
-temp <- as.data.frame(ano)
-temp$slitasje <- apply(temp[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
-ano$slitasje <- temp$slitasje
-```
-
-Then I extract the mid values for each ordinal range step, like I did previously for the nature type data set.
+First I extract the mid values for each ordinal range step, like I did previously for the nature type data set.
 
 ```{r}
 ano <- ano %>%
-  mutate(slitasje = case_match(slitasje,
+  mutate(var_7TK = case_match(var_7TK,
+             0 ~ 0,
+             1 ~ mean(c(0, 1/16))*100,
+             2 ~ mean(c(1/16, 1/2))*100,
+             3 ~ 75)) %>%
+  mutate(var_7SE = case_match(var_7SE,
              0 ~ 0,
              1 ~ mean(c(0, 1/16))*100,
              2 ~ mean(c(1/16, 1/2))*100,
              3 ~ 75))
 ```
 
+```{r}
+temp <- as.data.frame(ano)
+temp$slitasje <- apply(temp[,c("var_7TK", "var_7SE")], 1, sum, na.rm=T)
+ano$slitasje <- temp$slitasje
+```
+
+
 
 ```{r, fig.cap="Distribution of slitasje scores in the ANO data", fig.width=6}
-barplot(table(ano$slitasje), xlab="% Slitasje", ylab = "Number of localities")
+barplot(table(ano$slitasje), xlab="ADVS variable score", ylab = "Number of localities", las=2)
 ```
 
 ##### Combine Naturtype data and ANO {#combine-nt-ano}
@@ -729,24 +739,26 @@ unique(st_geometry_type(slitasje_data))
 
 Ok.
 
-#### Distribution of Slitasje scores
+#### Distribution of ADVS scores
 
-```{r, fig.cap="Slitasje scores (ANO Naturetype (and GRUK) data combined). The score for a locality equals the highest (worst) score of the related variables 7TK, 7SE, PRSL and PRTK."}
+```{r, fig.cap="ADVS variable scores (ANO Naturetype data combined). The score for a locality equals the sum of the related variables 7TK, 7SE, PRSL and PRTK."}
 temp <- as.data.frame(table(slitasje_data$slitasje))
-ggplot(temp, aes(x = Var1,
+ggplot(temp, aes(x = as.numeric(Var1),
                  y = Freq))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "slitasje score",
-       y = "Number of localities")
+  labs(x = "ADVS score",
+       y = "Number of localities")+
+  scale_x_continuous(
+    labels = scales::label_number(accuracy = 1))
 ```
 
 Let's see the proportion of data points (not area) origination from each
 data set
 
-```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the slitasje indicator.", fig.width=4}
+```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the ADVS indicator.", fig.width=4}
 temp <- as.data.frame(table(slitasje_data$origin))
 
 ggplot(temp, aes(x = Var1,
@@ -818,7 +830,7 @@ I will use the same reference levels/values for all of Norway:
 ```{r}
 upper <- 0
 lower <- 100
-threshold <- 5
+threshold <- 10
 ```
 
 This implies that it is impossible to detect or measure a state when it
