@@ -312,7 +312,8 @@ levels(nin.wetland$region)
 nin.wetland$region <- factor(nin.wetland$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
 levels(nin.wetland$region)
 
-
+# check # of wetland types in different regions
+nin.wetland %>% group_by(hovedtype, region) %>% summarise(n = n()) %>% print(n=30)
 
 
 
