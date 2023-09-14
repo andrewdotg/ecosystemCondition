@@ -1201,7 +1201,7 @@ seminat_slitasje_extr_trd <- sf::st_crop(seminat_slitasje_extr, myBB)
 natOpen_slitasje_extr_trd <- sf::st_crop(natOpen_slitasje_extr, myBB)
 ```
 
-```{r extrapolated-slitasje, fig.cap="Slitasje indicator extrapolated over Trondheim"}
+```{r extrapolated-slitasje, fig.cap="Slitasje indicator extrapolated over Trondheim, with one map for each ecosystem. The map is not masked against ecosystem delineation maps, which make them easy to missinterpret."}
 myCol <- "RdYlGn"
 tmap_arrange(
 tm_shape(wetlands_slitasje_extr_trd)+
