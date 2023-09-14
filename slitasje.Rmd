@@ -1073,11 +1073,11 @@ saveRDS(corrCheck, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/da
 corrCheck <- readRDS(paste0(pData, "cache/corrCheck.rds"))
 ```
 
-```{r slitasje-precentageplot, fig.height=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
+```{r slitasje-precentageplot, fig.height=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different scaled indicator values for the indicator named Anthropogenic disturbance to soils and vegetation."}
 ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
   geom_bar(position="fill")+
   theme_bw(base_size = 12)+
-  guides(fill = guide_legend("Sliatsje indicator"))+
+  guides(fill = guide_legend("Scaled indicator values"))+
   ylab("Fraction of data points")+
   xlab("HIF")+
   scale_fill_brewer(palette = "RdYlGn")+
