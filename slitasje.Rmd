@@ -189,7 +189,12 @@ indicator values within the accounting areas.
 
 ## References
 
-No additional references.
+Halvorsen, R. & Bratli, H. 2019. Dokumentasjon av NiN versjon 2.2 tilrettelagt for praktisk naturkartlegging: utvalgte variabler fra beskrivelsessystemet. – Natur i Norge, Artikkel 11 (versjon 2.2.0): 1–218 (Artsdatabanken, Trondheim; http://www.artsdatabanken.no.)
+
+Miljødirektoratet 2022. Kartleggingsinstruks - kartlegging av terrestriske Naturtyper etter NiN2. URL: https://www.miljodirektoratet.no/publikasjoner/2022/januar/kartleggingsinstruks-kartlegging-av-terrestriske-naturtyper-etter-nin/
+
+Miljødirektoratet 2023. Arealrepresnetativ Naturovervåking. Webpage. URL: https://www.miljodirektoratet.no/ansvarsomrader/overvaking-arealplanlegging/miljoovervaking/overvakingsprogrammer/natur-pa-land/arealrepresentativ-naturovervakning-ano/
+
 
 ## Analyses
 
@@ -828,7 +833,7 @@ inside eaTools.
 
 <!-- THE BREAKPOINT IS AT 0.5 RATHER THAN 0.6. TEST CODE FROM HERE: https://ninanor.github.io/eaTools/articles/normalise-condition-variable.html -->
 
-```{r slitasje-normalise, fig.cap="Performing a linear break-point type normalisation of the slitasje variable.", fig.width=5}
+```{r slitasje-normalise, fig.cap="Performing a linear break-point type normalisation of the ADSV variable.", fig.width=5}
 eaTools::ea_normalise(data = slitasje_data,
                       vector = "slitasje",
                       upper_reference_level = lower,
