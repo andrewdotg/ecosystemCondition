@@ -37,7 +37,7 @@ Notice the degree of annotation.
 <br />
 
 _Author and date:_
-Jens Åström 2023-09-13
+Jens Åström 2023-09-14
 
 
 <br />
@@ -374,12 +374,12 @@ poll_richness_boot
 #> # A tibble: 6 × 6
 #>    year region_name no_species boot_sd boot_lower2.5
 #>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet         60.3    6.48          48.1
-#> 2  2021 Trøndelag         41.8    3.17          34.9
-#> 3  2021 Østlandet         53.9    5.92          42.2
-#> 4  2022 Sørlandet         29.7    5.90          18.6
-#> 5  2022 Trøndelag         34.7    2.49          29.8
-#> 6  2022 Østlandet         36.0    2.84          30.3
+#> 1  2020 Østlandet         60.2    6.02          48.3
+#> 2  2021 Trøndelag         41.9    3.21          34.6
+#> 3  2021 Østlandet         53.2    5.90          42.5
+#> 4  2022 Sørlandet         29.9    5.83          18.7
+#> 5  2022 Trøndelag         34.7    2.54          29.7
+#> 6  2022 Østlandet         35.8    2.81          30  
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -393,16 +393,16 @@ poll_richness_boot[2]
 #> # Groups:   year, region_name [6]
 #>     year region_name boot_values
 #>    <int> <chr>             <dbl>
-#>  1  2020 Østlandet          55.3
-#>  2  2020 Østlandet          61.3
-#>  3  2020 Østlandet          60.7
-#>  4  2020 Østlandet          68.3
-#>  5  2020 Østlandet          67.6
-#>  6  2020 Østlandet          67.3
-#>  7  2020 Østlandet          61.9
-#>  8  2020 Østlandet          46.7
-#>  9  2020 Østlandet          58  
-#> 10  2020 Østlandet          55.7
+#>  1  2020 Østlandet          59.2
+#>  2  2020 Østlandet          63.5
+#>  3  2020 Østlandet          62  
+#>  4  2020 Østlandet          65  
+#>  5  2020 Østlandet          52.5
+#>  6  2020 Østlandet          56  
+#>  7  2020 Østlandet          62.4
+#>  8  2020 Østlandet          64.5
+#>  9  2020 Østlandet          71.2
+#> 10  2020 Østlandet          53  
 #> # ℹ 5,984 more rows
 ```
 
@@ -415,12 +415,12 @@ poll_richness_boot
 #> # A tibble: 6 × 6
 #>    year region_name no_species boot_sd boot_lower2.5
 #>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet         60.3    6.48          48.1
-#> 2  2021 Trøndelag         41.8    3.17          34.9
-#> 3  2021 Østlandet         53.9    5.92          42.2
-#> 4  2022 Sørlandet         29.7    5.90          18.6
-#> 5  2022 Trøndelag         34.7    2.49          29.8
-#> 6  2022 Østlandet         36.0    2.84          30.3
+#> 1  2020 Østlandet         60.2    6.02          48.3
+#> 2  2021 Trøndelag         41.9    3.21          34.6
+#> 3  2021 Østlandet         53.2    5.90          42.5
+#> 4  2022 Sørlandet         29.9    5.83          18.7
+#> 5  2022 Trøndelag         34.7    2.54          29.7
+#> 6  2022 Østlandet         35.8    2.81          30  
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -435,12 +435,12 @@ diff_poll_richness_boot
 #> # A tibble: 6 × 6
 #>    year region_name no_species boot_sd boot_lower2.5
 #>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet       30.3      6.48        18.1  
-#> 2  2021 Trøndelag       11.8      3.17         4.9  
-#> 3  2021 Østlandet       23.9      5.92        12.2  
-#> 4  2022 Sørlandet       -0.260    5.90       -11.4  
-#> 5  2022 Trøndelag        4.66     2.49        -0.200
-#> 6  2022 Østlandet        5.99     2.84         0.300
+#> 1  2020 Østlandet      30.2       6.02        18.3  
+#> 2  2021 Trøndelag      11.9       3.21         4.6  
+#> 3  2021 Østlandet      23.2       5.90        12.5  
+#> 4  2022 Sørlandet      -0.0690    5.83       -11.3  
+#> 5  2022 Trøndelag       4.72      2.54        -0.300
+#> 6  2022 Østlandet       5.85      2.81         0    
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -463,11 +463,11 @@ diff_poll_richness_boot2
 #>    year region_name no_species boot_sd boot_lower2.5
 #>   <int> <chr>            <dbl>   <dbl>         <dbl>
 #> 1  2020 Østlandet         0       0              0  
-#> 2  2021 Trøndelag       -18.5     7.15         -33.2
-#> 3  2021 Østlandet        -6.43    8.79         -24.1
-#> 4  2022 Sørlandet       -30.6     8.70         -47.5
-#> 5  2022 Trøndelag       -25.7     6.91         -40.5
-#> 6  2022 Østlandet       -24.4     7.13         -39.1
+#> 2  2021 Trøndelag       -18.3     6.82         -32.1
+#> 3  2021 Østlandet        -6.92    8.46         -23  
+#> 4  2022 Sørlandet       -30.2     8.32         -46.8
+#> 5  2022 Trøndelag       -25.4     6.54         -38.7
+#> 6  2022 Østlandet       -24.3     6.75         -38.5
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -484,14 +484,14 @@ diff_poll_richness_boot3 <- poll_richness_boot / 30
 ```r
 diff_poll_richness_boot3
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet        1     0               1    
-#> 2  2021 Trøndelag        1     0               1    
-#> 3  2021 Østlandet        1     0               1    
-#> 4  2022 Sørlandet        0.918 0.114           0.62 
-#> 5  2022 Trøndelag        0.999 0.00695         0.993
-#> 6  2022 Østlandet        0.999 0.00556         1    
+#>    year region_name no_species  boot_sd boot_lower2.5
+#>   <int> <chr>            <dbl>    <dbl>         <dbl>
+#> 1  2020 Østlandet        1     0                1    
+#> 2  2021 Trøndelag        1.00  0.000211         1    
+#> 3  2021 Østlandet        1     0                1    
+#> 4  2022 Sørlandet        0.922 0.112            0.623
+#> 5  2022 Trøndelag        0.999 0.00725          0.99 
+#> 6  2022 Østlandet        0.999 0.00579          1    
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -683,7 +683,7 @@ The result is an object of class "comm_index" (community index). It comes with s
 hInd2022TrondGress
 #> $`Community indicator estimates, with percentiles`
 #>           2.5%             5% Point estimate            95% 
-#>      0.5416667      0.5833333      0.7083333      0.7500000 
+#>      0.5416667      0.5625000      0.7083333      0.7500000 
 #>          97.5% 
 #>      0.7500000
 ```
@@ -808,12 +808,12 @@ biomass_sn_diff
 #> # A tibble: 6 × 6
 #>    year region_name avg_wet_weight boot_sd boot_lower2.5
 #>   <int> <chr>                <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet            0.665  0.0817         0.511
-#> 2  2021 Trøndelag            0.865  0.0987         0.666
-#> 3  2021 Østlandet            0.586  0.0766         0.442
-#> 4  2022 Sørlandet            0.471  0.0642         0.343
-#> 5  2022 Trøndelag            0.626  0.0685         0.501
-#> 6  2022 Østlandet            0.366  0.0433         0.282
+#> 1  2020 Østlandet            0.668  0.0780         0.510
+#> 2  2021 Trøndelag            0.868  0.0976         0.662
+#> 3  2021 Østlandet            0.588  0.0750         0.440
+#> 4  2022 Sørlandet            0.467  0.0671         0.346
+#> 5  2022 Trøndelag            0.622  0.0674         0.495
+#> 6  2022 Østlandet            0.365  0.0418         0.285
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -852,12 +852,12 @@ biomass_sn_to_exp
 #> # A tibble: 6 × 7
 #>   region                         geom  year ind_value ind_sd
 #>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.471 0.0642
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.865 0.0987
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.626 0.0685
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.665 0.0817
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.586 0.0766
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.366 0.0433
+#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.467 0.0671
+#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.868 0.0976
+#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.622 0.0674
+#> 4 Østlandet (((179915 6537265, 18024…  2020     0.668 0.0780
+#> 5 Østlandet (((179915 6537265, 18024…  2021     0.588 0.0750
+#> 6 Østlandet (((179915 6537265, 18024…  2022     0.365 0.0418
 #> # ℹ 2 more variables: ind_lower2.5 <dbl>,
 #> #   ind_upper97.5 <dbl>
 ```
@@ -900,12 +900,12 @@ richness_sn_diff
 #> # A tibble: 6 × 6
 #>    year region_name no_species boot_sd boot_lower2.5
 #>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet        0.521  0.0467         0.432
-#> 2  2021 Trøndelag        0.697  0.0455         0.596
-#> 3  2021 Østlandet        0.769  0.0413         0.691
-#> 4  2022 Sørlandet        0.547  0.0620         0.423
-#> 5  2022 Trøndelag        0.630  0.0298         0.567
-#> 6  2022 Østlandet        0.625  0.0217         0.583
+#> 1  2020 Østlandet        0.522  0.0473         0.432
+#> 2  2021 Trøndelag        0.698  0.0448         0.601
+#> 3  2021 Østlandet        0.768  0.0421         0.687
+#> 4  2022 Sørlandet        0.549  0.0659         0.428
+#> 5  2022 Trøndelag        0.629  0.0283         0.573
+#> 6  2022 Østlandet        0.626  0.0204         0.585
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -944,12 +944,12 @@ richness_sn_to_exp
 #> # A tibble: 6 × 7
 #>   region                         geom  year ind_value ind_sd
 #>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.547 0.0620
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.697 0.0455
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.630 0.0298
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.521 0.0467
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.769 0.0413
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.625 0.0217
+#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.549 0.0659
+#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.698 0.0448
+#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.629 0.0283
+#> 4 Østlandet (((179915 6537265, 18024…  2020     0.522 0.0473
+#> 5 Østlandet (((179915 6537265, 18024…  2021     0.768 0.0421
+#> 6 Østlandet (((179915 6537265, 18024…  2022     0.626 0.0204
 #> # ℹ 2 more variables: ind_lower2.5 <dbl>,
 #> #   ind_upper97.5 <dbl>
 ```
@@ -998,12 +998,12 @@ pollinators_sn_diff
 #> # A tibble: 6 × 6
 #>    year region_name no_species boot_sd boot_lower2.5
 #>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet        0.921  0.0753         0.757
-#> 2  2021 Trøndelag        0.840  0.0634         0.702
-#> 3  2021 Østlandet        0.907  0.0751         0.741
-#> 4  2022 Sørlandet        0.594  0.113          0.378
-#> 5  2022 Trøndelag        0.695  0.0510         0.596
-#> 6  2022 Østlandet        0.634  0.0550         0.524
+#> 1  2020 Østlandet        0.923  0.0786         0.733
+#> 2  2021 Trøndelag        0.835  0.0628         0.708
+#> 3  2021 Østlandet        0.912  0.0725         0.756
+#> 4  2022 Sørlandet        0.598  0.114          0.376
+#> 5  2022 Trøndelag        0.694  0.0495         0.594
+#> 6  2022 Østlandet        0.640  0.0547         0.533
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -1042,12 +1042,12 @@ pollinators_sn_to_exp
 #> # A tibble: 6 × 7
 #>   region                         geom  year ind_value ind_sd
 #>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.594 0.113 
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.840 0.0634
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.695 0.0510
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.921 0.0753
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.907 0.0751
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.634 0.0550
+#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.598 0.114 
+#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.835 0.0628
+#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.694 0.0495
+#> 4 Østlandet (((179915 6537265, 18024…  2020     0.923 0.0786
+#> 5 Østlandet (((179915 6537265, 18024…  2021     0.912 0.0725
+#> 6 Østlandet (((179915 6537265, 18024…  2022     0.640 0.0547
 #> # ℹ 2 more variables: ind_lower2.5 <dbl>,
 #> #   ind_upper97.5 <dbl>
 ```
@@ -1093,12 +1093,12 @@ dung_sn_diff
 #> # A tibble: 6 × 6
 #>    year region_name no_species boot_sd boot_lower2.5
 #>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet        0.684  0.0501         0.586
-#> 2  2021 Trøndelag        0.922  0.0562         0.797
-#> 3  2021 Østlandet        0.836  0.0505         0.742
-#> 4  2022 Sørlandet        0.675  0.0681         0.544
-#> 5  2022 Trøndelag        0.926  0.0410         0.841
-#> 6  2022 Østlandet        0.636  0.0439         0.553
+#> 1  2020 Østlandet        0.686  0.0499         0.59 
+#> 2  2021 Trøndelag        0.927  0.0554         0.802
+#> 3  2021 Østlandet        0.834  0.0491         0.73 
+#> 4  2022 Sørlandet        0.675  0.0699         0.549
+#> 5  2022 Trøndelag        0.925  0.0413         0.838
+#> 6  2022 Østlandet        0.639  0.0451         0.551
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -1137,12 +1137,12 @@ dung_sn_to_exp
 #> # A tibble: 6 × 7
 #>   region                         geom  year ind_value ind_sd
 #>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.675 0.0681
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.922 0.0562
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.926 0.0410
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.684 0.0501
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.836 0.0505
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.636 0.0439
+#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.675 0.0699
+#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.927 0.0554
+#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.925 0.0413
+#> 4 Østlandet (((179915 6537265, 18024…  2020     0.686 0.0499
+#> 5 Østlandet (((179915 6537265, 18024…  2021     0.834 0.0491
+#> 6 Østlandet (((179915 6537265, 18024…  2022     0.639 0.0451
 #> # ℹ 2 more variables: ind_lower2.5 <dbl>,
 #> #   ind_upper97.5 <dbl>
 ```
@@ -1259,12 +1259,12 @@ par_sym_sn_diff
 #> # A tibble: 6 × 6
 #>    year region_name par_per_sym_richn boot_sd boot_lower2.5
 #>   <int> <chr>                   <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet               0.287  0.0239         0.246
-#> 2  2021 Trøndelag               0.891  0.0934         0.695
-#> 3  2021 Østlandet               0.605  0.0507         0.512
-#> 4  2022 Sørlandet               0.823  0.164          0.530
-#> 5  2022 Trøndelag               0.559  0.0627         0.447
-#> 6  2022 Østlandet               0.704  0.135          0.467
+#> 1  2020 Østlandet               0.287  0.0233         0.245
+#> 2  2021 Trøndelag               0.888  0.0961         0.688
+#> 3  2021 Østlandet               0.605  0.0512         0.503
+#> 4  2022 Sørlandet               0.825  0.164          0.531
+#> 5  2022 Trøndelag               0.561  0.0657         0.441
+#> 6  2022 Østlandet               0.695  0.130          0.473
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
@@ -1303,12 +1303,12 @@ par_sym_sn_exp
 #> # A tibble: 6 × 7
 #>   region                         geom  year ind_value ind_sd
 #>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.823 0.164 
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.891 0.0934
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.559 0.0627
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.287 0.0239
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.605 0.0507
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.704 0.135 
+#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.825 0.164 
+#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.888 0.0961
+#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.561 0.0657
+#> 4 Østlandet (((179915 6537265, 18024…  2020     0.287 0.0233
+#> 5 Østlandet (((179915 6537265, 18024…  2021     0.605 0.0512
+#> 6 Østlandet (((179915 6537265, 18024…  2022     0.695 0.130 
 #> # ℹ 2 more variables: ind_lower2.5 <dbl>,
 #> #   ind_upper97.5 <dbl>
 ```
@@ -1350,11 +1350,11 @@ gde_sn_diff
 #> # A tibble: 6 × 6
 #>    year region_name GDE_by_asv boot_sd boot_lower2.5
 #>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet        0.871  0.0280         0.814
-#> 2  2021 Trøndelag        0.755  0.0239         0.707
-#> 3  2021 Østlandet        0.825  0.0186         0.787
-#> 4  2022 Sørlandet        0.810  0.0274         0.756
-#> 5  2022 Trøndelag        0.746  0.0212         0.707
+#> 1  2020 Østlandet        0.872  0.0307         0.811
+#> 2  2021 Trøndelag        0.754  0.0248         0.703
+#> 3  2021 Østlandet        0.825  0.0182         0.79 
+#> 4  2022 Sørlandet        0.811  0.0278         0.759
+#> 5  2022 Trøndelag        0.747  0.0217         0.706
 #> 6  2022 Østlandet        0.933  0.0148         0.904
 #> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
@@ -1394,11 +1394,11 @@ gde_sn_to_exp
 #> # A tibble: 6 × 7
 #>   region                         geom  year ind_value ind_sd
 #>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.810 0.0274
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.755 0.0239
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.746 0.0212
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.871 0.0280
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.825 0.0186
+#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.811 0.0278
+#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.754 0.0248
+#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.747 0.0217
+#> 4 Østlandet (((179915 6537265, 18024…  2020     0.872 0.0307
+#> 5 Østlandet (((179915 6537265, 18024…  2021     0.825 0.0182
 #> 6 Østlandet (((179915 6537265, 18024…  2022     0.933 0.0148
 #> # ℹ 2 more variables: ind_lower2.5 <dbl>,
 #> #   ind_upper97.5 <dbl>
