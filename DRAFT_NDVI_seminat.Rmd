@@ -315,7 +315,7 @@ summary(as.numeric(nin$tilstand_num))
 
 
 ## filter out only semi-natural data
-nin.semi-natural <- nin %>% 
+nin.seminat <- nin %>% 
   filter(hovedoekosystem %in% c('Vaatmark')) %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
@@ -324,29 +324,29 @@ nin.semi-natural <- nin %>%
 
 
 # merge NiN-data with region
-nin.semi-natural = st_join(nin.semi-natural, regnor, left = TRUE)
-nin.semi-natural
+nin.seminat = st_join(nin.seminat, regnor, left = TRUE)
+nin.seminat
 
-colnames(nin.semi-natural)[c(1,9)] <- c("id","region_id")
+colnames(nin.seminat)[c(1,9)] <- c("id","region_id")
 
 # check that every nin-polygon still occurs only once
-summary(as.factor(nin.semi-natural$id))
-nin.semi-natural[nin.semi-natural$id=="NINFP2110008060",]
+summary(as.factor(nin.seminat$id))
+nin.seminat[nin.seminat$id=="NINFP2110008060",]
 # this one was assigned to both Western and Central Norway, we drop the latter
-nin.semi-natural <- nin.semi-natural[!row.names(nin.semi-natural) %in% '1144.1',]
+nin.seminat <- nin.seminat[!row.names(nin.seminat) %in% '1144.1',]
 
-nin.semi-natural <- nin.semi-natural %>% 
-  mutate(area_meters_nin = st_area(nin.semi-natural)
+nin.seminat <- nin.seminat %>% 
+  mutate(area_meters_nin = st_area(nin.seminat)
   )
 # check and edit the order of regions
-levels(nin.semi-natural$region)
-nin.semi-natural$region <- as.factor(nin.semi-natural$region)
-levels(nin.semi-natural$region)
-nin.semi-natural$region <- factor(nin.semi-natural$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
-levels(nin.semi-natural$region)
+levels(nin.seminat$region)
+nin.seminat$region <- as.factor(nin.seminat$region)
+levels(nin.seminat$region)
+nin.seminat$region <- factor(nin.seminat$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
+levels(nin.seminat$region)
 
 # splitting content in the ninbeskrivelsesvariabler-column into separate rows per variable and then separating that column into two for the variable name and value
-nin.semi-natural2 <- nin.semi-natural %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
+nin.seminat2 <- nin.seminat %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
   separate(col = ninbeskrivelsesvariabler,
            into = c("NiN_variable_code", "NiN_variable_value"),
            sep = "_",
@@ -354,120 +354,120 @@ nin.semi-natural2 <- nin.semi-natural %>% separate_rows(ninbeskrivelsesvariabler
   mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
   mutate(NiN_variable_code = as.factor(NiN_variable_code)) %>%
   subset(select = -ninbeskrivelsesvariabler)
-nin.semi-natural2 <- as.data.frame(nin.semi-natural2)
+nin.seminat2 <- as.data.frame(nin.seminat2)
 
 ```
 
 ```{r, echo = F}
 
 #load processed NiN-data from cache
-nin.semi-natural <- readRDS(paste0(here::here(),"/data/cache/nin.semi-natural.RDS"))
-nin.semi-natural2 <- readRDS(paste0(here::here(),"/data/cache/nin.semi-natural2.RDS"))
+nin.seminat <- readRDS(paste0(here::here(),"/data/cache/nin.seminat.RDS"))
+nin.seminat2 <- readRDS(paste0(here::here(),"/data/cache/nin.seminat2.RDS"))
 
 ```
 
 #### NDVI data
 ```{r, results='hide'}
 ## Sentinel-2
-# join nin.semi-natural & Sentinel NDVI data
-SentinelNDVI.semi-natural <- full_join(nin.semi-natural, df.s, by="id")
-#summary(SentinelNDVI.semi-natural)
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
+# join nin.seminat & Sentinel NDVI data
+SentinelNDVI.seminat <- full_join(nin.seminat, df.s, by="id")
+#summary(SentinelNDVI.seminat)
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(SentinelNDVI.semi-natural))
-#summary(SentinelNDVI.semi-natural)
+         area_meters = st_area(SentinelNDVI.seminat))
+#summary(SentinelNDVI.seminat)
 # get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(!is.na(hovedtype))
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(!is.na(mean))
-#summary(SentinelNDVI.semi-natural)
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(hovedtype))
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(mean))
+#summary(SentinelNDVI.seminat)
 # get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
-dim(SentinelNDVI.semi-natural)
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(as.numeric(area_meters) >= 100)
-dim(SentinelNDVI.semi-natural)
+dim(SentinelNDVI.seminat)
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(as.numeric(area_meters) >= 100)
+dim(SentinelNDVI.seminat)
 # split date into year, month & day
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 # add column for sub-ecosystem types
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
                                                         subtype = str_remove(subtype, '-'),
                                                         subtype = str_remove(subtype, '-'))
 # we are using max NDVI per year in every NiN polygon
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
-summary(SentinelNDVI.semi-natural)
+summary(SentinelNDVI.seminat)
 
 ## MODIS
-# join nin.semi-natural and Modis NDVI data
-ModisNDVI.semi-natural <- full_join(nin.semi-natural, df.m, by="id")
+# join nin.seminat and Modis NDVI data
+ModisNDVI.seminat <- full_join(nin.seminat, df.m, by="id")
 
-#summary(ModisNDVI.semi-natural)
-ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>%
+#summary(ModisNDVI.seminat)
+ModisNDVI.seminat <- ModisNDVI.seminat %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(ModisNDVI.semi-natural))
-#summary(ModisNDVI.semi-natural)
+         area_meters = st_area(ModisNDVI.seminat))
+#summary(ModisNDVI.seminat)
 # get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
-ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>% filter(!is.na(hovedtype))
-ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>% filter(!is.na(mean))
-#summary(ModisNDVI.semi-natural)
+ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(!is.na(hovedtype))
+ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(!is.na(mean))
+#summary(ModisNDVI.seminat)
 # get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
-dim(ModisNDVI.semi-natural)
-ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>% filter(as.numeric(area_meters) >= 62500)
-dim(ModisNDVI.semi-natural)
+dim(ModisNDVI.seminat)
+ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(as.numeric(area_meters) >= 62500)
+dim(ModisNDVI.seminat)
 # split date into year, month & day
-ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>%
+ModisNDVI.seminat <- ModisNDVI.seminat %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 # we are using max NDVI per year in every NiN polygon
-ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>%
+ModisNDVI.seminat <- ModisNDVI.seminat %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
-#summary(ModisNDVI.semi-natural)
+#summary(ModisNDVI.seminat)
 
 ## Landsat
-# join nin.semi-natural & Landsat NDVI data
-LandsatNDVI.semi-natural <- full_join(nin.semi-natural, df.l, by="id")
+# join nin.seminat & Landsat NDVI data
+LandsatNDVI.seminat <- full_join(nin.seminat, df.l, by="id")
 
-#summary(LandsatNDVI.semi-natural)
-LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
+#summary(LandsatNDVI.seminat)
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(LandsatNDVI.semi-natural))
-#summary(LandsatNDVI.semi-natural)
+         area_meters = st_area(LandsatNDVI.seminat))
+#summary(LandsatNDVI.seminat)
 # get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
-LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>% filter(!is.na(hovedtype))
-LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>% filter(!is.na(mean))
-#summary(LandsatNDVI.semi-natural)
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(hovedtype))
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(mean))
+#summary(LandsatNDVI.seminat)
 # get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
-dim(LandsatNDVI.semi-natural)
-LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>% filter(as.numeric(area_meters) >= 900)
-dim(LandsatNDVI.semi-natural)
+dim(LandsatNDVI.seminat)
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(as.numeric(area_meters) >= 900)
+dim(LandsatNDVI.seminat)
 # split date into year, month & day
-LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 # we are using max NDVI per year in every NiN polygon
-LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
-#summary(LandsatNDVI.semi-natural)
+#summary(LandsatNDVI.seminat)
 ```
 
 
@@ -475,15 +475,15 @@ LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
 
 # How are polygon sizes distributed?
 ```{r}
-summary(SentinelNDVI.semi-natural$area_meters)
-hist(SentinelNDVI.semi-natural$area_meters,xlim=c(0,20000),breaks=50000)
+summary(SentinelNDVI.seminat$area_meters)
+hist(SentinelNDVI.seminat$area_meters,xlim=c(0,20000),breaks=50000)
 abline(v=100,lty=2)
 ```
 semi-natural polygons stretch a large number of sizes from just above 100 sqm to more than 4 million sqm. 75% of all polygons are below 14264 sqm.
 
 # How does NDVI vary over the years
 ```{r}
-SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat %>%
   ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_grid( tilstand~hovedtype)
@@ -491,19 +491,19 @@ SentinelNDVI.semi-natural %>%
 2022 stands out with the highest NDVI values missing.
 WE omit 2022 for this analysis
 ```{r}
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(year != '2022')
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(year != '2022')
 ```
 
 # How do NDVI values vary between major and basic ecosystem types for sites in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r}
-SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x=hovedtype, y=mean )) + 
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey")
 
-SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x=subtype, y=mean )) + 
@@ -516,7 +516,7 @@ With respect to basic ecosystem types within the major types, NDVI appears to in
 
 # How does NDVI vary across regions in semi-naturals (major types) in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r}
-SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   filter(!is.na(region)) %>%
@@ -530,7 +530,7 @@ There is no obvious trends in geography.
 
 # How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)
 ```{r}
-SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
@@ -541,7 +541,7 @@ In semi-natural types (V9,V10), kaldkilde (V4), and ombrotrophic bogs (V3) NDVI 
 
 # Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 ```{r}
-nin.semi-natural2 %>%
+nin.seminat2 %>%
   filter(hovedtype=='V9') %>%
   filter(NiN_variable_code %in% c("1AG-B","7GR-GI","1AG-A-G","1AR-C-L","7TK","PRSL")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -560,7 +560,7 @@ nin.semi-natural2 %>%
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 
-nin.semi-natural2 %>%
+nin.seminat2 %>%
   filter(hovedtype=='V10') %>%
   filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7JB-GJ")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -577,7 +577,7 @@ nin.semi-natural2 %>%
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 
-nin.semi-natural2 %>%
+nin.seminat2 %>%
   filter(hovedtype=='V1') %>%
   filter(NiN_variable_code %in% c("7GR-GI","PRTK","7FA","7TK","7SE","PRSL")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -606,24 +606,24 @@ We can investigate further how NDVI and condition are connected using regression
 
 NDVI data are bounded between -1 and 1, and thus require modelling with an appropriate method that can handle bounded data. We can transform the variable to be bounded between 0 and 1 and use beta-regression models:
 ```{r}
-SentinelNDVI.semi-natural$mean_beta <- (SentinelNDVI.semi-natural$mean + 1) / 2
+SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
 # we drop V4 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
-SentinelNDVI.semi-natural.train <- SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat.train <- SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
   filter(hovedtype != 'V4')
 
 # make an extra numeric condition variable
-unique(SentinelNDVI.semi-natural.train$tilstand)
-SentinelNDVI.semi-natural.train <- SentinelNDVI.semi-natural.train %>% mutate(tilstand_num = recode(tilstand, 
+unique(SentinelNDVI.seminat.train$tilstand)
+SentinelNDVI.seminat.train <- SentinelNDVI.seminat.train %>% mutate(tilstand_num = recode(tilstand, 
                                             "God" = '0',
                                             "Moderat" = '1',
                                             "Redusert" = '2',
                                             "Svært redusert" = '3'))
-SentinelNDVI.semi-natural.train$tilstand_num <- as.numeric(SentinelNDVI.semi-natural.train$tilstand_num)
+SentinelNDVI.seminat.train$tilstand_num <- as.numeric(SentinelNDVI.seminat.train$tilstand_num)
 
 # We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
-model.semi-natural.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.semi-natural.train)
+model.semi-natural.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.seminat.train)
 model.semi-natural.cond.Sent <- StepBeta(model.semi-natural.cond.Sent)
 summary(model.semi-natural.cond.Sent)
 ```
@@ -638,17 +638,17 @@ rm(model.semi-natural.cond.Sent)
 ```
 
 ```{r message=FALSE, warning=FALSE}
-model.semi-natural.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Northern Norway",])
-model.semi-natural.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Central Norway",])
-model.semi-natural.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Western Norway",])
-model.semi-natural.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Eastern Norway",])
-model.semi-natural.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.semi-natural.train[SentinelNDVI.semi-natural.train$region=="Southern Norway",])
+model.semi-natural.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Northern Norway",])
+model.semi-natural.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Central Norway",])
+model.semi-natural.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Western Norway",])
+model.semi-natural.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Eastern Norway",])
+model.semi-natural.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Southern Norway",])
 
 ```
 
 # Northern Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.semi-natural.train %>%
+SentinelNDVI.seminat.train %>%
   filter(region=="Northern Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -666,7 +666,7 @@ V9 & V10: NDVI increases as condition deteriorates
 
 # Central Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.semi-natural.train %>%
+SentinelNDVI.seminat.train %>%
   filter(region=="Central Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -683,7 +683,7 @@ V3, V9 & V10: NDVI increases as condition deteriorates
 
 # Western Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.semi-natural.train %>%
+SentinelNDVI.seminat.train %>%
   filter(region=="Western Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -701,7 +701,7 @@ V9: NDVI does not change as condition deteriorates
 
 # Eastern Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.semi-natural.train %>%
+SentinelNDVI.seminat.train %>%
   filter(region=="Eastern Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -718,7 +718,7 @@ V9 & V10: NDVI increases as condition deteriorates
 
 # Southern Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.semi-natural.train %>%
+SentinelNDVI.seminat.train %>%
   filter(region=="Southern Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -746,87 +746,87 @@ First, there's again some data handling to do. We merge the Sentinel, MODIS, and
 ```{r results='hide'}
 ## data handling for time series analysis
 # Sentinel time series checked in exploratory analysis script
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>% filter(year != '2022')
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(year != '2022')
 
 # checking time series for MODIS
-ModisNDVI.semi-natural %>%
+ModisNDVI.seminat %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_wrap(~hovedtype)
 # 2022 does not stand out as in the Sentinel data, so we keep it
-ModisNDVI.semi-natural <- ModisNDVI.semi-natural %>%
+ModisNDVI.seminat <- ModisNDVI.seminat %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
 # checking time series for Landsat
-LandsatNDVI.semi-natural %>%
+LandsatNDVI.seminat %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_wrap(~hovedtype)
 # nothing worrying to see here either
-LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
 # transformation of NDVI scale to beta scale
-#SentinelNDVI.semi-natural$mean_beta <- (SentinelNDVI.semi-natural$mean + 1) / 2
-ModisNDVI.semi-natural$mean_beta <- (ModisNDVI.semi-natural$mean + 1) / 2
-LandsatNDVI.semi-natural$mean_beta <- (LandsatNDVI.semi-natural$mean + 1) / 2
+#SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
+ModisNDVI.seminat$mean_beta <- (ModisNDVI.seminat$mean + 1) / 2
+LandsatNDVI.seminat$mean_beta <- (LandsatNDVI.seminat$mean + 1) / 2
 
 # check if there's any 0s or 1s (which beta cannot handle)
-summary(SentinelNDVI.semi-natural$mean_beta)
-summary(ModisNDVI.semi-natural$mean_beta)
-summary(LandsatNDVI.semi-natural$mean_beta)
+summary(SentinelNDVI.seminat$mean_beta)
+summary(ModisNDVI.seminat$mean_beta)
+summary(LandsatNDVI.seminat$mean_beta)
 # replace 1s in Landsat data with 0.9999
-LandsatNDVI.semi-natural <- LandsatNDVI.semi-natural %>%
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
 
 # check if the three Satellite objects have the same structure (for concatenating them)
-names(SentinelNDVI.semi-natural)
-names(ModisNDVI.semi-natural)
-names(LandsatNDVI.semi-natural)
+names(SentinelNDVI.seminat)
+names(ModisNDVI.seminat)
+names(LandsatNDVI.seminat)
 # Sentinel and Landsat have each an extra column -> omit them when concatenating further below
 # one column is named slightly differently in the Sentinel data -> rename it
-SentinelNDVI.semi-natural <- SentinelNDVI.semi-natural %>%
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
   rename('system.index' = 'system:index')
 
 # check if they have the same geometry
-st_crs(SentinelNDVI.semi-natural)
-st_crs(ModisNDVI.semi-natural)
-st_crs(LandsatNDVI.semi-natural)
+st_crs(SentinelNDVI.seminat)
+st_crs(ModisNDVI.seminat)
+st_crs(LandsatNDVI.seminat)
 # all good
 
 # add an increment to the year variable to avoid overlapping data being hidden in figures
-SentinelNDVI.semi-natural$year_jit <- SentinelNDVI.semi-natural$year + 0.3
-ModisNDVI.semi-natural$year_jit <- ModisNDVI.semi-natural$year - 0.3
-LandsatNDVI.semi-natural$year_jit <- LandsatNDVI.semi-natural$year
+SentinelNDVI.seminat$year_jit <- SentinelNDVI.seminat$year + 0.3
+ModisNDVI.seminat$year_jit <- ModisNDVI.seminat$year - 0.3
+LandsatNDVI.seminat$year_jit <- LandsatNDVI.seminat$year
 
 # concatenate the three Satellite objects
-allSatNDVI.semi-natural <- rbind(
-SentinelNDVI.semi-natural[,!names(SentinelNDVI.semi-natural) %in% "subtype"],
-ModisNDVI.semi-natural,
-LandsatNDVI.semi-natural[,!names(LandsatNDVI.semi-natural) %in% "column_label"]
+allSatNDVI.seminat <- rbind(
+SentinelNDVI.seminat[,!names(SentinelNDVI.seminat) %in% "subtype"],
+ModisNDVI.seminat,
+LandsatNDVI.seminat[,!names(LandsatNDVI.seminat) %in% "column_label"]
 )
 # add variable for Satellite identity
-allSatNDVI.semi-natural$Sat <- c(
-  rep("Sentinel",nrow(SentinelNDVI.semi-natural)),
-  rep("Modis",nrow(ModisNDVI.semi-natural)),
-  rep("Landsat",nrow(LandsatNDVI.semi-natural))
+allSatNDVI.seminat$Sat <- c(
+  rep("Sentinel",nrow(SentinelNDVI.seminat)),
+  rep("Modis",nrow(ModisNDVI.seminat)),
+  rep("Landsat",nrow(LandsatNDVI.seminat))
 )
-allSatNDVI.semi-natural$Sat <- factor(allSatNDVI.semi-natural$Sat,levels=c("Sentinel","Modis","Landsat"))
-levels(allSatNDVI.semi-natural$Sat)
+allSatNDVI.seminat$Sat <- factor(allSatNDVI.seminat$Sat,levels=c("Sentinel","Modis","Landsat"))
+levels(allSatNDVI.seminat$Sat)
 ```
 Now we can plot the time series for each main ecosystem type, showing each satellite time series separately:
 ```{r}
 # plot 
-allSatNDVI.semi-natural %>%
+allSatNDVI.seminat %>%
   ggplot( aes(x=year_jit, y=mean, color=Sat )) + 
   geom_point() +
   facet_wrap(~hovedtype, ncol = 1)
@@ -837,9 +837,9 @@ We can test if there are consistent temporal changes in NDVI by running regressi
 
 We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for each satellite.
 ```{r message=FALSE, warning=FALSE}
-model.semi-natural.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.semi-natural[SentinelNDVI.semi-natural$tilstand=="God",])
-model.semi-natural.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.semi-natural[ModisNDVI.semi-natural$tilstand=="God",])
-model.semi-natural.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.semi-natural[LandsatNDVI.semi-natural$tilstand=="God",])
+model.semi-natural.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$tilstand=="God",])
+model.semi-natural.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$tilstand=="God",])
+model.semi-natural.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$tilstand=="God",])
 
 summary(model.semi-natural.time.GodTilst.Sent)$coefficients$cond
 summary(model.semi-natural.time.GodTilst.Modi)$coefficients$cond
@@ -849,9 +849,9 @@ There's an increase in NDVI over time in all three satellite time series in esse
 
 Given the systematically higher NDVI-values with decreasing condition in semi-natural semi-naturals, We may ask the question if the temporal NDVI increase might be stronger in semi-natural semi-naturals?
 ```{r message=FALSE, warning=FALSE}
-model.semi-natural.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.semi-natural[SentinelNDVI.semi-natural$hovedtype %in% c("V9","V10"),])
-model.semi-natural.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.semi-natural[ModisNDVI.semi-natural$hovedtype %in% c("V9","V10"),])
-model.semi-natural.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.semi-natural[LandsatNDVI.semi-natural$hovedtype %in% c("V9","V10"),])
+model.semi-natural.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("V9","V10"),])
+model.semi-natural.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("V9","V10"),])
+model.semi-natural.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("V9","V10"),])
 summary(model.semi-natural.time.tilst.V9V10.Sent)$coefficients$cond
 summary(model.semi-natural.time.tilst.V9V10.Modi)$coefficients$cond
 summary(model.semi-natural.time.tilst.V9V10.Land)$coefficients$cond
