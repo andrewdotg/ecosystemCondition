@@ -1,9 +1,8 @@
-
 # Trophic level biomass ratios
 
 <br />
 
-_Author and date:_
+*Author and date:*
 
 James D. M. Speed, Gunnar Austrheim, Erling J. Solberg
 
@@ -12,6 +11,7 @@ August 2023
 <br />
 
 <!-- Load all you dependencies here -->
+
 ```{r setup, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
@@ -51,18 +51,23 @@ metaData <- data.frame(Ecosystem,
 knitr::kable(metaData)
 ```
 
-
 <!-- Don't remove these three html lines -->
-<br />
-<br />
-<hr />
 
+<br /> <br />
+
+<hr />
 
 <!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
 
 ## Introduction
 
-Here we will develop indicators of ecological condition for Norway, based on the distribution of biomass between trophic levels – specifically between vegetation and vertebrate consumers. This includes three trophic levels, plants, herbivores and carnivores. Indicators of trophic interactions are based on deviation between the observed biomass at each consumer trophic level from the expected biomass based on the biomass at the prey trophic level. The expected biomass estimates are derived from global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://doi.org/10.1126/science.aac6284)).
+Here we will develop indicators of ecological condition for Norway, based on the distribution of biomass between trophic levels -- specifically between vegetation and vertebrate consumers. This includes three trophic levels, plants, herbivores and carnivores. Indicators of trophic interactions are based on deviation between the observed biomass at each consumer trophic level from the expected biomass based on the biomass at the prey trophic level. The expected biomass estimates are derived from global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://doi.org/10.1126/science.aac6284)).
+
+Indicators developed are:
+
+**Deviation from expected vertebrate herbivore biomass** (in total, and for each ecosystem)
+
+**Deviation from expected vertebrate carnivore biomass** (in total, and for each ecosystem)
 
 ## About the underlying data
 
@@ -80,11 +85,11 @@ We calculate indicators (1) across all ecosystems and the total consumer communi
 
 ### Representativity in time and space
 
-The data spans 1907 to 2015, with data points roughly every 10 years. The whole of Norway is covered. Herbivore data is collated at the municipality level (with the exception of semi-domestic reindeer in Finnmark at county level) and carnivore data at the county level. Municipalities and counties valid in 2007 were used. NPP is at a pixel resolution. 
+The data spans 1907 to 2015, with data points roughly every 10 years. The whole of Norway is covered. Herbivore data is collated at the municipality level (with the exception of semi-domestic reindeer in Finnmark at county level) and carnivore data at the county level. Municipalities and counties valid in 2007 were used. NPP is at a 500 m resolution.
 
 ### Original units
 
-The biomass of the trophic levels is as kg km^-2^. 
+The biomass of the herbivore and carnivore trophic levels is as kg km^-2^. For NPP the original units is kg C m^-2^ year^-1^.
 
 ### Temporal coverage
 
@@ -102,28 +107,40 @@ This indicator alines most closely with B2 Structural state characteristics (alt
 
 ## Collinearities with other indicators
 
-Colinearities are likely to exist with climatic variables and disturbance. 
+Colinearities are likely to exist with climatic variables and disturbance.
 
 ## Reference condition and values
 
 ### Reference condition
 
-Reference values are taken from published global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://doi.org/10.1126/science.aac6284)). 
+Reference values are taken from published global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://doi.org/10.1126/science.aac6284)).
 
-### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+For herbivores the expected biomass is calculated as:
 
-Deviations from the reference (expected) biomass of consumer based on consumed trophic level biomass are expressed as a two-sided percentage. Good condition was defined as within ±40% of the reference value (i.e. that expected from global relationships). Poor condition as over ±40% of the reference level. The choice of 40% is arbitary. 
+NPP^0.47^ \* 0.643
+
+For carnivores the expected biomass is calculated as:
+
+Herbivore biomass^0.73^ \* 0.014
+
+### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
+
+Deviations from the reference (expected) biomass of consumer based on consumed trophic level biomass are expressed as a two-sided percentage. Good condition was defined as within ±40% of the reference value (i.e. that expected from global relationships). Poor condition as over ±40% of the reference level. The choice of 40% is arbitary, and is based on the expert opinion of the authors.
 
 ## Uncertainties
 
-Uncertainties around the estimates have not been estimated. However, there are potential uncertainties around the reported livestock and hunting statistics and the demographic models used to estimate metabolic biomass at the population level. See Austrheim et al. (2011) and Speed et al. (2015) for further details. 
+Uncertainties around the estimates have not been estimated. However, there are potential uncertainties around the reported livestock and hunting statistics and the demographic models used to estimate metabolic biomass at the population level. See Austrheim et al. (2011) and Speed et al. (2015) for further details. There are further uncertainties related to the deviance around the equations used to estimate consumer biomass from consumed biomass, as well as the applicability of the global relationships to the Norwegian context.
 
 ## References
 
 Austrheim, G., Solberg, E. J., & Mysterud, A. (2011). Spatio‐temporal variation in large herbivore pressure in Norway during 1949‐1999: has decreased grazing by livestock been countered by increased browsing by cervids? Wildlife Biology, 17(3), 286-298.
+
 Fløjgaard, C., Pedersen, P. B. M., Sandom, C. J., Svenning, J. C., & Ejrnæs, R. (2022). Exploring a natural baseline for large‐herbivore biomass in ecological restoration. Journal of Applied Ecology, 59(1), 18-24.
+
 Hatton, I. A., McCann, K. S., Fryxell, J. M., Davies, T. J., Smerlak, M., Sinclair, A. R., & Loreau, M. (2015). The predator-prey power law: Biomass scaling across terrestrial and aquatic biomes. Science, 349(6252), aac6284.
-Sobocinski, A. (2022). Mapping large carnivores in Norway across 175 years of changing policy (Master's thesis, NTNU). https://hdl.handle.net/11250/3047580 
+
+Sobocinski, A. (2022). Mapping large carnivores in Norway across 175 years of changing policy (Master's thesis, NTNU). <https://hdl.handle.net/11250/3047580>
+
 Speed, J. D. M., Austrheim, G., Kolstad, A. L., & Solberg, E. J. (2019). Long-term changes in northern large-herbivore communities reveal differential rewilding rates in space and time. PLoS One, 14(5), e0217166.
 
 ## Additional information about the data
