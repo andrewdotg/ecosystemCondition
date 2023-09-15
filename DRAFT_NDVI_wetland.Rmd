@@ -307,8 +307,8 @@ nin <- nin %>% mutate(tilstand = recode(tilstand,
                                         "Dårlig" = "Redusert",
                                         "Svært redusert" = "Svaert_redusert"))
 nin <- nin %>% mutate(tilstand_num = recode(tilstand,
-                                        "God" = 1, "Moderat" = 2, 
-                                        "Redusert" = 3, "Svaert_redusert" = 4))
+                                        "God" = 0, "Moderat" = 1, 
+                                        "Redusert" = 2, "Svaert_redusert" = 3))
 
 summary(as.factor(nin$tilstand))
 summary(as.numeric(nin$tilstand_num))
@@ -327,7 +327,7 @@ nin.wetland <- nin %>%
 nin.wetland = st_join(nin.wetland, regnor, left = TRUE)
 nin.wetland
 
-colnames(nin.wetland)[c(1,9)] <- c("id","region_id")
+colnames(nin.wetland)[c(1,10)] <- c("id","region_id")
 
 # check that every nin-polygon still occurs only once
 summary(as.factor(nin.wetland$id))
@@ -509,7 +509,8 @@ SentinelNDVI.wetland %>%
   ggplot(aes(x=subtype, y=mean )) + 
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey") +
-  facet_wrap( ~hovedtype)
+  facet_wrap( ~hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
 ```
 NDVI varies between major ecosystem types with the highest values in semi-natural wet-meadows (V10), and lowest values in ombrotrophic bogs (V3). The overlaps between the ecosystem types are considerable.
 With respect to basic ecosystem types within the major types, NDVI appears to increase with increasing limestone level (C1-C4, C5-C8, and E1-E3 in V1, C1-C3 in the other major types), and also here the overlap is large. 
@@ -556,7 +557,7 @@ nin.wetland2 %>%
   geom_jitter(width = 0.25, height=0.25) +
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
-  ggtitle("Condition and condition variables in semi-natural mires (V9)") +
+  ggtitle("Condition variables in semi-natural mires (V9)") +
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 
@@ -573,7 +574,7 @@ nin.wetland2 %>%
   geom_jitter(width = 0.25, height=0.25) +
   facet_wrap(~NiN_variable_des,nrow=2, ncol=2) +
   theme(legend.position="none") +
-  ggtitle("Condition and condition variables in semi-natural wet-meadows (V10)") +
+  ggtitle("Condition variables in semi-natural wet-meadows (V10)") +
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 
@@ -592,7 +593,7 @@ nin.wetland2 %>%
   geom_jitter(width = 0.25, height=0.25) +
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
-  ggtitle("Condition and condition variables in minerotrophic fens (V1)") +
+  ggtitle("Condition variables in minerotrophic fens (V1)") +
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 ```
@@ -603,6 +604,22 @@ In V1 (minerotrophic fens), reduced condition is mainly related to the abundance
 
 ### Regression analyses Sentinel-2, NDVI as a function of condition
 We can investigate further how NDVI and condition are connected using regression analyses.
+
+First, we take a look at how balanced the data are across major ecosystem types, regions and condition classes
+```{r warning=FALSE, message=FALSE}
+# NDVI across hovedtyper, regions and condition classes (only for NDVI years data matching NiN-mapping years)
+SentinelNDVI.wetland %>%
+
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE)) %>%
+  
+  filter(year == kartleggingsaar) %>%
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_grid( region~hovedtype)
+```
+V4 has sparse data and is lacking in some combinations of region and condition level, so we drop it.
 
 NDVI data are bounded between -1 and 1, and thus require modelling with an appropriate method that can handle bounded data. We can transform the variable to be bounded between 0 and 1 and use beta-regression models:
 ```{r}

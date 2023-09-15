@@ -307,8 +307,8 @@ nin <- nin %>% mutate(tilstand = recode(tilstand,
                                         "Dårlig" = "Redusert",
                                         "Svært redusert" = "Svaert_redusert"))
 nin <- nin %>% mutate(tilstand_num = recode(tilstand,
-                                        "God" = 1, "Moderat" = 2, 
-                                        "Redusert" = 3, "Svaert_redusert" = 4))
+                                        "God" = 0, "Moderat" = 1, 
+                                        "Redusert" = 2, "Svaert_redusert" = 3))
 
 summary(as.factor(nin$tilstand))
 summary(as.numeric(nin$tilstand_num))
@@ -316,7 +316,7 @@ summary(as.numeric(nin$tilstand_num))
 
 ## filter out only semi-natural data
 nin.seminat <- nin %>% 
-  filter(hovedoekosystem %in% c('Vaatmark')) %>%
+  filter(hovedoekosystem %in% c('Semi_naturlig')) %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
@@ -327,13 +327,10 @@ nin.seminat <- nin %>%
 nin.seminat = st_join(nin.seminat, regnor, left = TRUE)
 nin.seminat
 
-colnames(nin.seminat)[c(1,9)] <- c("id","region_id")
+colnames(nin.seminat)[c(1,10)] <- c("id","region_id")
 
 # check that every nin-polygon still occurs only once
-summary(as.factor(nin.seminat$id))
-nin.seminat[nin.seminat$id=="NINFP2110008060",]
-# this one was assigned to both Western and Central Norway, we drop the latter
-nin.seminat <- nin.seminat[!row.names(nin.seminat) %in% '1144.1',]
+summary(as.factor(nin.seminat$id)) # ok
 
 nin.seminat <- nin.seminat %>% 
   mutate(area_meters_nin = st_area(nin.seminat)
@@ -367,7 +364,7 @@ nin.seminat2 <- readRDS(paste0(here::here(),"/data/cache/nin.seminat2.RDS"))
 ```
 
 #### NDVI data
-```{r, results='hide'}
+```{r, results='hide', message=FALSE}
 ## Sentinel-2
 # join nin.seminat & Sentinel NDVI data
 SentinelNDVI.seminat <- full_join(nin.seminat, df.s, by="id")
@@ -479,7 +476,7 @@ summary(SentinelNDVI.seminat$area_meters)
 hist(SentinelNDVI.seminat$area_meters,xlim=c(0,20000),breaks=50000)
 abline(v=100,lty=2)
 ```
-semi-natural polygons stretch a large number of sizes from just above 100 sqm to more than 4 million sqm. 75% of all polygons are below 14264 sqm.
+semi-natural polygons stretch a large number of sizes from just above 100 sqm to almost 3 million sqm. 75% of all polygons are below 15297 sqm.
 
 # How does NDVI vary over the years
 ```{r}
@@ -503,16 +500,18 @@ SentinelNDVI.seminat %>%
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey")
 
+SentinelNDVI.seminat$subtype <- factor(SentinelNDVI.seminat$subtype,levels=c("C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15","C16","C17","C18","C19","C20","C21","E1","E2","E3","E4","E5","E6","E7"))
 SentinelNDVI.seminat %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x=subtype, y=mean )) + 
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey") +
-  facet_wrap( ~hovedtype)
+  facet_wrap( ~hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2, size=6))
 ```
-NDVI varies between major ecosystem types with the highest values in semi-natural wet-meadows (V10), and lowest values in ombrotrophic bogs (V3). The overlaps between the ecosystem types are considerable.
-With respect to basic ecosystem types within the major types, NDVI appears to increase with increasing limestone level (C1-C4, C5-C8, and E1-E3 in V1, C1-C3 in the other major types), and also here the overlap is large. 
+NDVI varies between major ecosystem types with the highest values in semi-natural grasslands (T32) and in previously intensively used and altered grasslands that today resemble  a semi-natural grassland (T40, T41), lowest values in coastal heathlands (T34). Other ecossytem types: Boreal heath (T31), semi-natural coastal grasslands (T33). The overlaps between the ecosystem types are considerable.
+With respect to basic ecosystem types within the major types, NDVI appears to cover very similar ranges across the subtypes, and those with deviating violin plots have a smaller sample size. There is no obvious trend related to the structuring environmental gradients withing the major types, and also here the overlap is large. 
 
 # How does NDVI vary across regions in semi-naturals (major types) in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r}
@@ -526,7 +525,7 @@ SentinelNDVI.seminat %>%
   facet_wrap( ~hovedtype) +
   theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
 ```
-There is no obvious trends in geography.
+For the meadow systems (T32, T33, T40, T41) there is no obvious trends in geography. In the heath systems (T31, T34) the distribution of NDVI values in Central Norway is somewhat lower than in the other regions.
 
 # How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)
 ```{r}
@@ -537,81 +536,126 @@ SentinelNDVI.seminat %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap( ~hovedtype)
 ```
-In semi-natural types (V9,V10), kaldkilde (V4), and ombrotrophic bogs (V3) NDVI seems to increase as condition deteriorates, but in minertrophic fens (V1) there is not much of a pattern. Overlaps between condition classes are generally very large.
+In the coastal types (T33, T34, coastal meadows and heathlands, respectively) NDVI seems to increase as condition deteriorates, but in the remaining types such a pattern is absent. Overlaps between condition classes are generally very large.
 
 # Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 ```{r}
 nin.seminat2 %>%
-  filter(hovedtype=='V9') %>%
-  filter(NiN_variable_code %in% c("1AG-B","7GR-GI","1AG-A-G","1AR-C-L","7TK","PRSL")) %>%
+  filter(hovedtype=='T31') %>%
+  filter(NiN_variable_code %in% c("7JB-BT","7RA-BA","7FA","7TK")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "1AG-B"="Shrub cover",
-                                 "7GR-GI"="Abundance of ditches",
-                                 "1AG-A-G"="Tree cover",
-                                 "1AR-C-L"="Woody plants in field layer",
-                                 "7TK"="Heavy vehicles",
-                                 "PRSL"="Wear/tear")) %>%
+                                 "7JB-BT"="Grazing pressure",
+                                 "7RA-BA"="Succession",
+                                 "7FA"="Alien species",
+                                 "7TK"="Heavy vehicles")) %>%
   ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
   geom_point(size=2) +  
   geom_jitter(width = 0.25, height=0.25) +
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
-  ggtitle("Condition and condition variables in semi-natural mires (V9)") +
+  ggtitle("Condition variables in boreal heath (T31)") +
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 
 nin.seminat2 %>%
-  filter(hovedtype=='V10') %>%
+  filter(hovedtype=='T32') %>%
+  filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7SE","7JB-GJ")) %>%
+  mutate(NiN_variable_des=recode(NiN_variable_code,
+                                 "7JB-BA"="Land-use intensity",
+                                 "7RA-SJ"="Succession",
+                                 "7FA"="Alien species",
+                                 "7SE"="Wear/tear",
+                                 "7JB-GJ"="Fertilization")) %>%
+  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
+  geom_point(size=2) +  
+  geom_jitter(width = 0.25, height=0.25) +
+  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
+  theme(legend.position="none") +
+  ggtitle("Condition variables in semi-natural grasslands (T32)") +
+  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+
+nin.seminat2 %>%
+  filter(hovedtype=='T33') %>%
   filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7JB-GJ")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BA"="Land use intensity",
+                                 "7JB-BA"="Land-use intensity",
                                  "7RA-SJ"="Succession",
                                  "7FA"="Alien species",
                                  "7JB-GJ"="Fertilization")) %>%
   ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
   geom_point(size=2) +  
   geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=2) +
+  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
-  ggtitle("Condition and condition variables in semi-natural wet-meadows (V10)") +
+  ggtitle("Condition variables in semi-natural coastal grasslands (T33)") +
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
-
 nin.seminat2 %>%
-  filter(hovedtype=='V1') %>%
-  filter(NiN_variable_code %in% c("7GR-GI","PRTK","7FA","7TK","7SE","PRSL")) %>%
+  filter(hovedtype=='T34') %>%
+  filter(NiN_variable_code %in% c("7JB-BT","7RA-SJ","7FA","7TK")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7GR-GI"="Abundance of ditches",
-                                 "PRTK"="Heavy vehicles",
+                                 "7JB-BT"="Grazing pressure",
+                                 "7RA-SJ"="Succession",
                                  "7FA"="Alien species",
-                                 "7TK"="Heavy vehicles2",
-                                 "7SE"="Wear/tear",
-                                 "PRSL"="Wear/tear2")) %>%
+                                 "7TK"="Heavy vehicles")) %>%
   ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
   geom_point(size=2) +  
   geom_jitter(width = 0.25, height=0.25) +
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
-  ggtitle("Condition and condition variables in minerotrophic fens (V1)") +
+  ggtitle("Condition variables in coastal heathlands (T34)") +
+  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+
+nin.seminat2 %>%
+  filter(hovedtype %in% c('T40','T41')) %>%
+  filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7SE","7JB-GJ")) %>%
+  mutate(NiN_variable_des=recode(NiN_variable_code,
+                                 "7JB-BA"="Land-use intensity",
+                                 "7RA-SJ"="Succession",
+                                 "7FA"="Alien species",
+                                 "7SE"="Wear/tear",
+                                 "7JB-GJ"="Fertilization")) %>%
+  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
+  geom_point(size=2) +  
+  geom_jitter(width = 0.25, height=0.25) +
+  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
+  theme(legend.position="none") +
+  ggtitle("Condition variables in previously heavily altered grasslands (T40/T41)") +
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 ```
-In these plots, the panels for V1, V9 and V10 differ because Miljødirektoratets mapping manual (see reference list above) uses different variables in these major ecosystem types to define condition.
+In these plots, the panels for the different major ecosystem types differ because Miljødirektoratets mapping manual (see reference list above) uses different variables in these major ecosystem types to define condition.
 
-In V9, semi-natural mires, reduced condition is mainly related to increasing cover of shrubs and trees. In V10, semi-natural wet-meadows, reduced condition is related to insufficient land-use intensity and succession. In both cases, we'd expect an increase in the greenness signal. Thus, NDVI can, in principle, be indicative of ecological condition in semi-natural semi-naturals due to a direct connection to the main pressures on the ecosystems.
-In V1 (minerotrophic fens), reduced condition is mainly related to the abundance of ditches, but also increased use of heavy vehicles and high alien species abundance are related to very reduce condition. Under these drivers, greenness would not directly be affected. although drainage due to ditches may lead to succession and woody plant encroachment, and thus greening, in the longer run. Currently, NDVI seems poorly linked to ecological condition in, and the major pressures on, minerotrophic fens.
+In the heath systems - T31 and T34 - reduced condition is mainly related to low levels of grazing and ongoing succession (but also too intensive grazing). In the meadow systems - T32, T33, T40, T41 - reduced condition is related to low levels of land-use intensity and ongoing succession  (but also too intensive land use). In addition, reduced condition is related to high abundance of alien species in all major semi-natural ecosystem types.
 
 ### Regression analyses Sentinel-2, NDVI as a function of condition
 We can investigate further how NDVI and condition are connected using regression analyses.
+
+First, we take a look at how balanced the data are across major ecosystem types, regions and condition classes
+```{r warning=FALSE, message=FALSE}
+# NDVI across hovedtyper, regions and condition classes (only for NDVI years data matching NiN-mapping years)
+SentinelNDVI.seminat %>%
+
+  group_by(id, year) %>%
+  filter(mean == max(mean, na.rm=TRUE)) %>%
+  
+  filter(year == kartleggingsaar) %>%
+  ggplot( aes(x=tilstand, y=mean )) + 
+  geom_violin() +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_grid( region~hovedtype)
+```
+T41 is has only very few data and is present in 2 regions only, we omit it.
+Northern Norway does not have any T34 occurrences and very few T33 and T40, we won't be able to model it together with the other regions, and might need to model T31 and T32 there only.
 
 NDVI data are bounded between -1 and 1, and thus require modelling with an appropriate method that can handle bounded data. We can transform the variable to be bounded between 0 and 1 and use beta-regression models:
 ```{r}
 SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
-# we drop V4 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
+# we drop T41 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
 SentinelNDVI.seminat.train <- SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
-  filter(hovedtype != 'V4')
+  filter(hovedtype != 'T41')
 
 # make an extra numeric condition variable
 unique(SentinelNDVI.seminat.train$tilstand)
@@ -622,10 +666,16 @@ SentinelNDVI.seminat.train <- SentinelNDVI.seminat.train %>% mutate(tilstand_num
                                             "Svært redusert" = '3'))
 SentinelNDVI.seminat.train$tilstand_num <- as.numeric(SentinelNDVI.seminat.train$tilstand_num)
 
+# check if there's any 0s or 1s (which beta cannot handle)
+summary(SentinelNDVI.seminat.train$mean_beta)
+# replace 1s in Landsat data with 0.9999
+LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
+  mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
+
 # We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
-model.semi-natural.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.seminat.train)
-model.semi-natural.cond.Sent <- StepBeta(model.semi-natural.cond.Sent)
-summary(model.semi-natural.cond.Sent)
+model.seminat.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region!='Northern Norway',])
+model.seminat.cond.Sent <- StepBeta(model.seminat.cond.Sent)
+summary(model.seminat.cond.Sent)
 ```
 NDVI values do vary between:
 - Regions
@@ -634,15 +684,15 @@ NDVI values do vary between:
 
 It is evident that there are differences between regions. But since we are not interested in the statistics for region differences, we run separate models for every region for ease of interpretation.
 ```{r, include = F}
-rm(model.semi-natural.cond.Sent)
+rm(model.seminat.cond.Sent)
 ```
 
 ```{r message=FALSE, warning=FALSE}
-model.semi-natural.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Northern Norway",])
-model.semi-natural.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Central Norway",])
-model.semi-natural.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Western Norway",])
-model.semi-natural.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Eastern Norway",])
-model.semi-natural.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Southern Norway",])
+model.seminat.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Northern Norway" & SentinelNDVI.seminat.train$hovedtype!='T34',])
+model.seminat.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Central Norway",])
+model.seminat.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Western Norway",])
+model.seminat.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Eastern Norway",])
+model.seminat.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Southern Norway",])
 
 ```
 
@@ -656,13 +706,13 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.semi-natural.cond.Sent.N)$coefficients
+summary(model.seminat.cond.Sent.N)$coefficients
 ```
-NDVI in good condition: V10 > V1 > V9 > V3
+NDVI in good condition: T32 > T31/T33 > T40 (last not sig. but very few data)
 
-V1: NDVI decreases as condition deteriorates
-V3: NDVI does not change as condition deteriorates
-V9 & V10: NDVI increases as condition deteriorates
+T31,T33,T40: NDVI increases as condition deteriorates
+T32: NDVI does not change with condition
+
 
 # Central Norway
 ```{r message=FALSE, warning=FALSE}
@@ -674,12 +724,12 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.semi-natural.cond.Sent.C)$coefficients
+summary(model.seminat.cond.Sent.C)$coefficients
 ```
-NDVI in good condition: V10 > V1 & V9 > V3
+NDVI in good condition: T32 > T33/T34/T40 > T31
 
-V1: NDVI decreases as condition deteriorates
-V3, V9 & V10: NDVI increases as condition deteriorates
+T31: NDVI increases as condition deteriorates
+T32/T33/T34/T40: NDVI increases sig. less than in T31 as condition deteriorates, but it still increases
 
 # Western Norway
 ```{r message=FALSE, warning=FALSE}
@@ -691,13 +741,12 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.semi-natural.cond.Sent.W)$coefficients
+summary(model.seminat.cond.Sent.W)$coefficients
 ```
-NDVI in good condition: V10 > V9 & V3 > V1
+NDVI in good condition: T31/T32/T40 > T33/T34
 
-V1 & V10: NDVI increases as condition deteriorates
-V3: NDVI decreases as condition deteriorates (but really insufficient data)
-V9: NDVI does not change as condition deteriorates
+all types: NDVI increases slightly as condition deteriorates, but just about sig.
+
 
 # Eastern Norway
 ```{r message=FALSE, warning=FALSE}
@@ -709,12 +758,12 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.semi-natural.cond.Sent.E)$coefficients
+summary(model.seminat.cond.Sent.E)$coefficients
 ```
-NDVI in good condition: V10 > V1 > V3 & V9
+NDVI in good condition: T32 > T31/T40 > T33 > T34
 
-V1 & V3: NDVI does not change as condition deteriorates
-V9 & V10: NDVI increases as condition deteriorates
+T31/T32/T34/T40: NDVI increases slightly as condition deteriorates
+T33: NDVI increases as condition deteriorates, more strongly than in the other types
 
 # Southern Norway
 ```{r message=FALSE, warning=FALSE}
@@ -726,18 +775,18 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.semi-natural.cond.Sent.S)$coefficients
+summary(model.seminat.cond.Sent.S)$coefficients
 ```
-NDVI in good condition: V10 > V9 > V1 & V3
+NDVI in good condition: T32 > T31/T40 > T33/T34
 
-V1, V9 & V10: NDVI increases as condition deteriorates
-V3: NDVI does not change as condition deteriorates (but also insuffcient data)
+T31/T32: borderline NDVI increases as condition deteriorates
+T33/T44: NDVI increases as condition deteriorates
+T40: insufficient power
 
 
 Overall take home messages:
 
-In semi-natural semi-natural ecosystems (V9, V10) NDVI increases as ecosystem condition deteriorates, and this is consistent for the entire country. This supports the conclusion from the exploratory analyses that NDVI is indicative of ecological condition in semi-natural semi-natural ecosystems.
-In natural minerotrophic fens (V1) NDVI increases in the South but decreases in the North as ecosystem condition deteriorates. A factor with potential for affecting vegetation composition and productivity, and thus NDVI, is Nitrogen deposition. Nitrogen deposition is higher in Southern parts of Norway than further north, and could thus be responsible for increased NDVI with reduced condition in the South, but it is not clear how Nitrogen deposition and the variables underlying the condition assessment in V1 (Ditches, Alien species, Heavy vehicles, Wear/tear) are connected. Furthermore we are to date lacking documented empirical ground-truthed information about the connection between NDVI and Nitrogen effects in semi-naturals. In bogs (V3) there is no consistent pattern.
+In semi-natural ecosystems NDVI increases as ecosystem condition deteriorates, but the effect sizes vary with major ecosystem types. Boreal heath shows the most consistent increases, and also coastal meadows and coastal heathlands show increases in parts of the country. Semi-natural and semi-natural-looking meadows show very tiny increases if any at all.
 
 ### NDVI across time - Sentinel, MODIS & LandSat
 As a last step, we can investigate how NDVI has changed over time. For this we include data from both MODIS and Landsat in addition to Sentinel-2.
@@ -831,30 +880,30 @@ allSatNDVI.seminat %>%
   geom_point() +
   facet_wrap(~hovedtype, ncol = 1)
 ```
-It is quite obvious that the NDVI values from the three satellites are not quantitatively comparable. They vary both in their placement along the y-axis and in their variance. Modis data are absent from the V4-ecosystem type because of a too large pixel size compared to the NiN-polygon sizes. In V10, Modis is poorly represented for the same reason.
+It is quite obvious that the NDVI values from the three satellites are not quantitatively comparable. They vary both in their placement along the y-axis and in their variance. Modis data are absent from the T40/T41-ecosystem types because of a too large pixel size compared to the NiN-polygon sizes. In the other types, Modis is poorly represented for the same reason.
 
 We can test if there are consistent temporal changes in NDVI by running regressions including year as a covariate.
 
 We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for each satellite.
 ```{r message=FALSE, warning=FALSE}
-model.semi-natural.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$tilstand=="God",])
-model.semi-natural.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$tilstand=="God",])
-model.semi-natural.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$tilstand=="God",])
+model.seminat.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$tilstand=="God",])
+model.seminat.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$tilstand=="God",])
+model.seminat.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$tilstand=="God",])
 
-summary(model.semi-natural.time.GodTilst.Sent)$coefficients$cond
-summary(model.semi-natural.time.GodTilst.Modi)$coefficients$cond
-summary(model.semi-natural.time.GodTilst.Land)$coefficients$cond
+summary(model.seminat.time.GodTilst.Sent)$coefficients$cond
+summary(model.seminat.time.GodTilst.Modi)$coefficients$cond
+summary(model.seminat.time.GodTilst.Land)$coefficients$cond
 ```
 There's an increase in NDVI over time in all three satellite time series in essentially all major semi-natural ecosystem types in good condition. It is worth pointing out though that the model on the MODIS data shows 1/10 of the effect size for the time slope and has way less statistical power compared to Sentinel and Landsat.
 
 Given the systematically higher NDVI-values with decreasing condition in semi-natural semi-naturals, We may ask the question if the temporal NDVI increase might be stronger in semi-natural semi-naturals?
 ```{r message=FALSE, warning=FALSE}
-model.semi-natural.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("V9","V10"),])
-model.semi-natural.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("V9","V10"),])
-model.semi-natural.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("V9","V10"),])
-summary(model.semi-natural.time.tilst.V9V10.Sent)$coefficients$cond
-summary(model.semi-natural.time.tilst.V9V10.Modi)$coefficients$cond
-summary(model.semi-natural.time.tilst.V9V10.Land)$coefficients$cond
+model.seminat.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("V9","V10"),])
+model.seminat.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("V9","V10"),])
+model.seminat.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("V9","V10"),])
+summary(model.seminat.time.tilst.V9V10.Sent)$coefficients$cond
+summary(model.seminat.time.tilst.V9V10.Modi)$coefficients$cond
+summary(model.seminat.time.tilst.V9V10.Land)$coefficients$cond
 ```
 Indeed, the temporal NDVI increase has been stronger in semi-natural semi-naturals with reduced ecological condition, in both Sentinel and Landsat. For MODIS, the time slope is again 1/10 of the slopes in the other two satellite time series, and it is not significant.
 
