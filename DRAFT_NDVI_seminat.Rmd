@@ -178,6 +178,8 @@ reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Nor
 
 # combine the Norway and the region maps
 regnor <- st_intersection(reg,nor)
+rm(reg)
+rm(nor)
 ```
 
 #### NDVI data
@@ -492,7 +494,7 @@ SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(year != '2022')
 ```
 
 # How do NDVI values vary between major and basic ecosystem types for sites in good condition? (using only NDVI data matching NiN-mapping years)
-```{r}
+```{r warning=FALSE}
 SentinelNDVI.seminat %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
@@ -514,7 +516,7 @@ NDVI varies between major ecosystem types with the highest values in semi-natura
 With respect to basic ecosystem types within the major types, NDVI appears to cover very similar ranges across the subtypes, and those with deviating violin plots have a smaller sample size. There is no obvious trend related to the structuring environmental gradients withing the major types, and also here the overlap is large. 
 
 # How does NDVI vary across regions in semi-naturals (major types) in good condition? (using only NDVI data matching NiN-mapping years)
-```{r}
+```{r warning=FALSE}
 SentinelNDVI.seminat %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
@@ -528,7 +530,7 @@ SentinelNDVI.seminat %>%
 For the meadow systems (T32, T33, T40, T41) there is no obvious trends in geography. In the heath systems (T31, T34) the distribution of NDVI values in Central Norway is somewhat lower than in the other regions.
 
 # How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)
-```{r}
+```{r warning=FALSE}
 SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -539,7 +541,7 @@ SentinelNDVI.seminat %>%
 In the coastal types (T33, T34, coastal meadows and heathlands, respectively) NDVI seems to increase as condition deteriorates, but in the remaining types such a pattern is absent. Overlaps between condition classes are generally very large.
 
 # Which ecological relevant variable(s) is the condition measure in the NiN data related to?
-```{r}
+```{r warning=FALSE}
 nin.seminat2 %>%
   filter(hovedtype=='T31') %>%
   filter(NiN_variable_code %in% c("7JB-BT","7RA-BA","7FA","7TK")) %>%
@@ -637,8 +639,7 @@ First, we take a look at how balanced the data are across major ecosystem types,
 SentinelNDVI.seminat %>%
 
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE)) %>%
-  
+
   filter(year == kartleggingsaar) %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
@@ -657,17 +658,8 @@ SentinelNDVI.seminat.train <- SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
   filter(hovedtype != 'T41')
 
-# make an extra numeric condition variable
-unique(SentinelNDVI.seminat.train$tilstand)
-SentinelNDVI.seminat.train <- SentinelNDVI.seminat.train %>% mutate(tilstand_num = recode(tilstand, 
-                                            "God" = '0',
-                                            "Moderat" = '1',
-                                            "Redusert" = '2',
-                                            "Svært redusert" = '3'))
-SentinelNDVI.seminat.train$tilstand_num <- as.numeric(SentinelNDVI.seminat.train$tilstand_num)
-
 # check if there's any 0s or 1s (which beta cannot handle)
-summary(SentinelNDVI.seminat.train$mean_beta)
+summary(SentinelNDVI.seminat.train$mean_beta) #ok
 # replace 1s in Landsat data with 0.9999
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
@@ -780,7 +772,7 @@ summary(model.seminat.cond.Sent.S)$coefficients
 NDVI in good condition: T32 > T31/T40 > T33/T34
 
 T31/T32: borderline NDVI increases as condition deteriorates
-T33/T44: NDVI increases as condition deteriorates
+T33/T34: NDVI increases as condition deteriorates
 T40: insufficient power
 
 
@@ -795,10 +787,6 @@ First, there's again some data handling to do. We merge the Sentinel, MODIS, and
 ```{r results='hide'}
 ## data handling for time series analysis
 # Sentinel time series checked in exploratory analysis script
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
-  group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE))
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(year != '2022')
 
 # checking time series for MODIS
 ModisNDVI.seminat %>%
@@ -830,9 +818,9 @@ ModisNDVI.seminat$mean_beta <- (ModisNDVI.seminat$mean + 1) / 2
 LandsatNDVI.seminat$mean_beta <- (LandsatNDVI.seminat$mean + 1) / 2
 
 # check if there's any 0s or 1s (which beta cannot handle)
-summary(SentinelNDVI.seminat$mean_beta)
-summary(ModisNDVI.seminat$mean_beta)
-summary(LandsatNDVI.seminat$mean_beta)
+summary(SentinelNDVI.seminat$mean_beta) # ok
+summary(ModisNDVI.seminat$mean_beta) # ok
+summary(LandsatNDVI.seminat$mean_beta) # has 1's
 # replace 1s in Landsat data with 0.9999
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))

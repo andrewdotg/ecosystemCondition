@@ -178,6 +178,8 @@ reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Nor
 
 # combine the Norway and the region maps
 regnor <- st_intersection(reg,nor)
+rm(reg)
+rm(nor)
 ```
 
 #### NDVI data
@@ -611,8 +613,7 @@ First, we take a look at how balanced the data are across major ecosystem types,
 SentinelNDVI.wetland %>%
 
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE)) %>%
-  
+
   filter(year == kartleggingsaar) %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
@@ -629,15 +630,6 @@ SentinelNDVI.wetland$mean_beta <- (SentinelNDVI.wetland$mean + 1) / 2
 SentinelNDVI.wetland.train <- SentinelNDVI.wetland %>%
   filter(year == kartleggingsaar) %>%
   filter(hovedtype != 'V4')
-
-# make an extra numeric condition variable
-unique(SentinelNDVI.wetland.train$tilstand)
-SentinelNDVI.wetland.train <- SentinelNDVI.wetland.train %>% mutate(tilstand_num = recode(tilstand, 
-                                            "God" = '0',
-                                            "Moderat" = '1',
-                                            "Redusert" = '2',
-                                            "Svært redusert" = '3'))
-SentinelNDVI.wetland.train$tilstand_num <- as.numeric(SentinelNDVI.wetland.train$tilstand_num)
 
 # We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
 model.wetland.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.wetland.train)
@@ -763,10 +755,6 @@ First, there's again some data handling to do. We merge the Sentinel, MODIS, and
 ```{r results='hide'}
 ## data handling for time series analysis
 # Sentinel time series checked in exploratory analysis script
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>%
-  group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE))
-SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != '2022')
 
 # checking time series for MODIS
 ModisNDVI.wetland %>%
