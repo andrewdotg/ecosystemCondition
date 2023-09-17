@@ -852,7 +852,7 @@ summary(model.wetland.time.GodTilst.Land)$coefficients$cond
 ```
 There's an increase in NDVI over time in all three satellite time series in essentially all major wetland ecosystem types in good condition. It is worth pointing out though that the model on the MODIS data shows 1/10 of the effect size for the time slope and has way less statistical power compared to Sentinel and Landsat.
 
-Given the systematically higher NDVI-values with decreasing condition in semi-natural wetlands, We may ask the question if the temporal NDVI increase might be stronger in semi-natural wetlands?
+Given the systematically higher NDVI-values with decreasing condition in semi-natural wetlands, We may ask the question if the temporal NDVI increase might be stronger with reduced condition?
 ```{r message=FALSE, warning=FALSE}
 model.wetland.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.wetland[SentinelNDVI.wetland$hovedtype %in% c("V9","V10"),])
 model.wetland.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.wetland[ModisNDVI.wetland$hovedtype %in% c("V9","V10"),])
@@ -866,7 +866,7 @@ Indeed, the temporal NDVI increase has been stronger in semi-natural wetlands wi
 # Overall conclusion
 NDVI in wetland ecosystem does vary with condition and also with ecosystem type but the variance and thus overlap between condition classes and ecosystem types is large. Especially the semi-natural wetland ecosystems show a very consistent pattern of higher NDVI and larger temporal NDVI increase in sites in reduced ecological condition, which also links well to the registered condition variables behind the lower condition scores (shrub/tree encroachment, low land-use intensity, succession) and thus reduced land-use as the main pressure identified for these systems.
 The large variance and thus overlap between condition classes and ecosystem types makes it generally difficult to define useful scaling values for absolute NDVI values.
-Since ecological condition also relates to the temporal development of NDVI values in the analyses above, an alternative approach can be to define scaling values for time slopes as for instance has been done for the NDVI indicator in the ecological condition assessment for Norwegian mountains (Framstad et al. 2022, see references above).
+Since ecological condition also relates to the temporal development of NDVI values in the analyses above, an alternative approach can be to define scaling values for time slopes as for instance has been done for the NDVI indicator in the ecological condition assessment for Norwegian mountains (Framstad et al. 2022 in references above, see coded example at https://ninanor.github.io/IBECA/ndvi-trend_fjell.html).
 
 Beyond these considerations, there are two general issues which limit a more comprehensive and robust application of satellite based NDVI-data in an ecological condition context:
 
