@@ -91,14 +91,14 @@ The Landsat data have a resolution of 30 x 30 m, and we thus excluded all NiN-po
 ### Representativity in time and space
 For semi-natural systems, the NiN data contain 6502 semi-natural polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6502 semi-natural polygons are distributed across regions and major ecosystem types in the following way:
 
-                  V1    V3    V4    V6    V9    V10
-Northern Norway   638   275   55    102   360   315
-Central Norway    702   1250  34    0     302   116
-Western Norway    296   111   30    0     460   158
-Eastern Norway    251   89    103   0     251   223
-Southern Norway   58    44    5     0     155   102
+                  T31   T32   T33   T34   T40   T41
+Northern Norway   1194  2081  14    1     15    0
+Central Norway    641   2518  210   2338  97    0
+Western Norway    132   2922  94    2200  66    54
+Eastern Norway    1064  4488  10    10    371   54
+Southern Norway   234   2317  112   749   111   140
 
-In addition, there is 3 V3s, 1 V4, 4 V9s, and 9 V10s that are not assigned to any region.
+In addition, there is 10 T31s, 78 T32s, 15 T33s, 59 T34s, and 1 T40 that are not assigned to any region.
 
 
 The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the semi-natural occurrences in the NiN data are likely even more spatially biased than it is the case for the NDVI data from Sentinel-2 and Landsat. 
@@ -884,35 +884,48 @@ summary(model.seminat.time.GodTilst.Sent)$coefficients$cond
 summary(model.seminat.time.GodTilst.Modi)$coefficients$cond
 summary(model.seminat.time.GodTilst.Land)$coefficients$cond
 ```
-There's an increase in NDVI over time in mainly the Sentinel and Landsat time series in boreal heath  in good condition, but this pattern is reduced or absent in the other semi-natural ecosystem types. It is worth pointing out though that the model on the MODIS data shows less than 1/10 of the effect size for the time slope and has way less statistical power compared to Sentinel and Landsat.
+There's an increase in NDVI over time in mainly the Sentinel and Landsat time series in boreal heath in good condition, but this pattern is reduced or absent in the other semi-natural ecosystem types. MODIS does not show any trends in time but also has way less statistical power compared to Sentinel and Landsat.
 
 #### check here ####
-Given the systematically higher NDVI-values with decreasing condition in semi-natural semi-naturals, We may ask the question if the temporal NDVI increase might be stronger in semi-natural semi-naturals?
+Given the consistently higher NDVI-values with decreasing condition in boreal heath, We may ask the question if the temporal NDVI increase might be stronger under reduced condition?
 ```{r message=FALSE, warning=FALSE}
-model.seminat.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("V9","V10"),])
-model.seminat.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("V9","V10"),])
-model.seminat.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("V9","V10"),])
-summary(model.seminat.time.tilst.V9V10.Sent)$coefficients$cond
-summary(model.seminat.time.tilst.V9V10.Modi)$coefficients$cond
-summary(model.seminat.time.tilst.V9V10.Land)$coefficients$cond
+model.seminat.time.tilst.T31.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T31"),])
+model.seminat.time.tilst.T31.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T31"),])
+model.seminat.time.tilst.T31.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T31"),])
+summary(model.seminat.time.tilst.T31.Sent)$coefficients$cond
+summary(model.seminat.time.tilst.T31.Modi)$coefficients$cond
+summary(model.seminat.time.tilst.T31.Land)$coefficients$cond
 ```
-Indeed, the temporal NDVI increase has been stronger in semi-natural semi-naturals with reduced ecological condition, in both Sentinel and Landsat. For MODIS, the time slope is again 1/10 of the slopes in the other two satellite time series, and it is not significant.
+The temporal NDVI increase in boreal heath has NOT been stronger with reduced ecological condition. So a temporal NDVI approach does not seem like a promising way to go.
+We check for the same pattern in T32 and T34, jsut because they are the other semi-natural major ecosystem types with a substantial number of occurrences in the the NiN data:
+```{r message=FALSE, warning=FALSE}
+model.seminat.time.tilst.T32.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T32"),])
+model.seminat.time.tilst.T32.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T32"),])
+model.seminat.time.tilst.T32.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T32"),])
+summary(model.seminat.time.tilst.T32.Sent)$coefficients$cond
+summary(model.seminat.time.tilst.T32.Modi)$coefficients$cond
+summary(model.seminat.time.tilst.T32.Land)$coefficients$cond
+
+model.seminat.time.tilst.T34.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T34"),])
+model.seminat.time.tilst.T34.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T34"),])
+model.seminat.time.tilst.T34.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T34"),])
+summary(model.seminat.time.tilst.T34.Sent)$coefficients$cond
+summary(model.seminat.time.tilst.T34.Modi)$coefficients$cond
+summary(model.seminat.time.tilst.T34.Land)$coefficients$cond
+```
+Again, patterns are only identifiable with Sentinel and Landsat data, but not with Modis. Semi-natural grasslands (T32) do indeed show a stronger increase in NDVI as condition deteriorates, so here a temporal approach may be useful under a reduced land-management/shrub-/tree-encroachment scenario. Coastal heathlands (T34), on the other hand, do not show stronger temporal increases with reduced condition. Coastal heathlands are subject to a management cycle, which includes developmental and successional changes over a course of 15-25 years followed by prescribed burning which resets that process. So, we have to expect increases in greenness in coastal heathlands over time also in well-managed areas, and thus temporal changes in NDVI are largely irrelevant for assessing ecological condition.
 
 # Overall conclusion
-NDVI in semi-natural ecosystem does vary with condition and also with ecosystem type but the variance and thus overlap between condition classes and ecosystem types is large. Especially the semi-natural semi-natural ecosystems show a very consistent pattern of higher NDVI and larger temporal NDVI increase in sites in reduced ecological condition, which also links well to the registered condition variables behind the lower condition scores (shrub/tree encroachment, low land-use intensity, succession) and thus reduced land-use as the main pressure identified for these systems.
-The large variance and thus overlap between condition classes and ecosystem types makes it generally difficult to define useful scaling values for absolute NDVI values.
-Since ecological condition also relates to the temporal development of NDVI values in the analyses above, an alternative approach can be to define scaling values for time slopes as for instance has been done for the NDVI indicator in the ecological condition assessment for Norwegian mountains (Framstad et al. 2022, see references above).
+NDVI in semi-natural ecosystem does vary with condition and also with ecosystem type, but the variance and thus overlap between condition classes and ecosystem types is large. Especially in boreal heath and semi-natural grasslands greenness and its change over time appaer to be indicative of the ecological condition of local ecoystems, linking well to the registered condition variables behind the lower condition scores (shrub/tree encroachment, low land-use intensity, succession) and thus reduced land-use as the main pressure identified for these systems.
+However, the large variance and thus overlap between condition classes and ecosystem types makes it generally difficult to define useful scaling values for absolute NDVI values.
+Since ecological condition also relates to the temporal development of NDVI values in semi-natural grasslands, a potential way way to approach this can be to define scaling values for time slopes as for instance has been done for the NDVI indicator in the ecological condition assessment for Norwegian mountains (Framstad et al. 2022 in references above, see coded example at https://ninanor.github.io/IBECA/ndvi-trend_fjell.html).
 
 Beyond these considerations, there are two general issues which limit a more comprehensive and robust application of satellite based NDVI-data in an ecological condition context:
 
 # 1) We are lacking ecosystem maps for semi-natural ecosystems
-The study at hand clearly shows that different semi-natural ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values for at least the different major ecosystem types within semi-naturals separately.
+The study at hand clearly shows that different semi-natural ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values, and temporal changes of these, for at least the different major ecosystem types within semi-natural systems separately.
 # 2) We are lacking a good ecological understanding and ground-truthing for NDVI in semi-natural ecosystems
-Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in semi-naturals. Here, we need field studies investigating:
-- The connection between NDVI and ecological drivers like for example potential effects of Nitrogen deposition
-
-- How reflectance in different semi-natural types is affected by how moist the moss layer is at the time of measuring.
-The literature suggests a high variability in NDVI measurements from mosses in particular, in part due to moisture content (REF). Minerotrophic semi-naturals (V1) are more dominated by graminoids than V3, and the moss-layer is generally more visible from above. At the same time, semi-naturals are generally drier in the western parts of Norway than in the East (REF), so NDVI patterns may, at least in part, be determined by moisture.
+Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in semi-natural systems. Here, we need field studies investigating more thoroughly how NDVI and ecological drivers, like for example shrub-/tree encroachment, are connected.
 
 In addition, further investigations should test how NDVI-condition pattern vary across biogeographic regions in addition to administrative regions (which are ecologically irrelevant), in order to better understand the results for the administrative regions.
 

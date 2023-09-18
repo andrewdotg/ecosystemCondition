@@ -314,6 +314,8 @@ levels(nin.wetland$region)
 
 # check # of wetland types in different regions
 nin.wetland %>% group_by(hovedtype, region) %>% summarise(n = n()) %>% print(n=30)
+nin.seminat %>% group_by(hovedtype, region) %>% summarise(n = n()) %>% print(n=30)
+nin.natopen %>% group_by(hovedtype, region) %>% summarise(n = n()) %>% print(n=30)
 
 
 

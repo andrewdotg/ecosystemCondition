@@ -874,7 +874,7 @@ Since ecological condition also relates to the temporal development of NDVI valu
 Beyond these considerations, there are two general issues which limit a more comprehensive and robust application of satellite based NDVI-data in an ecological condition context:
 
 # 1) We are lacking ecosystem maps for wetland ecosystems
-The study at hand clearly shows that different wetland ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values for at least the different major ecosystem types within wetlands separately.
+The study at hand clearly shows that different wetland ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values, and temporal changes of these, for at least the different major ecosystem types within wetlands separately.
 # 2) We are lacking a good ecological understanding and ground-truthing for NDVI in wetland ecosystems
 Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in wetlands. Here, we need field studies investigating:
 - The connection between NDVI and ecological drivers like for example potential effects of Nitrogen deposition
