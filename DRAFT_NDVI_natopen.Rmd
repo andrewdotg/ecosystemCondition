@@ -74,8 +74,7 @@ In the NDVI project for natopen systems, we use two kinds of data (coming as fou
 
 (1) NiN ecosystem data:
 The NiN data in this study contain data about the ecosystem categories (cf. Halvorsen et al. 2020) present at mapped sites as wall as their spatial delimitation (in the form of polygons). Since we use NiN data that were collected following 'Miljødirektoratets instruks', these data also include information on the ecological condition and underlying condition variabels of the mapped sites (see the Miljødirektoratets mapping manual for details).
-#### check here #### 
-Polygon sizes in these NiN data may vary from <100 sqm to 1 sqkm. 
+Polygon sizes in these NiN data may vary from <100 sqm to 240 000 sqm. 
 
 
 (2) NDVI data:
@@ -93,16 +92,16 @@ The Landsat data have a resolution of 30 x 30 m, and we thus excluded all NiN-po
 
 ### Representativity in time and space
 #### check here ####
-For natopen systems, the NiN data contain 6502 natopen polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6502 natopen polygons are distributed across regions and major ecosystem types in the following way:
+For natopen systems, the NiN data contain 2881 natopen polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 2881 natopen polygons are distributed across regions and major ecosystem types in the following way:
 
-                  V1    V3    V4    V6    V9    V10
-Northern Norway   638   275   55    102   360   315
-Central Norway    702   1250  34    0     302   116
-Western Norway    296   111   30    0     460   158
-Eastern Norway    251   89    103   0     251   223
-Southern Norway   58    44    5     0     155   102
+                  T2    T12   T18   T20   T21
+Northern Norway   0     230   648   10    31
+Central Norway    41    282   201   0     0
+Western Norway    49    44    79    0     9
+Eastern Norway    217   84    483   2     51
+Southern Norway   52    155   21    0     73
 
-In addition, there is 3 V3s, 1 V4, 4 V9s, and 9 V10s that are not assigned to any region.
+In addition, there is 54 T2s, 57 T12s, 3 T18s, and 5 T21s that are not assigned to any region.
 
 
 The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the natopen occurrences in the NiN data are likely even more spatially biased than it is the case for the NDVI data from Sentinel-2 and Landsat. 
@@ -190,12 +189,17 @@ rm(nor)
 
 #### NDVI data
 All NDVI data are calculated mean NDVI values for each respective NiN polygon from each available Sentinel-2, MODIS, or Landsat image in Google Earth Engine (GEE). 
-
+```{r, echo = F}
+# downloading the unprocessed NDVI data from a data-cache et the NINA server
+df.s <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Sentinel.raw.RDS")
+df.m <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Modis.raw.RDS")
+df.l <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Landsat.raw.RDS")
+```
 ##### Sentinel-2 NDVI data
 The GEE code can be seen here: https://code.earthengine.google.com/2ceb0c3e03adade9e6f6d0903184b8c4
 The image collection contains Sentinel imagery from June, July and August 2015-2022
 To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
-```{r}
+```{r, echo = T, eval = F}
 # Import Sentinel NDVI Data
 df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
   map_df(~fread(.))
@@ -205,7 +209,7 @@ df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavl
 The GEE code can be seen here: https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84
 The image collection contains MODIS imagery from June, July and August 2000-2022
 
-```{r}
+```{r, echo = T, eval = F}
 # Import MODIS NDVI Data
 # MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
 df.m<- read.csv("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_MODIS\\modis_ndvi_ts_2000_2022.csv", )
@@ -216,7 +220,7 @@ df.m$mean<-df.m$mean/10000
 The GEE code can be seen here: https://code.earthengine.google.com/da8a9279238ef26d14be08a43788b6b7
 The image collection contains Landsat imagery from June, July and August 1984-2022
 To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
-```{r}
+```{r, echo = T, eval = F}
 # Import Landsat NDVI Data
 # Set up conditional file paths
 dir <- substr(getwd(), 1,2)
@@ -484,7 +488,7 @@ summary(SentinelNDVI.natopen$area_meters)
 hist(SentinelNDVI.natopen$area_meters,xlim=c(0,20000),breaks=50000)
 abline(v=100,lty=2)
 ```
-natopen polygons stretch a large number of sizes from just above 100 sqm to almost 3 million sqm. 75% of all polygons are below 15297 sqm.
+natopen polygons stretch a large number of sizes from just above 100 sqm to almost 250 000 sqm. 75% of all polygons are below 4213 sqm.
 
 # How does NDVI vary over the years
 ```{r}
@@ -508,7 +512,7 @@ SentinelNDVI.natopen %>%
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey")
 
-SentinelNDVI.natopen$subtype <- factor(SentinelNDVI.natopen$subtype,levels=c("C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15","C16","C17","C18","C19","C20","C21","E1","E2","E3","E4","E5","E6","E7"))
+SentinelNDVI.natopen$subtype <- factor(SentinelNDVI.natopen$subtype,levels=c("C1","C2","C3","C4","C5","C6","C7","C8","E1"))
 SentinelNDVI.natopen %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
@@ -518,8 +522,8 @@ SentinelNDVI.natopen %>%
   facet_wrap( ~hovedtype) +
   theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2, size=6))
 ```
-NDVI varies between major ecosystem types with the highest values in natopen grasslands (T32) and in previously intensively used and altered grasslands that today resemble  a natopen grassland (T40, T41), lowest values in coastal heathlands (T34). Other ecossytem types: Boreal heath (T31), natopen coastal grasslands (T33). The overlaps between the ecosystem types are considerable.
-With respect to basic ecosystem types within the major types, NDVI appears to cover very similar ranges across the subtypes, and those with deviating violin plots have a smaller sample size. There is no obvious trend related to the structuring environmental gradients withing the major types, and also here the overlap is large. 
+NDVI varies between major ecosystem types with the highest values in open flood plains (T18) and in natural coastal meadows (T12), followed by naturally open areas on shallow soils (T2) and vegetated sand dunes (T21). There's very little data on T20 (isinnfrysingsmark) and all mapped areas of that type are in good condition. Therefore we will omit this ecosystem type from the statistical analyses further below. The overlaps between the ecosystem types are considerable.
+With respect to basic ecosystem types within the major types, NDVI appears to cover very similar ranges across the subtypes, but sample size are also rather small. There is no obvious trend related to the structuring environmental gradients withing the major types, and also here the overlap is large.
 
 # How does NDVI vary across regions in natopens (major types) in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r warning=FALSE}
@@ -533,7 +537,7 @@ SentinelNDVI.natopen %>%
   facet_wrap( ~hovedtype) +
   theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
 ```
-For the meadow systems (T32, T33, T40, T41) there is no obvious trends in geography. In the heath systems (T31, T34) the distribution of NDVI values in Central Norway is somewhat lower than in the other regions.
+There is no obvious trends in geography.
 
 # How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)
 ```{r warning=FALSE}
@@ -544,8 +548,8 @@ SentinelNDVI.natopen %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap( ~hovedtype)
 ```
-In the coastal types (T33, T34, coastal meadows and heathlands, respectively) NDVI seems to increase as condition deteriorates, but in the remaining types such a pattern is absent. Overlaps between condition classes are generally very large.
-
+The plots suggest a slight decrease in NDVI as condition deteriorates. Overlaps between condition classes are generally very large.
+#### continue here ####
 # Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 ```{r warning=FALSE}
 nin.natopen2 %>%
@@ -654,6 +658,11 @@ SentinelNDVI.natopen %>%
 ```
 T41 is has only very few data and is present in 2 regions only, we omit it.
 Northern Norway does not have any T34 occurrences and very few T33 and T40, we won't be able to model it together with the other regions, and might need to model T31 and T32 there only.
+
+We remove T20 from the statistical analyses because this ecosystem type is only ever registerd as in good condition, and it appears only in two regions.
+```{r}
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(hovetype != 'T20')
+```
 
 NDVI data are bounded between -1 and 1, and thus require modelling with an appropriate method that can handle bounded data. We can transform the variable to be bounded between 0 and 1 and use beta-regression models:
 ```{r}

@@ -89,7 +89,7 @@ The Landsat data have a resolution of 30 x 30 m, and we thus excluded all NiN-po
 
 
 ### Representativity in time and space
-For semi-natural systems, the NiN data contain 6502 semi-natural polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6502 semi-natural polygons are distributed across regions and major ecosystem types in the following way:
+For semi-natural systems, the NiN data contain 24494 semi-natural polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 24494 semi-natural polygons are distributed across regions and major ecosystem types in the following way:
 
                   T31   T32   T33   T34   T40   T41
 Northern Norway   1194  2081  14    1     15    0
@@ -146,8 +146,8 @@ The analyses in this document make use of the following data sets:
 -Landsat NDVI data
 
 #### NiN data and geometry for Norway and the five regions
-We read the NiN data for this document from a cache at the NINA server...
-```{r, echo = F}
+We read the NiN data for this document from a cache at the GitHub repository...
+```{r}
 # Add NiN data from cache
 nin <- readRDS(paste0(here::here(),"/data/cache/nin.RDS"))
 ```
@@ -164,7 +164,7 @@ nin <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtype
                  layer="naturtyper_nin_omr")
 ```
 And we upload maps for Norway and the five regions: Southern, Western, Eastern, Central, and Northern Norway
-```{r message=FALSE}
+```{r, message=FALSE}
 # Import region- og Norgeskart, make sure they have the same geometry as the nin data
 nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
   st_as_sf() %>%
@@ -186,12 +186,17 @@ rm(nor)
 
 #### NDVI data
 All NDVI data are calculated mean NDVI values for each respective NiN polygon from each available Sentinel-2, MODIS, or Landsat image in Google Earth Engine (GEE). 
-
+```{r, echo = F}
+# downloading the unprocessed NDVI data from a data-cache et the NINA server
+df.s <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Sentinel.raw.RDS")
+df.m <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Modis.raw.RDS")
+df.l <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Landsat.raw.RDS")
+```
 ##### Sentinel-2 NDVI data
 The GEE code can be seen here: https://code.earthengine.google.com/2ceb0c3e03adade9e6f6d0903184b8c4
 The image collection contains Sentinel imagery from June, July and August 2015-2022
 To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
-```{r}
+```{r, echo = T, eval = F}
 # Import Sentinel NDVI Data
 df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
   map_df(~fread(.))
@@ -201,7 +206,7 @@ df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavl
 The GEE code can be seen here: https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84
 The image collection contains MODIS imagery from June, July and August 2000-2022
 
-```{r}
+```{r, echo = T, eval = F}
 # Import MODIS NDVI Data
 # MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
 df.m<- read.csv("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_MODIS\\modis_ndvi_ts_2000_2022.csv", )
@@ -212,7 +217,7 @@ df.m$mean<-df.m$mean/10000
 The GEE code can be seen here: https://code.earthengine.google.com/da8a9279238ef26d14be08a43788b6b7
 The image collection contains Landsat imagery from June, July and August 1984-2022
 To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
-```{r}
+```{r, echo = T, eval = F}
 # Import Landsat NDVI Data
 # Set up conditional file paths
 dir <- substr(getwd(), 1,2)
@@ -886,7 +891,6 @@ summary(model.seminat.time.GodTilst.Land)$coefficients$cond
 ```
 There's an increase in NDVI over time in mainly the Sentinel and Landsat time series in boreal heath in good condition, but this pattern is reduced or absent in the other semi-natural ecosystem types. MODIS does not show any trends in time but also has way less statistical power compared to Sentinel and Landsat.
 
-#### check here ####
 Given the consistently higher NDVI-values with decreasing condition in boreal heath, We may ask the question if the temporal NDVI increase might be stronger under reduced condition?
 ```{r message=FALSE, warning=FALSE}
 model.seminat.time.tilst.T31.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T31"),])

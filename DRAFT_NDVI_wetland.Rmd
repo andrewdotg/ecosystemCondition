@@ -187,12 +187,17 @@ rm(nor)
 
 #### NDVI data
 All NDVI data are calculated mean NDVI values for each respective NiN polygon from each available Sentinel-2, MODIS, or Landsat image in Google Earth Engine (GEE). 
-
+```{r, echo = F}
+# downloading the unprocessed NDVI data from a data-cache et the NINA server
+df.s <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Sentinel.raw.RDS")
+df.m <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Modis.raw.RDS")
+df.l <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Landsat.raw.RDS")
+```
 ##### Sentinel-2 NDVI data
 The GEE code can be seen here: https://code.earthengine.google.com/2ceb0c3e03adade9e6f6d0903184b8c4
 The image collection contains Sentinel imagery from June, July and August 2015-2022
 To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
-```{r}
+```{r, echo = T, eval = F}
 # Import Sentinel NDVI Data
 df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
   map_df(~fread(.))
@@ -202,7 +207,7 @@ df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavl
 The GEE code can be seen here: https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84
 The image collection contains MODIS imagery from June, July and August 2000-2022
 
-```{r}
+```{r, echo = T, eval = F}
 # Import MODIS NDVI Data
 # MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
 df.m<- read.csv("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_MODIS\\modis_ndvi_ts_2000_2022.csv", )
@@ -213,7 +218,7 @@ df.m$mean<-df.m$mean/10000
 The GEE code can be seen here: https://code.earthengine.google.com/da8a9279238ef26d14be08a43788b6b7
 The image collection contains Landsat imagery from June, July and August 1984-2022
 To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
-```{r}
+```{r, echo = T, eval = F}
 # Import Landsat NDVI Data
 # Set up conditional file paths
 dir <- substr(getwd(), 1,2)
