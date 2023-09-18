@@ -51,9 +51,12 @@ knitr::kable(metaData)
 <hr />
 
 ## Introduction
-The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and plant productivity in the given area. Different ecosystem types naturally have greenness signals of different intensity but also with a certain variance. Deviations beyond the natural variation in either direction may indicate a reduction in ecological condition of a given ecosystem. E.g. lower than normal NDVI may indicate excessive disturbance, while higher than normal NDVI may indicate regrowth and transitions towards more densely vegetated systems. In recent assessments of ecological condition for forest and mountain ecosystems, two different NDVI-based indicators were developed and applied. For forests, NDVI-values across the country were compared to a spatial reference NDVI-signal from protected areas (Framstad et al. 2020). For mountains, the extent and consistence of the temporal change of NDVI-values over the last twenty years was assessed (Framstad et al 2021). In both cases, the NDVI-product from the MODIS satellite reflectance imagery was used based on available maps of spatial ecosystem extent in Norway (i.e. national maps for the forest and mountain ecosystems). Here, we explore the potential for developing an NDVI-indicator for ecological condition representing open wetland ecosystems (i.e. excluding forest swamps). For this task, two initial challenges can be identified early on:
+The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and plant productivity in the given area. Different ecosystem types naturally have greenness signals of different intensity but also with a certain variance. Deviations beyond the natural variation in either direction may indicate a reduction in ecological condition of a given ecosystem. E.g. lower than normal NDVI may indicate excessive disturbance, while higher than normal NDVI may indicate regrowth and transitions towards more densely vegetated systems. In recent assessments of ecological condition for forest and mountain ecosystems, two different NDVI-based indicators were developed and applied. For forests, NDVI-values across the country were compared to a spatial reference NDVI-signal from protected areas (Framstad et al. 2020). For mountains, the extent and consistence of the temporal change of NDVI-values over the last twenty years was assessed (Framstad et al 2021). In both cases, the NDVI-product from the MODIS satellite reflectance imagery was used based on available maps of spatial ecosystem extent in Norway (i.e. national maps for the forest and mountain ecosystems). 
+
+Here, we explore the potential for developing an NDVI-indicator for ecological condition representing open wetland ecosystems (i.e. excluding forest swamps). For this task, three initial challenges can be identified early on:
 1) We don't yet have a national wetland map, i.e. we don't know the exact locations of all wetlands in Norway, which is a prerequisite to extract satellite data for the right locations and ecosystems, and thus achieve a good and unbiased spatial representation for the assessment area.
 2) The spatial extent of the single wetland ecosystem occurrences (hereafter 'polygons') includes many wetland areas which are way smaller than the pixel size in the MODIS imagery (250 x 250 m) which was used for forests and mountains and has a time series back to year 2000.
+3) NDVI in wetland systems lacks the thorough ground-truthing known from globally large ecosystems as forests, tundra or Savannah. Normal variation, like stochastic rain events and moss moisture status may influence NDVI signals greatly (Valøen, 2019). Our current understanding of what NDVI and its changes in different wetland ecosystems mean is thus limited.
 
 In this draft development for a wetland NDVI indicator for ecological condition we approach these challenges in the following ways:
 1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the right ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of wetland ecosystems are available.
@@ -71,7 +74,7 @@ In the NDVI project for wetlands, we use two kinds of data (coming as four datas
 
 (1) NiN ecosystem data:
 The NiN data in this study contain data about the ecosystem categories (cf. Halvorsen et al. 2020) present at mapped sites as wall as their spatial delimitation (in the form of polygons). Since we use NiN data that were collected following 'Miljødirektoratets instruks', these data also include information on the ecological condition and underlying condition variabels of the mapped sites (see the Miljødirektoratets mapping manual for details).
-Polygon sizes in these NiN data may vary from <100 sqm to 1 sqkm.
+Polygon sizes in these NiN data may vary from <100 sqm to the dimension of sqkm's.
 
 (2) NDVI data:
 The NDVI data used in the work at hand are pixel means for polygons in the NiN-data, i.e. each NiN polygon is represented by one NDVI value per measurement time (see below for more details on the temporal resolution of NDVI data). With respect to that, it does only make sense to use NDVI data for polygons that are at least of the same size as the resolution of the respective satellite, and thus we excluded any polygons smaller than each satellite's resolution.
@@ -132,7 +135,7 @@ Miljødiretoratets mapping manual: https://www.miljodirektoratet.no/publikasjone
 
 Töpper, J. & Jakobsson, S. 2021. The Index-Based Ecological Condition Assessment (IBECA) - Technical protocol, version 1.0. NINA Report 1967. Norwegian Institute for Nature Research.
 
-
+Valøen, K. 2019. Stochastic rain events increase NDVI through moss water content: a High-Arctic field experiment. Master Thesis NTNU.
 
 
 ## Analyses

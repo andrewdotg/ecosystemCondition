@@ -1,4 +1,4 @@
-# NDVI (greenness) indicator, semi-natural ecosystems  {#NDVI-indicator-seminat}
+# NDVI (greenness) indicator, naturally open ecosystems below the treeline  {#NDVI-indicator-natopen}
 
 <br />
 
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r, echo=FALSE}
-Ecosystem <- "semi-naturlig"
+Ecosystem <- "naturlig åpen"
 Egenskap  <- c("Primærproduksjon")
 ECT       <- "Structural state characteristics"
 Contact   <- "Joachim Töpper"
@@ -53,17 +53,18 @@ knitr::kable(metaData)
 ## Introduction
 The Normalized difference vegetation index (NDVI) can be used to describe the greenness of an area, and may thus represent a proxy for the amount of chlorophyll and plant productivity in the given area. Different ecosystem types naturally have greenness signals of different intensity but also with a certain variance. Deviations beyond the natural variation in either direction may indicate a reduction in ecological condition of a given ecosystem. E.g. lower than normal NDVI may indicate excessive disturbance, while higher than normal NDVI may indicate regrowth and transitions towards more densely vegetated systems. In recent assessments of ecological condition for forest and mountain ecosystems, two different NDVI-based indicators were developed and applied. For forests, NDVI-values across the country were compared to a spatial reference NDVI-signal from protected areas (Framstad et al. 2020). For mountains, the extent and consistence of the temporal change of NDVI-values over the last twenty years was assessed (Framstad et al 2021). In both cases, the NDVI-product from the MODIS satellite reflectance imagery was used based on available maps of spatial ecosystem extent in Norway (i.e. national maps for the forest and mountain ecosystems). 
 
-Here, we explore the potential for developing an NDVI-indicator for ecological condition representing open semi-natural ecosystems. For this task, two initial challenges can be identified early on:
-1) We don't yet have a national map for semi-natural ecosystems, i.e. we don't know the exact locations of all semi-natural areas in Norway, which is a prerequisite to extract satellite data for the right locations and ecosystems, and thus achieve a good and unbiased spatial representation for the assessment area.
-2) The spatial extent of the single semi-natural ecosystem occurrences (hereafter 'polygons') includes many areas which are way smaller than the pixel size in the MODIS imagery (250 x 250 m) which was used for forests and mountains and has a time series back to year 2000.
+Here, we explore the potential for developing an NDVI-indicator for ecological condition representing naturally open ecosystems below the treeline (called 'natopen' hereafter). For this task, three initial challenges can be identified early on:
+1) We don't yet have a national map for natopen ecosystems, i.e. we don't know the exact locations of all natopen areas in Norway, which is a prerequisite to extract satellite data for the right locations and ecosystems, and thus achieve a good and unbiased spatial representation for the assessment area.
+2) The spatial extent of the single natopen ecosystem occurrences (hereafter 'polygons') includes many areas which are way smaller than the pixel size in the MODIS imagery (250 x 250 m) which was used for forests and mountains and has a time series back to year 2000.
+3) Natopen ecosystems in Norway are widely different in their physiognomy, ecology, and thus vegetation, spanning from highly disturbed hill slopes with sparse ruderal vegetation to nutrient rich shallow soils with resource demanding plant species. Thus, large variation in NDVI signals from different natopen ecosystem types has to be expected.
 
-In this draft development for a NDVI indicator for ecological condition in semi-natural  systems we approach these challenges in the following ways:
-1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the right ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of semi-natural ecosystems are available.
-2) We include Sentinel-2 imagery for semi-natural ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m which is smaller than almost all semi-natural polygons in the NiN-data. However, since Sentinel-2 only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. In addition, we include Landsat imagery which goes back to 1984 and has a resolution of 30 x 30 m, but also has more variable data due to less frequent seasonal measurements. We also still explore NDVI data from MODIS (see more details below).
+In this draft development for a NDVI indicator for ecological condition in natopen  systems we approach these challenges in the following ways:
+1) We use ecosystem occurrence data from NiN-mapping to guide the extraction of satellite NDVI data for pixels representing the right ecosystem. However, the ecosystem occurrences in the NiN data are highly spatially biased and thus cannot provide a good and unbiased spatial representation for the assessment area. Our work therefore represents a concept and method development which may be applied in an assessment of ecological condition once spatially unbiased occurrence data or a national map of natopen ecosystems are available.
+2) We include Sentinel-2 imagery for natopen ecosystems as the resolution for the bands underlying the NDVI product here is 10 x 10 m which is smaller than almost all natopen polygons in the NiN-data. However, since Sentinel-2 only goes back to 2015, we lose much of the time series aspect as compared to the MODIS data. In addition, we include Landsat imagery which goes back to 1984 and has a resolution of 30 x 30 m, but also has more variable data due to less frequent seasonal measurements. We also still explore NDVI data from MODIS (see more details below).
 
 
 ## About the underlying data
-In the NDVI project for semi-natural systems, we use two kinds of data (coming as four datasets) for building indicators for ecological condition:
+In the NDVI project for natopen systems, we use two kinds of data (coming as four datasets) for building indicators for ecological condition:
 
 - NiN ecosystem data from 'Naturtypekartlegging etter Miljødirektoratets instruks' to guide extraction of NDVI data for the right locations and to provide information on the field-assessed ecological condition of mapped polygons
 - remote sensed NDVI data
@@ -73,7 +74,9 @@ In the NDVI project for semi-natural systems, we use two kinds of data (coming a
 
 (1) NiN ecosystem data:
 The NiN data in this study contain data about the ecosystem categories (cf. Halvorsen et al. 2020) present at mapped sites as wall as their spatial delimitation (in the form of polygons). Since we use NiN data that were collected following 'Miljødirektoratets instruks', these data also include information on the ecological condition and underlying condition variabels of the mapped sites (see the Miljødirektoratets mapping manual for details).
-Polygon sizes in these NiN data may vary from <100 sqm to the dimension of sqkm's.
+#### check here #### 
+Polygon sizes in these NiN data may vary from <100 sqm to 1 sqkm. 
+
 
 (2) NDVI data:
 The NDVI data used in the work at hand are pixel means for polygons in the NiN-data, i.e. each NiN polygon is represented by one NDVI value per measurement time (see below for more details on the temporal resolution of NDVI data). With respect to that, it does only make sense to use NDVI data for polygons that are at least of the same size as the resolution of the respective satellite, and thus we excluded any polygons smaller than each satellite's resolution.
@@ -89,7 +92,8 @@ The Landsat data have a resolution of 30 x 30 m, and we thus excluded all NiN-po
 
 
 ### Representativity in time and space
-For semi-natural systems, the NiN data contain 6502 semi-natural polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6502 semi-natural polygons are distributed across regions and major ecosystem types in the following way:
+#### check here ####
+For natopen systems, the NiN data contain 6502 natopen polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6502 natopen polygons are distributed across regions and major ecosystem types in the following way:
 
                   V1    V3    V4    V6    V9    V10
 Northern Norway   638   275   55    102   360   315
@@ -101,10 +105,10 @@ Southern Norway   58    44    5     0     155   102
 In addition, there is 3 V3s, 1 V4, 4 V9s, and 9 V10s that are not assigned to any region.
 
 
-The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the semi-natural occurrences in the NiN data are likely even more spatially biased than it is the case for the NDVI data from Sentinel-2 and Landsat. 
+The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the natopen occurrences in the NiN data are likely even more spatially biased than it is the case for the NDVI data from Sentinel-2 and Landsat. 
 
 ### Temporal coverage
-The currently available NiN data on semi-natural ecosystems span a time period from 2018-2021 and thus represent a contemporary sample of ecosystem occurrences. Note that none of the polygons in the NiN-data has been visited more than once during that period.
+The currently available NiN data on natopen ecosystems span a time period from 2018-2021 and thus represent a contemporary sample of ecosystem occurrences. Note that none of the polygons in the NiN-data has been visited more than once during that period.
 
 Available Sentinel-2 satellite NDVI data span the years 2015-2022.
 Available MODIS satellite NDVI data span the years 2000-2022.
@@ -112,11 +116,11 @@ Available Landsat satellite NDVI data span the years 1984-2021.
 
 
 ## Collinearities with other indicators
-The NDVI signal may likely be co-linear with the re-growth indicator based on LiDAr derived canopy height in abandoned semi-natural areas under shrub and tree encroachment.
+Unlike wetlands and semi.natural systems, natopen areas are not subject to shrub and tree encroachment due to changes in land-use, Thus, we do not expect any co-linearity of the NDVI signal with e.g. the re-growth indicator based on LiDAr derived canopy height.
 
 ## Reference state and values
 ### Reference state and scaling values
-This indicator project is mainly exploratory, mapping the possibilities of and lacking prerequisites for satellite derived NDVI data to inform ecological condition assessments. Therefore, we lack a concise strategy for how to define the reference state, especially prior to having access to an ecosystem map for semi-natural ecosystems (cf. Jakobsson et al. 2020, Töpper & Jakobsson 2021). In this exploratory work, we will use the condition classification in the NiN-data to explore (1) how NDVI connects to semi-natural ecology and condition and (2) its applicability for defining a reference state. We will use statistical models to test whether or not NDVI varies systematically with condition and across time.
+This indicator project is mainly exploratory, mapping the possibilities of and lacking prerequisites for satellite derived NDVI data to inform ecological condition assessments. Therefore, we lack a concise strategy for how to define the reference state, especially prior to having access to an ecosystem map for natopen ecosystems (cf. Jakobsson et al. 2020, Töpper & Jakobsson 2021). In this exploratory work, we will use the condition classification in the NiN-data to explore (1) how NDVI connects to natopen ecology and condition and (2) its applicability for defining a reference state. We will use statistical models to test whether or not NDVI varies systematically with condition and across time.
 
 ## Uncertainties
 Given a condition index can be achieved, we can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error and standard deviation as a measure of spatial uncertainty for a geographical area (see Töpper & Jakobsson 2021).
@@ -318,9 +322,9 @@ summary(as.factor(nin$tilstand))
 summary(as.numeric(nin$tilstand_num))
 
 
-## filter out only semi-natural data
-nin.seminat <- nin %>% 
-  filter(hovedoekosystem %in% c('Semi_naturlig')) %>%
+## filter out only natopen data
+nin.natopen <- nin %>% 
+  filter(hovedoekosystem %in% c('Naturlig_aapent')) %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
@@ -328,26 +332,26 @@ nin.seminat <- nin %>%
 
 
 # merge NiN-data with region
-nin.seminat = st_join(nin.seminat, regnor, left = TRUE)
-nin.seminat
+nin.natopen = st_join(nin.natopen, regnor, left = TRUE)
+nin.natopen
 
-colnames(nin.seminat)[c(1,10)] <- c("id","region_id")
+colnames(nin.natopen)[c(1,10)] <- c("id","region_id")
 
 # check that every nin-polygon still occurs only once
-summary(as.factor(nin.seminat$id)) # ok
+summary(as.factor(nin.natopen$id)) # ok
 
-nin.seminat <- nin.seminat %>% 
-  mutate(area_meters_nin = st_area(nin.seminat)
+nin.natopen <- nin.natopen %>% 
+  mutate(area_meters_nin = st_area(nin.natopen)
   )
 # check and edit the order of regions
-levels(nin.seminat$region)
-nin.seminat$region <- as.factor(nin.seminat$region)
-levels(nin.seminat$region)
-nin.seminat$region <- factor(nin.seminat$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
-levels(nin.seminat$region)
+levels(nin.natopen$region)
+nin.natopen$region <- as.factor(nin.natopen$region)
+levels(nin.natopen$region)
+nin.natopen$region <- factor(nin.natopen$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
+levels(nin.natopen$region)
 
 # splitting content in the ninbeskrivelsesvariabler-column into separate rows per variable and then separating that column into two for the variable name and value
-nin.seminat2 <- nin.seminat %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
+nin.natopen2 <- nin.natopen %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
   separate(col = ninbeskrivelsesvariabler,
            into = c("NiN_variable_code", "NiN_variable_value"),
            sep = "_",
@@ -355,120 +359,120 @@ nin.seminat2 <- nin.seminat %>% separate_rows(ninbeskrivelsesvariabler, sep=",")
   mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
   mutate(NiN_variable_code = as.factor(NiN_variable_code)) %>%
   subset(select = -ninbeskrivelsesvariabler)
-nin.seminat2 <- as.data.frame(nin.seminat2)
+nin.natopen2 <- as.data.frame(nin.natopen2)
 
 ```
 
 ```{r, echo = F}
 
 #load processed NiN-data from cache
-nin.seminat <- readRDS(paste0(here::here(),"/data/cache/nin.seminat.RDS"))
-nin.seminat2 <- readRDS(paste0(here::here(),"/data/cache/nin.seminat2.RDS"))
+nin.natopen <- readRDS(paste0(here::here(),"/data/cache/nin.natopen.RDS"))
+nin.natopen2 <- readRDS(paste0(here::here(),"/data/cache/nin.natopen2.RDS"))
 
 ```
 
 #### NDVI data
 ```{r, results='hide', message=FALSE}
 ## Sentinel-2
-# join nin.seminat & Sentinel NDVI data
-SentinelNDVI.seminat <- full_join(nin.seminat, df.s, by="id")
-#summary(SentinelNDVI.seminat)
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
+# join nin.natopen & Sentinel NDVI data
+SentinelNDVI.natopen <- full_join(nin.natopen, df.s, by="id")
+#summary(SentinelNDVI.natopen)
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(SentinelNDVI.seminat))
-#summary(SentinelNDVI.seminat)
-# get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(hovedtype))
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(mean))
-#summary(SentinelNDVI.seminat)
+         area_meters = st_area(SentinelNDVI.natopen))
+#summary(SentinelNDVI.natopen)
+# get rid of NAs (i.e. NDVI cells that were not in natopen polygons)
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(!is.na(hovedtype))
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(!is.na(mean))
+#summary(SentinelNDVI.natopen)
 # get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
-dim(SentinelNDVI.seminat)
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(as.numeric(area_meters) >= 100)
-dim(SentinelNDVI.seminat)
+dim(SentinelNDVI.natopen)
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(as.numeric(area_meters) >= 100)
+dim(SentinelNDVI.natopen)
 # split date into year, month & day
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 # add column for sub-ecosystem types
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
                                                         subtype = str_remove(subtype, '-'),
                                                         subtype = str_remove(subtype, '-'))
 # we are using max NDVI per year in every NiN polygon
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
-summary(SentinelNDVI.seminat)
+summary(SentinelNDVI.natopen)
 
 ## MODIS
-# join nin.seminat and Modis NDVI data
-ModisNDVI.seminat <- full_join(nin.seminat, df.m, by="id")
+# join nin.natopen and Modis NDVI data
+ModisNDVI.natopen <- full_join(nin.natopen, df.m, by="id")
 
-#summary(ModisNDVI.seminat)
-ModisNDVI.seminat <- ModisNDVI.seminat %>%
+#summary(ModisNDVI.natopen)
+ModisNDVI.natopen <- ModisNDVI.natopen %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(ModisNDVI.seminat))
-#summary(ModisNDVI.seminat)
-# get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
-ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(!is.na(hovedtype))
-ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(!is.na(mean))
-#summary(ModisNDVI.seminat)
+         area_meters = st_area(ModisNDVI.natopen))
+#summary(ModisNDVI.natopen)
+# get rid of NAs (i.e. NDVI cells that were not in natopen polygons)
+ModisNDVI.natopen <- ModisNDVI.natopen %>% filter(!is.na(hovedtype))
+ModisNDVI.natopen <- ModisNDVI.natopen %>% filter(!is.na(mean))
+#summary(ModisNDVI.natopen)
 # get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
-dim(ModisNDVI.seminat)
-ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(as.numeric(area_meters) >= 62500)
-dim(ModisNDVI.seminat)
+dim(ModisNDVI.natopen)
+ModisNDVI.natopen <- ModisNDVI.natopen %>% filter(as.numeric(area_meters) >= 62500)
+dim(ModisNDVI.natopen)
 # split date into year, month & day
-ModisNDVI.seminat <- ModisNDVI.seminat %>%
+ModisNDVI.natopen <- ModisNDVI.natopen %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 # we are using max NDVI per year in every NiN polygon
-ModisNDVI.seminat <- ModisNDVI.seminat %>%
+ModisNDVI.natopen <- ModisNDVI.natopen %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
-#summary(ModisNDVI.seminat)
+#summary(ModisNDVI.natopen)
 
 ## Landsat
-# join nin.seminat & Landsat NDVI data
-LandsatNDVI.seminat <- full_join(nin.seminat, df.l, by="id")
+# join nin.natopen & Landsat NDVI data
+LandsatNDVI.natopen <- full_join(nin.natopen, df.l, by="id")
 
-#summary(LandsatNDVI.seminat)
-LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
+#summary(LandsatNDVI.natopen)
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   mutate(hovedoekosystem = as.factor(hovedoekosystem),
          hovedtype = as.factor(hovedtype),
          ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
          lokalitetskvalitet = as.factor(lokalitetskvalitet),
          tilstand = as.factor(tilstand),
-         area_meters = st_area(LandsatNDVI.seminat))
-#summary(LandsatNDVI.seminat)
-# get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
-LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(hovedtype))
-LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(mean))
-#summary(LandsatNDVI.seminat)
+         area_meters = st_area(LandsatNDVI.natopen))
+#summary(LandsatNDVI.natopen)
+# get rid of NAs (i.e. NDVI cells that were not in natopen polygons)
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>% filter(!is.na(hovedtype))
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>% filter(!is.na(mean))
+#summary(LandsatNDVI.natopen)
 # get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
-dim(LandsatNDVI.seminat)
-LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(as.numeric(area_meters) >= 900)
-dim(LandsatNDVI.seminat)
+dim(LandsatNDVI.natopen)
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>% filter(as.numeric(area_meters) >= 900)
+dim(LandsatNDVI.natopen)
 # split date into year, month & day
-LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   dplyr::mutate(year = lubridate::year(date), 
                 month = lubridate::month(date), 
                 day = lubridate::day(date))
 # we are using max NDVI per year in every NiN polygon
-LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
-#summary(LandsatNDVI.seminat)
+#summary(LandsatNDVI.natopen)
 ```
 
 
@@ -476,15 +480,15 @@ LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
 
 # How are polygon sizes distributed?
 ```{r}
-summary(SentinelNDVI.seminat$area_meters)
-hist(SentinelNDVI.seminat$area_meters,xlim=c(0,20000),breaks=50000)
+summary(SentinelNDVI.natopen$area_meters)
+hist(SentinelNDVI.natopen$area_meters,xlim=c(0,20000),breaks=50000)
 abline(v=100,lty=2)
 ```
-semi-natural polygons stretch a large number of sizes from just above 100 sqm to almost 3 million sqm. 75% of all polygons are below 15297 sqm.
+natopen polygons stretch a large number of sizes from just above 100 sqm to almost 3 million sqm. 75% of all polygons are below 15297 sqm.
 
 # How does NDVI vary over the years
 ```{r}
-SentinelNDVI.seminat %>%
+SentinelNDVI.natopen %>%
   ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_grid( tilstand~hovedtype)
@@ -492,20 +496,20 @@ SentinelNDVI.seminat %>%
 2022 stands out with the highest NDVI values missing.
 WE omit 2022 for this analysis
 ```{r}
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(year != '2022')
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(year != '2022')
 ```
 
 # How do NDVI values vary between major and basic ecosystem types for sites in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r warning=FALSE}
-SentinelNDVI.seminat %>%
+SentinelNDVI.natopen %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x=hovedtype, y=mean )) + 
   geom_violin() +
   geom_point(size=0.7, shape=16, color="grey")
 
-SentinelNDVI.seminat$subtype <- factor(SentinelNDVI.seminat$subtype,levels=c("C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15","C16","C17","C18","C19","C20","C21","E1","E2","E3","E4","E5","E6","E7"))
-SentinelNDVI.seminat %>%
+SentinelNDVI.natopen$subtype <- factor(SentinelNDVI.natopen$subtype,levels=c("C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15","C16","C17","C18","C19","C20","C21","E1","E2","E3","E4","E5","E6","E7"))
+SentinelNDVI.natopen %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x=subtype, y=mean )) + 
@@ -514,12 +518,12 @@ SentinelNDVI.seminat %>%
   facet_wrap( ~hovedtype) +
   theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2, size=6))
 ```
-NDVI varies between major ecosystem types with the highest values in semi-natural grasslands (T32) and in previously intensively used and altered grasslands that today resemble  a semi-natural grassland (T40, T41), lowest values in coastal heathlands (T34). Other ecossytem types: Boreal heath (T31), semi-natural coastal grasslands (T33). The overlaps between the ecosystem types are considerable.
+NDVI varies between major ecosystem types with the highest values in natopen grasslands (T32) and in previously intensively used and altered grasslands that today resemble  a natopen grassland (T40, T41), lowest values in coastal heathlands (T34). Other ecossytem types: Boreal heath (T31), natopen coastal grasslands (T33). The overlaps between the ecosystem types are considerable.
 With respect to basic ecosystem types within the major types, NDVI appears to cover very similar ranges across the subtypes, and those with deviating violin plots have a smaller sample size. There is no obvious trend related to the structuring environmental gradients withing the major types, and also here the overlap is large. 
 
-# How does NDVI vary across regions in semi-naturals (major types) in good condition? (using only NDVI data matching NiN-mapping years)
+# How does NDVI vary across regions in natopens (major types) in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r warning=FALSE}
-SentinelNDVI.seminat %>%
+SentinelNDVI.natopen %>%
   filter(tilstand == 'God') %>%
   filter(year == kartleggingsaar) %>%
   filter(!is.na(region)) %>%
@@ -533,7 +537,7 @@ For the meadow systems (T32, T33, T40, T41) there is no obvious trends in geogra
 
 # How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)
 ```{r warning=FALSE}
-SentinelNDVI.seminat %>%
+SentinelNDVI.natopen %>%
   filter(year == kartleggingsaar) %>%
   ggplot( aes(x=tilstand, y=mean )) + 
   geom_violin() +
@@ -544,7 +548,7 @@ In the coastal types (T33, T34, coastal meadows and heathlands, respectively) ND
 
 # Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 ```{r warning=FALSE}
-nin.seminat2 %>%
+nin.natopen2 %>%
   filter(hovedtype=='T31') %>%
   filter(NiN_variable_code %in% c("7JB-BT","7RA-BA","7FA","7TK")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -561,7 +565,7 @@ nin.seminat2 %>%
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
 
-nin.seminat2 %>%
+nin.natopen2 %>%
   filter(hovedtype=='T32') %>%
   filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7SE","7JB-GJ")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -575,10 +579,10 @@ nin.seminat2 %>%
   geom_jitter(width = 0.25, height=0.25) +
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
-  ggtitle("Condition variables in semi-natural grasslands (T32)") +
+  ggtitle("Condition variables in natopen grasslands (T32)") +
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
-nin.seminat2 %>%
+nin.natopen2 %>%
   filter(hovedtype=='T33') %>%
   filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7JB-GJ")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -591,10 +595,10 @@ nin.seminat2 %>%
   geom_jitter(width = 0.25, height=0.25) +
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
-  ggtitle("Condition variables in semi-natural coastal grasslands (T33)") +
+  ggtitle("Condition variables in natopen coastal grasslands (T33)") +
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
-nin.seminat2 %>%
+nin.natopen2 %>%
   filter(hovedtype=='T34') %>%
   filter(NiN_variable_code %in% c("7JB-BT","7RA-SJ","7FA","7TK")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -610,7 +614,7 @@ nin.seminat2 %>%
   ggtitle("Condition variables in coastal heathlands (T34)") +
   labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
 
-nin.seminat2 %>%
+nin.natopen2 %>%
   filter(hovedtype %in% c('T40','T41')) %>%
   filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7SE","7JB-GJ")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
@@ -630,7 +634,7 @@ nin.seminat2 %>%
 ```
 In these plots, the panels for the different major ecosystem types differ because Miljødirektoratets mapping manual (see reference list above) uses different variables in these major ecosystem types to define condition.
 
-In the heath systems - T31 and T34 - reduced condition is mainly related to low levels of grazing and ongoing succession (but also too intensive grazing). In the meadow systems - T32, T33, T40, T41 - reduced condition is related to low levels of land-use intensity and ongoing succession  (but also too intensive land use). In addition, reduced condition is related to high abundance of alien species in all major semi-natural ecosystem types.
+In the heath systems - T31 and T34 - reduced condition is mainly related to low levels of grazing and ongoing succession (but also too intensive grazing). In the meadow systems - T32, T33, T40, T41 - reduced condition is related to low levels of land-use intensity and ongoing succession  (but also too intensive land use). In addition, reduced condition is related to high abundance of alien species in all major natopen ecosystem types.
 
 ### Regression analyses Sentinel-2, NDVI as a function of condition
 We can investigate further how NDVI and condition are connected using regression analyses.
@@ -638,7 +642,7 @@ We can investigate further how NDVI and condition are connected using regression
 First, we take a look at how balanced the data are across major ecosystem types, regions and condition classes
 ```{r warning=FALSE, message=FALSE}
 # NDVI across hovedtyper, regions and condition classes (only for NDVI years data matching NiN-mapping years)
-SentinelNDVI.seminat %>%
+SentinelNDVI.natopen %>%
 
   group_by(id, year) %>%
 
@@ -653,23 +657,23 @@ Northern Norway does not have any T34 occurrences and very few T33 and T40, we w
 
 NDVI data are bounded between -1 and 1, and thus require modelling with an appropriate method that can handle bounded data. We can transform the variable to be bounded between 0 and 1 and use beta-regression models:
 ```{r}
-SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
+SentinelNDVI.natopen$mean_beta <- (SentinelNDVI.natopen$mean + 1) / 2
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
 # we drop T41 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
-SentinelNDVI.seminat.train <- SentinelNDVI.seminat %>%
+SentinelNDVI.natopen.train <- SentinelNDVI.natopen %>%
   filter(year == kartleggingsaar) %>%
   filter(hovedtype != 'T41')
 
 # check if there's any 0s or 1s (which beta cannot handle)
-summary(SentinelNDVI.seminat.train$mean_beta) #ok
+summary(SentinelNDVI.natopen.train$mean_beta) #ok
 # replace 1s in Landsat data with 0.9999
-LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
 
 # We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
-model.seminat.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region!='Northern Norway',])
-model.seminat.cond.Sent <- StepBeta(model.seminat.cond.Sent)
-summary(model.seminat.cond.Sent)
+model.natopen.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region!='Northern Norway',])
+model.natopen.cond.Sent <- StepBeta(model.natopen.cond.Sent)
+summary(model.natopen.cond.Sent)
 ```
 NDVI values do vary between:
 - Regions
@@ -678,21 +682,21 @@ NDVI values do vary between:
 
 It is evident that there are differences between regions. But since we are not interested in the statistics for region differences, we run separate models for every region for ease of interpretation.
 ```{r, include = F}
-rm(model.seminat.cond.Sent)
+rm(model.natopen.cond.Sent)
 ```
 
 ```{r message=FALSE, warning=FALSE}
-model.seminat.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Northern Norway" & SentinelNDVI.seminat.train$hovedtype!='T34',])
-model.seminat.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Central Norway",])
-model.seminat.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Western Norway",])
-model.seminat.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Eastern Norway",])
-model.seminat.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Southern Norway",])
+model.natopen.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Northern Norway" & SentinelNDVI.natopen.train$hovedtype!='T34',])
+model.natopen.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Central Norway",])
+model.natopen.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Western Norway",])
+model.natopen.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Eastern Norway",])
+model.natopen.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Southern Norway",])
 
 ```
 
 # Northern Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.seminat.train %>%
+SentinelNDVI.natopen.train %>%
   filter(region=="Northern Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -700,7 +704,7 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.seminat.cond.Sent.N)$coefficients
+summary(model.natopen.cond.Sent.N)$coefficients
 ```
 NDVI in good condition: T32 > T31/T33 > T40 (last not sig. but very few data)
 
@@ -710,7 +714,7 @@ T32: NDVI does not change with condition
 
 # Central Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.seminat.train %>%
+SentinelNDVI.natopen.train %>%
   filter(region=="Central Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -718,7 +722,7 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.seminat.cond.Sent.C)$coefficients
+summary(model.natopen.cond.Sent.C)$coefficients
 ```
 NDVI in good condition: T32 > T33/T34/T40 > T31
 
@@ -727,7 +731,7 @@ T32/T33/T34/T40: NDVI increases sig. less than in T31 as condition deteriorates,
 
 # Western Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.seminat.train %>%
+SentinelNDVI.natopen.train %>%
   filter(region=="Western Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -735,7 +739,7 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.seminat.cond.Sent.W)$coefficients
+summary(model.natopen.cond.Sent.W)$coefficients
 ```
 NDVI in good condition: T31/T32/T40 > T33/T34
 
@@ -744,7 +748,7 @@ all types: NDVI increases slightly as condition deteriorates, but just about sig
 
 # Eastern Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.seminat.train %>%
+SentinelNDVI.natopen.train %>%
   filter(region=="Eastern Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -752,7 +756,7 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.seminat.cond.Sent.E)$coefficients
+summary(model.natopen.cond.Sent.E)$coefficients
 ```
 NDVI in good condition: T32 > T31/T40 > T33 > T34
 
@@ -761,7 +765,7 @@ T33: NDVI increases as condition deteriorates, more strongly than in the other t
 
 # Southern Norway
 ```{r message=FALSE, warning=FALSE}
-SentinelNDVI.seminat.train %>%
+SentinelNDVI.natopen.train %>%
   filter(region=="Southern Norway") %>%
 
   ggplot( aes(x=tilstand, y=mean )) + 
@@ -769,7 +773,7 @@ SentinelNDVI.seminat.train %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~hovedtype)
 
-summary(model.seminat.cond.Sent.S)$coefficients
+summary(model.natopen.cond.Sent.S)$coefficients
 ```
 NDVI in good condition: T32 > T31/T40 > T33/T34
 
@@ -780,7 +784,7 @@ T40: insufficient power
 
 Overall take home messages:
 
-In semi-natural ecosystems NDVI increases as ecosystem condition deteriorates, but the effect sizes vary with major ecosystem types. Boreal heath shows the most consistent increases, and also coastal meadows and coastal heathlands show increases in parts of the country. Semi-natural and semi-natural-looking meadows show very tiny increases if any at all.
+In natopen ecosystems NDVI increases as ecosystem condition deteriorates, but the effect sizes vary with major ecosystem types. Boreal heath shows the most consistent increases, and also coastal meadows and coastal heathlands show increases in parts of the country. natopen and natopen-looking meadows show very tiny increases if any at all.
 
 ### NDVI across time - Sentinel, MODIS & LandSat
 As a last step, we can investigate how NDVI has changed over time. For this we include data from both MODIS and Landsat in addition to Sentinel-2.
@@ -791,81 +795,81 @@ First, there's again some data handling to do. We merge the Sentinel, MODIS, and
 # Sentinel time series checked in exploratory analysis script
 
 # checking time series for MODIS
-ModisNDVI.seminat %>%
+ModisNDVI.natopen %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_wrap(~hovedtype)
 # 2022 does not stand out as in the Sentinel data, so we keep it
-ModisNDVI.seminat <- ModisNDVI.seminat %>%
+ModisNDVI.natopen <- ModisNDVI.natopen %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
 # checking time series for Landsat
-LandsatNDVI.seminat %>%
+LandsatNDVI.natopen %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE)) %>%
   ggplot( aes(x=year, y=mean )) + 
   geom_point() +
   facet_wrap(~hovedtype)
 # nothing worrying to see here either
-LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm=TRUE))
 
 # transformation of NDVI scale to beta scale
-#SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
-ModisNDVI.seminat$mean_beta <- (ModisNDVI.seminat$mean + 1) / 2
-LandsatNDVI.seminat$mean_beta <- (LandsatNDVI.seminat$mean + 1) / 2
+#SentinelNDVI.natopen$mean_beta <- (SentinelNDVI.natopen$mean + 1) / 2
+ModisNDVI.natopen$mean_beta <- (ModisNDVI.natopen$mean + 1) / 2
+LandsatNDVI.natopen$mean_beta <- (LandsatNDVI.natopen$mean + 1) / 2
 
 # check if there's any 0s or 1s (which beta cannot handle)
-summary(SentinelNDVI.seminat$mean_beta) # ok
-summary(ModisNDVI.seminat$mean_beta) # ok
-summary(LandsatNDVI.seminat$mean_beta) # has 1's
+summary(SentinelNDVI.natopen$mean_beta) # ok
+summary(ModisNDVI.natopen$mean_beta) # ok
+summary(LandsatNDVI.natopen$mean_beta) # has 1's
 # replace 1s in Landsat data with 0.9999
-LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
+LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
 
 # check if the three Satellite objects have the same structure (for concatenating them)
-names(SentinelNDVI.seminat)
-names(ModisNDVI.seminat)
-names(LandsatNDVI.seminat)
+names(SentinelNDVI.natopen)
+names(ModisNDVI.natopen)
+names(LandsatNDVI.natopen)
 # Sentinel and Landsat have each an extra column -> omit them when concatenating further below
 # one column is named slightly differently in the Sentinel data -> rename it
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
+SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
   rename('system.index' = 'system:index')
 
 # check if they have the same geometry
-st_crs(SentinelNDVI.seminat)
-st_crs(ModisNDVI.seminat)
-st_crs(LandsatNDVI.seminat)
+st_crs(SentinelNDVI.natopen)
+st_crs(ModisNDVI.natopen)
+st_crs(LandsatNDVI.natopen)
 # all good
 
 # add an increment to the year variable to avoid overlapping data being hidden in figures
-SentinelNDVI.seminat$year_jit <- SentinelNDVI.seminat$year + 0.3
-ModisNDVI.seminat$year_jit <- ModisNDVI.seminat$year - 0.3
-LandsatNDVI.seminat$year_jit <- LandsatNDVI.seminat$year
+SentinelNDVI.natopen$year_jit <- SentinelNDVI.natopen$year + 0.3
+ModisNDVI.natopen$year_jit <- ModisNDVI.natopen$year - 0.3
+LandsatNDVI.natopen$year_jit <- LandsatNDVI.natopen$year
 
 # concatenate the three Satellite objects
-allSatNDVI.seminat <- rbind(
-SentinelNDVI.seminat[,!names(SentinelNDVI.seminat) %in% "subtype"],
-ModisNDVI.seminat,
-LandsatNDVI.seminat[,!names(LandsatNDVI.seminat) %in% "column_label"]
+allSatNDVI.natopen <- rbind(
+SentinelNDVI.natopen[,!names(SentinelNDVI.natopen) %in% "subtype"],
+ModisNDVI.natopen,
+LandsatNDVI.natopen[,!names(LandsatNDVI.natopen) %in% "column_label"]
 )
 # add variable for Satellite identity
-allSatNDVI.seminat$Sat <- c(
-  rep("Sentinel",nrow(SentinelNDVI.seminat)),
-  rep("Modis",nrow(ModisNDVI.seminat)),
-  rep("Landsat",nrow(LandsatNDVI.seminat))
+allSatNDVI.natopen$Sat <- c(
+  rep("Sentinel",nrow(SentinelNDVI.natopen)),
+  rep("Modis",nrow(ModisNDVI.natopen)),
+  rep("Landsat",nrow(LandsatNDVI.natopen))
 )
-allSatNDVI.seminat$Sat <- factor(allSatNDVI.seminat$Sat,levels=c("Sentinel","Modis","Landsat"))
-levels(allSatNDVI.seminat$Sat)
+allSatNDVI.natopen$Sat <- factor(allSatNDVI.natopen$Sat,levels=c("Sentinel","Modis","Landsat"))
+levels(allSatNDVI.natopen$Sat)
 ```
 Now we can plot the time series for each main ecosystem type, showing each satellite time series separately:
 ```{r}
 # plot 
-allSatNDVI.seminat %>%
+allSatNDVI.natopen %>%
   ggplot( aes(x=year_jit, y=mean, color=Sat )) + 
   geom_point() +
   facet_wrap(~hovedtype, ncol = 1)
@@ -876,43 +880,42 @@ We can test if there are consistent temporal changes in NDVI by running regressi
 
 We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for each satellite.
 ```{r message=FALSE, warning=FALSE}
-model.seminat.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$tilstand=="God",])
-model.seminat.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$tilstand=="God",])
-model.seminat.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$tilstand=="God",])
+model.natopen.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.natopen[SentinelNDVI.natopen$tilstand=="God",])
+model.natopen.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.natopen[ModisNDVI.natopen$tilstand=="God",])
+model.natopen.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.natopen[LandsatNDVI.natopen$tilstand=="God",])
 
-summary(model.seminat.time.GodTilst.Sent)$coefficients$cond
-summary(model.seminat.time.GodTilst.Modi)$coefficients$cond
-summary(model.seminat.time.GodTilst.Land)$coefficients$cond
+summary(model.natopen.time.GodTilst.Sent)$coefficients$cond
+summary(model.natopen.time.GodTilst.Modi)$coefficients$cond
+summary(model.natopen.time.GodTilst.Land)$coefficients$cond
 ```
-There's an increase in NDVI over time in mainly the Sentinel and Landsat time series in boreal heath  in good condition, but this pattern is reduced or absent in the other semi-natural ecosystem types. It is worth pointing out though that the model on the MODIS data shows less than 1/10 of the effect size for the time slope and has way less statistical power compared to Sentinel and Landsat.
+There's an increase in NDVI over time in all three satellite time series in essentially all major natopen ecosystem types in good condition. It is worth pointing out though that the model on the MODIS data shows 1/10 of the effect size for the time slope and has way less statistical power compared to Sentinel and Landsat.
 
-#### check here ####
-Given the systematically higher NDVI-values with decreasing condition in semi-natural semi-naturals, We may ask the question if the temporal NDVI increase might be stronger in semi-natural semi-naturals?
+Given the systematically higher NDVI-values with decreasing condition in natopen natopens, We may ask the question if the temporal NDVI increase might be stronger in natopen natopens?
 ```{r message=FALSE, warning=FALSE}
-model.seminat.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("V9","V10"),])
-model.seminat.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("V9","V10"),])
-model.seminat.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("V9","V10"),])
-summary(model.seminat.time.tilst.V9V10.Sent)$coefficients$cond
-summary(model.seminat.time.tilst.V9V10.Modi)$coefficients$cond
-summary(model.seminat.time.tilst.V9V10.Land)$coefficients$cond
+model.natopen.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.natopen[SentinelNDVI.natopen$hovedtype %in% c("V9","V10"),])
+model.natopen.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.natopen[ModisNDVI.natopen$hovedtype %in% c("V9","V10"),])
+model.natopen.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.natopen[LandsatNDVI.natopen$hovedtype %in% c("V9","V10"),])
+summary(model.natopen.time.tilst.V9V10.Sent)$coefficients$cond
+summary(model.natopen.time.tilst.V9V10.Modi)$coefficients$cond
+summary(model.natopen.time.tilst.V9V10.Land)$coefficients$cond
 ```
-Indeed, the temporal NDVI increase has been stronger in semi-natural semi-naturals with reduced ecological condition, in both Sentinel and Landsat. For MODIS, the time slope is again 1/10 of the slopes in the other two satellite time series, and it is not significant.
+Indeed, the temporal NDVI increase has been stronger in natopen natopens with reduced ecological condition, in both Sentinel and Landsat. For MODIS, the time slope is again 1/10 of the slopes in the other two satellite time series, and it is not significant.
 
 # Overall conclusion
-NDVI in semi-natural ecosystem does vary with condition and also with ecosystem type but the variance and thus overlap between condition classes and ecosystem types is large. Especially the semi-natural semi-natural ecosystems show a very consistent pattern of higher NDVI and larger temporal NDVI increase in sites in reduced ecological condition, which also links well to the registered condition variables behind the lower condition scores (shrub/tree encroachment, low land-use intensity, succession) and thus reduced land-use as the main pressure identified for these systems.
+NDVI in natopen ecosystem does vary with condition and also with ecosystem type but the variance and thus overlap between condition classes and ecosystem types is large. Especially the natopen natopen ecosystems show a very consistent pattern of higher NDVI and larger temporal NDVI increase in sites in reduced ecological condition, which also links well to the registered condition variables behind the lower condition scores (shrub/tree encroachment, low land-use intensity, succession) and thus reduced land-use as the main pressure identified for these systems.
 The large variance and thus overlap between condition classes and ecosystem types makes it generally difficult to define useful scaling values for absolute NDVI values.
 Since ecological condition also relates to the temporal development of NDVI values in the analyses above, an alternative approach can be to define scaling values for time slopes as for instance has been done for the NDVI indicator in the ecological condition assessment for Norwegian mountains (Framstad et al. 2022, see references above).
 
 Beyond these considerations, there are two general issues which limit a more comprehensive and robust application of satellite based NDVI-data in an ecological condition context:
 
-# 1) We are lacking ecosystem maps for semi-natural ecosystems
-The study at hand clearly shows that different semi-natural ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values for at least the different major ecosystem types within semi-naturals separately.
-# 2) We are lacking a good ecological understanding and ground-truthing for NDVI in semi-natural ecosystems
-Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in semi-naturals. Here, we need field studies investigating:
+# 1) We are lacking ecosystem maps for natopen ecosystems
+The study at hand clearly shows that different natopen ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values for at least the different major ecosystem types within natopens separately.
+# 2) We are lacking a good ecological understanding and ground-truthing for NDVI in natopen ecosystems
+Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in natopens. Here, we need field studies investigating:
 - The connection between NDVI and ecological drivers like for example potential effects of Nitrogen deposition
 
-- How reflectance in different semi-natural types is affected by how moist the moss layer is at the time of measuring.
-The literature suggests a high variability in NDVI measurements from mosses in particular, in part due to moisture content (REF). Minerotrophic semi-naturals (V1) are more dominated by graminoids than V3, and the moss-layer is generally more visible from above. At the same time, semi-naturals are generally drier in the western parts of Norway than in the East (REF), so NDVI patterns may, at least in part, be determined by moisture.
+- How reflectance in different natopen types is affected by how moist the moss layer is at the time of measuring.
+The literature suggests a high variability in NDVI measurements from mosses in particular, in part due to moisture content (REF). Minerotrophic natopens (V1) are more dominated by graminoids than V3, and the moss-layer is generally more visible from above. At the same time, natopens are generally drier in the western parts of Norway than in the East (REF), so NDVI patterns may, at least in part, be determined by moisture.
 
 In addition, further investigations should test how NDVI-condition pattern vary across biogeographic regions in addition to administrative regions (which are ecologically irrelevant), in order to better understand the results for the administrative regions.
 
