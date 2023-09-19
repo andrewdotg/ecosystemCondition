@@ -483,6 +483,28 @@ LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
 
 ### Exploratory analyses, Sentinel-2
 
+# Where are the wetland sites?
+```{r}
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(SentinelNDVI.wetland) +
+  tm_dots('hovedtype',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE), scale=2.5, legend.show = FALSE) + 
+  tm_add_legend(type = "symbol", 
+                col = tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE),
+                labels = c("V1 - minerotrophic mires",
+                           "V3 - ombrotrophic bogs",
+                           "V4 - cold springs",
+                           "V6 - wet snowbeds",
+                           "V9 - semi-natural mires",
+                           "V10 - semi-natural wet meadows"),
+                title = "Major ecosystem type",
+                size=3) +
+  tm_layout(main.title = "Wetland ecosystems (NiN, Miljødirektoratets instruks)",
+            main.title.size=1.2, legend.position = c("right", "bottom"), 
+            legend.text.size = 1.3, legend.title.size = 1.4)
+```
+
 # How are polygon sizes distributed?
 ```{r}
 summary(SentinelNDVI.wetland$area_meters)
@@ -568,7 +590,7 @@ nin.wetland2 %>%
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
   ggtitle("Condition variables in semi-natural mires (V9)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 
 nin.wetland2 %>%
@@ -585,7 +607,7 @@ nin.wetland2 %>%
   facet_wrap(~NiN_variable_des,nrow=2, ncol=2) +
   theme(legend.position="none") +
   ggtitle("Condition variables in semi-natural wet-meadows (V10)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 
 nin.wetland2 %>%
@@ -604,7 +626,7 @@ nin.wetland2 %>%
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
   ggtitle("Condition variables in minerotrophic fens (V1)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 ```
 In these plots, the panels for V1, V9 and V10 differ because Miljødirektoratets mapping manual (see reference list above) uses different variables in these major ecosystem types to define condition.
@@ -616,7 +638,7 @@ In V1 (minerotrophic fens), reduced condition is mainly related to the abundance
 We can investigate further how NDVI and condition are connected using regression analyses.
 
 First, we take a look at how balanced the data are across major ecosystem types, regions and condition classes
-```{r warning=FALSE, message=FALSE}
+```{r warning=FALSE}
 # NDVI across hovedtyper, regions and condition classes (only for NDVI years data matching NiN-mapping years)
 SentinelNDVI.wetland %>%
 
@@ -849,7 +871,7 @@ It is quite obvious that the NDVI values from the three satellites are not quant
 We can test if there are consistent temporal changes in NDVI by running regressions including year as a covariate.
 
 We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for each satellite.
-```{r message=FALSE, warning=FALSE}
+```{r warning=FALSE}
 model.wetland.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.wetland[SentinelNDVI.wetland$tilstand=="God",])
 model.wetland.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.wetland[ModisNDVI.wetland$tilstand=="God",])
 model.wetland.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.wetland[LandsatNDVI.wetland$tilstand=="God",])
@@ -861,7 +883,7 @@ summary(model.wetland.time.GodTilst.Land)$coefficients$cond
 There's an increase in NDVI over time in all three satellite time series in essentially all major wetland ecosystem types in good condition. It is worth pointing out though that the model on the MODIS data shows 1/10 of the effect size for the time slope and has way less statistical power compared to Sentinel and Landsat.
 
 Given the systematically higher NDVI-values with decreasing condition in semi-natural wetlands, We may ask the question if the temporal NDVI increase might be stronger with reduced condition?
-```{r message=FALSE, warning=FALSE}
+```{r warning=FALSE}
 model.wetland.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.wetland[SentinelNDVI.wetland$hovedtype %in% c("V9","V10"),])
 model.wetland.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.wetland[ModisNDVI.wetland$hovedtype %in% c("V9","V10"),])
 model.wetland.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.wetland[LandsatNDVI.wetland$hovedtype %in% c("V9","V10"),])
@@ -879,10 +901,10 @@ Since ecological condition also relates to the temporal development of NDVI valu
 Beyond these considerations, there are two general issues which limit a more comprehensive and robust application of satellite based NDVI-data in an ecological condition context:
 
 # 1) We are lacking ecosystem maps for wetland ecosystems
-The study at hand clearly shows that different wetland ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values, and temporal changes of these, for at least the different major ecosystem types within wetlands separately.
+The analysis at hand clearly shows that different wetland ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values, and temporal changes of these, for at least the different major ecosystem types within wetlands separately.
 # 2) We are lacking a good ecological understanding and ground-truthing for NDVI in wetland ecosystems
 Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in wetlands. Here, we need field studies investigating:
-- The connection between NDVI and ecological drivers like for example potential effects of Nitrogen deposition
+- The connection between NDVI and ecological drivers like for example potential effects of Nitrogen deposition. This includes a need for understanding temporal increases in NDVI in ecosystems in good condition.
 
 - How reflectance in different wetland types is affected by how moist the moss layer is at the time of measuring.
 The literature suggests a high variability in NDVI measurements from mosses in particular, in part due to moisture content (REF). Minerotrophic wetlands (V1) are more dominated by graminoids than V3, and the moss-layer is generally more visible from above. At the same time, wetlands are generally drier in the western parts of Norway than in the East (REF), so NDVI patterns may, at least in part, be determined by moisture.

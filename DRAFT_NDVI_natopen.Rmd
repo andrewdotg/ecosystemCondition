@@ -482,6 +482,27 @@ LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
 
 ### Exploratory analyses, Sentinel-2
 
+# Where are the natopen sites?
+```{r}
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(SentinelNDVI.natopen) +
+  tm_dots('hovedtype',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE), scale=2.5, legend.show = FALSE) + 
+  tm_add_legend(type = "symbol", 
+                col = tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),
+                labels = c("T12 - coastal meadows",
+                           "T18 - flood plains",
+                           "T2 - shallow soils",
+                           "T20 - innfrysningsmark",
+                           "T21 - sand dunes"),
+                title = "Major ecosystem type",
+                size=3) +
+  tm_layout(main.title = "Naturally open ecosystems below the tree line (NiN, Miljødirektoratets instruks)",
+            main.title.size=1.2, legend.position = c("right", "bottom"), 
+            legend.text.size = 1.3, legend.title.size = 1.4)
+```
+
 # How are polygon sizes distributed?
 ```{r}
 summary(SentinelNDVI.natopen$area_meters)
@@ -553,92 +574,75 @@ The plots suggest a slight decrease in NDVI as condition deteriorates. Overlaps 
 # Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 ```{r warning=FALSE}
 nin.natopen2 %>%
-  filter(hovedtype=='T31') %>%
-  filter(NiN_variable_code %in% c("7JB-BT","7RA-BA","7FA","7TK")) %>%
+  filter(hovedtype=='T2') %>%
+  filter(NiN_variable_code %in% c("7FA","7SE","7TK","1AG-B")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BT"="Grazing pressure",
-                                 "7RA-BA"="Succession",
                                  "7FA"="Alien species",
+                                 "7SE"="Wear/tear",
+                                 "7TK"="Heavy vehicles",
+                                 "1AG-B"="Shrub cover")) %>%
+  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
+  geom_point(size=2) +  
+  geom_jitter(width = 0.25, height=0.25) +
+  facet_wrap(~NiN_variable_des, ncol=2) +
+  theme(legend.position="none") +
+  ggtitle("Condition variables in open systems on shallow soils (T2)") +
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
+
+
+nin.natopen2 %>%
+  filter(hovedtype=='T12') %>%
+  filter(NiN_variable_code %in% c("7FA","7SE","7TK")) %>%
+  mutate(NiN_variable_des=recode(NiN_variable_code,
+                                 "7FA"="Alien species",
+                                 "7SE"="Wear/tear",
                                  "7TK"="Heavy vehicles")) %>%
   ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
   geom_point(size=2) +  
   geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
+  facet_wrap(~NiN_variable_des, ncol=2) +
   theme(legend.position="none") +
-  ggtitle("Condition variables in boreal heath (T31)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
-
+  ggtitle("Condition variables in natural coastal meadows (T12)") +
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 nin.natopen2 %>%
-  filter(hovedtype=='T32') %>%
-  filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7SE","7JB-GJ")) %>%
+  filter(hovedtype=='T18') %>%
+  filter(NiN_variable_code %in% c("7FA","7JB-BT","7SE","7VR-RI")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BA"="Land-use intensity",
-                                 "7RA-SJ"="Succession",
                                  "7FA"="Alien species",
-                                 "7SE"="Wear/tear",
-                                 "7JB-GJ"="Fertilization")) %>%
-  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
-  geom_point(size=2) +  
-  geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
-  theme(legend.position="none") +
-  ggtitle("Condition variables in natopen grasslands (T32)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
-
-nin.natopen2 %>%
-  filter(hovedtype=='T33') %>%
-  filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7JB-GJ")) %>%
-  mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BA"="Land-use intensity",
-                                 "7RA-SJ"="Succession",
-                                 "7FA"="Alien species",
-                                 "7JB-GJ"="Fertilization")) %>%
-  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
-  geom_point(size=2) +  
-  geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
-  theme(legend.position="none") +
-  ggtitle("Condition variables in natopen coastal grasslands (T33)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
-
-nin.natopen2 %>%
-  filter(hovedtype=='T34') %>%
-  filter(NiN_variable_code %in% c("7JB-BT","7RA-SJ","7FA","7TK")) %>%
-  mutate(NiN_variable_des=recode(NiN_variable_code,
                                  "7JB-BT"="Grazing pressure",
-                                 "7RA-SJ"="Succession",
-                                 "7FA"="Alien species",
-                                 "7TK"="Heavy vehicles")) %>%
+                                 "7SE"="Wear/tear",
+                                 "7VR-RI"="Water regulation")) %>%
   ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
   geom_point(size=2) +  
   geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
+  facet_wrap(~NiN_variable_des, ncol=2) +
   theme(legend.position="none") +
-  ggtitle("Condition variables in coastal heathlands (T34)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  ggtitle("Condition variables in flood plains (T18)") +
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 nin.natopen2 %>%
-  filter(hovedtype %in% c('T40','T41')) %>%
-  filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7SE","7JB-GJ")) %>%
+  filter(hovedtype %in% c('T21')) %>%
+  filter(NiN_variable_code %in% c("7FA","7JB-BT","7SE","7TK","7JB-GJ")) %>%
   mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BA"="Land-use intensity",
-                                 "7RA-SJ"="Succession",
                                  "7FA"="Alien species",
+                                 "7JB-BT"="Grazing pressure",
                                  "7SE"="Wear/tear",
+                                 "7TK"="Heavy vehicles",
                                  "7JB-GJ"="Fertilization")) %>%
   ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
   geom_point(size=2) +  
   geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
+  facet_wrap(~NiN_variable_des, ncol=2) +
   theme(legend.position="none") +
-  ggtitle("Condition variables in previously heavily altered grasslands (T40/T41)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  ggtitle("Condition variables in sand dunes (T21)") +
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 ```
 In these plots, the panels for the different major ecosystem types differ because Miljødirektoratets mapping manual (see reference list above) uses different variables in these major ecosystem types to define condition.
 
-In the heath systems - T31 and T34 - reduced condition is mainly related to low levels of grazing and ongoing succession (but also too intensive grazing). In the meadow systems - T32, T33, T40, T41 - reduced condition is related to low levels of land-use intensity and ongoing succession  (but also too intensive land use). In addition, reduced condition is related to high abundance of alien species in all major natopen ecosystem types.
+In open systems on shallow soils - T2 - reduced condition is mainly related to high levels of alien species, and also to damage from heavy vehicles. In the coastal meadows - T12 - reduced condition is related to high levels of alien species, but also to wear/tear and damage from heavy vehicles. I flood plains - T18 - reduced condition is mainly related to effects of water regulation. In sand dunes - T21 - reduced condition is mainly related to high levels of alien species and wear/tear.
+Wear/tear and damage related issues as well as water regulation might alter the amount of vegetation and thus the NDVI signal.
 
 ### Regression analyses Sentinel-2, NDVI as a function of condition
 We can investigate further how NDVI and condition are connected using regression analyses.
@@ -656,13 +660,9 @@ SentinelNDVI.natopen %>%
   geom_point(size=0.7, shape=16, color="grey") +
   facet_grid( region~hovedtype)
 ```
-T41 is has only very few data and is present in 2 regions only, we omit it.
-Northern Norway does not have any T34 occurrences and very few T33 and T40, we won't be able to model it together with the other regions, and might need to model T31 and T32 there only.
+T20 is has only very few data and is present in only 1 conditino class and 2 regions, we omit it.
+Northern Norway does not have any T2 occurrences, central Norway doesn't have any T21 occurrences, we won't be able to model these types across all regions.
 
-We remove T20 from the statistical analyses because this ecosystem type is only ever registerd as in good condition, and it appears only in two regions.
-```{r}
-SentinelNDVI.natopen <- SentinelNDVI.natopen %>% filter(hovetype != 'T20')
-```
 
 NDVI data are bounded between -1 and 1, and thus require modelling with an appropriate method that can handle bounded data. We can transform the variable to be bounded between 0 and 1 and use beta-regression models:
 ```{r}
@@ -671,16 +671,14 @@ SentinelNDVI.natopen$mean_beta <- (SentinelNDVI.natopen$mean + 1) / 2
 # we drop T41 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
 SentinelNDVI.natopen.train <- SentinelNDVI.natopen %>%
   filter(year == kartleggingsaar) %>%
-  filter(hovedtype != 'T41')
+  filter(hovedtype != 'T20')
 
 # check if there's any 0s or 1s (which beta cannot handle)
 summary(SentinelNDVI.natopen.train$mean_beta) #ok
-# replace 1s in Landsat data with 0.9999
-LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
-  mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
 
 # We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
-model.natopen.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region!='Northern Norway',])
+# we exclude Northern Norway and T21 for this first exploratory model
+model.natopen.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region!='Northern Norway' & SentinelNDVI.natopen.train$hovedtype!='T21',])
 model.natopen.cond.Sent <- StepBeta(model.natopen.cond.Sent)
 summary(model.natopen.cond.Sent)
 ```
@@ -695,7 +693,7 @@ rm(model.natopen.cond.Sent)
 ```
 
 ```{r message=FALSE, warning=FALSE}
-model.natopen.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Northern Norway" & SentinelNDVI.natopen.train$hovedtype!='T34',])
+model.natopen.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Northern Norway",])
 model.natopen.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Central Norway",])
 model.natopen.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Western Norway",])
 model.natopen.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.natopen.train[SentinelNDVI.natopen.train$region=="Eastern Norway",])
@@ -715,10 +713,7 @@ SentinelNDVI.natopen.train %>%
 
 summary(model.natopen.cond.Sent.N)$coefficients
 ```
-NDVI in good condition: T32 > T31/T33 > T40 (last not sig. but very few data)
-
-T31,T33,T40: NDVI increases as condition deteriorates
-T32: NDVI does not change with condition
+Not much of a pattern in either model or figure.
 
 
 # Central Norway
@@ -733,10 +728,9 @@ SentinelNDVI.natopen.train %>%
 
 summary(model.natopen.cond.Sent.C)$coefficients
 ```
-NDVI in good condition: T32 > T33/T34/T40 > T31
+NDVI in good condition: T12/T18 > T2
 
-T31: NDVI increases as condition deteriorates
-T32/T33/T34/T40: NDVI increases sig. less than in T31 as condition deteriorates, but it still increases
+No changes with condition.
 
 # Western Norway
 ```{r message=FALSE, warning=FALSE}
@@ -750,9 +744,9 @@ SentinelNDVI.natopen.train %>%
 
 summary(model.natopen.cond.Sent.W)$coefficients
 ```
-NDVI in good condition: T31/T32/T40 > T33/T34
+NDVI in good condition: T18 marginally > T2/T12/T21
 
-all types: NDVI increases slightly as condition deteriorates, but just about sig.
+No changes with condition.
 
 
 # Eastern Norway
@@ -767,10 +761,9 @@ SentinelNDVI.natopen.train %>%
 
 summary(model.natopen.cond.Sent.E)$coefficients
 ```
-NDVI in good condition: T32 > T31/T40 > T33 > T34
+NDVI in good condition: T18 > T2/T12 > T21
 
-T31/T32/T34/T40: NDVI increases slightly as condition deteriorates
-T33: NDVI increases as condition deteriorates, more strongly than in the other types
+No changes with condition.
 
 # Southern Norway
 ```{r message=FALSE, warning=FALSE}
@@ -784,16 +777,14 @@ SentinelNDVI.natopen.train %>%
 
 summary(model.natopen.cond.Sent.S)$coefficients
 ```
-NDVI in good condition: T32 > T31/T40 > T33/T34
+NDVI in good condition: T12/T18 > T2/T21
 
-T31/T32: borderline NDVI increases as condition deteriorates
-T33/T34: NDVI increases as condition deteriorates
-T40: insufficient power
+Reduced NDVI with reduced condition in sand dune vegetation types in Southern Norway, Otherwise no changes with condition.
 
 
 Overall take home messages:
 
-In natopen ecosystems NDVI increases as ecosystem condition deteriorates, but the effect sizes vary with major ecosystem types. Boreal heath shows the most consistent increases, and also coastal meadows and coastal heathlands show increases in parts of the country. natopen and natopen-looking meadows show very tiny increases if any at all.
+In naturally open ecosystems below the tree line, NDVI seems largely independent of ecosystem condition. This is probably because many of the regarding ecosystems are structured by natural disturbances anyways. The only system showing a clear and convincing trend is the sand dunes in Southern Norway with a reduction in NDVI as condition deteriorates (due to Wear/tear and alien species).
 
 ### NDVI across time - Sentinel, MODIS & LandSat
 As a last step, we can investigate how NDVI has changed over time. For this we include data from both MODIS and Landsat in addition to Sentinel-2.
@@ -835,7 +826,7 @@ LandsatNDVI.natopen$mean_beta <- (LandsatNDVI.natopen$mean + 1) / 2
 # check if there's any 0s or 1s (which beta cannot handle)
 summary(SentinelNDVI.natopen$mean_beta) # ok
 summary(ModisNDVI.natopen$mean_beta) # ok
-summary(LandsatNDVI.natopen$mean_beta) # has 1's
+summary(LandsatNDVI.natopen$mean_beta) 
 # replace 1s in Landsat data with 0.9999
 LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
@@ -883,51 +874,47 @@ allSatNDVI.natopen %>%
   geom_point() +
   facet_wrap(~hovedtype, ncol = 1)
 ```
-It is quite obvious that the NDVI values from the three satellites are not quantitatively comparable. They vary both in their placement along the y-axis and in their variance. Modis data are absent from the T40/T41-ecosystem types because of a too large pixel size compared to the NiN-polygon sizes. In the other types, Modis is poorly represented for the same reason.
+It is quite obvious that the NDVI values from the three satellites are not quantitatively comparable. They vary both in their placement along the y-axis and in their variance. Modis data are are basically only available for flood plains (T18), as the other ecosystems types' polygons are too small for the Modis pixel size.
 
 We can test if there are consistent temporal changes in NDVI by running regressions including year as a covariate.
 
-We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for each satellite.
+We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for Sentinel and Landsat.
 ```{r message=FALSE, warning=FALSE}
 model.natopen.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.natopen[SentinelNDVI.natopen$tilstand=="God",])
-model.natopen.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.natopen[ModisNDVI.natopen$tilstand=="God",])
 model.natopen.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.natopen[LandsatNDVI.natopen$tilstand=="God",])
 
 summary(model.natopen.time.GodTilst.Sent)$coefficients$cond
-summary(model.natopen.time.GodTilst.Modi)$coefficients$cond
 summary(model.natopen.time.GodTilst.Land)$coefficients$cond
 ```
-There's an increase in NDVI over time in all three satellite time series in essentially all major natopen ecosystem types in good condition. It is worth pointing out though that the model on the MODIS data shows 1/10 of the effect size for the time slope and has way less statistical power compared to Sentinel and Landsat.
+There's an increase in NDVI over time in both satellite time series in T12 (coastal meadows) and T18 (flood plains) in good condition. In the Sentinel data this pattern is absent for T2 and T21, in the Landsat data the increase is reduced.
 
-Given the systematically higher NDVI-values with decreasing condition in natopen natopens, We may ask the question if the temporal NDVI increase might be stronger in natopen natopens?
-```{r message=FALSE, warning=FALSE}
-model.natopen.time.tilst.V9V10.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.natopen[SentinelNDVI.natopen$hovedtype %in% c("V9","V10"),])
-model.natopen.time.tilst.V9V10.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.natopen[ModisNDVI.natopen$hovedtype %in% c("V9","V10"),])
-model.natopen.time.tilst.V9V10.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.natopen[LandsatNDVI.natopen$hovedtype %in% c("V9","V10"),])
-summary(model.natopen.time.tilst.V9V10.Sent)$coefficients$cond
-summary(model.natopen.time.tilst.V9V10.Modi)$coefficients$cond
-summary(model.natopen.time.tilst.V9V10.Land)$coefficients$cond
+We can check if these temporal changes in T12 and T18, as well as for T21 in Southern Norway, vary between condition classes?
+```{r, warning=FALSE}
+model.natopen.time.tilst.T12.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.natopen[SentinelNDVI.natopen$hovedtype %in% c("T12"),])
+model.natopen.time.tilst.T12.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.natopen[LandsatNDVI.natopen$hovedtype %in% c("T12"),])
+model.natopen.time.tilst.T18.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.natopen[SentinelNDVI.natopen$hovedtype %in% c("T18"),])
+model.natopen.time.tilst.T18.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.natopen[LandsatNDVI.natopen$hovedtype %in% c("T18"),])
+model.natopen.time.tilst.T21.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.natopen[SentinelNDVI.natopen$hovedtype %in% c("T21") & SentinelNDVI.natopen$region=="Southern Norway",])
+model.natopen.time.tilst.T21.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.natopen[LandsatNDVI.natopen$hovedtype %in% c("T21") & LandsatNDVI.natopen$region=="Southern Norway",])
+summary(model.natopen.time.tilst.T12.Sent)$coefficients$cond
+summary(model.natopen.time.tilst.T18.Sent)$coefficients$cond
+summary(model.natopen.time.tilst.T21.Sent)$coefficients$cond
+
+summary(model.natopen.time.tilst.T12.Land)$coefficients$cond
+summary(model.natopen.time.tilst.T18.Land)$coefficients$cond
+summary(model.natopen.time.tilst.T21.Land)$coefficients$cond
 ```
-Indeed, the temporal NDVI increase has been stronger in natopen natopens with reduced ecological condition, in both Sentinel and Landsat. For MODIS, the time slope is again 1/10 of the slopes in the other two satellite time series, and it is not significant.
+The temporal NDVI increase has been stronger in flood plains that are in reduced ecological condition, but only in the Landsat time series. The other ecosystem types do not show any obvious patterns.
 
 # Overall conclusion
-NDVI in natopen ecosystem does vary with condition and also with ecosystem type but the variance and thus overlap between condition classes and ecosystem types is large. Especially the natopen natopen ecosystems show a very consistent pattern of higher NDVI and larger temporal NDVI increase in sites in reduced ecological condition, which also links well to the registered condition variables behind the lower condition scores (shrub/tree encroachment, low land-use intensity, succession) and thus reduced land-use as the main pressure identified for these systems.
-The large variance and thus overlap between condition classes and ecosystem types makes it generally difficult to define useful scaling values for absolute NDVI values.
-Since ecological condition also relates to the temporal development of NDVI values in the analyses above, an alternative approach can be to define scaling values for time slopes as for instance has been done for the NDVI indicator in the ecological condition assessment for Norwegian mountains (Framstad et al. 2022, see references above).
+NDVI in natopen ecosystem varies very little with condition. The variance and thus overlap between condition classes and ecosystem types is large. Exceptions are sand dunes in Southern Norway, which show reduced NDVI under deteriorating condition in the Sentinel data, and flood plains nationally, where areas in deteriorating condition show a stronger increase in NDVI over time. Other than for these two phenomena, NDVI does not appear as a sensitive measure of ecological condition in natopen systems.
 
 Beyond these considerations, there are two general issues which limit a more comprehensive and robust application of satellite based NDVI-data in an ecological condition context:
 
 # 1) We are lacking ecosystem maps for natopen ecosystems
-The study at hand clearly shows that different natopen ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values for at least the different major ecosystem types within natopens separately.
+The analysis at hand clearly shows that different natopen ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values for at least the different major ecosystem types within natopens separately.
 # 2) We are lacking a good ecological understanding and ground-truthing for NDVI in natopen ecosystems
-Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in natopens. Here, we need field studies investigating:
-- The connection between NDVI and ecological drivers like for example potential effects of Nitrogen deposition
-
-- How reflectance in different natopen types is affected by how moist the moss layer is at the time of measuring.
-The literature suggests a high variability in NDVI measurements from mosses in particular, in part due to moisture content (REF). Minerotrophic natopens (V1) are more dominated by graminoids than V3, and the moss-layer is generally more visible from above. At the same time, natopens are generally drier in the western parts of Norway than in the East (REF), so NDVI patterns may, at least in part, be determined by moisture.
-
-In addition, further investigations should test how NDVI-condition pattern vary across biogeographic regions in addition to administrative regions (which are ecologically irrelevant), in order to better understand the results for the administrative regions.
-
+Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in semi-natural systems. Here, we need field studies investigating more thoroughly how NDVI and ecological drivers, like different land-use schemes in the different ecosystem types, are connected. This includes a need for understanding temporal increases in NDVI in ecosystems in good condition.
 
 
 ### Eksport file (final product)

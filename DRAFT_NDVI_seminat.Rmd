@@ -479,6 +479,28 @@ LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
 
 ### Exploratory analyses, Sentinel-2
 
+# Where are the seminat sites?
+```{r}
+tm_shape(regnor) +
+  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_borders() +
+  tm_shape(SentinelNDVI.seminat) +
+  tm_dots('hovedtype',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE), scale=2.5, legend.show = FALSE) + 
+  tm_add_legend(type = "symbol", 
+                col = tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),
+                labels = c("T31 - boreal heath",
+                           "T32 - semi-natural grasslands",
+                           "T33 - semi-natural coastal grasslands",
+                           "T34 - coastal heathlands",
+                           "T40/41 - previously heavily altered grassland"),
+                title = "Major ecosystem type",
+                size=3) +
+  tm_layout(main.title = "Semi-natural ecosystems (NiN, Miljødirektoratets instruks)",
+            main.title.size=1.2, legend.position = c("right", "bottom"), 
+            legend.text.size = 1.3, legend.title.size = 1.4)
+```
+
+
 # How are polygon sizes distributed?
 ```{r}
 summary(SentinelNDVI.seminat$area_meters)
@@ -563,7 +585,7 @@ nin.seminat2 %>%
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
   ggtitle("Condition variables in boreal heath (T31)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 
 nin.seminat2 %>%
@@ -581,7 +603,7 @@ nin.seminat2 %>%
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
   ggtitle("Condition variables in semi-natural grasslands (T32)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 nin.seminat2 %>%
   filter(hovedtype=='T33') %>%
@@ -597,7 +619,7 @@ nin.seminat2 %>%
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
   ggtitle("Condition variables in semi-natural coastal grasslands (T33)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 nin.seminat2 %>%
   filter(hovedtype=='T34') %>%
@@ -613,7 +635,7 @@ nin.seminat2 %>%
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
   ggtitle("Condition variables in coastal heathlands (T34)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 nin.seminat2 %>%
   filter(hovedtype %in% c('T40','T41')) %>%
@@ -630,7 +652,7 @@ nin.seminat2 %>%
   facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
   theme(legend.position="none") +
   ggtitle("Condition variables in previously heavily altered grasslands (T40/T41)") +
-  labs(y= "Condition level (1-4='good' to 'very reduced')", x = "Condition variable score")
+  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 ```
 In these plots, the panels for the different major ecosystem types differ because Miljødirektoratets mapping manual (see reference list above) uses different variables in these major ecosystem types to define condition.
@@ -880,7 +902,7 @@ It is quite obvious that the NDVI values from the three satellites are not quant
 We can test if there are consistent temporal changes in NDVI by running regressions including year as a covariate.
 
 We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for each satellite.
-```{r message=FALSE, warning=FALSE}
+```{r, warning=FALSE}
 model.seminat.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$tilstand=="God",])
 model.seminat.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$tilstand=="God",])
 model.seminat.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$tilstand=="God",])
@@ -892,7 +914,7 @@ summary(model.seminat.time.GodTilst.Land)$coefficients$cond
 There's an increase in NDVI over time in mainly the Sentinel and Landsat time series in boreal heath in good condition, but this pattern is reduced or absent in the other semi-natural ecosystem types. MODIS does not show any trends in time but also has way less statistical power compared to Sentinel and Landsat.
 
 Given the consistently higher NDVI-values with decreasing condition in boreal heath, We may ask the question if the temporal NDVI increase might be stronger under reduced condition?
-```{r message=FALSE, warning=FALSE}
+```{r, warning=FALSE}
 model.seminat.time.tilst.T31.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T31"),])
 model.seminat.time.tilst.T31.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T31"),])
 model.seminat.time.tilst.T31.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T31"),])
@@ -902,7 +924,7 @@ summary(model.seminat.time.tilst.T31.Land)$coefficients$cond
 ```
 The temporal NDVI increase in boreal heath has NOT been stronger with reduced ecological condition. So a temporal NDVI approach does not seem like a promising way to go.
 We check for the same pattern in T32 and T34, jsut because they are the other semi-natural major ecosystem types with a substantial number of occurrences in the the NiN data:
-```{r message=FALSE, warning=FALSE}
+```{r, warning=FALSE}
 model.seminat.time.tilst.T32.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T32"),])
 model.seminat.time.tilst.T32.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T32"),])
 model.seminat.time.tilst.T32.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T32"),])
@@ -927,9 +949,9 @@ Since ecological condition also relates to the temporal development of NDVI valu
 Beyond these considerations, there are two general issues which limit a more comprehensive and robust application of satellite based NDVI-data in an ecological condition context:
 
 # 1) We are lacking ecosystem maps for semi-natural ecosystems
-The study at hand clearly shows that different semi-natural ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values, and temporal changes of these, for at least the different major ecosystem types within semi-natural systems separately.
+The analysis at hand clearly shows that different semi-natural ecosystem types display different greenness levels and thus need to be evaluated separately. Thus, we need ecosystem maps, that allow us to treat NDVI values, and temporal changes of these, for at least the different major ecosystem types within semi-natural systems separately.
 # 2) We are lacking a good ecological understanding and ground-truthing for NDVI in semi-natural ecosystems
-Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in semi-natural systems. Here, we need field studies investigating more thoroughly how NDVI and ecological drivers, like for example shrub-/tree encroachment, are connected.
+Unlike for ecosystems like forests, tundra, savannah and similar, there is little empirical work and ground-truthing data documented that link NDVI values to ecological phenomena in semi-natural systems. Here, we need field studies investigating more thoroughly how NDVI and ecological drivers, like for example shrub-/tree encroachment, are connected. This includes a need for understanding temporal increases in NDVI in ecosystems in good condition.
 
 In addition, further investigations should test how NDVI-condition pattern vary across biogeographic regions in addition to administrative regions (which are ecologically irrelevant), in order to better understand the results for the administrative regions.
 
