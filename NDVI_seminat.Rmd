@@ -19,7 +19,7 @@ library(plyr)
 library(stringr)
 library(tidyverse)
 library(RColorBrewer)
-library("gridExtra") 
+library("gridExtra")
 library(ggridges)
 library(tmap)
 library(tmaptools)
@@ -33,15 +33,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=FALSE}
 Ecosystem <- "semi-naturlig"
-Egenskap  <- c("Primærproduksjon")
-ECT       <- "Structural state characteristics"
-Contact   <- "Joachim Töpper"
+Egenskap <- c("Primærproduksjon")
+ECT <- "Structural state characteristics"
+Contact <- "Joachim Töpper"
 ```
 
 ```{r, echo=FALSE}
 metaData <- data.frame(Ecosystem,
-                       "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT)
+  "Økologisk egenskap" = Egenskap,
+  "ECT class" = ECT
+)
 knitr::kable(metaData)
 ```
 
@@ -149,37 +150,38 @@ The analyses in this document make use of the following data sets:
 We read the NiN data for this document from a cache at the GitHub repository...
 ```{r}
 # Add NiN data from cache
-nin <- readRDS(paste0(here::here(),"/data/cache/nin.RDS"))
+nin <- readRDS(paste0(here::here(), "/data/cache/nin.RDS"))
 ```
 
 ...but it can also be directly downloaded from Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset)
 ```{r, echo = T, eval = F}
-
 url <- "https://nedlasting.miljodirektoratet.no/Miljodata//Naturtyper_nin/FILEGDB/4326/Naturtyper_nin_0000_norge_4326_FILEGDB.zip"
-download(url, dest="P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", mode="wb") 
-unzip ("P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", 
-       exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/nin_data")
+download(url, dest = "P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip", mode = "wb")
+unzip("P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip",
+  exdir = "P:/41201785_okologisk_tilstand_2022_2023/data/nin_data"
+)
 st_layers("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb")
 nin <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtyper_nin_0000_norge_4326_FILEGDB.gdb",
-                 layer="naturtyper_nin_omr")
+  layer = "naturtyper_nin_omr"
+)
 ```
 And we upload maps for Norway and the five regions: Southern, Western, Eastern, Central, and Northern Norway
 ```{r, message=FALSE}
 # Import region- og Norgeskart, make sure they have the same geometry as the nin data
-nor <- st_read("data/outlineOfNorway_EPSG25833.shp")%>%
+nor <- st_read("data/outlineOfNorway_EPSG25833.shp") %>%
   st_as_sf() %>%
   st_transform(crs = st_crs(nin))
 
-reg <- st_read("data/regions.shp")%>%
+reg <- st_read("data/regions.shp") %>%
   st_as_sf() %>%
   st_transform(crs = st_crs(nin))
 
 # change region names to something R-friendly
 reg$region
-reg$region <- c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway")
+reg$region <- c("Northern Norway", "Central Norway", "Eastern Norway", "Western Norway", "Southern Norway")
 
 # combine the Norway and the region maps
-regnor <- st_intersection(reg,nor)
+regnor <- st_intersection(reg, nor)
 rm(reg)
 rm(nor)
 ```
@@ -198,8 +200,8 @@ The image collection contains Sentinel imagery from June, July and August 2015-2
 To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
 ```{r, echo = T, eval = F}
 # Import Sentinel NDVI Data
-df.s <- list.files("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
-  map_df(~fread(.))
+df.s <- list.files("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names = TRUE) %>%
+  map_df(~ fread(.))
 ```
 
 ##### MODIS NDVI data
@@ -209,8 +211,8 @@ The image collection contains MODIS imagery from June, July and August 2000-2022
 ```{r, echo = T, eval = F}
 # Import MODIS NDVI Data
 # MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
-df.m<- read.csv("/data/P-Prosjekter241201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_MODIS/modis_ndvi_ts_2000_2022.csv", )
-df.m$mean<-df.m$mean/10000
+df.m <- read.csv("/data/P-Prosjekter241201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_MODIS/modis_ndvi_ts_2000_2022.csv", )
+df.m$mean <- df.m$mean / 10000
 ```
 
 ##### Landsat NDVI data
@@ -220,31 +222,33 @@ To not exceed GEE memory limits, the exported files had to be iterated over a gr
 ```{r, echo = T, eval = F}
 # Import Landsat NDVI Data
 # Set up conditional file paths
-dir <- substr(getwd(), 1,2)
+dir <- substr(getwd(), 1, 2)
 
-path <- ifelse(dir == "C:", 
-               "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
-               "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb")
+path <- ifelse(dir == "C:",
+  "R:/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb",
+  "/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektoratet_Naturtyper_nin/Original/versjon20221231/Natur_Naturtyper_nin_norge_med_svalbard_25833/Natur_Naturtyper_NiN_norge_med_svalbard_25833.gdb"
+)
 
-pData <- ifelse(dir == "C:", 
-                "P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat",
-                "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat")
+pData <- ifelse(dir == "C:",
+  "P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat",
+  "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Landsat"
+)
 
 
 # Fread doesn't like the weird path to the server version of the P drive
 # hence this horrendous work around
-files=list.files(pData, pattern = "*.csv", full.names = TRUE)
+files <- list.files(pData, pattern = "*.csv", full.names = TRUE)
 
-df_list<-list()# initialise a list of dataframes
+df_list <- list() # initialise a list of dataframes
 # read in a dataframe in each slot of the df_list
-for (i in files){
-  name <- gsub("-",".",i)
-  name <- gsub(".csv","",name)  
-  i <- paste(i,sep="")
-  df_list[[i]]=assign(name,read.csv(i, header=TRUE))
-}  
+for (i in files) {
+  name <- gsub("-", ".", i)
+  name <- gsub(".csv", "", name)
+  i <- paste(i, sep = "")
+  df_list[[i]] <- assign(name, read.csv(i, header = TRUE))
+}
 
-df.l<-bind_rows(df_list, .id = "column_label")
+df.l <- bind_rows(df_list, .id = "column_label")
 ```
 
 ### Data handling
@@ -252,16 +256,20 @@ df.l<-bind_rows(df_list, .id = "column_label")
 ```{r, echo = T, eval = F}
 # fixing variable- and ecosystem-names with special characters
 colnames(nin)
-colnames(nin)[c(3,8,17,26,31,33,34)] <- c("hovedoekosystem","kartleggingsaar","noyaktighet",
-                                          "omraadenavn","uk_naertruet","uk_sentraloekosystemfunksjon",
-                                          "uk_spesieltdaarligkartlagt")
+colnames(nin)[c(3, 8, 17, 26, 31, 33, 34)] <- c(
+  "hovedoekosystem", "kartleggingsaar", "noyaktighet",
+  "omraadenavn", "uk_naertruet", "uk_sentraloekosystemfunksjon",
+  "uk_spesieltdaarligkartlagt"
+)
 unique(nin$hovedoekosystem)
 
-nin <- nin %>% mutate(hovedoekosystem = recode(hovedoekosystem, 
-                                               "Våtmark" = 'Vaatmark',
-                                               "Semi-naturlig mark" = 'Semi_naturlig',
-                                               "Naturlig åpne områder i lavlandet" = 'Naturlig-aapent',
-                                               "Naturlig åpne områder under skoggrensa" = 'Naturlig_aapent')) %>%
+nin <- nin %>%
+  mutate(hovedoekosystem = recode(hovedoekosystem,
+    "Våtmark" = "Vaatmark",
+    "Semi-naturlig mark" = "Semi_naturlig",
+    "Naturlig åpne områder i lavlandet" = "Naturlig-aapent",
+    "Naturlig åpne områder under skoggrensa" = "Naturlig_aapent"
+  )) %>%
   mutate(validGeo = st_is_valid(SHAPE))
 
 # checking how many polygons have multiple ecosystem types
@@ -270,62 +278,66 @@ unique(nin$ninkartleggingsenheter)
 nrow(nin)
 # 95469 polygons altogether
 nrow(nin %>%
-       filter(grepl(',', ninkartleggingsenheter))
-)
+  filter(grepl(",", ninkartleggingsenheter)))
 # 21094 polygons have more than 1 ecosystem type (they are separated by commas in the ninkartleggingsenheter-variable)
 
 nrow(nin %>%
-       filter(!grepl(',', ninkartleggingsenheter))
-)
+  filter(!grepl(",", ninkartleggingsenheter)))
 # 74375 polygons should have only 1 ecosystem type
 
 # there's no information on the proportion of ecosystem types in the polygons, so we got to omit all polygons with multiple ecosystem types :(
 nin <- nin %>%
-  filter(!grepl(',', ninkartleggingsenheter))
+  filter(!grepl(",", ninkartleggingsenheter))
 
 # fix the content in the ninkartleggingsenheter-variable
 summary(as.factor(nin$ninkartleggingsenheter))
 # get rid of the NA- in the beginning
-nin <- nin %>% mutate(ninkartleggingsenheter = str_remove(ninkartleggingsenheter, 'NA_'))
+nin <- nin %>% mutate(ninkartleggingsenheter = str_remove(ninkartleggingsenheter, "NA_"))
 # making a main ecosystem type variable
-nin <- nin %>% mutate(hovedtype = substr(ninkartleggingsenheter, 1, 3),
-                      hovedtype = str_remove(hovedtype, '-'))
+nin <- nin %>% mutate(
+  hovedtype = substr(ninkartleggingsenheter, 1, 3),
+  hovedtype = str_remove(hovedtype, "-")
+)
 # checking mapping unit against main ecosystem type
-nin[,c("hovedoekosystem","hovedtype")]
-summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Vaatmark"]))
-summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Semi_naturlig"]))
-summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Naturlig_aapne"]))
-summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Skog"]))
-summary(as.factor(nin$hovedtype[nin$hovedoekosystem=="Fjell"]))
+nin[, c("hovedoekosystem", "hovedtype")]
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem == "Vaatmark"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem == "Semi_naturlig"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem == "Naturlig_aapne"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem == "Skog"]))
+summary(as.factor(nin$hovedtype[nin$hovedoekosystem == "Fjell"]))
 # making a new variable for the overarching ecosystem types based on the main ecosystem types
 nin$hovedoekosystem.orig <- nin$hovedoekosystem
 
 nin <- nin %>%
-  mutate(hovedoekosystem = case_when(hovedtype %in% paste("V",c(1,3:7,9:10),sep="") ~ 'Vaatmark',
-                                     hovedtype %in% paste("V",11:13,sep="") ~ 'Vaatmark_sterkt_endret',
-                                     hovedtype %in% paste("T",c(31:34,40:41),sep="") ~ 'Semi_naturlig',
-                                     hovedtype %in% paste("T",c(2,12,18,20:21),sep="") ~ 'Naturlig_aapent',
-                                     hovedtype %in% c(paste("T",c(4,30,38),sep=""),paste("V",c(2,8),sep="")) ~ 'Skog',
-                                     hovedtype %in% c(paste("T",c(3,7,9,10,14,22,26),sep=""),paste("V",c(6,7),sep="")) ~ 'Fjell',
-                                     TRUE ~ 'NA'))
+  mutate(hovedoekosystem = case_when(
+    hovedtype %in% paste("V", c(1, 3:7, 9:10), sep = "") ~ "Vaatmark",
+    hovedtype %in% paste("V", 11:13, sep = "") ~ "Vaatmark_sterkt_endret",
+    hovedtype %in% paste("T", c(31:34, 40:41), sep = "") ~ "Semi_naturlig",
+    hovedtype %in% paste("T", c(2, 12, 18, 20:21), sep = "") ~ "Naturlig_aapent",
+    hovedtype %in% c(paste("T", c(4, 30, 38), sep = ""), paste("V", c(2, 8), sep = "")) ~ "Skog",
+    hovedtype %in% c(paste("T", c(3, 7, 9, 10, 14, 22, 26), sep = ""), paste("V", c(6, 7), sep = "")) ~ "Fjell",
+    TRUE ~ "NA"
+  ))
 
 
 summary(as.factor(nin$tilstand))
 
 nin <- nin %>% mutate(tilstand = recode(tilstand,
-                                        "Dårlig" = "Redusert",
-                                        "Svært redusert" = "Svaert_redusert"))
+  "Dårlig" = "Redusert",
+  "Svært redusert" = "Svaert_redusert"
+))
 nin <- nin %>% mutate(tilstand_num = recode(tilstand,
-                                        "God" = 0, "Moderat" = 1, 
-                                        "Redusert" = 2, "Svaert_redusert" = 3))
+  "God" = 0, "Moderat" = 1,
+  "Redusert" = 2, "Svaert_redusert" = 3
+))
 
 summary(as.factor(nin$tilstand))
 summary(as.numeric(nin$tilstand_num))
 
 
 ## filter out only semi-natural data
-nin.seminat <- nin %>% 
-  filter(hovedoekosystem %in% c('Semi_naturlig')) %>%
+nin.seminat <- nin %>%
+  filter(hovedoekosystem %in% c("Semi_naturlig")) %>%
   mutate(id = identifikasjon_lokalid) %>%
   filter(validGeo) %>%
   drop_na(tilstand) %>%
@@ -333,147 +345,160 @@ nin.seminat <- nin %>%
 
 
 # merge NiN-data with region
-nin.seminat = st_join(nin.seminat, regnor, left = TRUE)
+nin.seminat <- st_join(nin.seminat, regnor, left = TRUE)
 nin.seminat
 
-colnames(nin.seminat)[c(1,10)] <- c("id","region_id")
+colnames(nin.seminat)[c(1, 10)] <- c("id", "region_id")
 
 # check that every nin-polygon still occurs only once
 summary(as.factor(nin.seminat$id)) # ok
 
-nin.seminat <- nin.seminat %>% 
-  mutate(area_meters_nin = st_area(nin.seminat)
-  )
+nin.seminat <- nin.seminat %>%
+  mutate(area_meters_nin = st_area(nin.seminat))
 # check and edit the order of regions
 levels(nin.seminat$region)
 nin.seminat$region <- as.factor(nin.seminat$region)
 levels(nin.seminat$region)
-nin.seminat$region <- factor(nin.seminat$region, levels = c("Northern Norway","Central Norway","Eastern Norway","Western Norway","Southern Norway"))
+nin.seminat$region <- factor(nin.seminat$region, levels = c("Northern Norway", "Central Norway", "Eastern Norway", "Western Norway", "Southern Norway"))
 levels(nin.seminat$region)
 
 # splitting content in the ninbeskrivelsesvariabler-column into separate rows per variable and then separating that column into two for the variable name and value
-nin.seminat2 <- nin.seminat %>% separate_rows(ninbeskrivelsesvariabler, sep=",") %>%
-  separate(col = ninbeskrivelsesvariabler,
-           into = c("NiN_variable_code", "NiN_variable_value"),
-           sep = "_",
-           remove=F) %>%
+nin.seminat2 <- nin.seminat %>%
+  separate_rows(ninbeskrivelsesvariabler, sep = ",") %>%
+  separate(
+    col = ninbeskrivelsesvariabler,
+    into = c("NiN_variable_code", "NiN_variable_value"),
+    sep = "_",
+    remove = F
+  ) %>%
   mutate(NiN_variable_value = as.numeric(NiN_variable_value)) %>%
   mutate(NiN_variable_code = as.factor(NiN_variable_code)) %>%
   subset(select = -ninbeskrivelsesvariabler)
 nin.seminat2 <- as.data.frame(nin.seminat2)
-
 ```
 
 ```{r, echo = F}
-
-#load processed NiN-data from cache
-nin.seminat <- readRDS(paste0(here::here(),"/data/cache/nin.seminat.RDS"))
-nin.seminat2 <- readRDS(paste0(here::here(),"/data/cache/nin.seminat2.RDS"))
-
+# load processed NiN-data from cache
+nin.seminat <- readRDS(paste0(here::here(), "/data/cache/nin.seminat.RDS"))
+nin.seminat2 <- readRDS(paste0(here::here(), "/data/cache/nin.seminat2.RDS"))
 ```
 
 #### NDVI data
 ```{r, results='hide', message=FALSE}
 ## Sentinel-2
 # join nin.seminat & Sentinel NDVI data
-SentinelNDVI.seminat <- full_join(nin.seminat, df.s, by="id")
-#summary(SentinelNDVI.seminat)
+SentinelNDVI.seminat <- full_join(nin.seminat, df.s, by = "id")
+# summary(SentinelNDVI.seminat)
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
-  mutate(hovedoekosystem = as.factor(hovedoekosystem),
-         hovedtype = as.factor(hovedtype),
-         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
-         lokalitetskvalitet = as.factor(lokalitetskvalitet),
-         tilstand = as.factor(tilstand),
-         area_meters = st_area(SentinelNDVI.seminat))
-#summary(SentinelNDVI.seminat)
+  mutate(
+    hovedoekosystem = as.factor(hovedoekosystem),
+    hovedtype = as.factor(hovedtype),
+    ninkartleggingsenheter = as.factor(ninkartleggingsenheter),
+    lokalitetskvalitet = as.factor(lokalitetskvalitet),
+    tilstand = as.factor(tilstand),
+    area_meters = st_area(SentinelNDVI.seminat)
+  )
+# summary(SentinelNDVI.seminat)
 # get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(hovedtype))
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(!is.na(mean))
-#summary(SentinelNDVI.seminat)
+# summary(SentinelNDVI.seminat)
 # get rid of any nin-polygons smaller than the Sentinel grid cell size (100 sqm)
 dim(SentinelNDVI.seminat)
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(as.numeric(area_meters) >= 100)
 dim(SentinelNDVI.seminat)
 # split date into year, month & day
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
-  dplyr::mutate(year = lubridate::year(date), 
-                month = lubridate::month(date), 
-                day = lubridate::day(date))
+  dplyr::mutate(
+    year = lubridate::year(date),
+    month = lubridate::month(date),
+    day = lubridate::day(date)
+  )
 # add column for sub-ecosystem types
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% mutate(subtype = substring(ninkartleggingsenheter, 4),
-                                                        subtype = str_remove(subtype, '-'),
-                                                        subtype = str_remove(subtype, '-'))
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% mutate(
+  subtype = substring(ninkartleggingsenheter, 4),
+  subtype = str_remove(subtype, "-"),
+  subtype = str_remove(subtype, "-")
+)
 # we are using max NDVI per year in every NiN polygon
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE))
+  filter(mean == max(mean, na.rm = TRUE))
 
 summary(SentinelNDVI.seminat)
 
 ## MODIS
 # join nin.seminat and Modis NDVI data
-ModisNDVI.seminat <- full_join(nin.seminat, df.m, by="id")
+ModisNDVI.seminat <- full_join(nin.seminat, df.m, by = "id")
 
-#summary(ModisNDVI.seminat)
+# summary(ModisNDVI.seminat)
 ModisNDVI.seminat <- ModisNDVI.seminat %>%
-  mutate(hovedoekosystem = as.factor(hovedoekosystem),
-         hovedtype = as.factor(hovedtype),
-         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
-         lokalitetskvalitet = as.factor(lokalitetskvalitet),
-         tilstand = as.factor(tilstand),
-         area_meters = st_area(ModisNDVI.seminat))
-#summary(ModisNDVI.seminat)
+  mutate(
+    hovedoekosystem = as.factor(hovedoekosystem),
+    hovedtype = as.factor(hovedtype),
+    ninkartleggingsenheter = as.factor(ninkartleggingsenheter),
+    lokalitetskvalitet = as.factor(lokalitetskvalitet),
+    tilstand = as.factor(tilstand),
+    area_meters = st_area(ModisNDVI.seminat)
+  )
+# summary(ModisNDVI.seminat)
 # get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
 ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(!is.na(hovedtype))
 ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(!is.na(mean))
-#summary(ModisNDVI.seminat)
+# summary(ModisNDVI.seminat)
 # get rid of any nin-polygons smaller than the Modis grid cell size (62500 sqm)
 dim(ModisNDVI.seminat)
 ModisNDVI.seminat <- ModisNDVI.seminat %>% filter(as.numeric(area_meters) >= 62500)
 dim(ModisNDVI.seminat)
 # split date into year, month & day
 ModisNDVI.seminat <- ModisNDVI.seminat %>%
-  dplyr::mutate(year = lubridate::year(date), 
-                month = lubridate::month(date), 
-                day = lubridate::day(date))
+  dplyr::mutate(
+    year = lubridate::year(date),
+    month = lubridate::month(date),
+    day = lubridate::day(date)
+  )
 # we are using max NDVI per year in every NiN polygon
 ModisNDVI.seminat <- ModisNDVI.seminat %>%
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE))
-#summary(ModisNDVI.seminat)
+  filter(mean == max(mean, na.rm = TRUE))
+# summary(ModisNDVI.seminat)
 
 ## Landsat
 # join nin.seminat & Landsat NDVI data
-LandsatNDVI.seminat <- full_join(nin.seminat, df.l, by="id")
+LandsatNDVI.seminat <- full_join(nin.seminat, df.l, by = "id")
 
-#summary(LandsatNDVI.seminat)
+# summary(LandsatNDVI.seminat)
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
-  mutate(hovedoekosystem = as.factor(hovedoekosystem),
-         hovedtype = as.factor(hovedtype),
-         ninkartleggingsenheter = as.factor(ninkartleggingsenheter), 
-         lokalitetskvalitet = as.factor(lokalitetskvalitet),
-         tilstand = as.factor(tilstand),
-         area_meters = st_area(LandsatNDVI.seminat))
-#summary(LandsatNDVI.seminat)
+  mutate(
+    hovedoekosystem = as.factor(hovedoekosystem),
+    hovedtype = as.factor(hovedtype),
+    ninkartleggingsenheter = as.factor(ninkartleggingsenheter),
+    lokalitetskvalitet = as.factor(lokalitetskvalitet),
+    tilstand = as.factor(tilstand),
+    area_meters = st_area(LandsatNDVI.seminat)
+  )
+# summary(LandsatNDVI.seminat)
 # get rid of NAs (i.e. NDVI cells that were not in semi-natural polygons)
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(hovedtype))
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(!is.na(mean))
-#summary(LandsatNDVI.seminat)
+# summary(LandsatNDVI.seminat)
 # get rid of any nin-polygons smaller than the Landsat grid cell size (900 sqm)
 dim(LandsatNDVI.seminat)
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>% filter(as.numeric(area_meters) >= 900)
 dim(LandsatNDVI.seminat)
 # split date into year, month & day
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
-  dplyr::mutate(year = lubridate::year(date), 
-                month = lubridate::month(date), 
-                day = lubridate::day(date))
+  dplyr::mutate(
+    year = lubridate::year(date),
+    month = lubridate::month(date),
+    day = lubridate::day(date)
+  )
 # we are using max NDVI per year in every NiN polygon
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE))
+  filter(mean == max(mean, na.rm = TRUE))
 
-#summary(LandsatNDVI.seminat)
+# summary(LandsatNDVI.seminat)
 ```
 
 
@@ -482,64 +507,70 @@ LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
 # Where are the seminat sites?
 ```{r}
 tm_shape(regnor) +
-  tm_fill('GID_0', labels="", title="", legend.show = FALSE) + 
+  tm_fill("GID_0", labels = "", title = "", legend.show = FALSE) +
   tm_borders() +
   tm_shape(SentinelNDVI.seminat) +
-  tm_dots('hovedtype',midpoint=NA, palette=tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE), scale=2.5, legend.show = FALSE) + 
-  tm_add_legend(type = "symbol", 
-                col = tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),
-                labels = c("T31 - boreal heath",
-                           "T32 - semi-natural grasslands",
-                           "T33 - semi-natural coastal grasslands",
-                           "T34 - coastal heathlands",
-                           "T40/41 - previously heavily altered grassland"),
-                title = "Major ecosystem type",
-                size=3) +
-  tm_layout(main.title = "Semi-natural ecosystems (NiN, Miljødirektoratets instruks)",
-            main.title.size=1.2, legend.position = c("right", "bottom"), 
-            legend.text.size = 1.3, legend.title.size = 1.4)
+  tm_dots("hovedtype", midpoint = NA, palette = tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE), scale = 2.5, legend.show = FALSE) +
+  tm_add_legend(
+    type = "symbol",
+    col = tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),
+    labels = c(
+      "T31 - boreal heath",
+      "T32 - semi-natural grasslands",
+      "T33 - semi-natural coastal grasslands",
+      "T34 - coastal heathlands",
+      "T40/41 - previously heavily altered grassland"
+    ),
+    title = "Major ecosystem type",
+    size = 3
+  ) +
+  tm_layout(
+    main.title = "Semi-natural ecosystems (NiN, Miljødirektoratets instruks)",
+    main.title.size = 1.2, legend.position = c("right", "bottom"),
+    legend.text.size = 1.3, legend.title.size = 1.4
+  )
 ```
 
 
 # How are polygon sizes distributed?
 ```{r}
 summary(SentinelNDVI.seminat$area_meters)
-hist(SentinelNDVI.seminat$area_meters,xlim=c(0,20000),breaks=50000)
-abline(v=100,lty=2)
+hist(SentinelNDVI.seminat$area_meters, xlim = c(0, 20000), breaks = 50000)
+abline(v = 100, lty = 2)
 ```
 semi-natural polygons stretch a large number of sizes from just above 100 sqm to almost 3 million sqm. 75% of all polygons are below 15297 sqm.
 
 # How does NDVI vary over the years
 ```{r}
 SentinelNDVI.seminat %>%
-  ggplot( aes(x=year, y=mean )) + 
+  ggplot(aes(x = year, y = mean)) +
   geom_point() +
-  facet_grid( tilstand~hovedtype)
+  facet_grid(tilstand ~ hovedtype)
 ```
 2022 stands out with the highest NDVI values missing.
 WE omit 2022 for this analysis
 ```{r}
-SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(year != '2022')
+SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(year != "2022")
 ```
 
 # How do NDVI values vary between major and basic ecosystem types for sites in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r warning=FALSE}
 SentinelNDVI.seminat %>%
-  filter(tilstand == 'God') %>%
+  filter(tilstand == "God") %>%
   filter(year == kartleggingsaar) %>%
-  ggplot(aes(x=hovedtype, y=mean )) + 
+  ggplot(aes(x = hovedtype, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey")
+  geom_point(size = 0.7, shape = 16, color = "grey")
 
-SentinelNDVI.seminat$subtype <- factor(SentinelNDVI.seminat$subtype,levels=c("C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","C11","C12","C13","C14","C15","C16","C17","C18","C19","C20","C21","E1","E2","E3","E4","E5","E6","E7"))
+SentinelNDVI.seminat$subtype <- factor(SentinelNDVI.seminat$subtype, levels = c("C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "C20", "C21", "E1", "E2", "E3", "E4", "E5", "E6", "E7"))
 SentinelNDVI.seminat %>%
-  filter(tilstand == 'God') %>%
+  filter(tilstand == "God") %>%
   filter(year == kartleggingsaar) %>%
-  ggplot(aes(x=subtype, y=mean )) + 
+  ggplot(aes(x = subtype, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey") +
-  facet_wrap( ~hovedtype) +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2, size=6))
+  geom_point(size = 0.7, shape = 16, color = "grey") +
+  facet_wrap(~hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 6))
 ```
 NDVI varies between major ecosystem types with the highest values in semi-natural grasslands (T32) and in previously intensively used and altered grasslands that today resemble  a semi-natural grassland (T40, T41), lowest values in coastal heathlands (T34). Other ecossytem types: Boreal heath (T31), semi-natural coastal grasslands (T33). The overlaps between the ecosystem types are considerable.
 With respect to basic ecosystem types within the major types, NDVI appears to cover very similar ranges across the subtypes, and those with deviating violin plots have a smaller sample size. There is no obvious trend related to the structuring environmental gradients withing the major types, and also here the overlap is large. 
@@ -547,14 +578,14 @@ With respect to basic ecosystem types within the major types, NDVI appears to co
 # How does NDVI vary across regions in semi-naturals (major types) in good condition? (using only NDVI data matching NiN-mapping years)
 ```{r warning=FALSE}
 SentinelNDVI.seminat %>%
-  filter(tilstand == 'God') %>%
+  filter(tilstand == "God") %>%
   filter(year == kartleggingsaar) %>%
   filter(!is.na(region)) %>%
-  ggplot(aes(x=region, y=mean )) + 
+  ggplot(aes(x = region, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey") +
-  facet_wrap( ~hovedtype) +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust=0.2))
+  geom_point(size = 0.7, shape = 16, color = "grey") +
+  facet_wrap(~hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2))
 ```
 For the meadow systems (T32, T33, T40, T41) there is no obvious trends in geography. In the heath systems (T31, T34) the distribution of NDVI values in Central Norway is somewhat lower than in the other regions.
 
@@ -562,98 +593,102 @@ For the meadow systems (T32, T33, T40, T41) there is no obvious trends in geogra
 ```{r warning=FALSE}
 SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
-  ggplot( aes(x=tilstand, y=mean )) + 
+  ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey") +
-  facet_wrap( ~hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey") +
+  facet_wrap(~hovedtype)
 ```
 In the coastal types (T33, T34, coastal meadows and heathlands, respectively) NDVI seems to increase as condition deteriorates, but in the remaining types such a pattern is absent. Overlaps between condition classes are generally very large.
 
 # Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 ```{r warning=FALSE}
 nin.seminat2 %>%
-  filter(hovedtype=='T31') %>%
-  filter(NiN_variable_code %in% c("7JB-BT","7RA-BA","7FA","7TK")) %>%
-  mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BT"="Grazing pressure",
-                                 "7RA-BA"="Succession",
-                                 "7FA"="Alien species",
-                                 "7TK"="Heavy vehicles")) %>%
-  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
-  geom_point(size=2) +  
-  geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
-  theme(legend.position="none") +
+  filter(hovedtype == "T31") %>%
+  filter(NiN_variable_code %in% c("7JB-BT", "7RA-BA", "7FA", "7TK")) %>%
+  mutate(NiN_variable_des = recode(NiN_variable_code,
+    "7JB-BT" = "Grazing pressure",
+    "7RA-BA" = "Succession",
+    "7FA" = "Alien species",
+    "7TK" = "Heavy vehicles"
+  )) %>%
+  ggplot(aes(x = NiN_variable_value, y = tilstand_num)) +
+  geom_point(size = 2) +
+  geom_jitter(width = 0.25, height = 0.25) +
+  facet_wrap(~NiN_variable_des, nrow = 2, ncol = 3) +
+  theme(legend.position = "none") +
   ggtitle("Condition variables in boreal heath (T31)") +
-  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
+  labs(y = "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 
 nin.seminat2 %>%
-  filter(hovedtype=='T32') %>%
-  filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7SE","7JB-GJ")) %>%
-  mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BA"="Land-use intensity",
-                                 "7RA-SJ"="Succession",
-                                 "7FA"="Alien species",
-                                 "7SE"="Wear/tear",
-                                 "7JB-GJ"="Fertilization")) %>%
-  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
-  geom_point(size=2) +  
-  geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
-  theme(legend.position="none") +
+  filter(hovedtype == "T32") %>%
+  filter(NiN_variable_code %in% c("7JB-BA", "7RA-SJ", "7FA", "7SE", "7JB-GJ")) %>%
+  mutate(NiN_variable_des = recode(NiN_variable_code,
+    "7JB-BA" = "Land-use intensity",
+    "7RA-SJ" = "Succession",
+    "7FA" = "Alien species",
+    "7SE" = "Wear/tear",
+    "7JB-GJ" = "Fertilization"
+  )) %>%
+  ggplot(aes(x = NiN_variable_value, y = tilstand_num)) +
+  geom_point(size = 2) +
+  geom_jitter(width = 0.25, height = 0.25) +
+  facet_wrap(~NiN_variable_des, nrow = 2, ncol = 3) +
+  theme(legend.position = "none") +
   ggtitle("Condition variables in semi-natural grasslands (T32)") +
-  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
+  labs(y = "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 nin.seminat2 %>%
-  filter(hovedtype=='T33') %>%
-  filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7JB-GJ")) %>%
-  mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BA"="Land-use intensity",
-                                 "7RA-SJ"="Succession",
-                                 "7FA"="Alien species",
-                                 "7JB-GJ"="Fertilization")) %>%
-  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
-  geom_point(size=2) +  
-  geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
-  theme(legend.position="none") +
+  filter(hovedtype == "T33") %>%
+  filter(NiN_variable_code %in% c("7JB-BA", "7RA-SJ", "7FA", "7JB-GJ")) %>%
+  mutate(NiN_variable_des = recode(NiN_variable_code,
+    "7JB-BA" = "Land-use intensity",
+    "7RA-SJ" = "Succession",
+    "7FA" = "Alien species",
+    "7JB-GJ" = "Fertilization"
+  )) %>%
+  ggplot(aes(x = NiN_variable_value, y = tilstand_num)) +
+  geom_point(size = 2) +
+  geom_jitter(width = 0.25, height = 0.25) +
+  facet_wrap(~NiN_variable_des, nrow = 2, ncol = 3) +
+  theme(legend.position = "none") +
   ggtitle("Condition variables in semi-natural coastal grasslands (T33)") +
-  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
+  labs(y = "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 nin.seminat2 %>%
-  filter(hovedtype=='T34') %>%
-  filter(NiN_variable_code %in% c("7JB-BT","7RA-SJ","7FA","7TK")) %>%
-  mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BT"="Grazing pressure",
-                                 "7RA-SJ"="Succession",
-                                 "7FA"="Alien species",
-                                 "7TK"="Heavy vehicles")) %>%
-  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
-  geom_point(size=2) +  
-  geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
-  theme(legend.position="none") +
+  filter(hovedtype == "T34") %>%
+  filter(NiN_variable_code %in% c("7JB-BT", "7RA-SJ", "7FA", "7TK")) %>%
+  mutate(NiN_variable_des = recode(NiN_variable_code,
+    "7JB-BT" = "Grazing pressure",
+    "7RA-SJ" = "Succession",
+    "7FA" = "Alien species",
+    "7TK" = "Heavy vehicles"
+  )) %>%
+  ggplot(aes(x = NiN_variable_value, y = tilstand_num)) +
+  geom_point(size = 2) +
+  geom_jitter(width = 0.25, height = 0.25) +
+  facet_wrap(~NiN_variable_des, nrow = 2, ncol = 3) +
+  theme(legend.position = "none") +
   ggtitle("Condition variables in coastal heathlands (T34)") +
-  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
+  labs(y = "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 
 nin.seminat2 %>%
-  filter(hovedtype %in% c('T40','T41')) %>%
-  filter(NiN_variable_code %in% c("7JB-BA","7RA-SJ","7FA","7SE","7JB-GJ")) %>%
-  mutate(NiN_variable_des=recode(NiN_variable_code,
-                                 "7JB-BA"="Land-use intensity",
-                                 "7RA-SJ"="Succession",
-                                 "7FA"="Alien species",
-                                 "7SE"="Wear/tear",
-                                 "7JB-GJ"="Fertilization")) %>%
-  ggplot(aes(x=NiN_variable_value, y=tilstand_num )) +
-  geom_point(size=2) +  
-  geom_jitter(width = 0.25, height=0.25) +
-  facet_wrap(~NiN_variable_des,nrow=2, ncol=3) +
-  theme(legend.position="none") +
+  filter(hovedtype %in% c("T40", "T41")) %>%
+  filter(NiN_variable_code %in% c("7JB-BA", "7RA-SJ", "7FA", "7SE", "7JB-GJ")) %>%
+  mutate(NiN_variable_des = recode(NiN_variable_code,
+    "7JB-BA" = "Land-use intensity",
+    "7RA-SJ" = "Succession",
+    "7FA" = "Alien species",
+    "7SE" = "Wear/tear",
+    "7JB-GJ" = "Fertilization"
+  )) %>%
+  ggplot(aes(x = NiN_variable_value, y = tilstand_num)) +
+  geom_point(size = 2) +
+  geom_jitter(width = 0.25, height = 0.25) +
+  facet_wrap(~NiN_variable_des, nrow = 2, ncol = 3) +
+  theme(legend.position = "none") +
   ggtitle("Condition variables in previously heavily altered grasslands (T40/T41)") +
-  labs(y= "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
-
+  labs(y = "Condition level (0-3='good' to 'very reduced')", x = "Condition variable score")
 ```
 In these plots, the panels for the different major ecosystem types differ because Miljødirektoratets mapping manual (see reference list above) uses different variables in these major ecosystem types to define condition.
 
@@ -666,14 +701,12 @@ First, we take a look at how balanced the data are across major ecosystem types,
 ```{r warning=FALSE, message=FALSE}
 # NDVI across hovedtyper, regions and condition classes (only for NDVI years data matching NiN-mapping years)
 SentinelNDVI.seminat %>%
-
   group_by(id, year) %>%
-
   filter(year == kartleggingsaar) %>%
-  ggplot( aes(x=tilstand, y=mean )) + 
+  ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey") +
-  facet_grid( region~hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey") +
+  facet_grid(region ~ hovedtype)
 ```
 T41 is has only very few data and is present in 2 regions only, we omit it.
 Northern Norway does not have any T34 occurrences and very few T33 and T40, we won't be able to model it together with the other regions, and might need to model T31 and T32 there only.
@@ -685,17 +718,17 @@ SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
 # we drop T41 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
 SentinelNDVI.seminat.train <- SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
-  filter(hovedtype != 'T41')
+  filter(hovedtype != "T41")
 
 # check if there's any 0s or 1s (which beta cannot handle)
-summary(SentinelNDVI.seminat.train$mean_beta) #ok
+summary(SentinelNDVI.seminat.train$mean_beta) # ok
 LandsatNDVI.seminat$mean_beta <- (LandsatNDVI.seminat$mean + 1) / 2
 # replace 1s in Landsat data with 0.9999
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
 
 # We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
-model.seminat.cond.Sent <- betareg(mean_beta~tilstand_num*region*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region!='Northern Norway',])
+model.seminat.cond.Sent <- betareg(mean_beta ~ tilstand_num * region * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region != "Northern Norway", ])
 model.seminat.cond.Sent <- StepBeta(model.seminat.cond.Sent)
 summary(model.seminat.cond.Sent)
 ```
@@ -710,22 +743,20 @@ rm(model.seminat.cond.Sent)
 ```
 
 ```{r message=FALSE, warning=FALSE}
-model.seminat.cond.Sent.N <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Northern Norway" & SentinelNDVI.seminat.train$hovedtype!='T34',])
-model.seminat.cond.Sent.C <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Central Norway",])
-model.seminat.cond.Sent.W <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Western Norway",])
-model.seminat.cond.Sent.E <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Eastern Norway",])
-model.seminat.cond.Sent.S <- betareg(mean_beta~tilstand_num*hovedtype, data=SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region=="Southern Norway",])
-
+model.seminat.cond.Sent.N <- betareg(mean_beta ~ tilstand_num * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region == "Northern Norway" & SentinelNDVI.seminat.train$hovedtype != "T34", ])
+model.seminat.cond.Sent.C <- betareg(mean_beta ~ tilstand_num * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region == "Central Norway", ])
+model.seminat.cond.Sent.W <- betareg(mean_beta ~ tilstand_num * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region == "Western Norway", ])
+model.seminat.cond.Sent.E <- betareg(mean_beta ~ tilstand_num * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region == "Eastern Norway", ])
+model.seminat.cond.Sent.S <- betareg(mean_beta ~ tilstand_num * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region == "Southern Norway", ])
 ```
 
 # Northern Norway
 ```{r message=FALSE, warning=FALSE}
 SentinelNDVI.seminat.train %>%
-  filter(region=="Northern Norway") %>%
-
-  ggplot( aes(x=tilstand, y=mean )) + 
+  filter(region == "Northern Norway") %>%
+  ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
 
 summary(model.seminat.cond.Sent.N)$coefficients
@@ -739,11 +770,10 @@ T32: NDVI does not change with condition
 # Central Norway
 ```{r message=FALSE, warning=FALSE}
 SentinelNDVI.seminat.train %>%
-  filter(region=="Central Norway") %>%
-
-  ggplot( aes(x=tilstand, y=mean )) + 
+  filter(region == "Central Norway") %>%
+  ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
 
 summary(model.seminat.cond.Sent.C)$coefficients
@@ -756,11 +786,10 @@ T32/T33/T34/T40: NDVI increases sig. less than in T31 as condition deteriorates,
 # Western Norway
 ```{r message=FALSE, warning=FALSE}
 SentinelNDVI.seminat.train %>%
-  filter(region=="Western Norway") %>%
-
-  ggplot( aes(x=tilstand, y=mean )) + 
+  filter(region == "Western Norway") %>%
+  ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
 
 summary(model.seminat.cond.Sent.W)$coefficients
@@ -773,11 +802,10 @@ all types: NDVI increases slightly as condition deteriorates, but just about sig
 # Eastern Norway
 ```{r message=FALSE, warning=FALSE}
 SentinelNDVI.seminat.train %>%
-  filter(region=="Eastern Norway") %>%
-
-  ggplot( aes(x=tilstand, y=mean )) + 
+  filter(region == "Eastern Norway") %>%
+  ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
 
 summary(model.seminat.cond.Sent.E)$coefficients
@@ -790,11 +818,10 @@ T33: NDVI increases as condition deteriorates, more strongly than in the other t
 # Southern Norway
 ```{r message=FALSE, warning=FALSE}
 SentinelNDVI.seminat.train %>%
-  filter(region=="Southern Norway") %>%
-
-  ggplot( aes(x=tilstand, y=mean )) + 
+  filter(region == "Southern Norway") %>%
+  ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size=0.7, shape=16, color="grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
 
 summary(model.seminat.cond.Sent.S)$coefficients
@@ -821,29 +848,29 @@ First, there's again some data handling to do. We merge the Sentinel, MODIS, and
 # checking time series for MODIS
 ModisNDVI.seminat %>%
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE)) %>%
-  ggplot( aes(x=year, y=mean )) + 
+  filter(mean == max(mean, na.rm = TRUE)) %>%
+  ggplot(aes(x = year, y = mean)) +
   geom_point() +
   facet_wrap(~hovedtype)
 # 2022 does not stand out as in the Sentinel data, so we keep it
 ModisNDVI.seminat <- ModisNDVI.seminat %>%
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE))
+  filter(mean == max(mean, na.rm = TRUE))
 
 # checking time series for Landsat
 LandsatNDVI.seminat %>%
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE)) %>%
-  ggplot( aes(x=year, y=mean )) + 
+  filter(mean == max(mean, na.rm = TRUE)) %>%
+  ggplot(aes(x = year, y = mean)) +
   geom_point() +
   facet_wrap(~hovedtype)
 # nothing worrying to see here either
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   group_by(id, year) %>%
-  filter(mean == max(mean, na.rm=TRUE))
+  filter(mean == max(mean, na.rm = TRUE))
 
 # transformation of NDVI scale to beta scale
-#SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
+# SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
 ModisNDVI.seminat$mean_beta <- (ModisNDVI.seminat$mean + 1) / 2
 LandsatNDVI.seminat$mean_beta <- (LandsatNDVI.seminat$mean + 1) / 2
 
@@ -862,7 +889,7 @@ names(LandsatNDVI.seminat)
 # Sentinel and Landsat have each an extra column -> omit them when concatenating further below
 # one column is named slightly differently in the Sentinel data -> rename it
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
-  dplyr::rename('system.index' = 'system:index')
+  dplyr::rename("system.index" = "system:index")
 
 # check if they have the same geometry
 st_crs(SentinelNDVI.seminat)
@@ -877,24 +904,24 @@ LandsatNDVI.seminat$year_jit <- LandsatNDVI.seminat$year
 
 # concatenate the three Satellite objects
 allSatNDVI.seminat <- rbind(
-SentinelNDVI.seminat[,!names(SentinelNDVI.seminat) %in% "subtype"],
-ModisNDVI.seminat,
-LandsatNDVI.seminat[,!names(LandsatNDVI.seminat) %in% "column_label"]
+  SentinelNDVI.seminat[, !names(SentinelNDVI.seminat) %in% "subtype"],
+  ModisNDVI.seminat,
+  LandsatNDVI.seminat[, !names(LandsatNDVI.seminat) %in% "column_label"]
 )
 # add variable for Satellite identity
 allSatNDVI.seminat$Sat <- c(
-  rep("Sentinel",nrow(SentinelNDVI.seminat)),
-  rep("Modis",nrow(ModisNDVI.seminat)),
-  rep("Landsat",nrow(LandsatNDVI.seminat))
+  rep("Sentinel", nrow(SentinelNDVI.seminat)),
+  rep("Modis", nrow(ModisNDVI.seminat)),
+  rep("Landsat", nrow(LandsatNDVI.seminat))
 )
-allSatNDVI.seminat$Sat <- factor(allSatNDVI.seminat$Sat,levels=c("Sentinel","Modis","Landsat"))
+allSatNDVI.seminat$Sat <- factor(allSatNDVI.seminat$Sat, levels = c("Sentinel", "Modis", "Landsat"))
 levels(allSatNDVI.seminat$Sat)
 ```
 Now we can plot the time series for each main ecosystem type, showing each satellite time series separately:
 ```{r}
-# plot 
+# plot
 allSatNDVI.seminat %>%
-  ggplot( aes(x=year_jit, y=mean, color=Sat )) + 
+  ggplot(aes(x = year_jit, y = mean, color = Sat)) +
   geom_point() +
   facet_wrap(~hovedtype, ncol = 1)
 ```
@@ -904,9 +931,9 @@ We can test if there are consistent temporal changes in NDVI by running regressi
 
 We first investigate a model testing NDVI as a function of year and main ecosystem type for polygons in good condition, and we do so separately for each satellite.
 ```{r, warning=FALSE}
-model.seminat.time.GodTilst.Sent <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$tilstand=="God",])
-model.seminat.time.GodTilst.Modi <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$tilstand=="God",])
-model.seminat.time.GodTilst.Land <- glmmTMB(mean_beta~year*hovedtype + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$tilstand=="God",])
+model.seminat.time.GodTilst.Sent <- glmmTMB(mean_beta ~ year * hovedtype + (1 | id), family = beta_family(), data = SentinelNDVI.seminat[SentinelNDVI.seminat$tilstand == "God", ])
+model.seminat.time.GodTilst.Modi <- glmmTMB(mean_beta ~ year * hovedtype + (1 | id), family = beta_family(), data = ModisNDVI.seminat[ModisNDVI.seminat$tilstand == "God", ])
+model.seminat.time.GodTilst.Land <- glmmTMB(mean_beta ~ year * hovedtype + (1 | id), family = beta_family(), data = LandsatNDVI.seminat[LandsatNDVI.seminat$tilstand == "God", ])
 
 summary(model.seminat.time.GodTilst.Sent)$coefficients$cond
 summary(model.seminat.time.GodTilst.Modi)$coefficients$cond
@@ -916,9 +943,9 @@ There's an increase in NDVI over time in mainly the Sentinel and Landsat time se
 
 Given the consistently higher NDVI-values with decreasing condition in boreal heath, We may ask the question if the temporal NDVI increase might be stronger under reduced condition?
 ```{r, warning=FALSE}
-model.seminat.time.tilst.T31.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T31"),])
-model.seminat.time.tilst.T31.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T31"),])
-model.seminat.time.tilst.T31.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T31"),])
+model.seminat.time.tilst.T31.Sent <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T31"), ])
+model.seminat.time.tilst.T31.Modi <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T31"), ])
+model.seminat.time.tilst.T31.Land <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T31"), ])
 summary(model.seminat.time.tilst.T31.Sent)$coefficients$cond
 summary(model.seminat.time.tilst.T31.Modi)$coefficients$cond
 summary(model.seminat.time.tilst.T31.Land)$coefficients$cond
@@ -926,16 +953,16 @@ summary(model.seminat.time.tilst.T31.Land)$coefficients$cond
 The temporal NDVI increase in boreal heath has NOT been stronger with reduced ecological condition. So a temporal NDVI approach does not seem like a promising way to go.
 We check for the same pattern in T32 and T34, jsut because they are the other semi-natural major ecosystem types with a substantial number of occurrences in the the NiN data:
 ```{r, warning=FALSE}
-model.seminat.time.tilst.T32.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T32"),])
-model.seminat.time.tilst.T32.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T32"),])
-model.seminat.time.tilst.T32.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T32"),])
+model.seminat.time.tilst.T32.Sent <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T32"), ])
+model.seminat.time.tilst.T32.Modi <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T32"), ])
+model.seminat.time.tilst.T32.Land <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T32"), ])
 summary(model.seminat.time.tilst.T32.Sent)$coefficients$cond
 summary(model.seminat.time.tilst.T32.Modi)$coefficients$cond
 summary(model.seminat.time.tilst.T32.Land)$coefficients$cond
 
-model.seminat.time.tilst.T34.Sent <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T34"),])
-model.seminat.time.tilst.T34.Modi <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T34"),])
-model.seminat.time.tilst.T34.Land <- glmmTMB(mean_beta~year*tilstand + (1|id), family=beta_family(),data=LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T34"),])
+model.seminat.time.tilst.T34.Sent <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T34"), ])
+model.seminat.time.tilst.T34.Modi <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T34"), ])
+model.seminat.time.tilst.T34.Land <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T34"), ])
 summary(model.seminat.time.tilst.T34.Sent)$coefficients$cond
 summary(model.seminat.time.tilst.T34.Modi)$coefficients$cond
 summary(model.seminat.time.tilst.T34.Land)$coefficients$cond
@@ -960,6 +987,3 @@ In addition, further investigations should test how NDVI-condition pattern vary 
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
-
-
-
