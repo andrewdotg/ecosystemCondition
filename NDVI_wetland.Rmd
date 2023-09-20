@@ -195,9 +195,9 @@ All NDVI data are calculated mean NDVI values for each respective NiN polygon fr
 
 ```{r, echo = F}
 # downloading the unprocessed NDVI data from a data-cache et the NINA server
-df.s <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Sentinel.raw.RDS")
-df.m <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Modis.raw.RDS")
-df.l <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Landsat.raw.RDS")
+df.s <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Sentinel.raw.RDS")
+df.m <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Modis.raw.RDS")
+df.l <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Landsat.raw.RDS")
 ```
 
 ##### Sentinel-2 NDVI data
@@ -207,7 +207,7 @@ To not exceed GEE memory limits, the exported files had to be iterated over a gr
 
 ```{r, echo = T, eval = F}
 # Import Sentinel NDVI Data
-df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names = TRUE) %>%
+df.s <- list.files("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names = TRUE) %>%
   map_df(~ fread(.))
 ```
 
@@ -218,7 +218,7 @@ The image collection contains MODIS imagery from June, July and August 2000-2022
 ```{r, echo = T, eval = F}
 # Import MODIS NDVI Data
 # MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
-df.m <- read.csv("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_MODIS\\modis_ndvi_ts_2000_2022.csv", )
+df.m <- read.csv("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_MODIS/modis_ndvi_ts_2000_2022.csv")
 df.m$mean <- df.m$mean / 10000
 ```
 
