@@ -1,10 +1,15 @@
-# Slitasje og kjørespor {#slitasje}
+# Anthropogenic disturbance to soils and vegetation (ADSV) {#slitasje}
+
 
 *Author and date:* 
 
 Anders L. Kolstad
 
-March 2023
+September 2023
+
+
+Norwegian indicator name: Slitasje
+
 
 ```{r setup, include=FALSE}
 library(knitr)
@@ -48,13 +53,15 @@ knitr::kable(metaData)
 <hr/>
 
 ## Introduction
-This indicator represent human caused damage or **disturbance to soils and vegetation**, typically from things like recreational activities and off-road vehicle traffic. The data come from a combination non-random field surveys and area-representative surveys. Disturbance to soils and vegetation is recorded in the various data sets are NiN variables 7SE and 7TK, or as the similar, but more fine-scaled variable, PRSL and PRTK. Effects from domestic animal is not included in the definition of these variables, and the upper reference value is therefore set to 0% disturbance. 
+This indicator represent human caused damage or **disturbance to soils and vegetation**, typically from things like recreational activities and off-road vehicle traffic. The data come from a combination non-random field surveys and area-representative surveys. Disturbance to soils and vegetation is recorded in the various data sets are NiN variables 7SE and 7TK, or as the similar, but more fine-scaled variable, PRSL and PRTK. Effects from domestic animals are not included in the definition of these variables, and the upper reference value is therefore set to 0% disturbance. 
 
-Since the data is not sampled in a systematic or random way, we must take extra care not to over-extrapolate in space. We delineate _homogeneous impact areas_ (HIA) based on four classes of increasing infrastructure, and we say that the field data is representative inside the HIA and region (_five regions in Norway_) where it was recorded. We then calculate an area weighted mean (and error) indicator value for each HIA and region combination, as long as there is more than 150 data points for a give combination of HIA and region.     
+The indicator is calculated separately for the three ecosystems, but all nature types associated with the same ecosystem are pooled and treated equally. This means we assume the nature types that are mapped and which we have data from are, when pooled, representative for the main ecosystem. This is less true for Naturally open ecosystems than it is for the other two. You can read more about that [here](#naturtype).
+
+Since the data is not sampled in a systematic or random way, we must take extra care not to over-extrapolate in space. We delineate _homogeneous impact areas_ (HIA) based on four classes of increasing infrastructure, and we say that the field data is representative inside the HIA and region (_five regions in Norway_) where it was recorded. We then calculate an area weighted mean (and error) indicator value for each HIA and region combination, as long as there is more than 150 data points for a give combination of HIA and region. 
 
 Here is a general workflow for the calculation of the indicator.
 
-1.  Import [Nature type data](#NTM) data set (incl. GRUK) and [ANO data
+1.  Import [Nature type data](#NTM) data set and [ANO data
     set](#ANO-import)
 
 2.  Identify the [relevant](#naturtype) nature types and [subset](#NTM)
@@ -62,27 +69,39 @@ Here is a general workflow for the calculation of the indicator.
 
 3.  Convert [ANO points to polygons](#ANO-points-to-poly)
 
-4.  For each polygon, extract the NiN-variable that has the lowest value
-    (one-out all-out principle), e.g. Fig. \@ref(fig:slitasje-naturetype).
+4.  For each polygon, extract the variable that has the lowest value
+    (one-out all-out principle), e.g. Fig. \@ref(fig:slitasje-naturetype). The four variables are 7TK, 7SE (both NiN2-variables) and PRTK and PRSL (both defined by the Norwegain Environmental Agency)
 
-5.  [Combine](#combine-nt-ano) data sets
+5.  [Combine](#combine-nt-ano) data sets (nature types and ANO) but keep ecosystems separate. 
 
 6.  [Scale](#scale-slitasje-ind) the `slitasje` variable based on
     reference values.
 
-7.  Define [homogeneous impact areas](#HIA) (HIA)
+7.  Define [homogeneous impact areas](#HIA-slitasje) (HIA)
 
 8.  [Aggregate and spread](#spread-slitasje) indicator value across HIAs
     and assessment regions
 
 9.  Confirm relationship between infrastructure index and indicator
-    values to justify the extrapolation
+    values to [justify the extrapolation](#validate-slitasje)
 
 10. TO DO: Prepare ecosystem delineation maps and us ethese to mask the extrapolated indicator maps
 
 11. Spatial aggregation of indicator values and uncertainties to accounting areas
 
 12. Export indicator maps and regional extrapolated maps
+
+Note that besides the wetland map, we do not have ecosystem delineation maps to complete step 10 in the workflow.
+
+| Variable    | Name |Measurement scale | Description |
+|------       |------|------|-----|
+|7TK          |Spor etter ferdsel med tunge kjøretøy      |A4b      | Det som skal registreres er andelen (tenkte) småruter á 10 × 10 m (100 m2) innenfor en kartfigur som inneholder kjøretøyspor. |
+|7SE          |Spor etter slitasje og slitasjebetinget erosjon      |A4b  | Det som skal registreres er antall (tenkte) småruter á 2 × 2 m (4 m2) som inneholder spor etter slitasje og slitasjebetinget erosjon (slitasjespor). |
+|PRTK         |Kjørespor      |A8 | Same as 7TK, but with a finer measurement scale |
+|PRSL         |Slitasje | A8 | Same as 7SE, but with a finer measurement scale |
+
+: Variables used in this composite ADSV indicator
+
 
 ## About the underlying data
 
@@ -108,9 +127,11 @@ The variables are recorded on a coarse four-step ordinal scale (Fig.
 
 ### Temporal coverage
 
-The data goes back to 2018. I therefore bulk all the data from 2018 to 2022 into one time step. I then use the mean date for the raw data,
+The data goes back to 2018. I therefore [bulk all the data from 2018 to 2022](https://github.com/NINAnor/ecosystemCondition/issues/101#issuecomment-1719170208) into one time step. I then use the mean date for the raw data,
 and define the variable as belonging to the year 2020 (read more
 [here](#scaled-slitasje-variable)).
+
+Regarding update frequency, the Nature type data set is not replicated, nor will it be in the future. We must therefore trust that the selection criteria for which areas to survey will not change drastically and systematically over time. For example, we are now surveying a lot in pressure areas, meaning lowland areas close to human population centers. If we in the future allocate more time to surveying wilderness areas, then the indicator becomes biased. On the other hand, ANO is replicated every 5 years.
 
 ### Aditional comments about the dataset
 
@@ -121,9 +142,9 @@ For a run through of the nature type data set, see [here](#naturtype).
 ### Norwegain standard
 
 The indicator is tagged to the *Økologisk egenskap* called
-**Primærproduksjon** (Primary productivity). This is tentative, and
+**Primærproduksjon** (Primary productivity). This is [somewhat tentative](https://github.com/NINAnor/ecosystemCondition/issues/96), and
 perhaps *abiotiske forhold* is more suited. But the thought behind the
-choice is that *slitasje* affect the potential for primary productivity.
+choice is that *ADSV* affect the potential for primary productivity.
 
 ### UN standard
 
@@ -134,7 +155,7 @@ composition.
 
 ## Collinearities with other indicators
 
-_Slitasje_ is not thought to exhibit collinearity with any other indicator at
+_ADSV_ is not thought to exhibit collinearity with any other indicator at
 the present.
 
 ## Reference condition and values
@@ -143,10 +164,11 @@ the present.
 
 The reference condition is one with minimal negative human impact. This
 is also true for semi-natural ecosystems. For example, in the reference
-condition, *slitasje* in semi-natural ecosystems is defined to be zero,
+condition, *ADSV* in semi-natural ecosystems is defined to be zero,
 even though at no point in time would this condition be realized.
 
 ### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
+For a further discussion on this topic, see [GitHub issue 88](https://github.com/NINAnor/ecosystemCondition/issues/88). 
 
 * Upper = 0%
 
@@ -154,18 +176,23 @@ even though at no point in time would this condition be realized.
 
 * Lower = 100%
 
-The upper reference value is 0 (no *slitasje*), and the lower reference
-value is 100%. Note that 100% _slitasje_ does not mean that all the area
+The upper reference value is 0% (no *damage*), and the lower reference
+value is 100%. Note that 100% _damage_ does not mean that all the area
 must be scarred or damaged, but that all hypothetical quadrats around a
 point is affected (the variable is frequency-driven, and not
-amount-driven). The threshold for good ecosystem condition is 10%
-damage. Perhaps is should be set somewhat higher, like 20 or 30%.
-The indicator value could be interpretted differently at the polygon
-vs at the landscape scale. At the polygon scale, 10% damage may seem 
-like not that much, whilst at the landscape scale, 10% seems more serious.
-This final threshold value should be debated and illustrated with examples.
+amount-driven). 
 
-Read about the normalisation [here](##scaled-slitasje-variable).
+The threshold for good ecosystem condition is set to 10%
+damage. This is an expert judgement, and a rather weak one at that. 
+In the future we should try to empirically validate the dose-response relationship,
+for example by comparing different variable scores with erosion rates or the potential for plant growth.
+This would need to be done specifically for each nature type.
+
+The indicator value could be interpreted differently at the polygon
+_vs_ landscape scale. At the polygon scale, 10% damage may seem 
+like not that much, whilst at the landscape scale, 10% seems more serious.
+
+Read about the normalisation [here](#scaled-slitasje-variable).
 
 ## Uncertainties
 
@@ -184,7 +211,12 @@ indicator values within the accounting areas.
 
 ## References
 
-No additional references.
+Halvorsen, R. & Bratli, H. 2019. Dokumentasjon av NiN versjon 2.2 tilrettelagt for praktisk naturkartlegging: utvalgte variabler fra beskrivelsessystemet. – Natur i Norge, Artikkel 11 (versjon 2.2.0): 1–218 (Artsdatabanken, Trondheim; http://www.artsdatabanken.no.)
+
+Miljødirektoratet 2022. Kartleggingsinstruks - kartlegging av terrestriske Naturtyper etter NiN2. URL: https://www.miljodirektoratet.no/publikasjoner/2022/januar/kartleggingsinstruks-kartlegging-av-terrestriske-naturtyper-etter-nin/
+
+Miljødirektoratet 2023. Arealrepresnetativ Naturovervåking. Webpage. URL: https://www.miljodirektoratet.no/ansvarsomrader/overvaking-arealplanlegging/miljoovervaking/overvakingsprogrammer/natur-pa-land/arealrepresentativ-naturovervakning-ano/
+
 
 ## Analyses
 
@@ -197,8 +229,8 @@ This indicator uses the data set
 [here](https://kartkatalog.geonorge.no/metadata/naturtyper-miljoedirektoratets-instruks/eb48dd19-03da-41e1-afd9-7ebc3079265c).
 See also [here](#naturtype) for a detailed description of the data set.
 
-We also have a separate [summary file](##exp-natureType-summary) where
-the nature types are manually mapped the NiN variables and to the correct NiN-main types. We can use this to find the nature types associated with the NiN main types
+We also have a separate [summary file](#exp-natureType-summary) where
+the nature types are manually mapped to the correct NiN-main typesand to the NiN variables  that are recorded in each nature type. We can use this to find the nature types associated with the NiN main types
 that we are interested in.
 
 ```{r}
@@ -269,13 +301,15 @@ barplot(table(naturetypes$kartleggingsår))
 
 Now I need to create a single row per locality with a new variable which
 is a product/function of the four variables "7SE", "7TK", "PRTK" and
-"PRSL". I want to base this indicator on whichever of the variables have the highest value (worst condition). Therefore I first convert the ordinal scale to a continuous scale, using the median value of each ordinal step.
+"PRSL". 
+
+I initially baseed this indicator on whichever of the variables have the highest value (worst condition), but after some thought and discussion I now use an additive approach (adding the variable values togther). I first convert the ordinal scale to a continuous scale, using the median value of each ordinal step.
 
 The variables use slightly different scales. PRSL and PRTK use this 8
 step scale:
 
 ```{r eight-step, fig.cap="Eight step condition scale"}
-knitr::include_graphics("images/mdirPRscale.PNG")
+knitr::include_graphics("images/ninAR8.PNG")
 ```
 
 7TK and 7SE use a 4 step scale
@@ -284,7 +318,32 @@ knitr::include_graphics("images/mdirPRscale.PNG")
 knitr::include_graphics("images/ninAR4b.PNG")
 ```
 
-I here transfer these ordinal variables over to a continuous scale.
+
+I here transfer these ordinal variables over to a continuous scale. The data is strongly right skewed, so simply taking the center value of each value range will not work. 
+
+```{r naturetypes-histogram-vars, fig.cap="Histogram showing the distribution of the four variables used in this indicator."}
+naturetypes %>% 
+  ggplot()+
+  theme_bw() +
+  geom_histogram(aes(x = NiN_variable_value),
+                 binwidth = 1) +
+  facet_wrap(.~NiN_variable_code)
+```
+
+The table below shows that, if I assume there is some ADSV and therefore exlude case with variable value <1, the median value for all the variables is 1. The most common % value for each range category should then be the lower limit of that category. For example, when the category is `1/2 - 1` then the % value is most likely 50%, and not 75% which is the center value for that value range. One  issue is when the variable value is 1, because there the lower limit is the same as when the variable value is 0. Here I think I must manually assign it to something a bit higher than 0.
+```{r}
+naturetypes %>%
+  as.tibble() %>%
+  filter(NiN_variable_value >0) %>%
+  group_by(NiN_variable_code)%>%
+  summarise(mean = mean(NiN_variable_value, na.rm=T),
+            median = median(NiN_variable_value, na.rm=T))
+```
+
+ 
+
+You can read more about this issue [here](https://github.com/NINAnor/ecosystemCondition/issues/100).
+
 
 ```{r}
 naturetypes <- naturetypes %>%
@@ -293,21 +352,27 @@ naturetypes <- naturetypes %>%
       case_match(NiN_variable_value,
              0 ~ 0,
              1 ~ mean(c(0, 1/16))*100,
-             2 ~ mean(c(1/16, 1/2))*100,
-             3 ~ 75),
+             2 ~ 1/16*100,
+             3 ~ 50),
     NiN_variable_code %in% c('var_PRTK', 'var_PRSL') ~ 
       case_match(NiN_variable_value,
              0 ~ 0,
              1 ~ 1.5,
-             2 ~ mean(c(3, 6.25)),
-             3 ~ mean(c(6.25, 12.5)),
-             4 ~ mean(c(12.5, 25)),
-             5 ~ mean(c(25, 50)),
-             6 ~ mean(c(50, 75)),
-             7 ~ mean(c(75, 100)))
+             2 ~ 3,
+             3 ~ 6.25,
+             4 ~ 12.5,
+             5 ~ 25,
+             6 ~ 50,
+             7 ~ 75)
     )
   )
 ```
+
+This scaling of the variable implies that it very difficult to measure a location when it
+is in its most degraded form (100% disturbed), since the highest % value one can use is 75% for PRSL and PRTK and just 50% for the other two. 
+This is a problem with the original data resolution. 
+But I will compensate somewhat for this by
+using a non-linear transformation.
 
 
 I will create a new data table where I calculate the new
@@ -322,7 +387,7 @@ naturetypes_wide <- as.data.frame(naturetypes_wide)
 head(naturetypes_wide, 10)
 ```
 
-First I will combine 7TK and PRTK, and also 7SE and PRSL
+First I will combine 7TK and PRTK, and also 7SE and PRSL.
 
 ```{r}
 naturetypes_wide <- naturetypes_wide %>%
@@ -371,42 +436,44 @@ ggplot(temp, aes(x = factor(TK),
        y = "Number of localities")
 ```
 
-Then I can combine these two variables into a composite variable called
+Then I can add these two variables together into a composite variable called
 `slitasje`
 
 ```{r, warning=F}
-naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("TK", "SE")], 1, max, na.rm=T)
+naturetypes_wide$slitasje <- apply(naturetypes_wide[,c("TK", "SE")], 1, sum, na.rm=T)
 ```
 
-When both variables are NA, we get -Inf. There were `r nrow(naturetypes_wide[naturetypes_wide$slitasje<0,])` cases of this. Removing these now.
-
+Chekhing for -Inf
 ```{r}
-naturetypes_wide <- naturetypes_wide[naturetypes_wide$slitasje>=0,]
+nrow(naturetypes_wide[naturetypes_wide$slitasje<0,])
 ```
+No issues with that.
 
-```{r slitasje-naturetype, fig.cap="Slitasje scores.", fig.width=3}
+```{r slitasje-naturetype, fig.cap="ADSV scores.", fig.width=5}
 temp <- naturetypes_wide %>%
   group_by(slitasje) %>%
   summarise(sum = n())
 
-ggplot(temp, aes(x = factor(slitasje),
+ggplot(temp, aes(x = slitasje,
                  y = sum))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "Slitasje score converted to percentage",
+  labs(x = "ADSV score converted to percentage",
        y = "Number of localities") + 
-  theme(axis.text.x = element_text(angle=90, vjust=0.5))
+  theme(axis.text.x = element_text(angle=90, vjust=0.5))+
+  scale_x_continuous(
+    labels = scales::label_number(accuracy = 1))
 ```
 
-It appears most localities are in good condition.
+It appears most localities are in good condition. Note also that we theoretically can get >100% for the unscaled variable.  
 
-I would also like to know, when both tk and SE was recordedm
-how often TK was defining of the slitasje-indicator, and how 
-often it was SE. I can do this by taking the difference.
+I would also like to know, when both TK and SE was recorded,
+which one is likely to be in the worst (or best) condition. 
+I can do this by taking the difference.
 
-```{r, fig.cap="Counting the number of cases where TK or SE was defining of the slitasje indicator score.", fig.width=3}
+```{r, fig.cap="Counting the number of cases where TK or SE was in the worst condition for a given locality.", fig.width=3}
 
 
 diff <- naturetypes_wide$SE - naturetypes_wide$TK
@@ -421,13 +488,13 @@ ggplot(diff_tbl, aes(x = diff, y = Freq))+
            colour = "black",
            fill = "grey")+
   theme_bw(base_size = 12)+
-  labs(x = "Defining variable",
+  labs(x = "Variable indicating the worst state",
        y = "Number of localities")
 ```
 
 Looks like SE (= 7SE or PRSL) is more likely to be in a detrimental state.
 
-Now I will copy these slitasje-values into the sf object.
+Now I will copy these ADVS-values into the sf object.
 
 ```{r}
 naturetypes$slitasje <- naturetypes_wide$slitasje[match(naturetypes$identifikasjon_lokalId, naturetypes_wide$identifikasjon_lokalId)]
@@ -439,10 +506,11 @@ naturetypes <- naturetypes[!is.na(naturetypes$slitasje),]
 
 This variable is also recorded in
 [GRUK](https://www.nina.no/Naturmangfold/Trua-natur/%C3%85pen-grunnlendt-kalkmark).
-The nature type data set I'm working on here includes this data already
-(presently only 2021 included). GRUK also records a related variable:
-`% cover in 5m radii circles`, which is much more detailed. This data is
-not published. In any case it is better to use the harmonized data set
+This is a stratified and intensive monitoring program for calcareous naturally open areas around the Oslo fjord. 
+The nature type data set I'm working on here includes some data from GRUK already
+(presently only 2021 included). The full GRUK data set also contains a related variable:
+`% cover in 5m radii circles`, which is much more detailed than the four variable we have looked at so far. This data is
+not published. In any case it might be better to use the harmonized data set
 in our case.
 
 #### ANO {#ANO-import}
@@ -451,8 +519,8 @@ Arealrepresentativ Naturovervåking (ANO) consist of 1000 systematically
 placed locations each with 18 sample points. In each sample point a
 circle of 250 m2 is visualised, and the main ecosystem is recorded.
 Depending on the main ecosystem, certain NiN variables are also
-recorded. 7SE is recorded for våtmark, but not semi-natural areas or
-naturally open areas. 7TK is recorded in våtmark and naturally open
+recorded. 7SE is recorded for våtmark (wetlands), but not semi-natural areas or
+naturally open areas. 7TK is recorded in wetlands and naturally open
 areas only.
 
 | Variable | Våtmark | Naturlig åpne områder | Semi-naturlige områder |
@@ -466,10 +534,10 @@ is recorded in withing the ANO data set.
 It would be very nice to have 7SE recorded for naturally open areas.
 This variable is very relevant here.
 
-I think I will only use våtmark here since my approach will be to the
+I think I will only use wetlands here since my approach will be to the
 'worst value' of the variable 7SE and 7TK (see below). I think not
 having 7SE for naturally open areas will underestimate the degree of
-degredation in these areas.
+degradation in these areas.
 
 
 > *ANO could harmonise better with the Naturetype data set if it included
@@ -488,7 +556,7 @@ table(ano$aar)
 
 This data set only contains data from year 2019 and 2021. We need to
 update this data set later. It is not clear why there is no data from
-2020.
+2020. This topic is maintained as a [GitHub issue](https://github.com/NINAnor/ecosystemCondition/issues/101).
 
 Each point/row here is 250 square meters. The data also contains
 information about how big a proportion of this area is made up of the
@@ -608,29 +676,35 @@ barplot(table(ano$var_7SE), xlab="7SE scores")
 
 The ANO sites seem to be in an even better condition than the localities in the naturtype data set.
 
-Combining these two variables 7TJ and 7SE into one, same as for the nature
+Combining these two variables 7TK and 7SE into one, same as for the nature
 type data.
 
-```{r}
-temp <- as.data.frame(ano)
-temp$slitasje <- apply(temp[,c("var_7TK", "var_7SE")], 1, max, na.rm=T)
-ano$slitasje <- temp$slitasje
-```
-
-Then I extract the mid values for each ordinal range step, like I did previously for the nature type data set.
+First I convert the range categories into percentages, like I did previously for the nature type data set.
 
 ```{r}
 ano <- ano %>%
-  mutate(slitasje = case_match(slitasje,
+  mutate(var_7TK = case_match(var_7TK,
              0 ~ 0,
              1 ~ mean(c(0, 1/16))*100,
-             2 ~ mean(c(1/16, 1/2))*100,
-             3 ~ 75))
+             2 ~ 1/16*100,
+             3 ~ 50)) %>%
+  mutate(var_7SE = case_match(var_7SE,
+             0 ~ 0,
+             1 ~ mean(c(0, 1/16))*100,
+             2 ~ 1/16*100,
+             3 ~ 50))
+```
+
+```{r}
+temp <- as.data.frame(ano)
+temp$slitasje <- apply(temp[,c("var_7TK", "var_7SE")], 1, sum, na.rm=T)
+ano$slitasje <- temp$slitasje
 ```
 
 
+
 ```{r, fig.cap="Distribution of slitasje scores in the ANO data", fig.width=6}
-barplot(table(ano$slitasje), xlab="% Slitasje", ylab = "Number of localities")
+barplot(table(ano$slitasje), xlab="ADVS variable score", ylab = "Number of localities", las=2)
 ```
 
 ##### Combine Naturtype data and ANO {#combine-nt-ano}
@@ -717,24 +791,27 @@ unique(st_geometry_type(slitasje_data))
 
 Ok.
 
-#### Distribution of Slitasje scores
+#### Distribution of ADVS scores
 
-```{r, fig.cap="Slitasje scores (ANO Naturetype (and GRUK) data combined). The score for a locality equals the highest (worst) score of the related variables 7TK, 7SE, PRSL and PRTK."}
+```{r, fig.cap="ADVS variable scores (ANO Naturetype data combined). The score for a locality equals the sum of the related variables 7TK, 7SE, PRSL and PRTK."}
 temp <- as.data.frame(table(slitasje_data$slitasje))
+temp$Var1 <- as.numeric(as.character(temp$Var1))
 ggplot(temp, aes(x = Var1,
                  y = Freq))+
   geom_bar(stat="identity",
            fill="grey",
            colour = "black")+
   theme_bw(base_size = 12)+
-  labs(x = "slitasje score",
-       y = "Number of localities")
+  labs(x = "ADVS score",
+       y = "Number of localities")+
+  scale_x_continuous(
+    labels = scales::label_number(accuracy = 1))
 ```
 
 Let's see the proportion of data points (not area) origination from each
 data set
 
-```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the slitasje indicator.", fig.width=4}
+```{r, fig.cap="Barplot show the contribution (number of localities) of different data sets to the ADVS indicator.", fig.width=4}
 temp <- as.data.frame(table(slitasje_data$origin))
 
 ggplot(temp, aes(x = Var1,
@@ -806,13 +883,8 @@ I will use the same reference levels/values for all of Norway:
 ```{r}
 upper <- 0
 lower <- 100
-threshold <- 5
+threshold <- 10
 ```
-
-This implies that it is impossible to detect or measure a state when it
-is in its most degraded form (100% disturbed). This is a problem with
-the original data resolution. But I will compensate somewhat for this by
-using a non-linear transformation.
 
 Also, the threshold value is set quite conservatively (I think), and should be
 discussed.
@@ -823,7 +895,7 @@ inside eaTools.
 
 <!-- THE BREAKPOINT IS AT 0.5 RATHER THAN 0.6. TEST CODE FROM HERE: https://ninanor.github.io/eaTools/articles/normalise-condition-variable.html -->
 
-```{r slitasje-normalise, fig.cap="Performing a linear break-point type normalisation of the slitasje variable.", fig.width=5}
+```{r slitasje-normalise, fig.cap="Performing a linear break-point type normalisation of the ADSV variable.", fig.width=5}
 eaTools::ea_normalise(data = slitasje_data,
                       vector = "slitasje",
                       upper_reference_level = lower,
@@ -854,9 +926,9 @@ slitasje_data$i_2020 <- eaTools::ea_normalise(data = slitasje_data,
                       )
 ```
 
-### Homogeneous impact areas {#HIA}
+### Homogeneous impact areas {#HIA-slitasje}
 
-I want to use the [Homogeneous Impact Areas](#HIA) (HIA) to define
+I want to use the [Homogeneous Impact Areas](#homogeneous-impact-areas) (HIA) to define
 smaller regions into which I can extrapolate the indicator values. This
 data is generated by discretizing the Norwegian Infrastructure Index. I
 refer to the ordinal values of the four HIA classes as their *Human
@@ -899,7 +971,7 @@ HIA_regions <- HIA_regions %>%
   mutate(region_HIF = paste(region, infrastructureIndex))
 ```
 
-#### Validate
+#### Validate {#validate-slitasje}
 
 I now have `r length(unique(HIA_regions$region_HIF))` unique areas (for each main ecosystem) that I will, given
 there is data, extrapolate indicator values over.
@@ -973,7 +1045,7 @@ saveRDS(all_stats, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/da
 all_stats <- readRDS(paste0(pData, "cache/all_stats.rds"))
 ```
 
-```{r dense-stats, fig.height= 12, fig.cap="Barplot showing the number of data points, the area weighted indicator values and the sd for the slitasje indicator. Transparrent bars represents categories with less than 150 data points."}
+```{r dense-stats, fig.height= 12, fig.cap="Barplot showing the number of data points, the area weighted scaled indicator values and the sd for the ADSV indicator. Transparent bars represents categories with less than 150 data points, indicated by the vertical line in the top row of panes."}
 temp_plot <- all_stats %>%
   mutate(HIF_NA = case_when(
     n > 150 ~ HIF
@@ -986,23 +1058,27 @@ ggarrange(
 ggplot(temp_plot, aes(x = region, y = n, group = HIF, fill = HIF_NA))+
   geom_bar(position = "dodge", stat = "identity", col="black")+
   theme_bw(base_size = 10)+
-  scale_fill_brewer(palette="Oranges")+
+  scale_fill_brewer(palette="Oranges", na.translate=F)+
   theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
+  labs(fill = "HIF")+
+  geom_hline(yintercept=150)+
   facet_wrap(.~eco),
 ggplot(temp_plot, aes(x = region, y = w_mean, group = HIF, fill = HIF_NA))+
   geom_bar(position = "dodge", stat = "identity", col="black")+
   theme_bw(base_size = 10)+
-  scale_fill_brewer(palette="Oranges")+
+  scale_fill_brewer(palette="Oranges",  na.translate=F)+
   theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
+  labs(fill = "HIF")+
   facet_wrap(.~eco),
 ggplot(temp_plot, aes(x = region, y = sd, group = HIF, fill = HIF_NA))+
   geom_bar(position = "dodge", stat = "identity", col="black")+
   theme_bw(base_size = 10)+
-  scale_fill_brewer(palette="Oranges")+
+  scale_fill_brewer(palette="Oranges",  na.translate=F)+
   theme(axis.text.x = element_text(angle = 90, vjust=0.5))+
   coord_flip()+
+  labs(fill = "HIF")+
   facet_wrap(.~eco),
 ncol = 1)
 
@@ -1073,11 +1149,11 @@ saveRDS(corrCheck, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/da
 corrCheck <- readRDS(paste0(pData, "cache/corrCheck.rds"))
 ```
 
-```{r slitasje-precentageplot, fig.height=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different indicator values."}
+```{r slitasje-precentageplot, fig.height=12, fig.cap="Relative frequency plot (conditioned on region and main ecosystem) showing the distribution of polygons with different scaled indicator values for the indicator named Anthropogenic disturbance to soils and vegetation."}
 ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
   geom_bar(position="fill")+
   theme_bw(base_size = 12)+
-  guides(fill = guide_legend("Sliatsje indicator"))+
+  guides(fill = guide_legend("Scaled indicator values"))+
   ylab("Fraction of data points")+
   xlab("HIF")+
   scale_fill_brewer(palette = "RdYlGn")+
@@ -1201,12 +1277,12 @@ seminat_slitasje_extr_trd <- sf::st_crop(seminat_slitasje_extr, myBB)
 natOpen_slitasje_extr_trd <- sf::st_crop(natOpen_slitasje_extr, myBB)
 ```
 
-```{r extrapolated-slitasje, fig.cap="Slitasje indicator extrapolated over Trondheim"}
+```{r extrapolated-slitasje, fig.cap="ADSV indicator extrapolated over Trondheim, with one map for each ecosystem. The map is not masked against ecosystem delineation maps, which make them easy to missinterpret."}
 myCol <- "RdYlGn"
 tmap_arrange(
 tm_shape(wetlands_slitasje_extr_trd)+
   tm_polygons(col = "w_mean",
-    title="Slitasje indicator",
+    title="Indicator value",
     palette = myCol,
     style="cont",
     breaks = c(0,1))+
@@ -1217,7 +1293,7 @@ tm_shape(wetlands_slitasje_extr_trd)+
 
 tm_shape(seminat_slitasje_extr_trd)+
   tm_polygons(col = "w_mean",
-    title="Slitasje indicator",
+    title="Indicator value",
     palette = myCol,
     style="cont",
     breaks = c(0,1))+
@@ -1228,7 +1304,7 @@ tm_shape(seminat_slitasje_extr_trd)+
 
 tm_shape(natOpen_slitasje_extr_trd)+
   tm_polygons(col = "w_mean",
-    title="Slitasje indicator",
+    title="Indicator value",
     palette = myCol,
     style="cont",
     breaks = c(0,1))+
@@ -1309,7 +1385,7 @@ wall-to-wall indicator value and errors (e.g. Fig \@ref(fig:wall-to-wall-summer-
 covering other ETs. Otherwise the maps would not we visually
 interpretative.
 
-### Slitasje in wetlands
+### ADSV in wetlands
 
 This is how I plan to export the final product.
 
