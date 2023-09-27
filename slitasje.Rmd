@@ -53,9 +53,9 @@ knitr::kable(metaData)
 <hr/>
 
 ## Introduction
-This indicator represent human caused damage or **disturbance to soils and vegetation**, typically from things like recreational activities and off-road vehicle traffic. The data come from a combination non-random field surveys and area-representative surveys. Disturbance to soils and vegetation is recorded in the various data sets are NiN variables 7SE and 7TK, or as the similar, but more fine-scaled variable, PRSL and PRTK. Effects from domestic animal is not included in the definition of these variables, and the upper reference value is therefore set to 0% disturbance. 
+This indicator represent human caused damage or **disturbance to soils and vegetation**, typically from things like recreational activities and off-road vehicle traffic. The data come from a combination non-random field surveys and area-representative surveys. Disturbance to soils and vegetation is recorded in the various data sets are NiN variables 7SE and 7TK, or as the similar, but more fine-scaled variable, PRSL and PRTK. Effects from domestic animals are not included in the definition of these variables, and the upper reference value is therefore set to 0% disturbance. 
 
-Since the data is not sampled in a systematic or random way, we must take extra care not to over-extrapolate in space. We delineate _homogeneous impact areas_ (HIA) based on four classes of increasing infrastructure, and we say that the field data is representative inside the HIA and region (_five regions in Norway_) where it was recorded. We then calculate an area weighted mean (and error) indicator value for each HIA and region combination, as long as there is more than 150 data points for a give combination of HIA and region.     
+Since the data is not sampled in a systematic or random way, we must take extra care not to over-extrapolate in space. We delineate _homogeneous impact areas_ (HIA) based on four classes of increasing infrastructure, and we say that the field data is representative inside the HIA and region (_five regions in Norway_) where it was recorded. We then calculate an area weighted mean (and error) indicator value for each HIA and region combination, as long as there is more than 150 data points for a give combination of HIA and region. 
 
 Here is a general workflow for the calculation of the indicator.
 
@@ -88,6 +88,17 @@ Here is a general workflow for the calculation of the indicator.
 11. Spatial aggregation of indicator values and uncertainties to accounting areas
 
 12. Export indicator maps and regional extrapolated maps
+
+Note that besides the wetland map, we do not have ecosystem delineation maps to complete step 10 in the workflow.
+
+| Variable    | Name |Measurement scale | Description |
+|------       |------|------|-----|
+|7TK          |Spor etter ferdsel med tunge kjøretøy      |A4b      | Det som skal registreres er andelen (tenkte) småruter á 10 × 10 m (100 m2) innenfor en kartfigur som inneholder kjøretøyspor. |
+|7SE          |Spor etter slitasje og slitasjebetinget erosjon      |A4b  | Det som skal registreres er antall (tenkte) småruter á 2 × 2 m (4 m2) som inneholder spor etter slitasje og slitasjebetinget erosjon (slitasjespor). |
+|PRTK         |Kjørespor      |A8 | Same as 7TK, but with a finer measurement scale |
+|PRSL         |Slitasje | A8 | Same as 7SE, but with a finer measurement scale |
+
+: Variables used in this composite ADSV indicator
 
 ## About the underlying data
 
@@ -297,7 +308,29 @@ knitr::include_graphics("images/ninAR8.PNG")
 knitr::include_graphics("images/ninAR4b.PNG")
 ```
 
-I here transfer these ordinal variables over to a continuous scale based on the mean value of each step, but we acknowledge that there are important assumptions being made here, for example that the mean _real_ value for 7TK or 7SE 3 is the mid-point in the range from 0.5 to 1 (i.e. 0.75). This is probably not correct. The large range of the steps, particularly for the 7SE and 7TK variables, poses a problem for assessing ecological condition at the polygon scale, but less so at aggregated scales. Hence, the indicator should not be presented and interpreted at the polygon scale.  
+
+I here transfer these ordinal variables over to a continuous scale. The data is strongly right skewed, so simply taking the center value of each value range will not work. 
+
+```{r naturetypes-histogram-vars, fig.cap="Histogram showing the distribution of the four variables used in this indicator."}
+naturetypes %>% ggplot()+
+  theme_bw() +
+  geom_histogram(aes(x = NiN_variable_value),
+                 binwidth = 1) +
+  facet_wrap(.~NiN_variable_code)
+```
+
+```{r}
+naturetypes %>%
+  as.tibble() %>%
+  group_by(NiN_variable_code)%>%
+  summarise(mean = mean(NiN_variable_value, na.rm=T),
+            median = median(NiN_variable_value, na.rm=T))
+```
+
+The table above shows that the median value for all the variables is zero. The most common % value for each range category should then be the lower limit of that category. For example, when the category is `1/2 - 1` then the % value is most likely 50%, and not 75% which is the center value for that value range. One  issue is when the variable value is 1, because there the lower limit is the same as when the variable value is 0. Here I think I must manually assign it to something a bit higher than 0. 
+
+You can read more about this issue [here](https://github.com/NINAnor/ecosystemCondition/issues/100).
+
 
 ```{r}
 naturetypes <- naturetypes %>%
@@ -306,18 +339,18 @@ naturetypes <- naturetypes %>%
       case_match(NiN_variable_value,
              0 ~ 0,
              1 ~ mean(c(0, 1/16))*100,
-             2 ~ mean(c(1/16, 1/2))*100,
-             3 ~ 75),
+             2 ~ 1/16*100,
+             3 ~ 50),
     NiN_variable_code %in% c('var_PRTK', 'var_PRSL') ~ 
       case_match(NiN_variable_value,
              0 ~ 0,
              1 ~ 1.5,
-             2 ~ mean(c(3, 6.25)),
-             3 ~ mean(c(6.25, 12.5)),
-             4 ~ mean(c(12.5, 25)),
-             5 ~ mean(c(25, 50)),
-             6 ~ mean(c(50, 75)),
-             7 ~ mean(c(75, 100)))
+             2 ~ 3,
+             3 ~ 6.25,
+             4 ~ 12.5,
+             5 ~ 25,
+             6 ~ 50,
+             7 ~ 75)
     )
   )
 ```
@@ -397,7 +430,7 @@ nrow(naturetypes_wide[naturetypes_wide$slitasje<0,])
 ```
 No issues with that.
 
-```{r slitasje-naturetype, fig.cap="ADSV scores.", fig.width=3}
+```{r slitasje-naturetype, fig.cap="ADSV scores.", fig.width=5}
 temp <- naturetypes_wide %>%
   group_by(slitasje) %>%
   summarise(sum = n())
@@ -627,20 +660,20 @@ The ANO sites seem to be in an even better condition than the localities in the 
 Combining these two variables 7TK and 7SE into one, same as for the nature
 type data.
 
-First I extract the mid values for each ordinal range step, like I did previously for the nature type data set.
+First I convert the range categories into percentages, like I did previously for the nature type data set.
 
 ```{r}
 ano <- ano %>%
   mutate(var_7TK = case_match(var_7TK,
              0 ~ 0,
              1 ~ mean(c(0, 1/16))*100,
-             2 ~ mean(c(1/16, 1/2))*100,
-             3 ~ 75)) %>%
+             2 ~ 1/16*100,
+             3 ~ 50)) %>%
   mutate(var_7SE = case_match(var_7SE,
              0 ~ 0,
              1 ~ mean(c(0, 1/16))*100,
-             2 ~ mean(c(1/16, 1/2))*100,
-             3 ~ 75))
+             2 ~ 1/16*100,
+             3 ~ 50))
 ```
 
 ```{r}
@@ -743,7 +776,8 @@ Ok.
 
 ```{r, fig.cap="ADVS variable scores (ANO Naturetype data combined). The score for a locality equals the sum of the related variables 7TK, 7SE, PRSL and PRTK."}
 temp <- as.data.frame(table(slitasje_data$slitasje))
-ggplot(temp, aes(x = as.numeric(Var1),
+temp$Var1 <- as.numeric(as.character(temp$Var1))
+ggplot(temp, aes(x = Var1,
                  y = Freq))+
   geom_bar(stat="identity",
            fill="grey",
