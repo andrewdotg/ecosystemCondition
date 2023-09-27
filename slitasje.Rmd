@@ -55,6 +55,8 @@ knitr::kable(metaData)
 ## Introduction
 This indicator represent human caused damage or **disturbance to soils and vegetation**, typically from things like recreational activities and off-road vehicle traffic. The data come from a combination non-random field surveys and area-representative surveys. Disturbance to soils and vegetation is recorded in the various data sets are NiN variables 7SE and 7TK, or as the similar, but more fine-scaled variable, PRSL and PRTK. Effects from domestic animals are not included in the definition of these variables, and the upper reference value is therefore set to 0% disturbance. 
 
+The indicator is calculated separately for the three ecosystems, but all nature types associated with the same ecosystem are pooled and treated equally. This means we assume the nature types that are mapped and which we have data from are, when pooled, representative for the main ecosystem. This is less true for Naturally open ecosystems than it is for the other two. You can read more about that [here](#naturtype).
+
 Since the data is not sampled in a systematic or random way, we must take extra care not to over-extrapolate in space. We delineate _homogeneous impact areas_ (HIA) based on four classes of increasing infrastructure, and we say that the field data is representative inside the HIA and region (_five regions in Norway_) where it was recorded. We then calculate an area weighted mean (and error) indicator value for each HIA and region combination, as long as there is more than 150 data points for a give combination of HIA and region. 
 
 Here is a general workflow for the calculation of the indicator.
@@ -100,6 +102,7 @@ Note that besides the wetland map, we do not have ecosystem delineation maps to 
 
 : Variables used in this composite ADSV indicator
 
+
 ## About the underlying data
 
 The indicator uses a data set from a standardised field survey of nature
@@ -127,6 +130,8 @@ The variables are recorded on a coarse four-step ordinal scale (Fig.
 The data goes back to 2018. I therefore [bulk all the data from 2018 to 2022](https://github.com/NINAnor/ecosystemCondition/issues/101#issuecomment-1719170208) into one time step. I then use the mean date for the raw data,
 and define the variable as belonging to the year 2020 (read more
 [here](#scaled-slitasje-variable)).
+
+Regarding update frequency, the Nature type data set is not replicated, nor will it be in the future. We must therefore trust that the selection criteria for which areas to survey will not change drastically and systematically over time. For example, we are now surveying a lot in pressure areas, meaning lowland areas close to human population centers. If we in the future allocate more time to surveying wilderness areas, then the indicator becomes biased. On the other hand, ANO is replicated every 5 years.
 
 ### Aditional comments about the dataset
 
@@ -175,8 +180,13 @@ The upper reference value is 0% (no *damage*), and the lower reference
 value is 100%. Note that 100% _damage_ does not mean that all the area
 must be scarred or damaged, but that all hypothetical quadrats around a
 point is affected (the variable is frequency-driven, and not
-amount-driven). The threshold for good ecosystem condition is set to 10%
-damage. 
+amount-driven). 
+
+The threshold for good ecosystem condition is set to 10%
+damage. This is an expert judgement, and a rather weak one at that. 
+In the future we should try to empirically validate the dose-response relationship,
+for example by comparing different variable scores with erosion rates or the potential for plant growth.
+This would need to be done specifically for each nature type.
 
 The indicator value could be interpreted differently at the polygon
 _vs_ landscape scale. At the polygon scale, 10% damage may seem 
@@ -312,22 +322,25 @@ knitr::include_graphics("images/ninAR4b.PNG")
 I here transfer these ordinal variables over to a continuous scale. The data is strongly right skewed, so simply taking the center value of each value range will not work. 
 
 ```{r naturetypes-histogram-vars, fig.cap="Histogram showing the distribution of the four variables used in this indicator."}
-naturetypes %>% ggplot()+
+naturetypes %>% 
+  ggplot()+
   theme_bw() +
   geom_histogram(aes(x = NiN_variable_value),
                  binwidth = 1) +
   facet_wrap(.~NiN_variable_code)
 ```
 
+The table below shows that, if I assume there is some ADSV and therefore exlude case with variable value <1, the median value for all the variables is 1. The most common % value for each range category should then be the lower limit of that category. For example, when the category is `1/2 - 1` then the % value is most likely 50%, and not 75% which is the center value for that value range. One  issue is when the variable value is 1, because there the lower limit is the same as when the variable value is 0. Here I think I must manually assign it to something a bit higher than 0.
 ```{r}
 naturetypes %>%
   as.tibble() %>%
+  filter(NiN_variable_value >0) %>%
   group_by(NiN_variable_code)%>%
   summarise(mean = mean(NiN_variable_value, na.rm=T),
             median = median(NiN_variable_value, na.rm=T))
 ```
 
-The table above shows that the median value for all the variables is zero. The most common % value for each range category should then be the lower limit of that category. For example, when the category is `1/2 - 1` then the % value is most likely 50%, and not 75% which is the center value for that value range. One  issue is when the variable value is 1, because there the lower limit is the same as when the variable value is 0. Here I think I must manually assign it to something a bit higher than 0. 
+ 
 
 You can read more about this issue [here](https://github.com/NINAnor/ecosystemCondition/issues/100).
 
@@ -354,6 +367,12 @@ naturetypes <- naturetypes %>%
     )
   )
 ```
+
+This scaling of the variable implies that it very difficult to measure a location when it
+is in its most degraded form (100% disturbed), since the highest % value one can use is 75% for PRSL and PRTK and just 50% for the other two. 
+This is a problem with the original data resolution. 
+But I will compensate somewhat for this by
+using a non-linear transformation.
 
 
 I will create a new data table where I calculate the new
@@ -448,7 +467,7 @@ ggplot(temp, aes(x = slitasje,
     labels = scales::label_number(accuracy = 1))
 ```
 
-It appears most localities are in good condition. Note also that we can get >100% for the unscaled variable.  
+It appears most localities are in good condition. Note also that we theoretically can get >100% for the unscaled variable.  
 
 I would also like to know, when both TK and SE was recorded,
 which one is likely to be in the worst (or best) condition. 
@@ -866,11 +885,6 @@ upper <- 0
 lower <- 100
 threshold <- 10
 ```
-
-This implies that it is impossible to detect or measure a state when it
-is in its most degraded form (100% disturbed). This is a problem with
-the original data resolution. But I will compensate somewhat for this by
-using a non-linear transformation.
 
 Also, the threshold value is set quite conservatively (I think), and should be
 discussed.
