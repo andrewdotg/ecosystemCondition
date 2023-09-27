@@ -100,7 +100,8 @@ The Landsat data have a resolution of 30 x 30 m, and we thus excluded all NiN-po
 #### check here ####
 For natopen systems, the NiN data contain 2881 natopen polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 2881 natopen polygons are distributed across regions and major ecosystem types in the following way:
 
-|Region|T2|T12|T18|T20|T21|
+Region|T2|T12|T18|T20|T21|
+-|-|-|-|-|-|
 Northern Norway |  0  |   230 |  648 |  10 |   31|
 Central Norway  |  41 |   282 |  201 |  0  |   0|
 Western Norway  |  49 |   44  |  79  |  0  |   9|
