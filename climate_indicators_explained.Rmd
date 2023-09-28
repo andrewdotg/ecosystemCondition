@@ -52,7 +52,7 @@ knitr::kable(metaData)
 
 <hr />
 
-## Introduction
+## Introduction {#intro-cli}
 
 This chapters describes the development of a workflow for generating or preparing indicators based on interpolated climate data from [SeNorge](https://senorge.no/). I describe the process using dummy data and also discuss alternate approaches and dead ends that occured in the development process. For a succinct workflow example for a specific indicator, see [Median summer temperature](#median-summer-temp).
 
@@ -98,7 +98,7 @@ Climate variables are most likely to be correlated with each other (e.g. tempera
 
 The reference condition for climate variables is defined as the normal period 1961-1990.
 
-### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
+### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values {#ref-vals-cli}
 
 -   Un-scaled indicator value = median value over 5 year periods (5 years being a pragmatic choice. It is long enough to smooth out a lot of inter-annual variation, and it's long enough to enable estimating errors)
 
@@ -129,7 +129,7 @@ For the indicator map (1 x 1 km raster) there is no uncertainty associated with 
 
 <hl/>
 
-## Analyses
+## Analyses {#analyses-cli}
 
 ### Data set
 
@@ -325,7 +325,7 @@ tm_shape(dummy_et) +
   tm_raster(style="cat")
 ```
 
-#### Regions
+#### Regions {#regions-cli}
 
 Importing a shape file with the regional delineation.
 

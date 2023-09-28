@@ -55,13 +55,13 @@ knitr::kable(metaData)
 
 <!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
 
-## Introduction
+## Introduction {#intro-enc}
 
 The Norwegian word "gjengroing" is directly translated to "regrowing" in English. The gjengroing indicator describes the regrowth of woody vegetation (trees and bushes) in open ecosystems (wetland, semi- and naturally open areas) across Norway. We will use a spatial reference approach where reference areas define good or optimal vegetation regrowth heights.
 
 The workflow spans two platforms including RStudio and Google Earth Engine (GEE). To reproduce this workflow you will need a GEE account and access to the NINA RStudio and R/GeoSpatialData servers.
 
-## About the underlying data
+## About the underlying data {#about-data-enc}
 
 We rely on the following datasets:
 
@@ -75,23 +75,23 @@ We rely on the following datasets:
 -   The [SSB 10km grid](https://kartkatalog.geonorge.no/metadata/statistisk-rutenett-5000m/32ac0653-d95c-446c-8558-bf9b79f4934e) is used for visualization purposes.
 -   The regional delineation for Norway (five regions) are used for aggregating and reporting gjengroing condition values.
 
-### Representativity in time and space
+### Representativity in time and space {#rep-enc}
 
 The index will cover the mainland of Norway. The analysis will be stratified by (1) åpne and (2) våtmark ecosystems. The former includes both semi-naturlig mark and naturlig åpne områder under skoggrensa (due to the fact that AR5 does not differentiate these), and the latter includes våtmark only. The LiDAR data cover a range of years and therefore the indicator represents conditions for circa 2010 to 2021.
 
-### Original units
+### Original units {#units-enc}
 
 The original units for ecological condition are meters. This is the height of the vegetation within referecne, polygon and forest areas.
 
-### Temporal coverage
+### Temporal coverage {#temp-enc}
 
 Circa 2010 to 2021. This is a single snapshot and not a change analysis. In the future, when LiDAR data has been repeated across the country, it may be possible to do a change assessment. In addition, the use of optical or radar satellite imagery may serve as a proxy for vegetation height using machine learning. This will allow for annual updates, depending on the uncertainty in the satellite-based maps of vegetation height.
 
-### Additional comments about the dataset
+### Additional comments about the dataset {#comm-enc}
 
 None.
 
-## Ecosystem characteristic
+## Ecosystem characteristic 
 
 ### Norwegian standard
 
@@ -107,11 +107,11 @@ The methodology used to calculate the gjengroing indicator is outlined in the sc
 
 ![](images/gjengroing_schematic.jpg){width="70%"}
 
-### Reference state
+### Reference state {#state-enc}
 
 The NiN polygons including "Naturlig åpne områder under skoggrensa", "Semi-naturlig mark", and "Våtmark" with good ecological condition are used to define a reference gjengroing state. We use the all-encompassing "Tilstand" variable assigned to each NiN polygon. The 50th percentile of LiDAR-derived vegetation heights within these polygons is used to define the upper limit (ie. 1) of the scaled indicator value. We cannot define local reference values based on proximity, because the NiN polygons are spatially biased and not close to all AR5 population polygons. Therefore we calculate regional reference values using elevation (300m bands) and bioclimatic zones as stratification. We calculate the mean reference value for each unique combination of elevation-bioclimatic zone. When calculating the index for each population polygon, the reference value is inherited from the elevation-bioclimatic zone it falls within.
 
-### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
+### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values {#ref-enc}
 
 Once we have the reference vegetation height for a given ecosystem type and elevation-bioclimatic zone, we need to define the minimum (or worst/bad) condition. We use the 50th percentile of LiDAR-derived vegetation heights within AR5 skog polygons to define a climax vegetation successional stage where gjengroing is at its most extreme. In order not to include forest patches that have recently been harvested, we mask out any forest which has been clear-cut since 1986. Here, 1986 is a hard limit defined by the clear-cut dataset which was based on Landsat imagery. Therefore we can be assured that we are measuring forest that is at least 35 years old.
 
@@ -121,7 +121,7 @@ To define the ecological condition of the population polygon, we measure 50th pe
 
 The vegetation height percentiles are then scaled to between 0 and 1 using a sigmoid transformation [Oliver at al. (2021)](https://www.sciencedirect.com/science/article/pii/S1470160X21000066).
 
-## Uncertainties
+## Uncertainties {#err-enc}
 
 For the indicator map at the polygon level there is no uncertainty associated with the indicator values. For aggregated indicator values (e.g. for 50km grid and regions), the uncertainty in the indicator value is calculated from the spatial variation in the polygon-level reference height values. We could use the alternative of calculating the spatial variation in the indicator values via bootstrapping using the EAtools package. However, given the extreme number of population polygons, the uncertainty values are extremely small and therefore we choose to use the standard deviation in reference vegetation heights, converted to the indicator scale.
 
@@ -129,9 +129,9 @@ For the indicator map at the polygon level there is no uncertainty associated wi
 
 Links to data and resources are provided with hyperlinks in-line.
 
-## Analyses
+## Analyses {#analyses-enc}
 
-### Data sets
+### Data sets {#data-enc}
 
 There are several datasets which are used in GEE which will not be imported into the R session here. These datasets have been obtained from the source and ingested into GEE by Zander Venter or Vegard Bakkestuen with the help of Miljædata section at NINA. They include
 
@@ -143,7 +143,7 @@ There are several datasets which are used in GEE which will not be imported into
 
 The remaining datasets will be imported into the R session.
 
-#### Regions
+#### Regions {#reg-enc}
 
 The regional delineation for Norway (five regions) are used for aggregating and reporting gjengroing condition values.
 
@@ -946,7 +946,7 @@ The fifth and final example from further north in Nord-norge shows two våtmark 
 
 ![](images/val_5.jpg){width="50%"}
 
-### Eksport file (final product)
+### Eksport file (final product) {#exp-enc}
 
 We will export gjengroing indicator values at three levels: - polygon level - 50km grid level - regional level
 
