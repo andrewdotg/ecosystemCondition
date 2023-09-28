@@ -741,8 +741,10 @@ HIA <- readRDS(paste0(pData, "infrastrukturindeks/homogeneous_impact_areas.rds")
 
 I want to check that HIF is in fact a good predictor for *alien species*.
 
-I also want to split these four HIA classes based on municipality. To do
-this I need the two layers to have the same CRS.
+I also want to split these four HIA classes based on municipality. 
+For a [related indicator](#HIA-slitasje) I used combinations of HIA and region, but for alien species I think
+that there is too much variation also inside each region (esp north-south) so that we need a finer division of strata.
+To do this I need the two layers to have the same CRS.
 
 ```{r}
 st_crs(HIA) == st_crs(muni)
