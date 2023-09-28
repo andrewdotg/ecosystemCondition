@@ -1,6 +1,11 @@
-# Functional plant indicators, semi-natural ecosystems (Light, Moisture, pH, Nitrogen, Phosphorus, Grazing_mowing, Soil disturbance) {#Functional-plant-indicators-seminat}
+# Functional Plant Indicators - Semi-Natural Ecosystems {#Functional-plant-indicators-seminat}
+
+
 
 <br />
+Norwegian name: **Planteindikatorer**
+<br />
+
 
 _Author and date:_
 Joachim Töpper
@@ -41,12 +46,24 @@ metaData <- data.frame(Ecosystem,
 knitr::kable(metaData)
 ```
 
+
+Indicators described in this chapter:
+
+- Light
+- Moisture
+- pH
+- Nitrogen
+- Phosphorus
+- Grazing_mowing
+- Soil disturbance
+
+
 <!-- Don't remove these three html lines -->
 <br />
 <br />
 <hr />
 
-## Introduction
+## Introduction {#intro-fpis}
 Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional plant indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for semi-natural ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH, nitrogen, phosphorus, grazing_mowing, and soil disturbance. These functional signatures are then compared to reference distributions of functional signature, separately for each semi-natural ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional condition indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021). Note that deviations from the reference may occur in both directions, e.g. the soil disturbance signature from the testing data may be higher or lower than in the reference. Deviations in these two directions indicate very different environmental phenomena and thus have to be treated separately. Therefore, we develop two condition indicators for each functional plant indicator, a lower one and an upper one (see further down for more details).
 
 ## About the underlying data
@@ -135,7 +152,7 @@ Töpper, J., Velle, L.G. & Vandvik, V. 2018. Developing a method for assessment 
 Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indicator and traits values for Swedish vascular plants. Ecological In-dicators, 120. doi:10.1016/j.ecolind.2020.106923
 
 
-## Analyses
+## Analyses {#analyses-fpis}
 ### Data sets
 
 ANO data
@@ -2469,5 +2486,5 @@ legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c(
 ```
 In the ASO data, the nitrogen deviations indicate too high nitrogen content in limestone richer (intermediate to very rich) semi-natural grasslands. 
 
-### Eksport file (final product)
+### Eksport file (final product) {#exp-fpin}
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->

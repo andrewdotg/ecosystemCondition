@@ -25,11 +25,11 @@ library(dplyr)
 library(units)
 ```
 
-## Introduction
+## Introduction {#intro-hia}
 
 This chapter documents the creation of a wall-to-wall map of homogeneous impact areas in Norway.
 The map is produced by binning values in the infrastructure index into four discrete categories.
-It is likely to be a good predictor for some indicators, such as *slitasje* and the presence of *alien species*.
+It is likely to be a good predictor for some indicators, such as [*slitasje*](#slitasje) and the presence of [*alien species*](#alien-species).
 
 ## About the underlying data
 
@@ -428,7 +428,7 @@ DT::datatable(temp)
 ```
 
 
-## Export
+## Export {#exp-hia}
 I will write this data to the NINA P server.
 
 ```{r, eval=F}

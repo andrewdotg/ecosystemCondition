@@ -1,6 +1,10 @@
 
 # Alien species {#alien-species}
 
+
+Norwegian name: **Fravær av fremmede arter**
+
+
 *Author and date:* 
 
 Anders L. Kolstad
@@ -50,7 +54,7 @@ knitr::kable(metaData)
 
 <hr/>
 
-## Introduction
+## Introduction {#intro-ali}
 This indicator represent the the ecological on-site effect from  alien species. Whilst the introduction of alien species is best considered a pressure variable, the relative abundance of alien species on a given location is seen here as a manifestation of this negative anthropogenic impact, and is therefore a valid condition indicator.
 
 A related variable has been used previously for [alpine](https://ninanor.github.io/IBECA/faktaark.html#Frav%C3%A6r_av_fremmede_arter) and forest ecosystems in Norway. These indicators were based on ANO, a national monitoring program, where alien species cover was estimated to the closest whole percent. The upper and lower reference levels that was used back then was 0 or 100% of the species composition made up of alien species, respectively. The threshold value between good and reduced condition was defined as 5%. In this approach, the indicator represented the relative area with an absence of alien species. It is in a way the flip-side of _alien species abundance_. The latter was said to be a pressure variable, whilst the former reacts as direct and linear consequence of changes to this variable, and was therefore accepted as a condition indicator. We do not make this distinction here. 
@@ -107,7 +111,7 @@ Here a general workflow for the calculation of the indicator.
 
 12. Export indicator maps and regional extrapolated maps
 
-## About the underlying data
+## About the underlying data {#about-data-ali}
 
 The indicator uses a data set from a standardised field survey of nature
 types. You can read more about this data set from my preliminary analyses
@@ -164,7 +168,7 @@ The reference condition is one with minimal negative human impact. This
 is also true for semi-natural ecosystems. In a sense, the reference condition is pre-1800,
 since the Alien Species List of Norway only contains species established after 1800. 
 
-### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
+### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values {#ref-vals-ali}
 
 
 * Upper = 1 (R7 scale), corresponding to 0% alien species
@@ -197,7 +201,7 @@ indicator values within the accounting areas.
 
 Evju, M., Skrindo, A.B. & Solstad, H. (red.) 2022. Overvåking av åpen grunnlendt kalkmark 2021‒2024. Årsrapport 2022. NINA Rapport 2195. Norsk institutt for naturforskning.
 
-## Analyses
+## Analyses {analyses-ali}
 
 ### Data sets
 
@@ -792,7 +796,7 @@ hw_utm <- readRDS("data/cache/highways_trondheim.rds")
 See Fig. \@ref(fig:HIF-region) for a closer look at the distribution of HIA classes across Norway.
 
 
-#### Validate
+#### Validate {#validate-ali}
 
 I now have `r length(unique(HIA_muni$muni_HIF))` HIAs (for each main ecosystem) that I will, given
 there is data, extrapolate indicator values over. But first I want to validate the assumption that the HIF 
