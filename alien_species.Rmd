@@ -40,7 +40,7 @@ pData <- ifelse(dir == "C:",
 
 ```{r, echo=F}
 Ecosystem <- "Våtmark, Naturlig åpne områder under skoggrensa, Semi-naturlig mark" 
-Egenskap  <- "Funksjonelt viktige arter og strukturer"
+Egenskap  <- "Biologisk mangfold"
 ECT       <- "B1 Compositional state characteristics" 
 Contact   <- "anders.kolstad@nina.no"
 ```
@@ -64,9 +64,9 @@ This time we are using the [nature type mapping dataset](#naturtype) which recor
 Here I base the indicator on the R7 scale, since this is, presumably, the bigger data set. I therefore convert percentage cover into R7 classes based on what I can interpret from Fig. \@ref(fig:fremmedart-prosentVSinnslag).
 
 Upper reference value is then 1, and lower reference value is 7, on the R7 scale.
-For the threshold value I will set this to value 4 on the R7 scale. 
+For the threshold value I will set this to value 3 on the R7 scale. 
 This is based on interpretation by the author and based of the definition of this value in Fig. \@ref(fig:R7). 
-Step 4 on the R7 scale is the step that, concordantly, best matches the 5% threshold in the old approach, as seen from Fig. \@ref(fig:fremmedart-prosentVSinnslag).
+Step 3 on the R7 scale is the step that, concordantly, best matches the 5% threshold in the old approach, as seen from Fig. \@ref(fig:fremmedart-prosentVSinnslag).
 
 
 ```{r R7, fig.cap="The R7 scale used when recording the effect of alien species in the nature type monitoring program"}
@@ -148,7 +148,9 @@ For a run through of the nature type data set, see [here](#naturtype).
 ### Norwegian standard
 
 The indicator is tagged to the *Økologisk egenskap* called
-**Funksjonelt viktige arter og strukturer** (Functionally important species and structures). This emphasises the negative effect that alien species have on for example supressing or excluding native species. In some cases, alien species can also affect nutrient cycling or recruitment.
+**Biologisk mangfold**. 
+This emphasises the negative effect that alien species have on for example supressing or excluding native species. 
+In some cases, alien species can also affect nutrient cycling or recruitment and could then also be appropriate under _funksjonelt viktige arter og strukturer_.
 
 ### UN standard
 
