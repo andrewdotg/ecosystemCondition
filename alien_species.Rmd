@@ -75,7 +75,7 @@ The indicator is calculated separately for the three ecosystems, but all nature 
 knitr::include_graphics("images/R7 scale.PNG")
 ```
 
-```{r fremmedart-prosentVSinnslag, fig.cap="Comparing the R7 scale (x axis) which is used in the nature type monitoring program with percentage cover (y-axis), which is how alien species is recorded in ANO. I am assuming the x axis is shifted downwards compared to the original R7 scale which range from 1 to 7, so that a value of 0 here equals an R7 value of 1. Cropped from Evju et al (2022)."}
+```{r fremmedart-prosentVSinnslag, fig.cap="Comparing the R7 scale (x axis) which is used in the nature type monitoring program with percentage cover (y-axis), which is how alien species is recorded in GRUK. I am assuming the x axis is shifted downwards compared to the original R7 scale which range from 1 to 7, so that a value of 0 here equals an R7 value of 1. Note also that this relationship is based on limited data from just one nature type and in smaller diameter circles than the other data we use in this indicator. Cropped from Evju et al (2022)."}
 knitr::include_graphics("images/fremmedart_prosentVSinnslag.PNG")
 ```
 
