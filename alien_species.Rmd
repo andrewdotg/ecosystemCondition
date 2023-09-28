@@ -9,7 +9,7 @@ Norwegian name: **Fravær av fremmede arter**
 
 Anders L. Kolstad
 
-March 2023
+September 2023
 
 ```{r setup, include=FALSE}
 library(knitr)
@@ -173,9 +173,11 @@ since the Alien Species List of Norway only contains species established after 1
 
 * Upper = 1 (R7 scale), corresponding to 0% alien species
 
-* Threshold = 4 (R7 scale), corresponding to about 5-30% alien species cover.
+* Threshold = 3 (R7 scale), corresponding to about 2-5% alien species cover.
 
 * Lower = 7 (R7 scale), corresponding to 100% alien species cover.
+
+For a discussion around the reference values, see [here](https://github.com/NINAnor/ecosystemCondition/issues/38)
 
 Read about the normalisation [here](##scaled-alien-variable).
 
@@ -681,7 +683,7 @@ I will use the same reference levels/values for all of Norway:
 ```{r}
 low <- 1
 high <- 7
-threshold <- 4
+threshold <- 3
 ```
 
 
