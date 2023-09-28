@@ -1,5 +1,8 @@
-# Functional plant indicators, naturally open ecosystems below the tree line (Grime's CSR values, Light, Nitrogen, Soil disturbance) {#Functional-plant-indicators-open}
+# Functional Plant Indicators - Naturally Open Ecosystems {#Functional-plant-indicators-open}
 
+<br />
+
+Norwegian name: **Planteindikatorer**
 <br />
 
 _Author and date:_
@@ -43,6 +46,14 @@ metaData <- data.frame(Ecosystem,
                        "ECT class" = ECT)
 knitr::kable(metaData)
 ```
+
+
+Indicators described in this chapter:
+
+- Grime's CSR values
+- Light
+- Nitrogen
+- Soil disturbance
 
 <!-- Don't remove these three html lines -->
 <br />

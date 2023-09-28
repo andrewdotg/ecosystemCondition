@@ -1,6 +1,9 @@
-# Functional plant indicators (Moisture, Light, pH, Nitrogen) {#Functional-plant-indicators-wetland}
+# Functional Plant Indicators - Wetlands {#Functional-plant-indicators-wetland}
 
 <br />
+
+Norwegian name: **Planteindikatorer**
+
 
 _Author and date:_
 
@@ -40,6 +43,15 @@ metaData <- data.frame(Ecosystem,
                        "ECT class" = ECT)
 knitr::kable(metaData)
 ```
+
+
+Indicators described in this chaper:
+
+- Moisture
+- Light
+- pH
+- Nitrogen
+
 
 <!-- Don't remove these three html lines -->
 <br />

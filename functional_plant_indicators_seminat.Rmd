@@ -1,6 +1,11 @@
-# Functional plant indicators, semi-natural ecosystems (Light, Moisture, pH, Nitrogen, Phosphorus, Grazing_mowing, Soil disturbance) {#Functional-plant-indicators-seminat}
+# Functional Plant Indicators - Semi-Natural Ecosystems {#Functional-plant-indicators-seminat}
+
+
 
 <br />
+Norwegian name: **Planteindikatorer**
+<br />
+
 
 _Author and date:_
 Joachim Töpper
@@ -40,6 +45,18 @@ metaData <- data.frame(Ecosystem,
                        "ECT class" = ECT)
 knitr::kable(metaData)
 ```
+
+
+Indicators described in this chapter:
+
+- Light
+- Moisture
+- pH
+- Nitrogen
+- Phosphorus
+- Grazing_mowing
+- Soil disturbance
+
 
 <!-- Don't remove these three html lines -->
 <br />
