@@ -68,6 +68,8 @@ For the threshold value I will set this to value 3 on the R7 scale.
 This is based on interpretation by the author and based of the definition of this value in Fig. \@ref(fig:R7). 
 Step 3 on the R7 scale is the step that, concordantly, best matches the 5% threshold in the old approach, as seen from Fig. \@ref(fig:fremmedart-prosentVSinnslag).
 
+The indicator is calculated separately for the three ecosystems, but all nature types associated with the same ecosystem are pooled and treated equally. This means we assume the nature types that are mapped and which we have data from are, when pooled, representative for the main ecosystem. This is less true for Naturally open ecosystems than it is for the other two. You can read more about that [here](#naturtype).
+
 
 ```{r R7, fig.cap="The R7 scale used when recording the effect of alien species in the nature type monitoring program"}
 knitr::include_graphics("images/R7 scale.PNG")
@@ -124,9 +126,14 @@ of the Environment Agency. I also import a data set called
 ### Representativity in time and space
 
 The nature type mapping is not random and cannot be said to be area
-representative. The ANO data set however, is area representative. The
+representative. 
+This will not improve over time either. 
+
+The ANO data set however, is area representative. The
 data is from 2018 to present. The data from one field season usually
 becomes available early the following year.
+
+Regarding update frequency, the Nature type data set is not replicated, nor will it be in the future. We must therefore trust that the selection criteria for which areas to survey will not change drastically and systematically over time. For example, we are now surveying a lot in pressure areas, meaning lowland areas close to human population centers. If we in the future allocate more time to surveying wilderness areas, then the indicator becomes biased. On the other hand, ANO is replicated every 5 years.
 
 ### Original units
 

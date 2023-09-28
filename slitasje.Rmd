@@ -125,7 +125,7 @@ becomes available early the following year.
 The variables are recorded on a coarse four-step ordinal scale (Fig.
 \@ref(fig:four-step)) or eigth-step scale.
 
-### Temporal coverage
+### Temporal coverage {#temoporal-sli}
 
 The data goes back to 2018. I therefore [bulk all the data from 2018 to 2022](https://github.com/NINAnor/ecosystemCondition/issues/101#issuecomment-1719170208) into one time step. I then use the mean date for the raw data,
 and define the variable as belonging to the year 2020 (read more
