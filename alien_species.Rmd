@@ -9,7 +9,7 @@ Norwegian name: **Fravær av fremmede arter**
 
 Anders L. Kolstad
 
-March 2023
+September 2023
 
 ```{r setup, include=FALSE}
 library(knitr)
@@ -40,7 +40,7 @@ pData <- ifelse(dir == "C:",
 
 ```{r, echo=F}
 Ecosystem <- "Våtmark, Naturlig åpne områder under skoggrensa, Semi-naturlig mark" 
-Egenskap  <- "Funksjonelt viktige arter og strukturer"
+Egenskap  <- "Biologisk mangfold"
 ECT       <- "B1 Compositional state characteristics" 
 Contact   <- "anders.kolstad@nina.no"
 ```
@@ -55,7 +55,7 @@ knitr::kable(metaData)
 <hr/>
 
 ## Introduction {#intro-ali}
-This indicator represent the the ecological on-site effect from  alien species. Whilst the introduction of alien species is best considered a pressure variable, the relative abundance of alien species on a given location is seen here as a manifestation of this negative anthropogenic impact, and is therefore a valid condition indicator.
+This indicator represent the the ecological on-site effect from  alien species. In practice, the indicator is restricted to alien vascular plants. Whilst the introduction of alien species is best considered a pressure variable, the relative abundance of alien species on a given location is seen here as a manifestation of this negative anthropogenic impact, and is therefore a valid condition indicator.
 
 A related variable has been used previously for [alpine](https://ninanor.github.io/IBECA/faktaark.html#Frav%C3%A6r_av_fremmede_arter) and forest ecosystems in Norway. These indicators were based on ANO, a national monitoring program, where alien species cover was estimated to the closest whole percent. The upper and lower reference levels that was used back then was 0 or 100% of the species composition made up of alien species, respectively. The threshold value between good and reduced condition was defined as 5%. In this approach, the indicator represented the relative area with an absence of alien species. It is in a way the flip-side of _alien species abundance_. The latter was said to be a pressure variable, whilst the former reacts as direct and linear consequence of changes to this variable, and was therefore accepted as a condition indicator. We do not make this distinction here. 
 
@@ -64,16 +64,18 @@ This time we are using the [nature type mapping dataset](#naturtype) which recor
 Here I base the indicator on the R7 scale, since this is, presumably, the bigger data set. I therefore convert percentage cover into R7 classes based on what I can interpret from Fig. \@ref(fig:fremmedart-prosentVSinnslag).
 
 Upper reference value is then 1, and lower reference value is 7, on the R7 scale.
-For the threshold value I will set this to value 4 on the R7 scale. 
+For the threshold value I will set this to value 3 on the R7 scale. 
 This is based on interpretation by the author and based of the definition of this value in Fig. \@ref(fig:R7). 
-Step 4 on the R7 scale is the step that, concordantly, best matches the 5% threshold in the old approach, as seen from Fig. \@ref(fig:fremmedart-prosentVSinnslag).
+Step 3 on the R7 scale is the step that, concordantly, best matches the 5% threshold in the old approach, as seen from Fig. \@ref(fig:fremmedart-prosentVSinnslag).
+
+The indicator is calculated separately for the three ecosystems, but all nature types associated with the same ecosystem are pooled and treated equally. This means we assume the nature types that are mapped and which we have data from are, when pooled, representative for the main ecosystem. This is less true for Naturally open ecosystems than it is for the other two. You can read more about that [here](#naturtype).
 
 
 ```{r R7, fig.cap="The R7 scale used when recording the effect of alien species in the nature type monitoring program"}
 knitr::include_graphics("images/R7 scale.PNG")
 ```
 
-```{r fremmedart-prosentVSinnslag, fig.cap="Comparing the R7 scale (x axis) which is used in the nature type monitoring program with percentage cover (y-axis), which is how alien species is recorded in ANO. I am assuming the x axis is shifted downwards compared to the original R7 scale which range from 1 to 7, so that a value of 0 here equals an R7 value of 1. Cropped from Evju et al (2022)."}
+```{r fremmedart-prosentVSinnslag, fig.cap="Comparing the R7 scale (x axis) which is used in the nature type monitoring program with percentage cover (y-axis), which is how alien species is recorded in GRUK. I am assuming the x axis is shifted downwards compared to the original R7 scale which range from 1 to 7, so that a value of 0 here equals an R7 value of 1. Note also that this relationship is based on limited data from just one nature type and in smaller diameter circles than the other data we use in this indicator. Cropped from Evju et al (2022)."}
 knitr::include_graphics("images/fremmedart_prosentVSinnslag.PNG")
 ```
 
@@ -124,9 +126,14 @@ of the Environment Agency. I also import a data set called
 ### Representativity in time and space
 
 The nature type mapping is not random and cannot be said to be area
-representative. The ANO data set however, is area representative. The
+representative. 
+This will not improve over time either. 
+
+The ANO data set however, is area representative. The
 data is from 2018 to present. The data from one field season usually
 becomes available early the following year.
+
+Regarding update frequency, the Nature type data set is not replicated, nor will it be in the future. We must therefore trust that the selection criteria for which areas to survey will not change drastically and systematically over time. For example, we are now surveying a lot in pressure areas, meaning lowland areas close to human population centers. If we in the future allocate more time to surveying wilderness areas, then the indicator becomes biased. On the other hand, ANO is replicated every 5 years.
 
 ### Original units
 
@@ -148,7 +155,9 @@ For a run through of the nature type data set, see [here](#naturtype).
 ### Norwegian standard
 
 The indicator is tagged to the *Økologisk egenskap* called
-**Funksjonelt viktige arter og strukturer** (Functionally important species and structures). This emphasises the negative effect that alien species have on for example supressing or excluding native species. In some cases, alien species can also affect nutrient cycling or recruitment.
+**Biologisk mangfold**. 
+This emphasises the negative effect that alien species have on for example supressing or excluding native species. 
+In some cases, alien species can also affect nutrient cycling or recruitment and could then also be appropriate under _funksjonelt viktige arter og strukturer_.
 
 ### UN standard
 
@@ -173,9 +182,11 @@ since the Alien Species List of Norway only contains species established after 1
 
 * Upper = 1 (R7 scale), corresponding to 0% alien species
 
-* Threshold = 4 (R7 scale), corresponding to about 5-30% alien species cover.
+* Threshold = 3 (R7 scale), corresponding to about 2-5% alien species cover.
 
 * Lower = 7 (R7 scale), corresponding to 100% alien species cover.
+
+For a discussion around the reference values, see [here](https://github.com/NINAnor/ecosystemCondition/issues/38)
 
 Read about the normalisation [here](##scaled-alien-variable).
 
@@ -317,7 +328,7 @@ The nature type data set I'm working on here includes this data already
 not published. In any case it is better to use the harmonized data set
 in our case.
 
-_NOTE: I'm not sure, but I wonder if the 2021 GRUK data was a pilot project and that most GRUK data, and all future GRUK data, will not be included in this data set._
+See also [this GitHub issue](https://github.com/NINAnor/ecosystemCondition/issues/79).
 
 #### ANO {#ANO-import2}
 
@@ -681,7 +692,7 @@ I will use the same reference levels/values for all of Norway:
 ```{r}
 low <- 1
 high <- 7
-threshold <- 4
+threshold <- 3
 ```
 
 
@@ -730,8 +741,10 @@ HIA <- readRDS(paste0(pData, "infrastrukturindeks/homogeneous_impact_areas.rds")
 
 I want to check that HIF is in fact a good predictor for *alien species*.
 
-I also want to split these four HIA classes based on municipality. To do
-this I need the two layers to have the same CRS.
+I also want to split these four HIA classes based on municipality. 
+For a [related indicator](#HIA-slitasje) I used combinations of HIA and region, but for alien species I think
+that there is too much variation also inside each region (esp north-south) so that we need a finer division of strata.
+To do this I need the two layers to have the same CRS.
 
 ```{r}
 st_crs(HIA) == st_crs(muni)
