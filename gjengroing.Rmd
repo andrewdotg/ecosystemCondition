@@ -1,8 +1,12 @@
 # (PART\*) INDICATORS{-}
 
-# Vegetation regrowth/encroachment (gjengroing) {#gjengroing}
-
+# Enchroachment {#gjengroing}
 <br />
+
+Norwegian name: **Gjengroing**
+
+_Vegetation regrowth/encroachment_
+
 
 *Author and date:*
 
