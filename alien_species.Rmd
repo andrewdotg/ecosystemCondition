@@ -328,7 +328,7 @@ The nature type data set I'm working on here includes this data already
 not published. In any case it is better to use the harmonized data set
 in our case.
 
-_NOTE: I'm not sure, but I wonder if the 2021 GRUK data was a pilot project and that most GRUK data, and all future GRUK data, will not be included in this data set._
+See also [this GitHub issue](https://github.com/NINAnor/ecosystemCondition/issues/79).
 
 #### ANO {#ANO-import2}
 
