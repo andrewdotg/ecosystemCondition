@@ -25,12 +25,9 @@ September 2023
 
 
 
-
 |Ecosystem                    |Økologisk.egenskap |ECT.class                          |
 |:----------------------------|:------------------|:----------------------------------|
 |Våtmark (også fjell og skog) |Biologisk mangfold |Compositional state characteristic |
-
-
 
 <!-- Don't remove these three html lines -->
 
@@ -329,8 +326,6 @@ It also provides information on each indicators trophic level, underlying data, 
   </tr>
 </tbody>
 </table>
-
-
 
 ### Representativity in time and space
 

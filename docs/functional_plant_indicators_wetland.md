@@ -1,6 +1,9 @@
-# Functional plant indicators (Moisture, Light, pH, Nitrogen) {#Functional-plant-indicators-wetland}
+# Functional Plant Indicators - Wetlands {#Functional-plant-indicators-wetland}
 
 <br />
+
+Norwegian name: **Planteindikatorer**
+
 
 _Author and date:_
 
@@ -17,12 +20,18 @@ May 2023
 
 
 
-
 |Ecosystem |Økologisk.egenskap |ECT.class                       |
 |:---------|:------------------|:-------------------------------|
 |våtmark   |Primærproduksjon   |Functional state characteristic |
 |våtmark   |Abiotiske forhold  |Functional state characteristic |
 
+
+Indicators described in this chaper:
+
+- Moisture
+- Light
+- pH
+- Nitrogen
 
 
 <!-- Don't remove these three html lines -->
@@ -30,7 +39,7 @@ May 2023
 <br />
 <hr />
 
-## Introduction
+## Introduction {#intro-fpiw}
 Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional type indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021).
 
 ## About the underlying data
@@ -71,7 +80,7 @@ The evaluation data cover the first three years, 2019-2021, of the first 5-year-
 The reference state is defined via the functional signature of the generalized species lists in NiN (see also Töpper et al. 2018). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for minor ecosystem types ("grunntyper" or "kartleggingsenheter" at a 1:5000 mapping scale) within the major ecosystem types (hovedtyper) in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
 
 
-### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values {#ref-values-fpiw}
 In this analysis, we derive scaling values from statistical (here, non-parametric) distributions (see Jakobsson et al. 2010). For each ecosystem sub-type and plant functional indicator, the reference value is defined as the median value of the indicator value distribution. As in most cases the distributions naturally are two-sided (but see the Heat-requirement indicator in the mountain assessment for an example of a one-sided plant functional indicator, Fremstad et al. 2022), and deviation from the optimal state thus may occur in both direction (e.g. indicating too low or too high pH), we need to define two threshold values for good ecological condition as well as both a minimum and maximum value. In line with previous assessments of ecological condition for Norwegian forests and mountains, we define a lower and an upper threshold value via the 95% confidence interval of the reference distribution, i.e. its 0.025 and 0.975 quantiles. The minimum and maximum values are given by the minimum and maximum of the possible indicator values for each respective plant functional indicator. For details on the scaling principles in IBECA, please see Töpper & Jakobsson (2021).
 
 
@@ -99,7 +108,7 @@ Töpper, J., Velle, L.G. & Vandvik, V. 2018. Developing a method for assessment 
 Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indicator and traits values for Swedish vascular plants. Ecological In-dicators, 120. doi:10.1016/j.ecolind.2020.106923
 
 
-## Analyses
+## Analyses {#analyses-fpiw}
 ### Data sets
 
 ANO data
@@ -1392,7 +1401,7 @@ We can also show the results as a map, for instance for pH1 (the lower pH indica
 
 ```
 #> Reading layer `outlineOfNorway_EPSG25833' from data source 
-#>   `/data/scratch/Matt_temp/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
+#>   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 1 feature and 2 fields
 #> Geometry type: MULTIPOLYGON
@@ -1400,7 +1409,7 @@ We can also show the results as a map, for instance for pH1 (the lower pH indica
 #> Bounding box:  xmin: -113472.7 ymin: 6448359 xmax: 1114618 ymax: 7939917
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> Reading layer `regions' from data source 
-#>   `/data/scratch/Matt_temp/ecosystemCondition/data/regions.shp' 
+#>   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/regions.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 5 features and 2 fields
 #> Geometry type: POLYGON
@@ -1425,14 +1434,6 @@ Here, we apply the following function using either a glmmTMB null-model with a b
 ```r
 library(betareg)
 library(glmmTMB)
-#> Warning in checkMatrixPackageVersion(): Package version inconsistency detected.
-#> TMB was built with Matrix version 1.5.3
-#> Current Matrix version is 1.5.1
-#> Please re-install 'TMB' from source using install.packages('TMB', type = 'source') or ask CRAN for a binary version of 'TMB' matching CRAN's 'Matrix' package
-#> Warning in checkDepPackageVersion(dep_pkg = "TMB"): Package version inconsistency detected.
-#> glmmTMB was built with TMB version 1.9.2
-#> Current TMB version is 1.9.4
-#> Please re-install glmmTMB from source or restore original 'TMB' package (see '?reinstalling' for more information)
 
 expit <- function(L) exp(L) / (1+exp(L)) # since the beta-models use a logit link, we need to calculate the estimates back to the identity scale
 
@@ -1899,5 +1900,5 @@ legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c(
 <img src="functional_plant_indicators_wetland_files/figure-html/unnamed-chunk-25-4.png" width="672" />
 Deviations from the reference occur mainly in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
 
-### Eksport file (final product)
+### Eksport file (final product) {#exp-fpiw}
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
