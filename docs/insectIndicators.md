@@ -37,7 +37,7 @@ Notice the degree of annotation.
 <br />
 
 _Author and date:_
-Jens Åström 2023-09-14
+Jens Åström 2023-09-29
 
 
 <br />
@@ -64,14 +64,11 @@ Incomplete list of things that will change:
 
 
 
-
 |Ecosystem          |Økologisk egenskap                                                                                                 |ECT class                        |
 |:------------------|:------------------------------------------------------------------------------------------------------------------|:--------------------------------|
 |Semi-naturlig mark |Biologisk mangfold, Funksjonelle grupper innen trofiske nivåer, Funksjonelt viktige arter og biofysiske strukturer |Functional state characteristics |
 |Semi-naturlig mark |Biologisk mangfold, Funksjonelle grupper innen trofiske nivåer, Funksjonelt viktige arter og biofysiske strukturer |Functional state characteristics |
 |Semi-naturlig mark |Biologisk mangfold, Funksjonelle grupper innen trofiske nivåer, Funksjonelt viktige arter og biofysiske strukturer |Functional state characteristics |
-
-
 
 <!-- Don't remove these three html lines -->
 <br />
@@ -94,7 +91,6 @@ Below is a list of the indicators calculated in this document, and their state o
 
 
 
-
 |Dataset |Indicator                                        |Norwegian type                                     |ECT |Current geographical scope                         |Indicator data |Reference values |
 |:-------|:------------------------------------------------|:--------------------------------------------------|:---|:--------------------------------------------------|:--------------|:----------------|
 |NMBB    |Bumblebees in semi-natural grasslands            |Funksjonelt viktige arter og biofysiske stukturer  |B1  |Sørlandet, Østfold-Vestfold, Vestlandet, Trøndelag |Present        |Present          |
@@ -105,8 +101,6 @@ Below is a list of the indicators calculated in this document, and their state o
 |NorIns  |Species richness of dung associated insects      |Biologisk mangfold                                 |B1  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
 |NorIns  |Quotent of Apocrita vs Symphyta species richness |Funksjonelt viktige arter og biofysiske strukturer |B2  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
 |NorIns  |Intraspesific genetic variation                  |Biologisk mangfold                                 |B1  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
-
-
 Many of these indicators are self-explanatory and don't require much justification. **Bumblebees in semi-natural grasslands** and **Butterflies in semi-natural grasslands** are functionally important pollinators, and are as a community dependent on a varied herbaceous flora. They therefore both represent key functionality, as well as indicators of habitat quality. **Biomass of flying insects** represent a key functional characteristic in ecosystem functioning as food for insectivores, and as a response to habitat quality and management. **Species richness of flying insects** represents the total breadth of the insect community, and **Species richness of pollinating insects** complements the butterfly and bumblebee indicators in taxonomic breadth and spatial resolution.
 **Species richness of dung associated insects** represent a key functional group in decomposition, and function as an indicator of grazing intensity and diversity. **Quotent of Apocrita vs Symphyta species richness** tries to go beyond simple amounts, and capture compositional changes in the insect community. Apocrita covers predatory and parasitic wasps, while Symphyta is plant-feeding wasps. A relative decrease in predatory/parasitic wasps could indicate a degradation in insect prey communities, and a decrease in the potential for natural pest control. Lastly, **Intraspecific genetic variation** captures biodiversity that until now has been hidden, due to lack of practical technologies to measure it. The need to conserve genetic diversity is identified in Norwegian law, and decreased intraspecific diversity could signal population decreases, and decreased potential to adapt to environmental changes, before whole species are lost to an area. 
 
@@ -217,7 +211,6 @@ pollinators_fam <- pollinators %>%
 
 
 
-
 |family_norwegian          |family_latin |
 |:-------------------------|:------------|
 |Gravebier                 |Andrenidae   |
@@ -233,8 +226,6 @@ pollinators_fam <- pollinators %>%
 |Svalestjerter             |Papilionidae |
 |Hvitvinger                |Pieridae     |
 |Metallmerker (uoffisiell) |Riodinidae   |
-
-
 
 We then fetch the community data for these families through the `get_observations` function. We additionally subset the habitat type that we are interested in, here semi-natural land. The result is a tibble of the aggregated number of species, shannon diversity, and the mean number of genetic variants per species. The default aggregation level is "year_locality", meaning the total observations for a locality within a year. 
 
@@ -321,8 +312,6 @@ kableExtra::kbl()
 </tbody>
 </table>
 
-
-
 #### Bootstrap observations
 The localities in the NorIns program are (semi-)randomly selected and can be viewed as samples of a larger population. Individually, they represent a single measurement of an insect community in a habitat type in a region. To get the sampling uncertainty for this representation, we can bootstrap the values by this simple process: we choose a random set of localities within a year and region (with replacement) and calculate the average values. We then repeat this process a large number of times to get a bootstrap sample of values, which can be used to express the uncertainty in the dataset.
 
@@ -372,15 +361,15 @@ This creates an object of type `boot_stat`. Calling it prints a simple summary o
 ```r
 poll_richness_boot
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet         60.2    6.02          48.3
-#> 2  2021 Trøndelag         41.9    3.21          34.6
-#> 3  2021 Østlandet         53.2    5.90          42.5
-#> 4  2022 Sørlandet         29.9    5.83          18.7
-#> 5  2022 Trøndelag         34.7    2.54          29.7
-#> 6  2022 Østlandet         35.8    2.81          30  
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
+#> 1  2020 Østlandet         60.4    6.10          49.5    72.9
+#> 2  2021 Trøndelag         41.8    3.23          34.7    47.5
+#> 3  2021 Østlandet         53.5    5.83          42.2    64.7
+#> 4  2022 Sørlandet         29.6    5.81          18.6    41.2
+#> 5  2022 Trøndelag         34.7    2.52          29.8    39.8
+#> 6  2022 Østlandet         35.7    2.92          30      41.9
+#> # … with abbreviated variable name ¹​boot_upper97.5
 ```
 
 But the `boot_stat` object also stores the individual bootstrap values for later computation. By default, we use 999 bootstrap samples, which here results in 999 samples * 6 groups = 5994 rows of bootstrap values.
@@ -393,17 +382,17 @@ poll_richness_boot[2]
 #> # Groups:   year, region_name [6]
 #>     year region_name boot_values
 #>    <int> <chr>             <dbl>
-#>  1  2020 Østlandet          59.2
-#>  2  2020 Østlandet          63.5
-#>  3  2020 Østlandet          62  
-#>  4  2020 Østlandet          65  
-#>  5  2020 Østlandet          52.5
-#>  6  2020 Østlandet          56  
-#>  7  2020 Østlandet          62.4
-#>  8  2020 Østlandet          64.5
-#>  9  2020 Østlandet          71.2
-#> 10  2020 Østlandet          53  
-#> # ℹ 5,984 more rows
+#>  1  2020 Østlandet          53.5
+#>  2  2020 Østlandet          59.2
+#>  3  2020 Østlandet          51.8
+#>  4  2020 Østlandet          59.8
+#>  5  2020 Østlandet          53  
+#>  6  2020 Østlandet          50.4
+#>  7  2020 Østlandet          68.7
+#>  8  2020 Østlandet          58.4
+#>  9  2020 Østlandet          52.5
+#> 10  2020 Østlandet          58.1
+#> # … with 5,984 more rows
 ```
 
 #### Comparing bootstrap values to a reference point
@@ -413,15 +402,15 @@ Setting aside the practical difficulties in establishing robust reference values
 ```r
 poll_richness_boot
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet         60.2    6.02          48.3
-#> 2  2021 Trøndelag         41.9    3.21          34.6
-#> 3  2021 Østlandet         53.2    5.90          42.5
-#> 4  2022 Sørlandet         29.9    5.83          18.7
-#> 5  2022 Trøndelag         34.7    2.54          29.7
-#> 6  2022 Østlandet         35.8    2.81          30  
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
+#> 1  2020 Østlandet         60.4    6.10          49.5    72.9
+#> 2  2021 Trøndelag         41.8    3.23          34.7    47.5
+#> 3  2021 Østlandet         53.5    5.83          42.2    64.7
+#> 4  2022 Sørlandet         29.6    5.81          18.6    41.2
+#> 5  2022 Trøndelag         34.7    2.52          29.8    39.8
+#> 6  2022 Østlandet         35.7    2.92          30      41.9
+#> # … with abbreviated variable name ¹​boot_upper97.5
 ```
 
 
@@ -433,15 +422,15 @@ diff_poll_richness_boot <- poll_richness_boot - 30
 ```r
 diff_poll_richness_boot
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet      30.2       6.02        18.3  
-#> 2  2021 Trøndelag      11.9       3.21         4.6  
-#> 3  2021 Østlandet      23.2       5.90        12.5  
-#> 4  2022 Sørlandet      -0.0690    5.83       -11.3  
-#> 5  2022 Trøndelag       4.72      2.54        -0.300
-#> 6  2022 Østlandet       5.85      2.81         0    
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
+#> 1  2020 Østlandet       30.4      6.10        19.5      42.9
+#> 2  2021 Trøndelag       11.8      3.23         4.7      17.5
+#> 3  2021 Østlandet       23.5      5.83        12.2      34.7
+#> 4  2022 Sørlandet       -0.414    5.81       -11.4      11.2
+#> 5  2022 Trøndelag        4.74     2.52        -0.200     9.8
+#> 6  2022 Østlandet        5.72     2.92         0        11.9
+#> # … with abbreviated variable name ¹​boot_upper97.5
 ```
 
 Alternatively, we could use a reference point in the time series itself. Say for example that we want to use the values for species richness of pollinators in semi-natural land i Østlandet 2020 as a reference point. We can then calculate the difference (the contrast) between this level and all the other levels. We do this by the function `boot_contrast()`
@@ -460,15 +449,15 @@ diff_poll_richness_boot2 <- poll_richness_boot %>%
 ```r
 diff_poll_richness_boot2
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet         0       0              0  
-#> 2  2021 Trøndelag       -18.3     6.82         -32.1
-#> 3  2021 Østlandet        -6.92    8.46         -23  
-#> 4  2022 Sørlandet       -30.2     8.32         -46.8
-#> 5  2022 Trøndelag       -25.4     6.54         -38.7
-#> 6  2022 Østlandet       -24.3     6.75         -38.5
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
+#> 1  2020 Østlandet         0       0              0       0  
+#> 2  2021 Trøndelag       -18.6     6.84         -32.4    -5.3
+#> 3  2021 Østlandet        -6.97    8.50         -24.6     9.9
+#> 4  2022 Sørlandet       -30.9     8.67         -48.2   -14  
+#> 5  2022 Trøndelag       -25.7     6.74         -40.2   -13.5
+#> 6  2022 Østlandet       -24.7     6.87         -38.5   -12  
+#> # … with abbreviated variable name ¹​boot_upper97.5
 ```
 
 #### Normalizing the values
@@ -484,15 +473,15 @@ diff_poll_richness_boot3 <- poll_richness_boot / 30
 ```r
 diff_poll_richness_boot3
 #> # A tibble: 6 × 6
-#>    year region_name no_species  boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>    <dbl>         <dbl>
-#> 1  2020 Østlandet        1     0                1    
-#> 2  2021 Trøndelag        1.00  0.000211         1    
-#> 3  2021 Østlandet        1     0                1    
-#> 4  2022 Sørlandet        0.922 0.112            0.623
-#> 5  2022 Trøndelag        0.999 0.00725          0.99 
-#> 6  2022 Østlandet        0.999 0.00579          1    
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
+#> 1  2020 Østlandet        1     0               1           1
+#> 2  2021 Trøndelag        1.00  0.00201         1           1
+#> 3  2021 Østlandet        1     0               1           1
+#> 4  2022 Sørlandet        0.915 0.115           0.62        1
+#> 5  2022 Trøndelag        0.999 0.00672         0.993       1
+#> 6  2022 Østlandet        1.00  0.00403         1           1
+#> # … with abbreviated variable name ¹​boot_upper97.5
 ```
 
 
@@ -806,15 +795,16 @@ Plot the results and display uncertainty.
 ```r
 biomass_sn_diff
 #> # A tibble: 6 × 6
-#>    year region_name avg_wet_weight boot_sd boot_lower2.5
-#>   <int> <chr>                <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet            0.668  0.0780         0.510
-#> 2  2021 Trøndelag            0.868  0.0976         0.662
-#> 3  2021 Østlandet            0.588  0.0750         0.440
-#> 4  2022 Sørlandet            0.467  0.0671         0.346
-#> 5  2022 Trøndelag            0.622  0.0674         0.495
-#> 6  2022 Østlandet            0.365  0.0418         0.285
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name avg_wet_weight boot_sd boot_lo…¹ boot_…²
+#>   <int> <chr>                <dbl>   <dbl>     <dbl>   <dbl>
+#> 1  2020 Østlandet            0.671  0.0791     0.517   0.823
+#> 2  2021 Trøndelag            0.867  0.0991     0.649   1    
+#> 3  2021 Østlandet            0.583  0.0754     0.430   0.726
+#> 4  2022 Sørlandet            0.467  0.0679     0.342   0.601
+#> 5  2022 Trøndelag            0.626  0.0702     0.503   0.782
+#> 6  2022 Østlandet            0.377  0.0407     0.303   0.460
+#> # … with abbreviated variable names ¹​boot_lower2.5,
+#> #   ²​boot_upper97.5
 ```
 
 
@@ -850,16 +840,17 @@ biomass_sn_to_exp
 #> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> # A tibble: 6 × 7
-#>   region                         geom  year ind_value ind_sd
-#>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.467 0.0671
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.868 0.0976
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.622 0.0674
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.668 0.0780
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.588 0.0750
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.365 0.0418
-#> # ℹ 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>
+#>   region                           geom  year ind_v…¹ ind_sd
+#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
+#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.467 0.0679
+#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.867 0.0991
+#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.626 0.0702
+#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.671 0.0791
+#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.583 0.0754
+#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.377 0.0407
+#> # … with 2 more variables: ind_lower2.5 <dbl>,
+#> #   ind_upper97.5 <dbl>, and abbreviated variable name
+#> #   ¹​ind_value
 ```
 
 
@@ -898,15 +889,15 @@ Plot the results and display uncertainty.
 ```r
 richness_sn_diff
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet        0.522  0.0473         0.432
-#> 2  2021 Trøndelag        0.698  0.0448         0.601
-#> 3  2021 Østlandet        0.768  0.0421         0.687
-#> 4  2022 Sørlandet        0.549  0.0659         0.428
-#> 5  2022 Trøndelag        0.629  0.0283         0.573
-#> 6  2022 Østlandet        0.626  0.0204         0.585
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
+#> 1  2020 Østlandet        0.520  0.0475         0.431   0.617
+#> 2  2021 Trøndelag        0.698  0.0458         0.598   0.775
+#> 3  2021 Østlandet        0.767  0.0444         0.681   0.856
+#> 4  2022 Sørlandet        0.548  0.0634         0.423   0.674
+#> 5  2022 Trøndelag        0.629  0.0300         0.572   0.686
+#> 6  2022 Østlandet        0.626  0.0215         0.584   0.669
+#> # … with abbreviated variable name ¹​boot_upper97.5
 ```
 
 
@@ -942,16 +933,17 @@ richness_sn_to_exp
 #> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> # A tibble: 6 × 7
-#>   region                         geom  year ind_value ind_sd
-#>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.549 0.0659
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.698 0.0448
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.629 0.0283
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.522 0.0473
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.768 0.0421
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.626 0.0204
-#> # ℹ 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>
+#>   region                           geom  year ind_v…¹ ind_sd
+#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
+#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.548 0.0634
+#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.698 0.0458
+#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.629 0.0300
+#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.520 0.0475
+#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.767 0.0444
+#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.626 0.0215
+#> # … with 2 more variables: ind_lower2.5 <dbl>,
+#> #   ind_upper97.5 <dbl>, and abbreviated variable name
+#> #   ¹​ind_value
 ```
 
 
@@ -996,15 +988,15 @@ Plot the results and display uncertainty.
 ```r
 pollinators_sn_diff
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet        0.923  0.0786         0.733
-#> 2  2021 Trøndelag        0.835  0.0628         0.708
-#> 3  2021 Østlandet        0.912  0.0725         0.756
-#> 4  2022 Sørlandet        0.598  0.114          0.376
-#> 5  2022 Trøndelag        0.694  0.0495         0.594
-#> 6  2022 Østlandet        0.640  0.0547         0.533
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
+#> 1  2020 Østlandet        0.926  0.0735         0.759   1    
+#> 2  2021 Trøndelag        0.840  0.0607         0.706   0.95 
+#> 3  2021 Østlandet        0.911  0.0729         0.762   1    
+#> 4  2022 Sørlandet        0.594  0.112          0.378   0.816
+#> 5  2022 Trøndelag        0.694  0.0491         0.598   0.794
+#> 6  2022 Østlandet        0.636  0.0545         0.529   0.747
+#> # … with abbreviated variable name ¹​boot_upper97.5
 ```
 
 
@@ -1040,16 +1032,17 @@ pollinators_sn_to_exp
 #> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> # A tibble: 6 × 7
-#>   region                         geom  year ind_value ind_sd
-#>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.598 0.114 
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.835 0.0628
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.694 0.0495
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.923 0.0786
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.912 0.0725
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.640 0.0547
-#> # ℹ 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>
+#>   region                           geom  year ind_v…¹ ind_sd
+#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
+#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.594 0.112 
+#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.840 0.0607
+#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.694 0.0491
+#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.926 0.0735
+#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.911 0.0729
+#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.636 0.0545
+#> # … with 2 more variables: ind_lower2.5 <dbl>,
+#> #   ind_upper97.5 <dbl>, and abbreviated variable name
+#> #   ¹​ind_value
 ```
 
 #### Species richness of dung associated insects
@@ -1091,15 +1084,15 @@ Plot the results and display uncertainty.
 ```r
 dung_sn_diff
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet        0.686  0.0499         0.59 
-#> 2  2021 Trøndelag        0.927  0.0554         0.802
-#> 3  2021 Østlandet        0.834  0.0491         0.73 
-#> 4  2022 Sørlandet        0.675  0.0699         0.549
-#> 5  2022 Trøndelag        0.925  0.0413         0.838
-#> 6  2022 Østlandet        0.639  0.0451         0.551
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
+#> 1  2020 Østlandet        0.686  0.0511         0.593   0.784
+#> 2  2021 Trøndelag        0.927  0.0529         0.803   1    
+#> 3  2021 Østlandet        0.833  0.0496         0.737   0.93 
+#> 4  2022 Sørlandet        0.675  0.0656         0.553   0.811
+#> 5  2022 Trøndelag        0.923  0.0408         0.836   1    
+#> 6  2022 Østlandet        0.637  0.0454         0.552   0.739
+#> # … with abbreviated variable name ¹​boot_upper97.5
 ```
 
 
@@ -1135,16 +1128,17 @@ dung_sn_to_exp
 #> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> # A tibble: 6 × 7
-#>   region                         geom  year ind_value ind_sd
-#>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.675 0.0699
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.927 0.0554
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.925 0.0413
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.686 0.0499
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.834 0.0491
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.639 0.0451
-#> # ℹ 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>
+#>   region                           geom  year ind_v…¹ ind_sd
+#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
+#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.675 0.0656
+#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.927 0.0529
+#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.923 0.0408
+#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.686 0.0511
+#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.833 0.0496
+#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.637 0.0454
+#> # … with 2 more variables: ind_lower2.5 <dbl>,
+#> #   ind_upper97.5 <dbl>, and abbreviated variable name
+#> #   ¹​ind_value
 ```
 
 
@@ -1163,21 +1157,22 @@ symphyta_sn <- get_observations(subset_year = 2020:2022,
 
 symphyta_sn
 #> # A tibble: 90 × 8
-#>     year locality habitat_type region_name no_species
-#>    <int> <chr>    <chr>        <chr>            <int>
-#>  1  2020 Skog_01  Forest       Østlandet           15
-#>  2  2020 Skog_02  Forest       Østlandet           42
-#>  3  2020 Skog_03  Forest       Østlandet           24
-#>  4  2020 Skog_04  Forest       Østlandet            5
-#>  5  2020 Skog_05  Forest       Østlandet           23
-#>  6  2020 Skog_06  Forest       Østlandet            9
-#>  7  2020 Skog_07  Forest       Østlandet           25
-#>  8  2020 Skog_08  Forest       Østlandet            7
-#>  9  2020 Skog_09  Forest       Østlandet           18
-#> 10  2020 Skog_10  Forest       Østlandet           11
-#> # ℹ 80 more rows
-#> # ℹ 3 more variables: shannon_div <dbl>,
-#> #   mean_asv_per_species <dbl>, GDE_by_asv <dbl>
+#>     year locality habitat_…¹ regio…² no_sp…³ shann…⁴ mean_…⁵
+#>    <int> <chr>    <chr>      <chr>     <int>   <dbl>   <dbl>
+#>  1  2020 Skog_01  Forest     Østlan…      15   15       1   
+#>  2  2020 Skog_02  Forest     Østlan…      42   36.8     1.31
+#>  3  2020 Skog_03  Forest     Østlan…      24   21       1.38
+#>  4  2020 Skog_04  Forest     Østlan…       5    4.37    1.4 
+#>  5  2020 Skog_05  Forest     Østlan…      23   21.6     1.17
+#>  6  2020 Skog_06  Forest     Østlan…       9    8.71    1.11
+#>  7  2020 Skog_07  Forest     Østlan…      25   22.5     1.4 
+#>  8  2020 Skog_08  Forest     Østlan…       7    6.73    1.14
+#>  9  2020 Skog_09  Forest     Østlan…      18   17.4     1.11
+#> 10  2020 Skog_10  Forest     Østlan…      11    4.6     2.64
+#> # … with 80 more rows, 1 more variable: GDE_by_asv <dbl>,
+#> #   and abbreviated variable names ¹​habitat_type,
+#> #   ²​region_name, ³​no_species, ⁴​shannon_div,
+#> #   ⁵​mean_asv_per_species
 ```
 
 [Note, this list needs to be checked over by e.g. Arnstein.]
@@ -1201,21 +1196,22 @@ parasitica_sn <- get_observations(subset_year = 2020:2022,
 
 parasitica_sn
 #> # A tibble: 90 × 8
-#>     year locality habitat_type region_name no_species
-#>    <int> <chr>    <chr>        <chr>            <int>
-#>  1  2020 Skog_01  Forest       Østlandet          208
-#>  2  2020 Skog_02  Forest       Østlandet          508
-#>  3  2020 Skog_03  Forest       Østlandet          312
-#>  4  2020 Skog_04  Forest       Østlandet          130
-#>  5  2020 Skog_05  Forest       Østlandet          236
-#>  6  2020 Skog_06  Forest       Østlandet           99
-#>  7  2020 Skog_07  Forest       Østlandet          337
-#>  8  2020 Skog_08  Forest       Østlandet          114
-#>  9  2020 Skog_09  Forest       Østlandet          168
-#> 10  2020 Skog_10  Forest       Østlandet          175
-#> # ℹ 80 more rows
-#> # ℹ 3 more variables: shannon_div <dbl>,
-#> #   mean_asv_per_species <dbl>, GDE_by_asv <dbl>
+#>     year locality habitat_…¹ regio…² no_sp…³ shann…⁴ mean_…⁵
+#>    <int> <chr>    <chr>      <chr>     <int>   <dbl>   <dbl>
+#>  1  2020 Skog_01  Forest     Østlan…     208   187.     1.34
+#>  2  2020 Skog_02  Forest     Østlan…     508   447.     1.39
+#>  3  2020 Skog_03  Forest     Østlan…     312   256.     1.56
+#>  4  2020 Skog_04  Forest     Østlan…     130   121.     1.2 
+#>  5  2020 Skog_05  Forest     Østlan…     236   208.     1.43
+#>  6  2020 Skog_06  Forest     Østlan…      99    90.3    1.23
+#>  7  2020 Skog_07  Forest     Østlan…     337   284.     1.46
+#>  8  2020 Skog_08  Forest     Østlan…     114   111.     1.08
+#>  9  2020 Skog_09  Forest     Østlan…     168   152.     1.27
+#> 10  2020 Skog_10  Forest     Østlan…     175   161.     1.22
+#> # … with 80 more rows, 1 more variable: GDE_by_asv <dbl>,
+#> #   and abbreviated variable names ¹​habitat_type,
+#> #   ²​region_name, ³​no_species, ⁴​shannon_div,
+#> #   ⁵​mean_asv_per_species
 ```
 
 Divide the richness of Parasitica by Symphyta. [Could make a function for this later on.]
@@ -1257,15 +1253,16 @@ Plot the results and display uncertainty.
 ```r
 par_sym_sn_diff
 #> # A tibble: 6 × 6
-#>    year region_name par_per_sym_richn boot_sd boot_lower2.5
-#>   <int> <chr>                   <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet               0.287  0.0233         0.245
-#> 2  2021 Trøndelag               0.888  0.0961         0.688
-#> 3  2021 Østlandet               0.605  0.0512         0.503
-#> 4  2022 Sørlandet               0.825  0.164          0.531
-#> 5  2022 Trøndelag               0.561  0.0657         0.441
-#> 6  2022 Østlandet               0.695  0.130          0.473
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name par_per_sym_ri…¹ boot_sd boot_…² boot_…³
+#>   <int> <chr>                  <dbl>   <dbl>   <dbl>   <dbl>
+#> 1  2020 Østlandet              0.287  0.0238   0.247   0.340
+#> 2  2021 Trøndelag              0.885  0.0928   0.688   1    
+#> 3  2021 Østlandet              0.603  0.0530   0.500   0.714
+#> 4  2022 Sørlandet              0.824  0.164    0.517   1    
+#> 5  2022 Trøndelag              0.558  0.0624   0.444   0.689
+#> 6  2022 Østlandet              0.701  0.132    0.471   0.996
+#> # … with abbreviated variable names ¹​par_per_sym_richn,
+#> #   ²​boot_lower2.5, ³​boot_upper97.5
 ```
 
 
@@ -1301,16 +1298,17 @@ par_sym_sn_exp
 #> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> # A tibble: 6 × 7
-#>   region                         geom  year ind_value ind_sd
-#>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.825 0.164 
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.888 0.0961
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.561 0.0657
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.287 0.0233
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.605 0.0512
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.695 0.130 
-#> # ℹ 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>
+#>   region                           geom  year ind_v…¹ ind_sd
+#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
+#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.824 0.164 
+#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.885 0.0928
+#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.558 0.0624
+#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.287 0.0238
+#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.603 0.0530
+#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.701 0.132 
+#> # … with 2 more variables: ind_lower2.5 <dbl>,
+#> #   ind_upper97.5 <dbl>, and abbreviated variable name
+#> #   ¹​ind_value
 ```
 
 #### Genetic diversity evenness of flying insects in semi-natural land
@@ -1348,15 +1346,15 @@ Plot the results and display uncertainty.
 ```r
 gde_sn_diff
 #> # A tibble: 6 × 6
-#>    year region_name GDE_by_asv boot_sd boot_lower2.5
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>
-#> 1  2020 Østlandet        0.872  0.0307         0.811
-#> 2  2021 Trøndelag        0.754  0.0248         0.703
-#> 3  2021 Østlandet        0.825  0.0182         0.79 
-#> 4  2022 Sørlandet        0.811  0.0278         0.759
-#> 5  2022 Trøndelag        0.747  0.0217         0.706
-#> 6  2022 Østlandet        0.933  0.0148         0.904
-#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+#>    year region_name GDE_by_asv boot_sd boot_lower2.5 boot_…¹
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
+#> 1  2020 Østlandet        0.871  0.0294         0.814   0.929
+#> 2  2021 Trøndelag        0.755  0.0238         0.709   0.803
+#> 3  2021 Østlandet        0.825  0.0188         0.789   0.861
+#> 4  2022 Sørlandet        0.810  0.0296         0.751   0.87 
+#> 5  2022 Trøndelag        0.748  0.0226         0.709   0.793
+#> 6  2022 Østlandet        0.934  0.0150         0.904   0.964
+#> # … with abbreviated variable name ¹​boot_upper97.5
 ```
 
 
@@ -1392,16 +1390,17 @@ gde_sn_to_exp
 #> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> # A tibble: 6 × 7
-#>   region                         geom  year ind_value ind_sd
-#>   <chr>            <MULTIPOLYGON [m]> <int>     <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -3146…  2022     0.811 0.0278
-#> 2 Trøndelag (((227783 7068646, 22787…  2021     0.754 0.0248
-#> 3 Trøndelag (((227783 7068646, 22787…  2022     0.747 0.0217
-#> 4 Østlandet (((179915 6537265, 18024…  2020     0.872 0.0307
-#> 5 Østlandet (((179915 6537265, 18024…  2021     0.825 0.0182
-#> 6 Østlandet (((179915 6537265, 18024…  2022     0.933 0.0148
-#> # ℹ 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>
+#>   region                           geom  year ind_v…¹ ind_sd
+#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
+#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.810 0.0296
+#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.755 0.0238
+#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.748 0.0226
+#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.871 0.0294
+#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.825 0.0188
+#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.934 0.0150
+#> # … with 2 more variables: ind_lower2.5 <dbl>,
+#> #   ind_upper97.5 <dbl>, and abbreviated variable name
+#> #   ¹​ind_value
 ```
 
 ### Calculation of NBBM indicators
@@ -1758,21 +1757,21 @@ hGressIndVals_to_exp
 #> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> # A tibble: 36 × 6
-#>    region                               geom  year ind_value
-#>    <chr>                  <MULTIPOLYGON [m]> <int>     <dbl>
-#>  1 Sør    (((-31605 6513854, -31464 6513743…  2013     0.596
-#>  2 Sør    (((-31605 6513854, -31464 6513743…  2014     0.635
-#>  3 Sør    (((-31605 6513854, -31464 6513743…  2015     0.519
-#>  4 Sør    (((-31605 6513854, -31464 6513743…  2016     0.635
-#>  5 Sør    (((-31605 6513854, -31464 6513743…  2017     0.615
-#>  6 Sør    (((-31605 6513854, -31464 6513743…  2018     0.577
-#>  7 Sør    (((-31605 6513854, -31464 6513743…  2019     0.519
-#>  8 Sør    (((-31605 6513854, -31464 6513743…  2020     0.593
-#>  9 Sør    (((-31605 6513854, -31464 6513743…  2021     0.519
-#> 10 Sør    (((-31605 6513854, -31464 6513743…  2022     0.593
-#> # ℹ 26 more rows
-#> # ℹ 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>
+#>    region                         geom  year ind_v…¹ ind_l…²
+#>    <chr>            <MULTIPOLYGON [m]> <int>   <dbl>   <dbl>
+#>  1 Sør    (((-31605 6513854, -31464 6…  2013   0.596   0.423
+#>  2 Sør    (((-31605 6513854, -31464 6…  2014   0.635   0.5  
+#>  3 Sør    (((-31605 6513854, -31464 6…  2015   0.519   0.385
+#>  4 Sør    (((-31605 6513854, -31464 6…  2016   0.635   0.462
+#>  5 Sør    (((-31605 6513854, -31464 6…  2017   0.615   0.423
+#>  6 Sør    (((-31605 6513854, -31464 6…  2018   0.577   0.462
+#>  7 Sør    (((-31605 6513854, -31464 6…  2019   0.519   0.422
+#>  8 Sør    (((-31605 6513854, -31464 6…  2020   0.593   0.444
+#>  9 Sør    (((-31605 6513854, -31464 6…  2021   0.519   0.389
+#> 10 Sør    (((-31605 6513854, -31464 6…  2022   0.593   0.370
+#> # … with 26 more rows, 1 more variable:
+#> #   ind_upper97.5 <dbl>, and abbreviated variable names
+#> #   ¹​ind_value, ²​ind_lower2.5
 ```
 
 
@@ -1800,21 +1799,21 @@ sGressIndVals_to_exp
 #> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> # A tibble: 36 × 6
-#>    region                               geom  year ind_value
-#>    <chr>                  <MULTIPOLYGON [m]> <int>     <dbl>
-#>  1 Sør    (((-31605 6513854, -31464 6513743…  2013     0.259
-#>  2 Sør    (((-31605 6513854, -31464 6513743…  2014     0.374
-#>  3 Sør    (((-31605 6513854, -31464 6513743…  2015     0.345
-#>  4 Sør    (((-31605 6513854, -31464 6513743…  2016     0.302
-#>  5 Sør    (((-31605 6513854, -31464 6513743…  2017     0.345
-#>  6 Sør    (((-31605 6513854, -31464 6513743…  2018     0.309
-#>  7 Sør    (((-31605 6513854, -31464 6513743…  2019     0.388
-#>  8 Sør    (((-31605 6513854, -31464 6513743…  2020     0.419
-#>  9 Sør    (((-31605 6513854, -31464 6513743…  2021     0.399
-#> 10 Sør    (((-31605 6513854, -31464 6513743…  2022     0.358
-#> # ℹ 26 more rows
-#> # ℹ 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>
+#>    region                         geom  year ind_v…¹ ind_l…²
+#>    <chr>            <MULTIPOLYGON [m]> <int>   <dbl>   <dbl>
+#>  1 Sør    (((-31605 6513854, -31464 6…  2013   0.259   0.151
+#>  2 Sør    (((-31605 6513854, -31464 6…  2014   0.374   0.273
+#>  3 Sør    (((-31605 6513854, -31464 6…  2015   0.345   0.230
+#>  4 Sør    (((-31605 6513854, -31464 6…  2016   0.302   0.216
+#>  5 Sør    (((-31605 6513854, -31464 6…  2017   0.345   0.237
+#>  6 Sør    (((-31605 6513854, -31464 6…  2018   0.309   0.201
+#>  7 Sør    (((-31605 6513854, -31464 6…  2019   0.388   0.281
+#>  8 Sør    (((-31605 6513854, -31464 6…  2020   0.419   0.284
+#>  9 Sør    (((-31605 6513854, -31464 6…  2021   0.399   0.270
+#> 10 Sør    (((-31605 6513854, -31464 6…  2022   0.358   0.25 
+#> # … with 26 more rows, 1 more variable:
+#> #   ind_upper97.5 <dbl>, and abbreviated variable names
+#> #   ¹​ind_value, ²​ind_lower2.5
 ```
 
 ### Eksport file (final product)

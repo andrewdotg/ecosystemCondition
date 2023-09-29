@@ -1,5 +1,8 @@
-# Functional plant indicators, naturally open ecosystems below the tree line (Grime's CSR values, Light, Nitrogen, Soil disturbance) {#Functional-plant-indicators-open}
+# Functional Plant Indicators - Naturally Open Ecosystems {#Functional-plant-indicators-open}
 
+<br />
+
+Norwegian name: **Planteindikatorer**
 <br />
 
 _Author and date:_
@@ -17,20 +20,25 @@ August 2023
 
 
 
-
 |Ecosystem                      |Økologisk.egenskap |ECT.class                       |
 |:------------------------------|:------------------|:-------------------------------|
 |naturally open below tree line |Primærproduksjon   |Functional state characteristic |
 |naturally open below tree line |Abiotiske forhold  |Functional state characteristic |
 
 
+Indicators described in this chapter:
+
+- Grime's CSR values
+- Light
+- Nitrogen
+- Soil disturbance
 
 <!-- Don't remove these three html lines -->
 <br />
 <br />
 <hr />
 
-## Introduction
+## Introduction {#intro-fpin}
 Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional plant indicator data with field sampled plant community data from the Norwegian nature monitoring programs ANO (Tingstad et al. 2019) and GRUK (Evju et al. 2020) for naturally open ecosystems below tree line (abbreviated as 'nat-open' henceforth). We calculate the functional signature of plant communities in the monitored sites with respect to Grime's CSR values, light, nitrogen, and soil disturbance. These functional signatures are then compared to reference distributions of functional signature, separately for each nat-open ecosystem type, calculated from 'generalized species lists' developed for ecosystem types in the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional condition indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021). Note that deviations from the reference may occur in both directions, e.g. the nitrogen signature from the testing data may be higher or lower than in the reference. Deviations in these two directions indicate very different environmental phenomena and thus have to be treated separately. Therefore, we develop two condition indicators for each functional plant indicator, a lower one and an upper one (see further down for more details).
 
 ## About the underlying data
@@ -89,7 +97,7 @@ The ANO evaluation data cover the first three years, 2019-2021, of the first 5-y
 The reference state is defined via the functional signature of the generalized species lists for NiN ecosystem types (see also Töpper et al. 2018). For the nat-open ecosystem types these lists have been newly prepared by Evju et al. (2023). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for minor ecosystem types ("grunntyper" or "kartleggingsenheter" at a 1:5000 mapping scale) within the major ecosystem types (hovedtyper) in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
 
 
-### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values {#ref-vals-fpin}
 In this analysis, we derive scaling values from statistical (here, non-parametric) distributions (see Jakobsson et al. 2010). For each ecosystem sub-type and plant functional indicator, the reference value is defined as the median value of the indicator value distribution. As in most cases the distributions naturally are two-sided (but see the Heat-requirement indicator in the mountain assessment for an example of a one-sided functional plant indicator, Framstad et al. 2022), and deviation from the optimal state thus may occur in both direction (e.g. indicating too low or too high pH), we need to define two threshold values for good ecological condition as well as both a minimum and maximum value. In line with previous assessments of ecological condition for Norwegian forests and mountains, we define a lower and an upper threshold value via the 95% confidence interval of the reference distribution, i.e. its 0.025 and 0.975 quantiles. The minimum and maximum values are given by the minimum and maximum of the possible indicator values for each respective plant functional indicator. For details on the scaling principles in IBECA, please see Töpper & Jakobsson (2021).
 
 
@@ -123,7 +131,7 @@ Töpper, J., Velle, L.G. & Vandvik, V. 2018. Developing a method for assessment 
 Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indicator and traits values for Swedish vascular plants. Ecological In-dicators, 120. doi:10.1016/j.ecolind.2020.106923
 
 
-## Analyses
+## Analyses {#analyses-fpin}
 ### Data sets
 
 ANO data: ANO.sp contains the species data, ANO.geo contains site data.
@@ -4280,7 +4288,7 @@ We can also show the results as a map, for instance for CSR-R1 (the lower rudera
 
 ```
 #> Reading layer `outlineOfNorway_EPSG25833' from data source 
-#>   `/data/scratch/Matt_temp/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
+#>   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 1 feature and 2 fields
 #> Geometry type: MULTIPOLYGON
@@ -4288,7 +4296,7 @@ We can also show the results as a map, for instance for CSR-R1 (the lower rudera
 #> Bounding box:  xmin: -113472.7 ymin: 6448359 xmax: 1114618 ymax: 7939917
 #> Projected CRS: ETRS89 / UTM zone 33N
 #> Reading layer `regions' from data source 
-#>   `/data/scratch/Matt_temp/ecosystemCondition/data/regions.shp' 
+#>   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/regions.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 5 features and 2 fields
 #> Geometry type: POLYGON
@@ -4604,7 +4612,7 @@ legend("topright", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c
 The GRUK figure shows that the distributions for the plant communities' nitrogen affinity in the limestone rich T2-areas (åpen grunnlendt mark) around Oslofjord are shifted towards higher nitrogen affinity. The ANO figure shows shifts towards less ruderal strategy in plant communities limestone poor T2-areas as well as T12 (strandeng) and T16 (rasmarkhei, -eng) types.
 
 
-### Eksport file (final product)
+### Eksport file (final product) {#exp-fpin}
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
 
 

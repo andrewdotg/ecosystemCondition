@@ -20,12 +20,9 @@ March 2023
 
 
 
-
 |Ecosystem          |Økologisk.egenskap |ECT.class                      |
 |:------------------|:------------------|:------------------------------|
 |Semi-naturlig mark |Primærproduksjon   |Structual state characteristic |
-
-
 
 <!-- Don't remove these three html lines -->
 <br />

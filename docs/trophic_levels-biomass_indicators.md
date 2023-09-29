@@ -17,12 +17,9 @@ August 2023
 
 
 
-
 |Ecosystem |Økologisk.egenskap                        |ECT.class                       |
 |:---------|:-----------------------------------------|:-------------------------------|
 |All       |Biomass distribution among trophic levels |Structural state characteristic |
-
-
 
 
 <!-- Don't remove these three html lines -->
@@ -340,6 +337,7 @@ allherbivores<-c(viltrast,livestockrast)
 #Mask out forest from rasters
 forest_expected_herbivore_biomass<-mask(expected_herbivore_biomass,artype50_FR,maskvalues=30,inverse=TRUE)
 forest_herbivores<-mask(allherbivores,artype50_FR,maskvalues=30,inverse=TRUE)
+#> |---------|---------|---------|---------|=========================================                                          
 forest_carnivores<-mask(carnivorerast,artype50_FR,maskvalues=30,inverse=TRUE)
 forest_expected_carnivore_biomass<-mask(expected_carnivore_biomass,artype50_FR,maskvalues=30,inverse=TRUE)
 
@@ -494,10 +492,15 @@ forest_carn_herb_county$CountyName<-norcounty_vect$CountyName#Replace IDs with F
 forest_carn_herb_countyDF<-gather(forest_carn_herb_county,key="Year",value="Difference",-ID,-CountyName)
 #forest_carn_herb_countyDF$YearN<-as.numeric(substr(forest_carn_herb_countyDF$Year,2,5))
 forest_carn_herb_countyDF$YearN<-as.numeric(forest_carn_herb_countyDF$Year)
+#> Warning: NAs introduced by coercion
 
 ggplot(data=forest_carn_herb_countyDF,aes(x=YearN,y=Difference,color=CountyName))+geom_line()+scale_color_discrete()+
   ggtitle("Forest: % Difference from expected carnivore biomass")+theme_bw()+xlim(c(1905,2025))+geom_hline(yintercept=c(-40,0),lty=c(2,1))+
   geom_text(data=forest_carn_herb_countyDF[forest_carn_herb_countyDF$YearN==2015,],aes(label = CountyName, x = 2015, y = Difference), hjust = -.1) 
+#> Warning: Removed 228 rows containing missing values
+#> (`geom_line()`).
+#> Warning: Removed 228 rows containing missing values
+#> (`geom_text()`).
 ```
 
 <img src="trophic_levels-biomass_indicators_files/figure-html/CountySummaries-1.png" width="672" />
@@ -510,9 +513,14 @@ forest_herb_veg_county$ID<-norcounty_vect$FylkeNr#Replace IDs with Fylke Nrs
 forest_herb_veg_county$CountyName<-norcounty_vect$CountyName#Replace IDs with Fylke Nrs
 forest_herb_veg_countyDF<-gather(forest_herb_veg_county,key="Year",value="Difference",-ID,-CountyName)
 forest_herb_veg_countyDF$YearN<-as.numeric(forest_herb_veg_countyDF$Year)
+#> Warning: NAs introduced by coercion
 ggplot(data=forest_herb_veg_countyDF,aes(x=YearN,y=Difference,color=CountyName))+geom_line()+scale_color_discrete()+
   ggtitle("Forest: % Difference from expected herbivore biomass")+theme_bw()+xlim(c(1999,2018))+geom_hline(yintercept=c(-40,0,40),lty=c(2,1,2))+
   geom_text(data=forest_herb_veg_countyDF[forest_herb_veg_countyDF$YearN==2015,],aes(label = CountyName, x = 2015, y = Difference), hjust = -.1) 
+#> Warning: Removed 57 rows containing missing values
+#> (`geom_line()`).
+#> Warning: Removed 57 rows containing missing values
+#> (`geom_text()`).
 ```
 
 <img src="trophic_levels-biomass_indicators_files/figure-html/CountySummaries-2.png" width="672" />

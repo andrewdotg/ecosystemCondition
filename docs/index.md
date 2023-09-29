@@ -1,7 +1,7 @@
 ---
 title: "Indicators for Ecosystem Condition in Norway"
 author: "Anders L. Kolstad"
-date: "2023-09-14"
+date: "2023-09-29"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
@@ -88,7 +88,11 @@ The rest of the workflow is as follows.
 
 To cite this book please use the following citation:
 
-Kolstad, A.L., Topper, J. Grainger, M.J., Sandvik, H. (2023) Indicators for Ecosystem Condition in Norway. https://doi.org/10.5281/zenodo.7854835
+Kolstad, A.L., Topper, J. Grainger, M.J., Sandvik, H., Venter, Z., Töpper, J., Speed, J.D.M, Nater, C.R., Evju, M., Åström, J. (2023) Indicators for Ecosystem Condition in Norway. https://doi.org/10.5281/zenodo.7854835
+
+**Contributions**
+The list of authors include code developers and reviewers. Not all authors interacted with GitHub through their own user, but for those that did, theiy contributions can be tracked, for example [here](https://github.com/NINAnor/ecosystemCondition/graphs/contributors).
+
 
 ## License {.unnumbered}
 
