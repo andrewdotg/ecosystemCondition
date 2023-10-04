@@ -1,13 +1,8 @@
-<<<<<<< HEAD
 # NDVI - wetland ecosystems  {#NDVI-indicator-wetland}
 
 NDVI (greenness) indicator, wetland ecosystems
-=======
-# NDVI - Wetland ecosystems  {#NDVI-indicator-wetland}
-
 
 <br /> Norwegian name: **Primærproduksjon** <br />
->>>>>>> 58a6451765176af7056b099bded11bb72bb49549
 
 
 _Author and date:_
@@ -113,7 +108,6 @@ The Landsat data have a resolution of 30 x 30 m, and we thus excluded all NiN-po
 ### Representativity in time and space {#representativity-ndviw}
 For wetlands, the NiN data contain 6502 wetland polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6502 wetland polygons are distributed across regions and major ecosystem types in the following way:
 
-<<<<<<< HEAD
 | Region          | V1  | V3   | V4  | V6  | V9  | V10 |
 |-----------------|-----|------|-----|-----|-----|-----|
 | Northern Norway | 638 | 275  | 55  | 102 | 360 | 315 |
@@ -121,17 +115,9 @@ For wetlands, the NiN data contain 6502 wetland polygons of known area size acro
 | Western Norway  | 296 | 111  | 30  | 0   | 460 | 158 |
 | Eastern Norway  | 251 | 89   | 103 | 0   | 251 | 223 |
 | Southern Norway | 58  | 44   | 5   | 0   | 155 | 102 |
-=======
-|Region            |V1    |V3    |V4   |V6   | V9   |V10|
-|------------------|------|------|-----|-----|------|---|
-|Northern Norway   |638   |275   |55   |102  | 360  |315|
-|Central Norway    |702   |1250  |34   |0    | 302  |116|
-|Western Norway    |296   |111   |30   |0    | 460  |158|
-|Eastern Norway    |251   |89    |103  |0    | 251  |223|
-|Southern Norway   |58    |44    |5    |0    | 155  |102|
->>>>>>> 58a6451765176af7056b099bded11bb72bb49549
 
-In addition, there is 3 V3s, 1 V4, 4 V9s, and 9 V10s that are not assigned to any region.
+
+In addition, there is 3 V3s, 1 V4, 4 V9s, and 9 V10s that are not assigned to any region. (These polygons likely lie in water and thus outside of the regional polygons due to imprecise coordinates from the mapping device).
 
 
 The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. 

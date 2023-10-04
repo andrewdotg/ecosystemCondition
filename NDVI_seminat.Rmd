@@ -191,7 +191,7 @@ way:
 | Southern Norway | 234  | 2317 | 112 | 749  | 111 |
 
 In addition, there are 10 T31s, 78 T32s, 15 T33s, 59 T34s, and 1 T40
-that are not assigned to any region.
+that are not assigned to any region. (These polygons likely lie in water and thus outside of the regional polygons due to imprecise coordinates from the mapping device).
 
 The NDVI data from either satellite follow the spatial distribution and
 bias status of the NiN-data. Due to the larger number of excluded
