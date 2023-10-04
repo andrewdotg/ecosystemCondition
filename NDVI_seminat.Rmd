@@ -1108,10 +1108,15 @@ NDVI in good condition: T32 \> T31/T40 \> T33/T34
 T31/T32: borderline NDVI increases as condition deteriorates T33/T34:
 NDVI increases as condition deteriorates T40: insufficient power
 
+<br />
+<br />
+<hr />
+
 > Overall take home messages:
 >
 > In semi-natural ecosystems NDVI increases as ecosystem condition deteriorates, but the effect sizes vary with major ecosystem types. Boreal heath shows the most consistent increases, and also coastal meadows and coastal heathlands show increases in parts of the country. Semi-natural and semi-natural-looking meadows show very tiny increases if any at all.
 
+<hr />
 
 ### NDVI across time - Sentinel, MODIS & LandSat
 
@@ -1203,7 +1208,7 @@ levels(allSatNDVI.seminat$Sat)
 Now we can plot the time series for each main ecosystem type, showing
 each satellite time series separately:
 
-```{r ndvi-time-series-comparison-ndvis, fig.cap="Comparing the NDVI time series in the three data sets."}
+```{r ndvi-time-series-comparison-ndvis, fig.cap="Comparing the NDVI time series in the three data sets.", fig.height=10}
 # plot
 allSatNDVI.seminat %>%
   ggplot(aes(x = year_jit, y = mean, color = Sat)) +
