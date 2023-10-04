@@ -4,7 +4,9 @@ editor_options:
     wrap: 72
 ---
 
-# NDVI- Semi-natural Ecosystems {#NDVI-indicator-seminat}
+# NDVI - Semi-natural Ecosystems {#NDVI-indicator-seminat}
+
+NDVI (greenness) indicator, semi-natural ecosystems
 
 <br /> Norwegian name: **Primærproduksjon** <br />
 
@@ -322,6 +324,9 @@ reg$region <- c("Northern Norway", "Central Norway", "Eastern Norway", "Western 
 
 # combine the Norway and the region maps
 regnor <- st_intersection(reg, nor)
+```
+
+```{r, echo = F}
 rm(reg)
 rm(nor)
 ```
@@ -694,7 +699,7 @@ SentinelNDVI.seminat <- readRDS(
 
 ```{r where-are-seminat-sites, fig.cap="A map of Norway showing the location of the semi-natural ecosystem sites."}
 tm_shape(regnor) +
-  tm_fill("GID_0", labels = "", title = "", legend.show = FALSE) +
+  tm_fill("GID_0", labels = "", title = "", legend.show = FALSE, alpha=0) +
   tm_borders() +
   tm_shape(SentinelNDVI.seminat) +
   tm_dots("hovedtype", midpoint = NA, palette = tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE), scale = 2.5, legend.show = FALSE) +
@@ -702,41 +707,47 @@ tm_shape(regnor) +
     type = "symbol",
     col = tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),
     labels = c(
-      "T31 - boreal heath",
-      "T32 - semi-natural grasslands",
-      "T33 - semi-natural coastal grasslands",
-      "T34 - coastal heathlands",
-      "T40/41 - previously heavily altered grassland"
+      "T31",
+      "T32",
+      "T33",
+      "T34",
+      "T40/41"
     ),
     title = "Major ecosystem type",
-    size = 3
+    size = 1.5
   ) +
   tm_layout(
-    main.title = "Semi-natural ecosystems (NiN, Miljødirektoratets instruks)",
+    main.title = "Semi-natural ecosystems \n(NiN, Miljødirektoratets instruks)",
     main.title.size = 1.2, legend.position = c("right", "bottom"),
     legend.text.size = 1.3, legend.title.size = 1.4
   )
 ```
+T31...Boreal heath, T32...semi-natural grasslands, T33...semi-natural coastal grasslands, T34...Coastal heathlands, T40/T41...previously heavily managed grasslands (now similar to T32)
 
 **How are polygon sizes distributed?**
 
 ```{r hist-sentinel-ndvis, fig.cap="A histogram showing the distribution of polygon sizes."}
 summary(SentinelNDVI.seminat$area_meters)
-hist(SentinelNDVI.seminat$area_meters, xlim = c(0, 20000), breaks = 50000)
+hist(SentinelNDVI.seminat$area_meters, xlim = c(0, 20000), breaks = 50000,xlab="Area",main="")
 abline(v = 100, lty = 2)
 ```
 
 Semi-natural polygons stretch a large number of sizes from just above
 100 sqm to almost 3 million sqm. 75% of all polygons are below 15297
 sqm.
+The dashed line indicates the minimum size of the Sentinel-2 pixels for NDVI, all NiN-polygons smaller than that have been removed form the data.
 
 **How does NDVI vary over the years**
 
 ```{r NDVI-values-over-time-ndvis, fig.cap="A figure showing NDVI values for semi-natural ecosystem over time for six different main nature types in varying degrees of condition."}
 SentinelNDVI.seminat %>%
+  filter(tilstand!="") %>%
   ggplot(aes(x = year, y = mean)) +
   geom_point() +
-  facet_grid(tilstand ~ hovedtype)
+  facet_grid(tilstand ~ hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 12)) +
+  ggtitle("NDVI across years for different ecosystem types in all condition classes") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Year")
 ```
 
 2022 stands out with the highest NDVI values missing. 
@@ -754,7 +765,9 @@ SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x = hovedtype, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey")
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  ggtitle("NDVI for different ecosystem types in good condition") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Major ecosystem type")
 
 SentinelNDVI.seminat$subtype <- factor(SentinelNDVI.seminat$subtype, levels = c("C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18", "C19", "C20", "C21", "E1", "E2", "E3", "E4", "E5", "E6", "E7"))
 SentinelNDVI.seminat %>%
@@ -762,9 +775,11 @@ SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x = subtype, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey" ) +
   facet_wrap(~hovedtype) +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 6))
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 7)) +
+  ggtitle("NDVI for different ecosystem sub-types in good condition") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Ecosystem sub-type")
 ```
 
 NDVI varies between major ecosystem types with the highest values in
@@ -779,7 +794,7 @@ plots have a smaller sample size. There is no obvious trend related to
 the structuring environmental gradients withing the major types, and
 also here the overlap is large.
 
-**How does NDVI vary across regions in semi-naturals (major types) in good condition? (using only NDVI data matching NiN-mapping years)**
+**How does NDVI vary across regions in semi-natural ecosystems (major types) in good condition? (using only NDVI data matching NiN-mapping years)**
 
 ```{r ndvi-regions-ndvis, warning=FALSE, fig.cap="DVI variation across regions in semi-natural ecosystems (major types) in good condition"}
 SentinelNDVI.seminat %>%
@@ -788,9 +803,11 @@ SentinelNDVI.seminat %>%
   filter(!is.na(region)) %>%
   ggplot(aes(x = region, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
   facet_wrap(~hovedtype) +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2))
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("NDVI for different ecosystems in good condition across regions") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Region")
 ```
 
 For the meadow systems (T32, T33, T40, T41) there is no obvious trends
@@ -804,9 +821,11 @@ SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
-  theme(axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))+
-  facet_wrap(~hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  facet_wrap(~hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2)) +
+  ggtitle("NDVI for different ecosystems in different condition classes") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition")
 ```
 
 In the coastal types (T33, T34, coastal meadows and heathlands,
@@ -931,11 +950,14 @@ ecosystem types, regions and condition classes
 # NDVI across hovedtyper, regions and condition classes (only for NDVI years data matching NiN-mapping years)
 SentinelNDVI.seminat %>%
   group_by(id, year) %>%
+  filter(!is.na(region)) %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
   geom_point(size = 0.7, shape = 16, color = "grey") +
-  facet_grid(region ~ hovedtype)
+  facet_grid(region ~ hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition")
 ```
 
 T41 is has only very few data and is present in 2 regions only, we omit
@@ -1011,7 +1033,10 @@ SentinelNDVI.seminat.train %>%
   filter(region == "Northern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Northern Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 ```
 
@@ -1032,7 +1057,10 @@ SentinelNDVI.seminat.train %>%
   filter(region == "Central Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Central Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 ```
 
@@ -1053,7 +1081,10 @@ SentinelNDVI.seminat.train %>%
   filter(region == "Western Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Western Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 ```
 
@@ -1073,7 +1104,10 @@ SentinelNDVI.seminat.train %>%
   filter(region == "Eastern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Eastern Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 ```
 
@@ -1095,7 +1129,10 @@ SentinelNDVI.seminat.train %>%
   filter(region == "Southern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Southern Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 ```
 
@@ -1208,6 +1245,8 @@ each satellite time series separately:
 allSatNDVI.seminat %>%
   ggplot(aes(x = year_jit, y = mean, color = Sat)) +
   geom_point() +
+  ggtitle("NDVI across time") +
+  labs(y = "NDVI values", x = "Year") +
   facet_wrap(~hovedtype, ncol = 1)
 ```
 

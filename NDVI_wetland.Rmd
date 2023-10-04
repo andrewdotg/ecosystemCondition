@@ -1,4 +1,6 @@
-# NDVI (greenness) indicator, wetland ecosystems  {#NDVI-indicator-wetland}
+# NDVI - wetland ecosystems  {#NDVI-indicator-wetland}
+
+NDVI (greenness) indicator, wetland ecosystems
 
 <br />
 
@@ -93,12 +95,13 @@ The Landsat data have a resolution of 30 x 30 m, and we thus excluded all NiN-po
 ### Representativity in time and space
 For wetlands, the NiN data contain 6502 wetland polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 6502 wetland polygons are distributed across regions and major ecosystem types in the following way:
 
-                  V1    V3    V4    V6    V9    V10
-Northern Norway   638   275   55    102   360   315
-Central Norway    702   1250  34    0     302   116
-Western Norway    296   111   30    0     460   158
-Eastern Norway    251   89    103   0     251   223
-Southern Norway   58    44    5     0     155   102
+| Region          | V1  | V3   | V4  | V6  | V9  | V10 |
+|-----------------|-----|------|-----|-----|-----|-----|
+| Northern Norway | 638 | 275  | 55  | 102 | 360 | 315 |
+| Central Norway  | 702 | 1250 | 34  | 0   | 302 | 116 |
+| Western Norway  | 296 | 111  | 30  | 0   | 460 | 158 |
+| Eastern Norway  | 251 | 89   | 103 | 0   | 251 | 223 |
+| Southern Norway | 58  | 44   | 5   | 0   | 155 | 102 |
 
 In addition, there is 3 V3s, 1 V4, 4 V9s, and 9 V10s that are not assigned to any region.
 
@@ -186,6 +189,9 @@ reg$region <- c("Northern Norway", "Central Norway", "Eastern Norway", "Western 
 
 # combine the Norway and the region maps
 regnor <- st_intersection(reg, nor)
+```
+
+```{r, echo = F}
 rm(reg)
 rm(nor)
 ```
@@ -515,10 +521,10 @@ LandsatNDVI.wetland <- LandsatNDVI.wetland %>%
 
 ### Exploratory analyses, Sentinel-2
 
-# Where are the wetland sites?
+**Where are the wetland sites?**
 ```{r}
 tm_shape(regnor) +
-  tm_fill("GID_0", labels = "", title = "", legend.show = FALSE) +
+  tm_fill("GID_0", labels = "", title = "", legend.show = FALSE, alpha=0) +
   tm_borders() +
   tm_shape(SentinelNDVI.wetland) +
   tm_dots("hovedtype", midpoint = NA, palette = tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE), scale = 2.5, legend.show = FALSE) +
@@ -526,37 +532,42 @@ tm_shape(regnor) +
     type = "symbol",
     col = tmaptools::get_brewer_pal("YlOrRd", 6, plot = FALSE),
     labels = c(
-      "V1 - minerotrophic mires",
-      "V3 - ombrotrophic bogs",
-      "V4 - cold springs",
-      "V6 - wet snowbeds",
-      "V9 - semi-natural mires",
-      "V10 - semi-natural wet meadows"
+      "V1",
+      "V3",
+      "V4",
+      "V6",
+      "V9",
+      "V10"
     ),
     title = "Major ecosystem type",
-    size = 3
+    size = 1.5
   ) +
   tm_layout(
-    main.title = "Wetland ecosystems (NiN, Miljødirektoratets instruks)",
+    main.title = "Wetland ecosystems \n(NiN, Miljødirektoratets instruks)",
     main.title.size = 1.2, legend.position = c("right", "bottom"),
     legend.text.size = 1.3, legend.title.size = 1.4
   )
 ```
+V1...Minerotrophic fens, V3...ombrotrophic bogs, V4...cold springs, V6...wet snowbeds, V9...semi-natural mires, V10...semi-natural wet meadows
 
-# How are polygon sizes distributed?
+**How are polygon sizes distributed?**
 ```{r}
 summary(SentinelNDVI.wetland$area_meters)
-hist(SentinelNDVI.wetland$area_meters, xlim = c(0, 20000), breaks = 50000)
+hist(SentinelNDVI.wetland$area_meters, xlim = c(0, 20000), breaks = 50000,xlab="Area",main="")
 abline(v = 100, lty = 2)
 ```
 Wetland polygons stretch a large number of sizes from just above 100 sqm to more than 4 million sqm. 75% of all polygons are below 14264 sqm.
+The dashed line indicates the minimum size of the Sentinel-2 pixels for NDVI, all NiN-polygons smaller than that have been removed form the data.
 
-# How does NDVI vary over the years
+**How does NDVI vary over the years?**
 ```{r}
 SentinelNDVI.wetland %>%
   ggplot(aes(x = year, y = mean)) +
   geom_point() +
-  facet_grid(tilstand ~ hovedtype)
+  facet_grid(tilstand ~ hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 12)) +
+  ggtitle("NDVI across years for different ecosystem types in all condition classes") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Year")
 ```
 2022 stands out with the highest NDVI values missing.
 WE omit 2022 for this analysis
@@ -564,14 +575,16 @@ WE omit 2022 for this analysis
 SentinelNDVI.wetland <- SentinelNDVI.wetland %>% filter(year != "2022")
 ```
 
-# How do NDVI values vary between major and basic ecosystem types for sites in good condition? (using only NDVI data matching NiN-mapping years)
+**How do NDVI values vary between major and basic ecosystem types for sites in good condition? (using only NDVI data matching NiN-mapping years)**
 ```{r}
 SentinelNDVI.wetland %>%
   filter(tilstand == "God") %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x = hovedtype, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey")
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  ggtitle("NDVI for different ecosystem types in good condition") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Major ecosystem type")
 
 SentinelNDVI.wetland %>%
   filter(tilstand == "God") %>%
@@ -580,12 +593,14 @@ SentinelNDVI.wetland %>%
   geom_violin() +
   geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype) +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2))
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("NDVI for different ecosystem sub-types in good condition") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Ecosystem sub-type")
 ```
 NDVI varies between major ecosystem types with the highest values in semi-natural wet-meadows (V10), and lowest values in ombrotrophic bogs (V3). The overlaps between the ecosystem types are considerable.
 With respect to basic ecosystem types within the major types, NDVI appears to increase with increasing limestone level (C1-C4, C5-C8, and E1-E3 in V1, C1-C3 in the other major types), and also here the overlap is large. 
 
-# How does NDVI vary across regions in wetlands (major types) in good condition? (using only NDVI data matching NiN-mapping years)
+**How does NDVI vary across regions in wetlands (major types) in good condition? (using only NDVI data matching NiN-mapping years)**
 ```{r}
 SentinelNDVI.wetland %>%
   filter(tilstand == "God") %>%
@@ -593,24 +608,29 @@ SentinelNDVI.wetland %>%
   filter(!is.na(region)) %>%
   ggplot(aes(x = region, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
   facet_wrap(~hovedtype) +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2))
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("NDVI for different ecosystems in good condition across regions") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Region")
 ```
-There is no obvious trends in geography.
+There is no obvious trends in geography, with the exception of V3 which shows lower values in Central Norway.
 
-# How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)
+**How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)**
 ```{r}
 SentinelNDVI.wetland %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
-  facet_wrap(~hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  facet_wrap(~hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2)) +
+  ggtitle("NDVI for different ecosystems in different condition classes") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition")
 ```
 In semi-natural types (V9,V10), kaldkilde (V4), and ombrotrophic bogs (V3) NDVI seems to increase as condition deteriorates, but in minertrophic fens (V1) there is not much of a pattern. Overlaps between condition classes are generally very large.
 
-# Which ecological relevant variable(s) is the condition measure in the NiN data related to?
+**Which ecological relevant variable(s) is the condition measure in the NiN data related to?**
 ```{r}
 nin.wetland2 %>%
   filter(hovedtype == "V9") %>%
@@ -683,10 +703,13 @@ First, we take a look at how balanced the data are across major ecosystem types,
 SentinelNDVI.wetland %>%
   group_by(id, year) %>%
   filter(year == kartleggingsaar) %>%
+  filter(!is.na(region)) %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
   geom_point(size = 0.7, shape = 16, color = "grey") +
-  facet_grid(region ~ hovedtype)
+  facet_grid(region ~ hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition")
 ```
 V4 has sparse data and is lacking in some combinations of region and condition level, so we drop it.
 
@@ -728,7 +751,10 @@ SentinelNDVI.wetland.train %>%
   filter(region == "Northern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Northern Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 
 summary(model.wetland.cond.Sent.N)$coefficients
@@ -745,7 +771,10 @@ SentinelNDVI.wetland.train %>%
   filter(region == "Central Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Central Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 
 summary(model.wetland.cond.Sent.C)$coefficients
@@ -761,7 +790,10 @@ SentinelNDVI.wetland.train %>%
   filter(region == "Western Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Western Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 
 summary(model.wetland.cond.Sent.W)$coefficients
@@ -778,7 +810,10 @@ SentinelNDVI.wetland.train %>%
   filter(region == "Eastern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Eastern Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 
 summary(model.wetland.cond.Sent.E)$coefficients
@@ -794,7 +829,10 @@ SentinelNDVI.wetland.train %>%
   filter(region == "Southern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 1, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Southern Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 
 summary(model.wetland.cond.Sent.S)$coefficients
@@ -896,6 +934,8 @@ Now we can plot the time series for each main ecosystem type, showing each satel
 allSatNDVI.wetland %>%
   ggplot(aes(x = year_jit, y = mean, color = Sat)) +
   geom_point() +
+  ggtitle("NDVI across time") +
+  labs(y = "NDVI values", x = "Year") +
   facet_wrap(~hovedtype, ncol = 1)
 ```
 It is quite obvious that the NDVI values from the three satellites are not quantitatively comparable. They vary both in their placement along the y-axis and in their variance. Modis data are absent from the V4-ecosystem type because of a too large pixel size compared to the NiN-polygon sizes. In V10, Modis is poorly represented for the same reason.
@@ -939,11 +979,16 @@ Unlike for ecosystems like forests, tundra, savannah and similar, there is littl
 - The connection between NDVI and ecological drivers like for example potential effects of Nitrogen deposition. This includes a need for understanding temporal increases in NDVI in ecosystems in good condition.
 
 - How reflectance in different wetland types is affected by how moist the moss layer is at the time of measuring.
-The literature suggests a high variability in NDVI measurements from mosses in particular, in part due to moisture content (REF). Minerotrophic wetlands (V1) are more dominated by graminoids than V3, and the moss-layer is generally more visible from above. At the same time, wetlands are generally drier in the western parts of Norway than in the East (REF), so NDVI patterns may, at least in part, be determined by moisture.
+The literature suggests a high variability in NDVI measurements from mosses in particular, in part due to moisture content (Valøen, 2019). Minerotrophic wetlands (V1) are more dominated by graminoids than V3, and the moss-layer is generally more visible from above. At the same time, wetlands are generally drier in the western parts of Norway than in the East (Moen et al. 2011), so NDVI patterns may, at least in part, be determined by moisture.
 
 In addition, further investigations should test how NDVI-condition pattern vary across biogeographic regions in addition to administrative regions (which are ecologically irrelevant), in order to better understand the results for the administrative regions.
 
 
+**References introduced in the conclusion:**
+
+Moen, A., Lyngstad, A. & Øien, D.-I. 2011. Kunnskapsstatus og innspill til faggrunnlag for oseanisk nedbørmyr som utvalgt naturtype. – NTNU Vitensk.mus. Rapp. bot. Ser. 2011-7: 1-72
+
+Valøen, K. 2019. Stochastic rain events increase NDVI through moss water content: a High-Arctic field experiment. NTNU
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->

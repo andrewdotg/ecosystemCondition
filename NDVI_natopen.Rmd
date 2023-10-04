@@ -97,7 +97,7 @@ The Landsat data have a resolution of 30 x 30 m, and we thus excluded all NiN-po
 
 
 ### Representativity in time and space
-#### check here ####
+
 For natopen systems, the NiN data contain 2881 natopen polygons of known area size across mainland Norway. However, NiN-mapping is not planned and performed in a spatially representative way and thus both the ecosystem occurrences and their spatial extent have to be treated as spatially biased. The 2881 natopen polygons are distributed across regions and major ecosystem types in the following way:
 
 Region|T2|T12|T18|T20|T21|
@@ -108,7 +108,7 @@ Western Norway  |  49 |   44  |  79  |  0  |   9|
 Eastern Norway  |  217 |  84  |  483 |  2   |  51|
 Southern Norway |  52  |  155  | 21  |  0   |  73|
 
-In addition, there is 54 T2s, 57 T12s, 3 T18s, and 5 T21s that are not assigned to any region.
+In addition, there is 54 T2s, 57 T12s, 3 T18s, and 5 T21s that are not assigned to any region. (These polygons likely lie in water and thus outside of the regional polygons due to imprecise coordinates from the mapping device).
 
 
 The NDVI data from either satellite follow the spatial distribution and bias status of the NiN-data. Due to the larger number of excluded polygons in the NDVI data from MODIS (because of the large pixel size in MODIS, see above), the MODIS NDVI data for the natopen occurrences in the NiN data are likely even more spatially biased than it is the case for the NDVI data from Sentinel-2 and Landsat. 
@@ -177,7 +177,7 @@ nin <- st_read("P:/41201785_okologisk_tilstand_2022_2023/data/nin_data/Naturtype
 ```
 
 And we upload maps for Norway and the five regions: Southern, Western, Eastern, Central, and Northern Norway
-```{r message=FALSE}
+```{r message=FALSE, warning=FALSE}
 # Import region- og Norgeskart, make sure they have the same geometry as the nin data
 nor <- st_read("data/outlineOfNorway_EPSG25833.shp") %>%
   st_as_sf() %>%
@@ -193,6 +193,9 @@ reg$region <- c("Northern Norway", "Central Norway", "Eastern Norway", "Western 
 
 # combine the Norway and the region maps
 regnor <- st_intersection(reg, nor)
+```
+
+```{r, echo = F}
 rm(reg)
 rm(nor)
 ```
@@ -522,7 +525,7 @@ LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
 **Where are the natopen sites?**
 ```{r}
 tm_shape(regnor) +
-  tm_fill("GID_0", labels = "", title = "", legend.show = FALSE) +
+  tm_fill("GID_0", labels = "", title = "", legend.show = FALSE, alpha=0) +
   tm_borders() +
   tm_shape(SentinelNDVI.natopen) +
   tm_dots("hovedtype", midpoint = NA, palette = tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE), scale = 2.5, legend.show = FALSE) +
@@ -530,38 +533,43 @@ tm_shape(regnor) +
     type = "symbol",
     col = tmaptools::get_brewer_pal("YlOrRd", 5, plot = FALSE),
     labels = c(
-      "T12 - coastal meadows",
-      "T18 - flood plains",
-      "T2 - shallow soils",
-      "T20 - innfrysningsmark",
-      "T21 - sand dunes"
+      "T12",
+      "T18",
+      "T2",
+      "T20",
+      "T21"
     ),
     title = "Major ecosystem type",
-    size = 3
+    size = 1.5
   ) +
   tm_layout(
-    main.title = "Naturally open ecosystems below the tree line (NiN, Miljødirektoratets instruks)",
+    main.title = "Naturally open ecosystems below \nthe tree line \n(NiN, Miljødirektoratets instruks)",
     main.title.size = 1.2, legend.position = c("right", "bottom"),
     legend.text.size = 1.3, legend.title.size = 1.4
   )
 ```
-
+T12...Coastal meadows, T18...flood plains, T2...shallow soils, T20...innfrysningsmark, T21...sand dunes
 
 **How are polygon sizes distributed?**
 ```{r}
 summary(SentinelNDVI.natopen$area_meters)
-hist(SentinelNDVI.natopen$area_meters, xlim = c(0, 20000), breaks = 50000)
+hist(SentinelNDVI.natopen$area_meters, xlim = c(0, 20000), breaks = 50000,xlab="Area",main="")
 abline(v = 100, lty = 2)
 ```
 
-natopen polygons stretch a large number of sizes from just above 100 sqm to almost 250 000 sqm. 75% of all polygons are below 4213 sqm.
+Natopen polygons stretch a large number of sizes from just above 100 sqm to almost 250 000 sqm. 75% of all polygons are below 4213 sqm.
+The dashed line indicates the minimum size of the Sentinel-2 pixels for NDVI, all NiN-polygons smaller than that have been removed form the data.
 
 **How does NDVI vary over the years?**
 ```{r}
 SentinelNDVI.natopen %>%
+  filter(tilstand!="") %>%
   ggplot(aes(x = year, y = mean)) +
   geom_point() +
-  facet_grid(tilstand ~ hovedtype)
+  facet_grid(tilstand ~ hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 12)) +
+  ggtitle("NDVI across years for different ecosystem types in all condition classes") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Year")
 ```
 
 2022 stands out with the highest NDVI values missing.
@@ -577,7 +585,9 @@ SentinelNDVI.natopen %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x = hovedtype, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey")
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  ggtitle("NDVI for different ecosystem types in good condition") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Major ecosystem type")
 
 SentinelNDVI.natopen$subtype <- factor(SentinelNDVI.natopen$subtype, levels = c("C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "E1"))
 SentinelNDVI.natopen %>%
@@ -585,9 +595,12 @@ SentinelNDVI.natopen %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x = subtype, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
   facet_wrap(~hovedtype) +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 6))
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 12)) +
+  ggtitle("NDVI for different ecosystem sub-types in good condition") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Ecosystem sub-type")
+
 ```
 
 NDVI varies between major ecosystem types with the highest values in open flood plains (T18) and in natural coastal meadows (T12), followed by naturally open areas on shallow soils (T2) and vegetated sand dunes (T21). There's very little data on T20 (isinnfrysingsmark) and all mapped areas of that type are in good condition. Therefore we will omit this ecosystem type from the statistical analyses further below. The overlaps between the ecosystem types are considerable.
@@ -601,9 +614,11 @@ SentinelNDVI.natopen %>%
   filter(!is.na(region)) %>%
   ggplot(aes(x = region, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
   facet_wrap(~hovedtype) +
-  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2))
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("NDVI for different ecosystems in good condition across regions") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Region")
 ```
 
 There is no obvious trends in geography.
@@ -612,10 +627,14 @@ There is no obvious trends in geography.
 ```{r warning=FALSE}
 SentinelNDVI.natopen %>%
   filter(year == kartleggingsaar) %>%
+  filter(tilstand != "") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
-  facet_wrap(~hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  facet_wrap(~hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2)) +
+  ggtitle("NDVI for different ecosystems in different condition classes") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition")
 ```
 
 The plots suggest a slight decrease in NDVI as condition deteriorates. Overlaps between condition classes are generally very large.
@@ -707,10 +726,14 @@ First, we take a look at how balanced the data are across major ecosystem types,
 SentinelNDVI.natopen %>%
   group_by(id, year) %>%
   filter(year == kartleggingsaar) %>%
+  filter(tilstand != "") %>%
+  filter(!is.na(region)) %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
-  facet_grid(region ~ hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey",) +
+  facet_grid(region ~ hovedtype) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition")
 ```
 
 T20 is has only very few data and is present in only 1 conditino class and 2 regions, we omit it.
@@ -759,7 +782,10 @@ SentinelNDVI.natopen.train %>%
   filter(region == "Northern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Northern Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +
   facet_wrap(~hovedtype)
 
 summary(model.natopen.cond.Sent.N)$coefficients
@@ -773,8 +799,10 @@ SentinelNDVI.natopen.train %>%
   filter(region == "Central Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
-  facet_wrap(~hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Central Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +  facet_wrap(~hovedtype)
 
 summary(model.natopen.cond.Sent.C)$coefficients
 ```
@@ -788,8 +816,10 @@ SentinelNDVI.natopen.train %>%
   filter(region == "Western Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
-  facet_wrap(~hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Western Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +  facet_wrap(~hovedtype)
 
 summary(model.natopen.cond.Sent.W)$coefficients
 ```
@@ -804,8 +834,10 @@ SentinelNDVI.natopen.train %>%
   filter(region == "Eastern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
-  facet_wrap(~hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Eastern Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +  facet_wrap(~hovedtype)
 
 summary(model.natopen.cond.Sent.E)$coefficients
 ```
@@ -819,8 +851,10 @@ SentinelNDVI.natopen.train %>%
   filter(region == "Southern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
-  geom_point(size = 0.7, shape = 16, color = "grey") +
-  facet_wrap(~hovedtype)
+  geom_point(size = 0.7, shape = 16, color = "grey", position = position_jitter(.1) ) +
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 9)) +
+  ggtitle("Southern Norway") +
+  labs(y = "NDVI values (Sentinel-2)", x = "Condition") +  facet_wrap(~hovedtype)
 
 summary(model.natopen.cond.Sent.S)$coefficients
 ```
@@ -919,6 +953,8 @@ Now we can plot the time series for each main ecosystem type, showing each satel
 allSatNDVI.natopen %>%
   ggplot(aes(x = year_jit, y = mean, color = Sat)) +
   geom_point() +
+  ggtitle("NDVI across time") +
+  labs(y = "NDVI values", x = "Year") +
   facet_wrap(~hovedtype, ncol = 1)
 ```
 
