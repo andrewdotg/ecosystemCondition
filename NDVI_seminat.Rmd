@@ -799,7 +799,7 @@ values in Central Norway is somewhat lower than in the other regions.
 
 **How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)**
 
-```{r warning=FALSE}
+```{r ndvi-condition-ndvis, warning=FALSE, fig.cap="NDVI values across semi-natural ecosystem sites in different ecological condition."}
 SentinelNDVI.seminat %>%
   filter(year == kartleggingsaar) %>%
   ggplot(aes(x = tilstand, y = mean)) +
@@ -927,7 +927,7 @@ regression analyses.
 First, we take a look at how balanced the data are across major
 ecosystem types, regions and condition classes
 
-```{r balanced-data-ndvis, warning=FALSE, message=FALSE, fig.cap="NDVI values across a condition gradien, faceted by six semi natural ecosystem types in five regions in Norway. "}
+```{r balanced-data-ndvis, warning=FALSE, message=FALSE, fig.cap="NDVI values across a condition gradient, faceted by six semi natural ecosystem types in five regions in Norway. "}
 # NDVI across hovedtyper, regions and condition classes (only for NDVI years data matching NiN-mapping years)
 SentinelNDVI.seminat %>%
   group_by(id, year) %>%
@@ -1004,7 +1004,7 @@ model.seminat.cond.Sent.E <- betareg(mean_beta ~ tilstand_num * hovedtype, data 
 model.seminat.cond.Sent.S <- betareg(mean_beta ~ tilstand_num * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region == "Southern Norway", ])
 ```
 
-# Northern Norway
+**Northern Norway**
 
 ```{r north-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in Northern Norway."}
 SentinelNDVI.seminat.train %>%
@@ -1025,9 +1025,9 @@ few data)
 T31,T33,T40: NDVI increases as condition deteriorates T32: NDVI does not
 change with condition
 
-# Central Norway
+**Central Norway**
 
-```{r central-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in Central Norway."}
+```{r central-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI against ecosystem condition for five semi-natural ecosystems in Central Norway."}
 SentinelNDVI.seminat.train %>%
   filter(region == "Central Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
@@ -1046,7 +1046,7 @@ T31: NDVI increases as condition deteriorates T32/T33/T34/T40: NDVI
 increases sig. less than in T31 as condition deteriorates, but it still
 increases
 
-# Western Norway
+**Western Norway**
 
 ```{r west-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in W-Norway."}
 SentinelNDVI.seminat.train %>%
@@ -1066,9 +1066,9 @@ NDVI in good condition: T31/T32/T40 \> T33/T34
 all types: NDVI increases slightly as condition deteriorates, but just
 about sig.
 
-# Eastern Norway
+**Eastern Norway**
 
-```{r east-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in E-Norway."}
+```{r east-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI against ecosystem condition for five semi-natural ecosystems in E-Norway."}
 SentinelNDVI.seminat.train %>%
   filter(region == "Eastern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
@@ -1088,9 +1088,9 @@ T31/T32/T34/T40: NDVI increases slightly as condition deteriorates T33:
 NDVI increases as condition deteriorates, more strongly than in the
 other types
 
-# Southern Norway
+**Southern Norway**
 
-```{r  south-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in S-Norway."}
+```{r south-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI against ecosystem condition for five semi-natural ecosystems in S-Norway."}
 SentinelNDVI.seminat.train %>%
   filter(region == "Southern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
@@ -1108,10 +1108,15 @@ NDVI in good condition: T32 \> T31/T40 \> T33/T34
 T31/T32: borderline NDVI increases as condition deteriorates T33/T34:
 NDVI increases as condition deteriorates T40: insufficient power
 
+<br />
+<br />
+<hr />
+
 > Overall take home messages:
 >
 > In semi-natural ecosystems NDVI increases as ecosystem condition deteriorates, but the effect sizes vary with major ecosystem types. Boreal heath shows the most consistent increases, and also coastal meadows and coastal heathlands show increases in parts of the country. Semi-natural and semi-natural-looking meadows show very tiny increases if any at all.
 
+<hr />
 
 ### NDVI across time - Sentinel, MODIS & LandSat
 
@@ -1203,7 +1208,7 @@ levels(allSatNDVI.seminat$Sat)
 Now we can plot the time series for each main ecosystem type, showing
 each satellite time series separately:
 
-```{r ndvi-time-series-comparison-ndvis, fig.cap="Comparing the NDVI time series in the three data sets."}
+```{r ndvi-time-series-comparison-ndvis, fig.cap="Comparing the NDVI time series in the three data sets.", fig.height=10}
 # plot
 allSatNDVI.seminat %>%
   ggplot(aes(x = year_jit, y = mean, color = Sat)) +
