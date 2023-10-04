@@ -188,9 +188,9 @@ rm(nor)
 All NDVI data are calculated mean NDVI values for each respective NiN polygon from each available Sentinel-2, MODIS, or Landsat image in Google Earth Engine (GEE). 
 ```{r, echo = F}
 # downloading the unprocessed NDVI data from a data-cache et the NINA server
-df.s <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Sentinel.raw.RDS")
-df.m <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Modis.raw.RDS")
-df.l <- readRDS("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Landsat.raw.RDS")
+df.s <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Sentinel.raw.RDS")
+df.m <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Modis.raw.RDS")
+df.l <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/ndvi.Landsat.raw.RDS")
 ```
 ##### Sentinel-2 NDVI data
 The GEE code can be seen here: https://code.earthengine.google.com/2ceb0c3e03adade9e6f6d0903184b8c4
@@ -198,7 +198,7 @@ The image collection contains Sentinel imagery from June, July and August 2015-2
 To not exceed GEE memory limits, the exported files had to be iterated over a grid which resulted in 42 separate csv files. This script merges them and then merges the dataframe to the NiN data.
 ```{r, echo = T, eval = F}
 # Import Sentinel NDVI Data
-df.s <- list.files("P:/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
+df.s <- list.files("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/", pattern = "*.csv", full.names=TRUE) %>%
   map_df(~fread(.))
 ```
 
@@ -209,7 +209,7 @@ The image collection contains MODIS imagery from June, July and August 2000-2022
 ```{r, echo = T, eval = F}
 # Import MODIS NDVI Data
 # MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.
-df.m<- read.csv("P:\\41201785_okologisk_tilstand_2022_2023\\data\\NDVI_åpenlavland\\NDVI_data_MODIS\\modis_ndvi_ts_2000_2022.csv", )
+df.m<- read.csv("/data/P-Prosjekter241201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_MODIS/modis_ndvi_ts_2000_2022.csv", )
 df.m$mean<-df.m$mean/10000
 ```
 
@@ -689,6 +689,7 @@ SentinelNDVI.seminat.train <- SentinelNDVI.seminat %>%
 
 # check if there's any 0s or 1s (which beta cannot handle)
 summary(SentinelNDVI.seminat.train$mean_beta) #ok
+LandsatNDVI.seminat$mean_beta <- (LandsatNDVI.seminat$mean + 1) / 2
 # replace 1s in Landsat data with 0.9999
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
@@ -861,7 +862,7 @@ names(LandsatNDVI.seminat)
 # Sentinel and Landsat have each an extra column -> omit them when concatenating further below
 # one column is named slightly differently in the Sentinel data -> rename it
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>%
-  rename('system.index' = 'system:index')
+  dplyr::rename('system.index' = 'system:index')
 
 # check if they have the same geometry
 st_crs(SentinelNDVI.seminat)
