@@ -823,7 +823,7 @@ V1: NDVI decreases as condition deteriorates
 V3, V9 & V10: NDVI increases as condition deteriorates
 
 **Western Norway**
-```{r west-nvdi-vs-tilstand-ndviw, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for fou wetland ecosystems in W-Norway."}
+```{r west-nvdi-vs-tilstand-ndviw, message=FALSE, warning=FALSE, fig.cap="NDVI against ecosystem condition for four wetland ecosystems in W-Norway."}
 SentinelNDVI.wetland.train %>%
   filter(region == "Western Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
