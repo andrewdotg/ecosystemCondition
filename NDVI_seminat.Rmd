@@ -692,7 +692,7 @@ SentinelNDVI.seminat <- readRDS(
 
 **Where are the seminat sites?**
 
-```{r where-are-seminat-sites, }
+```{r where-are-seminat-sites, fig.cap="A map of Norway showing the location of the semi-natural ecosystem sites."}
 tm_shape(regnor) +
   tm_fill("GID_0", labels = "", title = "", legend.show = FALSE) +
   tm_borders() +
@@ -720,27 +720,27 @@ tm_shape(regnor) +
 
 **How are polygon sizes distributed?**
 
-```{r}
+```{r hist-sentinel-ndvis, fig.cap="A histogram showing the distribution of polygon sizes."}
 summary(SentinelNDVI.seminat$area_meters)
 hist(SentinelNDVI.seminat$area_meters, xlim = c(0, 20000), breaks = 50000)
 abline(v = 100, lty = 2)
 ```
 
-semi-natural polygons stretch a large number of sizes from just above
+Semi-natural polygons stretch a large number of sizes from just above
 100 sqm to almost 3 million sqm. 75% of all polygons are below 15297
 sqm.
 
 **How does NDVI vary over the years**
 
-```{r}
+```{r NDVI-values-over-time-ndvis, fig.cap="A figure showing NDVI values for semi-natural ecosystem over time for six different main nature types in varying degrees of condition."}
 SentinelNDVI.seminat %>%
   ggplot(aes(x = year, y = mean)) +
   geom_point() +
   facet_grid(tilstand ~ hovedtype)
 ```
 
-2022 stands out with the highest NDVI values missing. WE omit 2022 for
-this analysis
+2022 stands out with the highest NDVI values missing. 
+We omit 2022 for this analysis.
 
 ```{r}
 SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(year != "2022")
@@ -748,7 +748,7 @@ SentinelNDVI.seminat <- SentinelNDVI.seminat %>% filter(year != "2022")
 
 **How do NDVI values vary between major and basic ecosystem types for sites in good condition? (using only NDVI data matching NiN-mapping years)**
 
-```{r warning=FALSE}
+```{r NDVI-major-basic-ndvis, warning=FALSE, fig.cap="NDVI values in major and basic semi natural ecosystem types in good condition."}
 SentinelNDVI.seminat %>%
   filter(tilstand == "God") %>%
   filter(year == kartleggingsaar) %>%
@@ -781,7 +781,7 @@ also here the overlap is large.
 
 **How does NDVI vary across regions in semi-naturals (major types) in good condition? (using only NDVI data matching NiN-mapping years)**
 
-```{r warning=FALSE}
+```{r ndvi-regions-ndvis, warning=FALSE, fig.cap="DVI variation across regions in semi-natural ecosystems (major types) in good condition"}
 SentinelNDVI.seminat %>%
   filter(tilstand == "God") %>%
   filter(year == kartleggingsaar) %>%
@@ -805,6 +805,7 @@ SentinelNDVI.seminat %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
   geom_point(size = 0.7, shape = 16, color = "grey") +
+  theme(axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))+
   facet_wrap(~hovedtype)
 ```
 
@@ -815,7 +816,7 @@ classes are generally very large.
 
 **Which ecological relevant variable(s) is the condition measure in the NiN data related to?**
 
-```{r warning=FALSE}
+```{r important-variables-ndvis, warning=FALSE, fig.cap="Which ecological relevant variable(s) is the condition measure in the NiN data related to?"}
 nin.seminat2 %>%
   filter(hovedtype == "T31") %>%
   filter(NiN_variable_code %in% c("7JB-BT", "7RA-BA", "7FA", "7TK")) %>%
@@ -926,7 +927,7 @@ regression analyses.
 First, we take a look at how balanced the data are across major
 ecosystem types, regions and condition classes
 
-```{r warning=FALSE, message=FALSE}
+```{r balanced-data-ndvis, warning=FALSE, message=FALSE, fig.cap="NDVI values across a condition gradien, faceted by six semi natural ecosystem types in five regions in Norway. "}
 # NDVI across hovedtyper, regions and condition classes (only for NDVI years data matching NiN-mapping years)
 SentinelNDVI.seminat %>%
   group_by(id, year) %>%
@@ -946,7 +947,9 @@ NDVI data are bounded between -1 and 1, and thus require modelling with
 an appropriate method that can handle bounded data. We can transform the
 variable to be bounded between 0 and 1 and use beta-regression models:
 
-```{r}
+
+<!-- RUNTIME approx. 2 min -->
+```{r, eval=F}
 SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
 # we drop T41 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
@@ -964,6 +967,16 @@ LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
 # We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
 model.seminat.cond.Sent <- betareg(mean_beta ~ tilstand_num * region * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region != "Northern Norway", ])
 model.seminat.cond.Sent <- StepBeta(model.seminat.cond.Sent)
+summary(model.seminat.cond.Sent)
+
+# Caching
+saveRDS(model.seminat.cond.Sent, 
+        "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.cond.Sent.rds")
+```
+
+```{r, include=}
+model.seminat.cond.Sent <- readRDS( 
+        "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.cond.Sent.rds")
 summary(model.seminat.cond.Sent)
 ```
 
