@@ -948,8 +948,7 @@ an appropriate method that can handle bounded data. We can transform the
 variable to be bounded between 0 and 1 and use beta-regression models:
 
 
-<!-- RUNTIME approx. 2 min -->
-```{r, eval=F}
+```{r}
 SentinelNDVI.seminat$mean_beta <- (SentinelNDVI.seminat$mean + 1) / 2
 # NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models
 # we drop T41 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues
@@ -963,7 +962,11 @@ LandsatNDVI.seminat$mean_beta <- (LandsatNDVI.seminat$mean + 1) / 2
 # replace 1s in Landsat data with 0.9999
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   mutate(mean_beta = replace(mean_beta, mean_beta == 1, 0.9999))
+```
 
+
+<!-- RUNTIME approx. 2 min -->
+```{r, eval=F}
 # We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model
 model.seminat.cond.Sent <- betareg(mean_beta ~ tilstand_num * region * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region != "Northern Norway", ])
 model.seminat.cond.Sent <- StepBeta(model.seminat.cond.Sent)
@@ -974,7 +977,7 @@ saveRDS(model.seminat.cond.Sent,
         "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.cond.Sent.rds")
 ```
 
-```{r, include=}
+```{r, include=F}
 model.seminat.cond.Sent <- readRDS( 
         "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.cond.Sent.rds")
 summary(model.seminat.cond.Sent)
@@ -983,14 +986,16 @@ summary(model.seminat.cond.Sent)
 NDVI values do vary between: - Regions - Ecosystem types - Condition
 classes
 
-It is evident that there are differences between regions. But since we
-are not interested in the statistics for region differences, we run
-separate models for every region for ease of interpretation.
+It is evident that there are differences between regions. 
+But since we are not interested in the statistics for region differences, 
+we run **separate models for every region** for ease of interpretation.
 
 ```{r, include = F}
 rm(model.seminat.cond.Sent)
 ```
 
+
+<!-- RUNTIME 5 sec -->
 ```{r message=FALSE, warning=FALSE}
 model.seminat.cond.Sent.N <- betareg(mean_beta ~ tilstand_num * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region == "Northern Norway" & SentinelNDVI.seminat.train$hovedtype != "T34", ])
 model.seminat.cond.Sent.C <- betareg(mean_beta ~ tilstand_num * hovedtype, data = SentinelNDVI.seminat.train[SentinelNDVI.seminat.train$region == "Central Norway", ])
@@ -1001,14 +1006,16 @@ model.seminat.cond.Sent.S <- betareg(mean_beta ~ tilstand_num * hovedtype, data 
 
 # Northern Norway
 
-```{r message=FALSE, warning=FALSE}
+```{r north-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in Northern Norway."}
 SentinelNDVI.seminat.train %>%
   filter(region == "Northern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
   geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
+```
 
+```{r}
 summary(model.seminat.cond.Sent.N)$coefficients
 ```
 
@@ -1020,14 +1027,16 @@ change with condition
 
 # Central Norway
 
-```{r message=FALSE, warning=FALSE}
+```{r central-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in Central Norway."}
 SentinelNDVI.seminat.train %>%
   filter(region == "Central Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
   geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
+```
 
+```{r}
 summary(model.seminat.cond.Sent.C)$coefficients
 ```
 
@@ -1039,14 +1048,16 @@ increases
 
 # Western Norway
 
-```{r message=FALSE, warning=FALSE}
+```{r west-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in W-Norway."}
 SentinelNDVI.seminat.train %>%
   filter(region == "Western Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
   geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
+```
 
+```{r}
 summary(model.seminat.cond.Sent.W)$coefficients
 ```
 
@@ -1057,16 +1068,19 @@ about sig.
 
 # Eastern Norway
 
-```{r message=FALSE, warning=FALSE}
+```{r east-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in E-Norway."}
 SentinelNDVI.seminat.train %>%
   filter(region == "Eastern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
   geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
+```
 
+```{r}
 summary(model.seminat.cond.Sent.E)$coefficients
 ```
+
 
 NDVI in good condition: T32 \> T31/T40 \> T33 \> T34
 
@@ -1076,14 +1090,16 @@ other types
 
 # Southern Norway
 
-```{r message=FALSE, warning=FALSE}
+```{r  south-nvdi-vs-tilstand-ndvis, message=FALSE, warning=FALSE, fig.cap="NDVI agains ecosystm condition for five semi-natural ecosystems in S-Norway."}
 SentinelNDVI.seminat.train %>%
   filter(region == "Southern Norway") %>%
   ggplot(aes(x = tilstand, y = mean)) +
   geom_violin() +
   geom_point(size = 0.7, shape = 16, color = "grey") +
   facet_wrap(~hovedtype)
+```
 
+```{r}
 summary(model.seminat.cond.Sent.S)$coefficients
 ```
 
@@ -1092,14 +1108,10 @@ NDVI in good condition: T32 \> T31/T40 \> T33/T34
 T31/T32: borderline NDVI increases as condition deteriorates T33/T34:
 NDVI increases as condition deteriorates T40: insufficient power
 
-Overall take home messages:
+> Overall take home messages:
+>
+> In semi-natural ecosystems NDVI increases as ecosystem condition deteriorates, but the effect sizes vary with major ecosystem types. Boreal heath shows the most consistent increases, and also coastal meadows and coastal heathlands show increases in parts of the country. Semi-natural and semi-natural-looking meadows show very tiny increases if any at all.
 
-In semi-natural ecosystems NDVI increases as ecosystem condition
-deteriorates, but the effect sizes vary with major ecosystem types.
-Boreal heath shows the most consistent increases, and also coastal
-meadows and coastal heathlands show increases in parts of the country.
-Semi-natural and semi-natural-looking meadows show very tiny increases
-if any at all.
 
 ### NDVI across time - Sentinel, MODIS & LandSat
 
@@ -1111,29 +1123,29 @@ First, there's again some data handling to do. We merge the Sentinel,
 MODIS, and Landsat data to show the full picture across time. Then we
 model the time series for each Satellite separately.
 
-```{r results='hide'}
+```{r, results='hide'}
 ## data handling for time series analysis
 # Sentinel time series checked in exploratory analysis script
 
 # checking time series for MODIS
-ModisNDVI.seminat %>%
-  group_by(id, year) %>%
-  filter(mean == max(mean, na.rm = TRUE)) %>%
-  ggplot(aes(x = year, y = mean)) +
-  geom_point() +
-  facet_wrap(~hovedtype)
+   #ModisNDVI.seminat %>%
+   #  group_by(id, year) %>%
+   #  filter(mean == max(mean, na.rm = TRUE)) %>%
+   #  ggplot(aes(x = year, y = mean)) +
+   #  geom_point() +
+   #  facet_wrap(~hovedtype)
 # 2022 does not stand out as in the Sentinel data, so we keep it
 ModisNDVI.seminat <- ModisNDVI.seminat %>%
   group_by(id, year) %>%
   filter(mean == max(mean, na.rm = TRUE))
 
 # checking time series for Landsat
-LandsatNDVI.seminat %>%
-  group_by(id, year) %>%
-  filter(mean == max(mean, na.rm = TRUE)) %>%
-  ggplot(aes(x = year, y = mean)) +
-  geom_point() +
-  facet_wrap(~hovedtype)
+   #LandsatNDVI.seminat %>%
+   #  group_by(id, year) %>%
+   #  filter(mean == max(mean, na.rm = TRUE)) %>%
+   #  ggplot(aes(x = year, y = mean)) +
+   #  geom_point() +
+   #  facet_wrap(~hovedtype)
 # nothing worrying to see here either
 LandsatNDVI.seminat <- LandsatNDVI.seminat %>%
   group_by(id, year) %>%
@@ -1191,7 +1203,7 @@ levels(allSatNDVI.seminat$Sat)
 Now we can plot the time series for each main ecosystem type, showing
 each satellite time series separately:
 
-```{r}
+```{r ndvi-time-series-comparison-ndvis, fig.cap="Comparing the NDVI time series in the three data sets."}
 # plot
 allSatNDVI.seminat %>%
   ggplot(aes(x = year_jit, y = mean, color = Sat)) +
@@ -1213,13 +1225,35 @@ We first investigate a model testing NDVI as a function of year and main
 ecosystem type for polygons in good condition, and we do so separately
 for each satellite.
 
-```{r, warning=FALSE}
+
+<!-- RUNTIME 10 min -->
+```{r, eval=F}
 model.seminat.time.GodTilst.Sent <- glmmTMB(mean_beta ~ year * hovedtype + (1 | id), family = beta_family(), data = SentinelNDVI.seminat[SentinelNDVI.seminat$tilstand == "God", ])
 model.seminat.time.GodTilst.Modi <- glmmTMB(mean_beta ~ year * hovedtype + (1 | id), family = beta_family(), data = ModisNDVI.seminat[ModisNDVI.seminat$tilstand == "God", ])
 model.seminat.time.GodTilst.Land <- glmmTMB(mean_beta ~ year * hovedtype + (1 | id), family = beta_family(), data = LandsatNDVI.seminat[LandsatNDVI.seminat$tilstand == "God", ])
+```
 
+```{r, include=FALSE, eval=F}
+saveRDS(model.seminat.time.GodTilst.Sent, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.GodTilst.Sent.rds")
+saveRDS(model.seminat.time.GodTilst.Modi, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.GodTilst.Modi.rds")
+saveRDS(model.seminat.time.GodTilst.Land, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.GodTilst.Land.rds")
+```
+
+```{r, include=F}
+model.seminat.time.GodTilst.Sent <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.GodTilst.Sent.rds")
+model.seminat.time.GodTilst.Modi <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.GodTilst.Modi.rds")
+model.seminat.time.GodTilst.Land <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.GodTilst.Land.rds")
+```
+
+```{r}
 summary(model.seminat.time.GodTilst.Sent)$coefficients$cond
+```
+
+```{r}
 summary(model.seminat.time.GodTilst.Modi)$coefficients$cond
+```
+
+```{r}
 summary(model.seminat.time.GodTilst.Land)$coefficients$cond
 ```
 
@@ -1230,25 +1264,49 @@ not show any trends in time but also has way less statistical power
 compared to Sentinel and Landsat.
 
 Given the consistently higher NDVI-values with decreasing condition in
-boreal heath, We may ask the question if the temporal NDVI increase
+**boreal heath**, We may ask the question if the temporal NDVI increase
 might be stronger under reduced condition?
 
-```{r, warning=FALSE}
+<!-- RUNTIME 10 min -->
+```{r, warning=FALSE, eval=F}
 model.seminat.time.tilst.T31.Sent <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T31"), ])
 model.seminat.time.tilst.T31.Modi <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T31"), ])
 model.seminat.time.tilst.T31.Land <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T31"), ])
+```
+
+```{r, include=FALSE, eval=F}
+saveRDS(model.seminat.time.tilst.T31.Sent, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.tilst.T31.Sent.rds")
+saveRDS(model.seminat.time.tilst.T31.Modi, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.tilst.T31.Modi.rds")
+saveRDS(model.seminat.time.tilst.T31.Land, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.tilst.T31.Land.rds")
+```
+
+```{r, include=F}
+model.seminat.time.tilst.T31.Sent <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.tilst.T31.Sent.rds")
+model.seminat.time.tilst.T31.Modi <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.tilst.T31.Modi.rds")
+model.seminat.time.tilst.T31.Land <- readRDS("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/cache/model.seminat.time.tilst.T31.Land.rds")
+```
+
+```{r}
 summary(model.seminat.time.tilst.T31.Sent)$coefficients$cond
+```
+
+```{r}
 summary(model.seminat.time.tilst.T31.Modi)$coefficients$cond
+```
+
+```{r}
 summary(model.seminat.time.tilst.T31.Land)$coefficients$cond
 ```
 
 The temporal NDVI increase in boreal heath has NOT been stronger with
 reduced ecological condition. So a temporal NDVI approach does not seem
-like a promising way to go. We check for the same pattern in T32 and
-T34, just because they are the other semi-natural major ecosystem types
-with a substantial number of occurrences in the the NiN data:
+like a promising way to go. 
 
-```{r, warning=FALSE}
+We could check for the same pattern in T32 and
+T34, just because they are the other semi-natural major ecosystem types
+with a substantial number of occurrences in the the NiN data. Here's the code for that, stored for later.
+
+```{r, eval=FALSE}
 model.seminat.time.tilst.T32.Sent <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = SentinelNDVI.seminat[SentinelNDVI.seminat$hovedtype %in% c("T32"), ])
 model.seminat.time.tilst.T32.Modi <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = ModisNDVI.seminat[ModisNDVI.seminat$hovedtype %in% c("T32"), ])
 model.seminat.time.tilst.T32.Land <- glmmTMB(mean_beta ~ year * tilstand + (1 | id), family = beta_family(), data = LandsatNDVI.seminat[LandsatNDVI.seminat$hovedtype %in% c("T32"), ])
@@ -1264,7 +1322,7 @@ summary(model.seminat.time.tilst.T34.Modi)$coefficients$cond
 summary(model.seminat.time.tilst.T34.Land)$coefficients$cond
 ```
 
-Again, patterns are only identifiable with Sentinel and Landsat data,
+But again, patterns are only identifiable with Sentinel and Landsat data,
 but not with Modis. Semi-natural grasslands (T32) do indeed show a
 stronger increase in NDVI as condition deteriorates, so here a temporal
 approach may be useful under a reduced
@@ -1277,13 +1335,13 @@ So, we have to expect increases in greenness in coastal heathlands over
 time also in well-managed areas, and thus temporal changes in NDVI are
 largely irrelevant for assessing ecological condition.
 
-# Overall conclusion
+## Overall conclusion
 
 NDVI in semi-natural ecosystem does vary with condition and also with
 ecosystem type, but the variance and thus overlap between condition
 classes and ecosystem types is large. Especially in boreal heath and
-semi-natural grasslands greenness and its change over time appaer to be
-indicative of the ecological condition of local ecoystems, linking well
+semi-natural grasslands greenness and its change over time appear to be
+indicative of the ecological condition of local ecosystems, linking well
 to the registered condition variables behind the lower condition scores
 (shrub/tree encroachment, low land-use intensity, succession) and thus
 reduced land-use as the main pressure identified for these systems.
