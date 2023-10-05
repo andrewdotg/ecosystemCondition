@@ -1,3 +1,5 @@
+# (PART\*) R & D{-}
+
 # NDVI - Naturally Open Ecosystems {#NDVI-indicator-natopen}
 
 NDVI (greenness) indicator, naturally open ecosystems below the treeline
@@ -567,7 +569,7 @@ Natopen polygons stretch a large number of sizes from just above 100 sqm to almo
 The dashed line indicates the minimum size of the Sentinel-2 pixels for NDVI, all NiN-polygons smaller than that have been removed form the data.
 
 **How does NDVI vary over the years?**
-```{r NDVI-values-over-time-ndvin, fig.cap="A figure showing NDVI values for naturally open ecosystem over time for six different main nature types in varying degrees of condition.}
+```{r NDVI-values-over-time-ndvin, fig.cap="A figure showing NDVI values for naturally open ecosystem over time for six different main nature types in varying degrees of condition."}
 SentinelNDVI.natopen %>%
   filter(tilstand!="") %>%
   ggplot(aes(x = year, y = mean)) +
@@ -601,7 +603,7 @@ SentinelNDVI.natopen$subtype <- factor(SentinelNDVI.natopen$subtype, levels = c(
 ```
 
 
-```{r NDVI-basic-ndvin, warning=FALSE, fig.cap="NDVI values in basic natopen ecosystem types in good condition.}
+```{r NDVI-basic-ndvin, warning=FALSE, fig.cap="NDVI values in basic natopen ecosystem types in good condition."}
 SentinelNDVI.natopen %>%
   filter(tilstand == "God") %>%
   filter(year == kartleggingsaar) %>%
@@ -619,7 +621,7 @@ NDVI varies between major ecosystem types with the highest values in open flood 
 With respect to basic ecosystem types within the major types, NDVI appears to cover very similar ranges across the subtypes, but sample size are also rather small. There is no obvious trend related to the structuring environmental gradients withing the major types, and also here the overlap is large.
 
 **How does NDVI vary across regions in natopens (major types) in good condition? (using only NDVI data matching NiN-mapping years)**
-```{r ndvi-regions-ndvin, warning=FALSE, fig.cap="DVI variation across regions in natopen ecosystems (major types) in good condition.}
+```{r ndvi-regions-ndvin, warning=FALSE, fig.cap="NDVI variation across regions in natopen ecosystems (major types) in good condition."}
 SentinelNDVI.natopen %>%
   filter(tilstand == "God") %>%
   filter(year == kartleggingsaar) %>%
@@ -636,7 +638,7 @@ SentinelNDVI.natopen %>%
 There is no obvious trends in geography.
 
 **How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)?**
-```{r ndvi-condition-ndvin, warning=FALSE, fig.cap="NDVI values across natopen sites in different ecological condition.}
+```{r ndvi-condition-ndvin, warning=FALSE, fig.cap="NDVI values across natopen sites in different ecological condition."}
 SentinelNDVI.natopen %>%
   filter(year == kartleggingsaar) %>%
   filter(tilstand != "") %>%

@@ -5,5 +5,5 @@ delete_merged_file: true
 language:
   ui:
     chapter_name: "Chapter "
-rmd_files: ["index.Rmd", "gjengroing.Rmd","Nature_Index_product.Rmd", "slitasje.Rmd", "medianSummerTemperature.Rmd", "alien_species.Rmd","functional_plant_indicators_wetland.Rmd","functional_plant_indicators_seminat.Rmd","functional_plant_indicators_natopen.Rmd","trophic_levels-biomass_indicators.rmd", "insectIndicators.Rmd","breareal.Rmd",  "rosslyng.Rmd", "naturtype.Rmd", "scalingFunctions.Rmd", "homogeneous_impact_areas.Rmd", "master_grid.Rmd", "climate_indicators_explained.Rmd"]
+rmd_files: ["index.Rmd", "gjengroing.Rmd","Nature_Index_product.Rmd", "slitasje.Rmd", "medianSummerTemperature.Rmd", "alien_species.Rmd","functional_plant_indicators_wetland.Rmd","functional_plant_indicators_seminat.Rmd","functional_plant_indicators_natopen.Rmd","trophic_levels-biomass_indicators.rmd", "insectIndicators.Rmd", "NDVI_natopen.Rmd", "NDVI_seminat.Rmd", "NDVI_wetland.Rmd", "breareal.Rmd",  "rosslyng.Rmd", "naturtype.Rmd", "scalingFunctions.Rmd", "homogeneous_impact_areas.Rmd", "master_grid.Rmd", "climate_indicators_explained.Rmd"]
 output_dir: "docs"

@@ -646,7 +646,7 @@ NDVI varies between major ecosystem types with the highest values in semi-natura
 With respect to basic ecosystem types within the major types, NDVI appears to increase with increasing limestone level (C1-C4, C5-C8, and E1-E3 in V1, C1-C3 in the other major types), and also here the overlap is large. 
 
 **How does NDVI vary across regions in wetlands (major types) in good condition? (using only NDVI data matching NiN-mapping years)**
-```{r ndvi-regions-ndviw, warning=FALSE, fig.cap="DVI variation across regions in wetland ecosystems (major types) in good condition. V1 = minerotrophic mires, V3 = ombrotrophic bogs, V4 = cold springs, V9 = semi-natural mires, V10 = semi-natural wet meadows."}
+```{r ndvi-regions-ndviw, warning=FALSE, fig.cap="NDVI variation across regions in wetland ecosystems (major types) in good condition. V1 = minerotrophic mires, V3 = ombrotrophic bogs, V4 = cold springs, V9 = semi-natural mires, V10 = semi-natural wet meadows."}
 SentinelNDVI.wetland %>%
   filter(tilstand == "God") %>%
   filter(year == kartleggingsaar) %>%
