@@ -2,7 +2,7 @@
 
 <br />
 
-Norwegian name: **Planteindikatorer**
+Norwegian name: **Vegetasjon og fuktighet/lys/pH/nitrogen**
 
 
 _Author and date:_
@@ -44,6 +44,8 @@ metaData <- data.frame(Ecosystem,
 knitr::kable(metaData)
 ```
 
+<br />
+
 
 Indicators described in this chaper:
 
@@ -59,17 +61,21 @@ Indicators described in this chaper:
 <hr />
 
 ## Introduction {#intro-fpiw}
-Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional type indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021).
+Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of functional trait values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. 
+
+Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional type indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021).
+
+Parallel indicator sets are explored and developed for [semi-natural ecosystems](#functional-plant-indicators-seminat) and naturally [open ecosystems](#functional-plant-indicators-open).
 
 ## About the underlying data
-In the 'plant functional indicator' project for wetlands, we use three sets of data for building indicators for ecological condition:
+We use three sets of data for building indicators for ecological condition:
 
 - as test data we use plant community data from the ANO monitoring scheme (cf. Tingstad et al. 2019)
 - as reference data we use generalized species lists from the Norwegian categorization system for eco-diversity (NiN) (cf. Halvorsen et al. 2020)
 - Swedish plant indicator data for light, moisture, pH, and nitrogen from Tyler et al. (2021)
 
 (1) ANO monitoring data:
-ANO stands for 'areal-representativ naturovervåking', i.e. 'area representative nature monitoring'. 1000 sites are randomly distributed across mainland Norway and visitied within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the wetland-analysis in this document, we only use the plots which were classified as one of the wetland ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
+ANO stands for _areal-representativ naturovervåking_, i.e. _area representative nature monitoring_. 1000 sites are randomly distributed across mainland Norway and visitied within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the wetland-analysis in this document, we only use the plots which were classified as one of the wetland ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
 In the analysis in this document, we use the data available on Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054), which comprises data from the first three ANO-years, 2019-2021, and a total of 8887 plots in 498 sites.
 
 (2) NiN reference data:
