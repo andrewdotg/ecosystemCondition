@@ -1,0 +1,17 @@
+ID;Name used on GitHub;Norwegian name used in the report;Label name (for tagging issues);Synonyms;abb.
+NO_001_SEVERAL_001_20231010;Enchroachemnt;Gjengroing;INDICATOR - enchroachment;Vegetation regrowth/encroachment (gjengroing);enc
+NO_002_SEVERAL_ALL_20231010;Climate indicators;Klimaindikatorer;INDICATOR - Climate indicators;...;cli
+NO_002_SEVERAL_001_20231010;Median summer temperature;Sommertemperatur;INDICATOR - Climate indicators;...;mst
+NO_003_SEVERAL_001_20231010;Alien species;Fravær av fremmede arter;INDICATOR - alien species;...;ali
+NO_004_SEVERAL_001_20231010;Anthropogenic disturbance to soil and vegetation;Slitasje;INDICATOR - slitasje indicator;Slitasje og kjørespor;adsv
+NO_005_SEVERAL_ALL_20231010;Functional plant indicators;Planteindikatorer;INDICATOR - Functional plant indicators;...;fpi
+NO_005_NATURALYOPEN_001_20231010;Functional plant indicators - Naturally Open Ecosystems;Planteindikatorer;Functional plant indicators;...;fpin
+NO_005_SEMINATURAL_001_20231010;Functional plant indicators - Semi-natural Ecosystems;Planteindikatorer;Functional plant indicators;...;fpis
+NO_005_WETLANDS_001_20231010;Functional plant indicators - Wetlands;Planteindikatorer;Functional plant indicators;...;fpiw
+NO_006_SEVERAL_ALL_20231010;Trophic level biomass ratios;Fordeling av biomasse i trifiske nivåer;Trophic level biomass ratio indicators;Biomasse i trofiske nivåer (vertebrater/ vegetasjon);tlb
+NO_006_SEVERAL_001_20231010;Deviation from expected vertebrate herbivore biomass;Beitedyr;Trophic level biomass ratio indicators;...;herb
+NO_006_SEVERAL_002_20231010;Deviation from expected carnivore biomass;Rovdyr;Trophic level biomass ratio indicators;...;carn
+NO_007_SEVERAL_ALL_20231010;NDVI;Primærproduksjon;INDICATOR - NDVI;...;ndvi
+NO_007_NATURALYOPEN_001_20231010;NDVI - Naturally open ecosystems;Primærproduksjon;INDICATOR - NDVI;...;ndvin
+NO_007_SEMINATURAL_001_20231010;NDVI - Semi-natural ecosystems;Primærproduksjon;INDICATOR - NDVI;...;ndvis
+NO_007_WETLANDS_001_20231010;NDVI - wetlands;Primærproduksjon;INDICATOR - NDVI;...;ndviw
