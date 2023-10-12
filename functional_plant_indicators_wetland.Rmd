@@ -1,8 +1,14 @@
+---
+output:
+  html_document:
+    code_folding: show
+---
+
 # Functional Plant Indicators - Wetlands {#Functional-plant-indicators-wetland}
 
 <br />
 
-Norwegian name: **Planteindikatorer**
+Norwegian name: **Vegetasjon og fuktighet/lys/pH/nitrogen**
 
 
 _Author and date:_
@@ -14,21 +20,36 @@ May 2023
 <br />
 
 <!-- Load all you dependencies here -->
-```{r setup, include=FALSE}
+```{r setup, class.source = 'fold-hide'}
 library(sf)
 library(plyr)
 library(tidyverse)
 library(RColorBrewer)
-library("gridExtra") 
+library(gridExtra) 
 library(ggridges)
 library(tmap)
 library(tmaptools)
 library(raster)
 library(stars)
 library(knitr)
+library(kableExtra)
+library(betareg)
+library(glmmTMB)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+<!-- Limit code block height and force scrolling -->
+```{css, echo=FALSE}
+pre {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
 
 ```{r, echo=FALSE}
 Ecosystem <- "våtmark"
@@ -43,6 +64,8 @@ metaData <- data.frame(Ecosystem,
                        "ECT class" = ECT)
 knitr::kable(metaData)
 ```
+
+<br />
 
 
 Indicators described in this chaper:
@@ -59,27 +82,47 @@ Indicators described in this chaper:
 <hr />
 
 ## Introduction {#intro-fpiw}
-Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of plant indicator values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional type indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021).
+Functional plant indicators can be used to describe the functional signature of plant communities by calculating community-weighted means of functional trait values for plant communities (Diekmann 2003). The functional signature of plant communities may be indicative of ecosystem identity, depending on which functional plant indicator we look at (cf. Töpper et al. 2018). For instance, using an indicator for moisture one would find a functional signature with higher moisture values for plant communities in mires compared to e.g. grasslands or forests. Deviations in the functional signature of such an indicator beyond a certain range of indicator values (as there of course is natural variation of functional signatures within an ecosystem type) may be related to a reduction in ecological condition. 
 
-## About the underlying data
-In the 'plant functional indicator' project for wetlands, we use three sets of data for building indicators for ecological condition:
+Here, we combine functional indicator data with field sampled plant community data from the Norwegian nature monitoring program ANO (Tingstad et al. 2019) for wetland ecosystems. We calculate the functional signature of plant communities in the monitored sites with respect to light, moisture, pH and nitrogen. These functional signatures are then compared to reference distributions of functional signature, separately for each wetland ecosystem type, calculated from 'generalized species lists' underlying the Norwegian categorization system for eco-diversity (Halvorsen et al. 2020). These plant functional type indicators are developed following the principles and technical protocol of the IBECA framework (Jakobsson et al. 2021, Töpper & Jakobsson 2021).
+
+Parallel indicator sets are explored and developed for [semi-natural ecosystems](#functional-plant-indicators-seminat) and naturally [open ecosystems](#functional-plant-indicators-open).
+
+## About the underlying data {#underlying-data-fpiw}
+We use three sets of data for building indicators for ecological condition:
 
 - as test data we use plant community data from the ANO monitoring scheme (cf. Tingstad et al. 2019)
 - as reference data we use generalized species lists from the Norwegian categorization system for eco-diversity (NiN) (cf. Halvorsen et al. 2020)
 - Swedish plant indicator data for light, moisture, pH, and nitrogen from Tyler et al. (2021)
 
-(1) ANO monitoring data:
-ANO stands for 'areal-representativ naturovervåking', i.e. 'area representative nature monitoring'. 1000 sites are randomly distributed across mainland Norway and visitied within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the wetland-analysis in this document, we only use the plots which were classified as one of the wetland ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
+(1) **ANO monitoring data**:
+ANO stands for _areal-representativ naturovervåking_, i.e. _area representative nature monitoring_. 1000 sites are randomly distributed across mainland Norway and visitied within a 5-year cycle. Each ANO site spans a 500 x 500 m grid cell, and the data collection at each ANO site includes up to 12 evenly distributed vegetation analyses in 1 x 1 m plots (up to 12, because some of these evenly distributed points may be in water or otherwise inaccessible). For the vegetation analyses, the cover of each vascular plant species in the plot is recorded. Every vegetation analysis is accompanied by an assessment of the ecosystem the plot lies in, including ecosystem type and some additional variables related to ecosystem-specific drivers of state. In the wetland-analysis in this document, we only use the plots which were classified as one of the wetland ecosystem types in the Norwegian categorization system for eco-diversity (NiN).
 In the analysis in this document, we use the data available on Miljødirektoratets kartkatalog (https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054), which comprises data from the first three ANO-years, 2019-2021, and a total of 8887 plots in 498 sites.
 
-(2) NiN reference data:
-The generalized species lists underlying the ecosystem categorization in NiN represent expert-compiled species lists based on empirical evidence from the literature and expert knowledge of the systems and their species. In these lists, every species is assigned an abundance value on a 6-step scale, with each step representing a range for the 'expected combination of frequency and cover' of occurrence (1: < 1/32, 2: 1/32 - 1/8 , 3: 1/8 - 3/8, 4: 3/8 - 4/5, 5: 3/8 - 4/5 + dominance, 6: > 4/5). For the purpose of this project, these steps are simplified to maximum 'expected combination of frequency and cover', whereby steps 4 & 5 are assigned 0.6 and 0.8, respectively, in order to distinguish between them.
+(2) **NiN reference data**:
+The generalized species lists underlying the ecosystem categorization in [NiN](https://artsdatabanken.no/NiN) represent expert-compiled species lists based on empirical evidence from the literature and expert knowledge of the systems and their species. In these lists, every species is assigned an abundance value on a 6-step scale, with each step representing a range for the 'expected combination of frequency and cover' of occurrence 
 
-(3) The Swedish plant indicator set published by Tyler et al. (2021) contains a large collection of plant indicators based on the Swedish flora, which is well representative of the Norwegian flora as well. From this set, we decided to include indicator data for light, moisture, pH, and nitrogen for wetlands as these are thought to be subject to potential change due to shrub/tree encroachment, drainage, and pollution.
+    -   1 = \< 1/32
+
+    -   2 = 1/32 - 1/8
+
+    -   3 = 1/8 - 3/8
+
+    -   4 = 3/8 - 4/5
+
+    -   5 = 3/8 - 4/5 + dominance
+
+    -   6 = \> 4/5
+
+For the purpose of this project, these steps are simplified to maximum _expected combination of frequency and cover_, whereby steps 4 & 5 are assigned 0.6 and 0.8, respectively, in order to distinguish between them.
+
+(3) **The Swedish plant indicator set** published by Tyler et al. (2021) contains a large collection of plant indicators based on the Swedish flora, which is well representative of the Norwegian flora as well. From this set, we decided to include indicator data for light, moisture, pH, and nitrogen for wetlands as these are thought to be subject to potential change due to shrub/tree encroachment, drainage, and pollution.
 
 
-### Representativity in time and space
-For wetlands, the ANO data contain 1351 plots in 330 sites, in principle distributed randomly across the country. As wetlands occur more often in certain regions of Norway than in others, the amount of plots and sites is not equal among Norway's five regions. The 1351 plots are distributed across regions in the following way:
+### Representativity in time and space {#representativity-fpiw}
+For wetlands, the ANO data contain 1351 plots in 330 sites, in principle distributed randomly across the country. As wetlands occur more often in certain regions of Norway than in others, the amount of plots and sites is not equal among Norway's five regions. The 1351
+<!-- I cannot recreate this number. Use in-line R code, here and elsewhere in similar situations -->
+plots are distributed across regions in the following way:
 
 - Northern Norway: 416
 - Central Norway:  361
@@ -87,27 +130,27 @@ For wetlands, the ANO data contain 1351 plots in 330 sites, in principle distrib
 - Western Norway:  150
 - Southern Norway: 126
 
-### Temporal coverage
+### Temporal coverage {#representativity-temporal-fpiw}
 The evaluation data cover the first three years, 2019-2021, of the first 5-year-cycle in the ANO monitoring scheme. Thus there is no actual time series to these data, and the indicator evaluation does therefore not include any temporal analyses.
 
 
 ## Collinearities with other indicators
-<!-- Text here -->
+Collinearity could occur with other indicators that are responding to the same drivers/pressures, but no really problematic issues have been discussed.
 
-## Reference state and values
-### Reference state
-The reference state is defined via the functional signature of the generalized species lists in NiN (see also Töpper et al. 2018). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for minor ecosystem types ("grunntyper" or "kartleggingsenheter" at a 1:5000 mapping scale) within the major ecosystem types (hovedtyper) in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
+## Reference state and values {#ref-state-fpiw}
+### Reference state {#ref-state2-fpiw}
+The reference state is defined via the functional signature of the generalized species lists in NiN (see also Töpper et al. 2018). By bootstrapping the species lists (see details further below) and calculating community-weighted means of functional plant indicators for every re-sampled community, we describe the reference state as a distribution of indicator values for each respective plant functional indicator. These distributions are calculated for minor ecosystem types ( _grunntyper_ or _kartleggingsenheter_ at a 1:5000 mapping scale) within the major ecosystem types (hovedtyper) in NiN. A more extensive discussion on the use of reference communities can be found in Jakobsson et al. (2020).
 
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values {#ref-values-fpiw}
 In this analysis, we derive scaling values from statistical (here, non-parametric) distributions (see Jakobsson et al. 2010). For each ecosystem sub-type and plant functional indicator, the reference value is defined as the median value of the indicator value distribution. As in most cases the distributions naturally are two-sided (but see the Heat-requirement indicator in the mountain assessment for an example of a one-sided plant functional indicator, Fremstad et al. 2022), and deviation from the optimal state thus may occur in both direction (e.g. indicating too low or too high pH), we need to define two threshold values for good ecological condition as well as both a minimum and maximum value. In line with previous assessments of ecological condition for Norwegian forests and mountains, we define a lower and an upper threshold value via the 95% confidence interval of the reference distribution, i.e. its 0.025 and 0.975 quantiles. The minimum and maximum values are given by the minimum and maximum of the possible indicator values for each respective plant functional indicator. For details on the scaling principles in IBECA, please see Töpper & Jakobsson (2021).
 
 
-## Uncertainties
+## Uncertainties {#uncertainties-fpiw}
 We can calculate a mean indicator value (after scaling) for every region (or any other delimited area of interest) as well as its corresponding standard error as a measure of spatial uncertainty for a geographical area.
 
 
-## References
+## References {#references-fpiw}
 Diekmann, M. 2003. Species indicator values as an important tool in applied plant ecology - a review. Basic and Applied Ecology 4: 493-506, doi:10.1078/1439-1791-00185
 
 Framstad, E., Kolstad, A. L., Nybø, S., Töpper, J. & Vandvik, V. 2022. The condition of forest and mountain ecosystems in Norway. Assessment by the IBECA method. NINA Report 2100. Norwegian Institute for Nature Research.
@@ -129,10 +172,10 @@ Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indic
 
 ## Analyses {#analyses-fpiw}
 ### Data sets
-
+<!-- Please print the entire workflow with echo=T. Also, simply reading cached data creates loose ends - I cant find out where this data comes from. You may also chose to read tin this data (or a cached version of it) way at the top of the file, so that you can add some in-line R code for the summary stats in the introduction part (see previous comments)-->
 ANO data
 
-```{r, echo = F}
+```{r, class.source = 'fold-hide'}
 # Add data from cache
 ANO.sp<-readRDS(paste0(here::here(),"/data/cache/ANO.sp.RDS"))
 ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
@@ -147,7 +190,7 @@ ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
 ```
 
 Plant indicators from Tyler et al. (2021)
-```{r, echo = F}
+```{r, class.source = 'fold-hide'}
 ## Tyler indicator data
 ## data from cache
 ind.dat <-readRDS(paste0(here::here(),"/data/cache/ind.dat.RDS"))
@@ -158,7 +201,7 @@ ind.dat <-readRDS(paste0(here::here(),"/data/cache/ind.dat.RDS"))
 ```
 
 Generalized species lists NiN
-```{r, echo = F}
+```{r, class.source = 'fold-hide'}
 # data from cache
 Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
 # load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/functional plant indicators/reference from NiN/Eco_State.RData")
@@ -170,8 +213,10 @@ Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
 - Checking species nomenclature in the different species lists to make species and indicator data possible to merge
 - Merging indicator data with monitoring data and indicator data with reference data
 (not shown here, but documented in the code)
+<!-- Please include everything like this, but you can chose to have it take up less space by adding the attr.output option, like this: -->
 
-```{r, include = F}
+
+```{r, include = T, results='hide', warning=F, message=F, class.source = 'fold-hide'}
 
 ### Plant indicator data
 names(ind.dat)
@@ -620,16 +665,33 @@ for (i in 2:46) {
 
 NiN.wetland.cov$sp <- as.factor(NiN.wetland.cov$sp)
 ```
-leaving us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov)
 
-```{r}
-head(ANO.sp.ind)
-head(NiN.wetland.cov)
+
+This leaves us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov):
+
+<!-- Print head of data set with horizontal scrolling -->
+```{r ano-sp-tab, class.source = 'fold-hide'}
+head(ANO.sp.ind) %>%
+  kable("html",caption = "ANO species occurence data set with attached plant trait data.") %>% 
+  kable_styling("striped") %>% scroll_box(width = "100%")
 ```
+
+
+
+```{r wetland-ref-data-tab, class.source = 'fold-hide'}
+head(NiN.wetland.cov) %>% 
+  kable("html", caption = "Reference data set") %>% 
+  kable_styling("striped") %>% scroll_box(width = "100%")
+```
+
+<br />
+
 For each ecosystem type with a NiN species list, we can calculate a community weighted mean (CWM) for the relevant functional plant indicators.
 For wetland ecosystem we are testing "Light", "Moisture", "Soil_reaction_pH", and "Nitrogen". In order to get distributions of CWMs rather than one single value (for comparison with the empirical testing data) the NiN lists can be bootstrapped.
 
-##### bootstrap function for frequency abundance
+<br />
+
+##### Bootstrap function for frequency abundance
 - function to calculate community weighted means of selected indicator values (ind)
 - for species lists (sp) with given abundances in percent (or on a scale from 0 to 1) in one or more 'sites' (abun)
 - with a given number of iterations (iter),
@@ -637,7 +699,7 @@ For wetland ecosystem we are testing "Light", "Moisture", "Soil_reaction_pH", an
 - with a given re-sampling ratio of the original species list (rat)
 - in every bootstrap iteration the abundance of the sampled species can be randomly changed by a limited amount if wished by introducing a re-sampling of abundance values from adjacent abundance steps with a certain probability (var.abun)
 
-```{r, echo = F}
+```{r, echo = T}
 indBoot.freq <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
   
   ind.b <- matrix(nrow=iter,ncol=length(colnames(abun)))
@@ -697,9 +759,7 @@ indBoot.freq <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
 }
 ```
 
-Running the bootstraps
-
-```{r, echo = T, eval = F}
+```{r}
 colnames(NiN.wetland)
 # 1st column is the species
 # 2nd-46th column is the abundances of sp in different ecosystem types
@@ -708,6 +768,10 @@ colnames(NiN.wetland)
 # species with abundance 1 (i.e. a max of 100%, must be included in each sample)
 # each sample re-samples 2/3 of the number of species
 # the abundance of the re-sampled species may vary (see bootstrap function for details)
+```
+
+Running the bootstraps:
+```{r, eval = F}
 wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:50],
                           iter=1000,obl=1,rat=2/3,var.abun=T)
 
@@ -721,6 +785,8 @@ for (i in 1:length(wetland.ref.cov) ) {
 }
 ```
 
+<!-- Please insert all the code that produces the cached data. Probably just needs to add the saveRDS() part to the code chunk above. -->
+
 ```{r, include = F}
 # Data from cache
 wetland.ref.cov<-readRDS(paste0(here::here(), "/data/cache/wetland.ref.cov.RDS"))
@@ -728,17 +794,20 @@ wetland.ref.cov<-readRDS(paste0(here::here(), "/data/cache/wetland.ref.cov.RDS")
 ```
 
 ```{r}
-head(wetland.ref.cov[[1]])
+head(wetland.ref.cov[[1]]) %>%
+    kable("html", caption = "Table showing the first 6 rows of the boostrapped data set.") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+
 ```
 
 This results in an R-list with a slot for every selected indicator, and in every slot there's a data frame with as many columns as there are NiN species lists and as many rows as there were iterations in the bootstrap.
+
 Next, we need to derive scaling values from these bootstrap-lists (the columns) for every mapping unit in NiN. Here, we define things in the following way:
 
 - Median = reference values
 - 0.025 and 0.975 quantiles = lower and upper limit values
 - min and max of the respective indicator's scale = min/max values
 
-```{r, echo = F}
+```{r, attr.output='style="max-height: 300px;"', results='hide', class.source = 'fold-hide'}
 
 # every NiN-type is represented by one 'generalisert artsliste'
 # some NiN-types are represented by two such species lists
@@ -856,12 +925,14 @@ summary(wetland.ref.cov.val)
 ```
 
 ```{r}
-head(wetland.ref.cov.val)
+wetland.ref.cov.val %>%
+      kable("html", caption = "Reference values (Rv and threshold values (Gv) for each indicator and nature type combination") %>% kable_styling("striped") %>% scroll_box(width = "100%", height = "300px")
+
 ```
 
 Once test data (ANO) and the scaling values from the reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO plot's CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper indicators for each plant functional indicator type. An ANO plot can only have a scaled value in either the lower or the upper indicator (the other one will be 'NA'), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.
 
-Here is the scaling function
+Here is the scaling function:
 ```{r}
 
 #### scaled values ####
@@ -900,8 +971,8 @@ scal <- function() {
 
 ```
 
-We then can prepare a list of data frames to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021)
-```{r, include=FALSE}
+We then can prepare a list of data frames to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021).
+```{r, results='hide', class.source = 'fold-hide'}
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
 unique(substr(wetland.ref.cov.val$grunn,1,2)) # NiN types in reference
@@ -976,7 +1047,7 @@ results.wetland[['original']]$hovedtype_rute    <- as.factor(results.wetland[['o
 results.wetland[['scaled']] <- results.wetland[['non-truncated']] <- results.wetland[['original']]
 ```
 
-```{r, echo = T, eval = F}
+```{r, eval = F, class.source = 'fold-hide'}
 
 #### calculating scaled and non-truncated values for the indicators based on the dataset ####
 for (i in 1:nrow(ANO.wetland) ) {  #
@@ -1142,7 +1213,9 @@ results.wetland<-readRDS(paste0(here::here(),"/data/cache/results.wetland.RDS"))
 ```
 
 ```{r}
-head(results.wetland[['2-sided']])
+head(results.wetland[['2-sided']]) %>%
+      kable("html", caption = "ANO plots for wetland ecosystems with scaled indicator values in the far-right columns.") %>% 
+  kable_styling("striped") %>% scroll_box(width = "100%")
 ```
 #### Scaled value analyses
 
@@ -1177,9 +1250,9 @@ pull(original)
 
 ```
 
-### Ecosystem sub-types
+### Ecosystem sub-types {#ecosystem-sub-types-fpiw}
 And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
-```{r,echo=FALSE,message=FALSE, warning=FALSE}
+```{r fpiw-plot-maintype, message=FALSE, warning=FALSE, fig.cap="Scaled vegetation indicator values for wetlands. 1 = cases where variable is lower than the reference value- 2 = cases where variablei is higher than the reference value.", out.width='100%', class.source = 'fold-hide'}
 
 # making the plot
 ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
@@ -1188,13 +1261,28 @@ ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) 
 #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4) + 
-  xlab("Main ecosystem type") + 
+  xlab("Wetland ecosystem sub-type") + 
   ylab("Scaled indicator value") 
 ```
 
+This figure is a bit easier to read if we remove the sub-types with very few data points:
+```{r fpiw-plot-maintype-v2, message=FALSE, warning=FALSE, fig.cap="Scaled vegetation indicator values for the four most common sub-types of wetland. 1 = cases where variable is lower than the reference value- 2 = cases where variablei is higher than the reference value.", out.width='100%', class.source = 'fold-hide'}
+ggplot(res.wetland[res.wetland$hovedtype_rute %in% c("V1", "V2", "V3", "V4"),], aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin() +
+#  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4) + 
+  xlab("Wetland ecosystem sub-type") + 
+  ylab("Scaled indicator value") +
+  guides(fill='none')
+```
+
+
 ### Indicator index maps
 We can also show the results as a map, for instance for pH1 (the lower pH indicator), either by directly plotting the data onto the map...
-```{r, echo=FALSE, warning=FALSE,message = FALSE}
+
+```{r ph-lower-map-fpiw, warning=FALSE, message = FALSE, fig.cap="Functional plant indicator values for pH (lower) in wetlands.", class.source = 'fold-hide'}
 #### scaled value maps ####
 # keep wide format and add geometry again
 res.wetland2 <- results.wetland[['2-sided']]
@@ -1239,6 +1327,7 @@ tm_shape(regnor) +
 
 
 ```
+
 ...but here the colors and values of the data points on the map are hard to make out.
 
 ### Regions - maps and statistics
@@ -1249,9 +1338,6 @@ Alternatively we can calculate and show the region-wise means and their related 
 Therefore, we need to (i) use a beta-model, that (ii) can account for the nested structure of the data.
 Here, we apply the following function using either a glmmTMB null-model with a beta-distribution, logit link, and the nesting as a random intercept, or a simple betareg null-model with logit link if the nesting is not extensive enough for a mixed model.
 ```{r}
-library(betareg)
-library(glmmTMB)
-
 expit <- function(L) exp(L) / (1+exp(L)) # since the beta-models use a logit link, we need to calculate the estimates back to the identity scale
 
 # the function performs a glmmTMB if there's >= 5 random levels in the nesting structure
@@ -1307,59 +1393,63 @@ indmean.beta <- function(df) {
 
 ```
 
-```{r}
+```{r ph-map-fpiw, fig.cap="Mean index value by region for the lower pH indicator (i.e. index shows deviations towards a more acidic environment). Numbers in grey fields show the number of observations in the respective region."}
 
 res.wetland2 = st_join(res.wetland2, regnor, left = TRUE)
 
 regnor <- regnor %>%
   mutate(
     pH1.reg.mean = c(indmean.beta(df=res.wetland2[res.wetland2$region=="Northern Norway",c("pH1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[1]
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[1],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[1],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[1],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[1]
     ),
     pH1.reg.se = c(indmean.beta(df=res.wetland2[res.wetland2$region=="Northern Norway",c("pH1","ano_flate_id")])[2],
-                               indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[2],
-                               indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[2],
-                               indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[2],
-                               indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[2]
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[2],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[2],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[2],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[2]
     ),
     pH1.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$pH1),]),
-                              nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$pH1),]),
-                              nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$pH1),]),
-                              nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$pH1),]),
-                              nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$pH1),])
+            nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$pH1),]),
+            nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$pH1),]),
+            nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$pH1),]),
+            nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$pH1),])
     )
   )
 
+# Colour palettes
+myCol <- "RdYlGn"
 
 ## scaled value maps for pH1 (lower indicator)
 # mean
 tm_shape(regnor) +
-  tm_polygons(col="pH1.reg.mean", title="pH (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_polygons(col="pH1.reg.mean", title="pH (lower), mean", style="fixed", 
+              palette=myCol,
+              breaks = seq(0,1,.2)) +
   tm_text("pH1.reg.n",col="black",bg.color="grey")
 ```
-Mean index value by region for the lower pH indicator (i.e. index shows deviations towards a more acidic environment). Numbers in grey fields show the number of observations in the respective region.
 
-```{r}
-# se
+
+We can also plot the uncertainty, here represented as the spatial variation:
+```{r ph-se-fpiw, fig.cap="Standard error to the mean index value by region for the lower pH indicator. Numbers in grey fields show the number of observations in the respective region."}
+
 tm_shape(regnor) +
   tm_polygons(col="pH1.reg.se", title="pH (lower), sd", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
   tm_text("pH1.reg.n",col="black",bg.color="grey")
 
 ```
-Standard error to the mean index value by region for the lower pH indicator. Numbers in grey fields show the number of observations in the respective region.
 
 
-### unscaled values vs. reference
+### Unscaled values vs. reference
 We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since pH and nitrogen show some deviation in the lower indicator we exemplify this with these two indicators for unscaled values.
 
-```{r}
-summary(res.wetland$kartleggingsenhet_1m2)
-length(unique(res.wetland$kartleggingsenhet_1m2))
+```{r pH-distcomp-fpiw, class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the pH indicator in ecosystem sub-type V1."}
+    #summary(res.wetland$kartleggingsenhet_1m2)
+    #length(unique(res.wetland$kartleggingsenhet_1m2))
 # 16 NiN-types to plot
-colnames(wetland.ref.cov[['Soil_reaction_pH']])
+    #colnames(wetland.ref.cov[['Soil_reaction_pH']])
 
 ### pH
 par(mfrow=c(2,4))
@@ -1435,7 +1525,9 @@ points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingse
 points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original,
        rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original)),
        col="red")
+```
 
+```{r ph-distcomp2-fpiw, class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the pH indicator in ecosystem sub-types other than V1."}
 par(mfrow=c(2,4))
 ## V2s
 # V2-C-1
@@ -1514,10 +1606,9 @@ points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.w
        rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V8-C-2",]$original)),
        col="red")
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
+```
 
-
-
-
+```{r n-distcomp-fpiw, class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the nitrogen affiliation indicator in ecosystem sub-type V1."}
 ### Nitrogen
 par(mfrow=c(2,4))
 ## V1s
@@ -1592,7 +1683,9 @@ points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleg
 points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original,
        rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original)),
        col="red")
+```
 
+```{r n-distcomp2-fpiw,class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the nitrogen affiliation indicator in ecosystem sub-types other than V1."}
 par(mfrow=c(2,4))
 ## V2s
 # V2-C-1
@@ -1671,9 +1764,11 @@ points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrog
        col="red")
 
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
-
 ```
+
+
+
 Deviations from the reference occur mainly in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
 
 ### Eksport file (final product) {#exp-fpiw}
-<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
+Nothing exported yet.
