@@ -1,3 +1,9 @@
+---
+output:
+  html_document:
+    code_folding: show
+---
+
 # Functional Plant Indicators - Wetlands {#Functional-plant-indicators-wetland}
 
 <br />
@@ -14,12 +20,12 @@ May 2023
 <br />
 
 <!-- Load all you dependencies here -->
-```{r setup, include=FALSE}
+```{r setup, class.source = 'fold-hide'}
 library(sf)
 library(plyr)
 library(tidyverse)
 library(RColorBrewer)
-library("gridExtra") 
+library(gridExtra) 
 library(ggridges)
 library(tmap)
 library(tmaptools)
@@ -27,9 +33,23 @@ library(raster)
 library(stars)
 library(knitr)
 library(kableExtra)
+library(betareg)
+library(glmmTMB)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+<!-- Limit code block height and force scrolling -->
+```{css, echo=FALSE}
+pre {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
 
 ```{r, echo=FALSE}
 Ecosystem <- "våtmark"
@@ -155,7 +175,7 @@ Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indic
 <!-- Please print the entire workflow with echo=T. Also, simply reading cached data creates loose ends - I cant find out where this data comes from. You may also chose to read tin this data (or a cached version of it) way at the top of the file, so that you can add some in-line R code for the summary stats in the introduction part (see previous comments)-->
 ANO data
 
-```{r, echo = F}
+```{r, class.source = 'fold-hide'}
 # Add data from cache
 ANO.sp<-readRDS(paste0(here::here(),"/data/cache/ANO.sp.RDS"))
 ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
@@ -170,7 +190,7 @@ ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
 ```
 
 Plant indicators from Tyler et al. (2021)
-```{r, echo = F}
+```{r, class.source = 'fold-hide'}
 ## Tyler indicator data
 ## data from cache
 ind.dat <-readRDS(paste0(here::here(),"/data/cache/ind.dat.RDS"))
@@ -181,7 +201,7 @@ ind.dat <-readRDS(paste0(here::here(),"/data/cache/ind.dat.RDS"))
 ```
 
 Generalized species lists NiN
-```{r, echo = F}
+```{r, class.source = 'fold-hide'}
 # data from cache
 Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
 # load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/functional plant indicators/reference from NiN/Eco_State.RData")
@@ -195,7 +215,8 @@ Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
 (not shown here, but documented in the code)
 <!-- Please include everything like this, but you can chose to have it take up less space by adding the attr.output option, like this: -->
 
-```{r, include = T, attr.output='style="max-height: 300px;"'}
+
+```{r, include = T, results='hide', warning=F, message=F, class.source = 'fold-hide'}
 
 ### Plant indicator data
 names(ind.dat)
@@ -644,23 +665,33 @@ for (i in 2:46) {
 
 NiN.wetland.cov$sp <- as.factor(NiN.wetland.cov$sp)
 ```
-leaving us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov)
+
+
+This leaves us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov):
 
 <!-- Print head of data set with horizontal scrolling -->
-```{r}
+```{r ano-sp-tab, class.source = 'fold-hide'}
 head(ANO.sp.ind) %>%
-  kable("html") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+  kable("html",caption = "ANO species occurence data set with attached plant trait data.") %>% 
+  kable_styling("striped") %>% scroll_box(width = "100%")
 ```
 
-```{r}
+
+
+```{r wetland-ref-data-tab, class.source = 'fold-hide'}
 head(NiN.wetland.cov) %>% 
-  kable("html") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+  kable("html", caption = "Reference data set") %>% 
+  kable_styling("striped") %>% scroll_box(width = "100%")
 ```
+
+<br />
 
 For each ecosystem type with a NiN species list, we can calculate a community weighted mean (CWM) for the relevant functional plant indicators.
 For wetland ecosystem we are testing "Light", "Moisture", "Soil_reaction_pH", and "Nitrogen". In order to get distributions of CWMs rather than one single value (for comparison with the empirical testing data) the NiN lists can be bootstrapped.
 
-##### bootstrap function for frequency abundance
+<br />
+
+##### Bootstrap function for frequency abundance
 - function to calculate community weighted means of selected indicator values (ind)
 - for species lists (sp) with given abundances in percent (or on a scale from 0 to 1) in one or more 'sites' (abun)
 - with a given number of iterations (iter),
@@ -728,8 +759,6 @@ indBoot.freq <- function(sp,abun,ind,iter,obl,rat=2/3,var.abun=F) {
 }
 ```
 
-Running the bootstraps
-
 ```{r}
 colnames(NiN.wetland)
 # 1st column is the species
@@ -741,6 +770,7 @@ colnames(NiN.wetland)
 # the abundance of the re-sampled species may vary (see bootstrap function for details)
 ```
 
+Running the bootstraps:
 ```{r, eval = F}
 wetland.ref.cov <- indBoot.freq(sp=NiN.wetland.cov[,1],abun=NiN.wetland.cov[,2:46],ind=NiN.wetland.cov[,47:50],
                           iter=1000,obl=1,rat=2/3,var.abun=T)
@@ -765,18 +795,19 @@ wetland.ref.cov<-readRDS(paste0(here::here(), "/data/cache/wetland.ref.cov.RDS")
 
 ```{r}
 head(wetland.ref.cov[[1]]) %>%
-    kable("html") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+    kable("html", caption = "Table showing the first 6 rows of the boostrapped data set.") %>% kable_styling("striped") %>% scroll_box(width = "100%")
 
 ```
 
 This results in an R-list with a slot for every selected indicator, and in every slot there's a data frame with as many columns as there are NiN species lists and as many rows as there were iterations in the bootstrap.
+
 Next, we need to derive scaling values from these bootstrap-lists (the columns) for every mapping unit in NiN. Here, we define things in the following way:
 
 - Median = reference values
 - 0.025 and 0.975 quantiles = lower and upper limit values
 - min and max of the respective indicator's scale = min/max values
 
-```{r, attr.output='style="max-height: 300px;"'}
+```{r, attr.output='style="max-height: 300px;"', results='hide', class.source = 'fold-hide'}
 
 # every NiN-type is represented by one 'generalisert artsliste'
 # some NiN-types are represented by two such species lists
@@ -894,14 +925,14 @@ summary(wetland.ref.cov.val)
 ```
 
 ```{r}
-head(wetland.ref.cov.val) %>%
-      kable("html") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+wetland.ref.cov.val %>%
+      kable("html", caption = "Reference values (Rv and threshold values (Gv) for each indicator and nature type combination") %>% kable_styling("striped") %>% scroll_box(width = "100%", height = "300px")
 
 ```
 
 Once test data (ANO) and the scaling values from the reference data (NiN) are in place, we can calculate CWMs of the selected indicators for the ANO community data and scale them against the scaling values from the reference distribution. Note that we scale each ANO plot's CWM against either the lower threshold value and the min value OR the upper threshold value and the max value based on whether the CWM is smaller or higher than the reference value. Since the scaled values for both sides range between 0 and 1, we generate separate lower and upper indicators for each plant functional indicator type. An ANO plot can only have a scaled value in either the lower or the upper indicator (the other one will be 'NA'), except for the unlikely event that the CWM exactly matches the reference value, in which case both lower and upper indicator will receive a scaled indicator value of 1.
 
-Here is the scaling function
+Here is the scaling function:
 ```{r}
 
 #### scaled values ####
@@ -940,8 +971,8 @@ scal <- function() {
 
 ```
 
-We then can prepare a list of data frames to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021)
-```{r}
+We then can prepare a list of data frames to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021).
+```{r, results='hide', class.source = 'fold-hide'}
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
 unique(substr(wetland.ref.cov.val$grunn,1,2)) # NiN types in reference
@@ -1016,7 +1047,7 @@ results.wetland[['original']]$hovedtype_rute    <- as.factor(results.wetland[['o
 results.wetland[['scaled']] <- results.wetland[['non-truncated']] <- results.wetland[['original']]
 ```
 
-```{r, echo = T, eval = F}
+```{r, eval = F, class.source = 'fold-hide'}
 
 #### calculating scaled and non-truncated values for the indicators based on the dataset ####
 for (i in 1:nrow(ANO.wetland) ) {  #
@@ -1183,7 +1214,8 @@ results.wetland<-readRDS(paste0(here::here(),"/data/cache/results.wetland.RDS"))
 
 ```{r}
 head(results.wetland[['2-sided']]) %>%
-      kable("html") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+      kable("html", caption = "ANO plots for wetland ecosystems with scaled indicator values in the far-right columns.") %>% 
+  kable_styling("striped") %>% scroll_box(width = "100%")
 ```
 #### Scaled value analyses
 
@@ -1220,7 +1252,7 @@ pull(original)
 
 ### Ecosystem sub-types {#ecosystem-sub-types-fpiw}
 And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
-```{r fpiw-plot-maintype,echo=FALSE,message=FALSE, warning=FALSE, fig.cap="Scaled vegetation indicator values for wetlands. 1 = cases where variable is lower than the reference value- 2 = cases where variablei si higher than the reference value."}
+```{r fpiw-plot-maintype, message=FALSE, warning=FALSE, fig.cap="Scaled vegetation indicator values for wetlands. 1 = cases where variable is lower than the reference value- 2 = cases where variablei is higher than the reference value.", out.width='100%', class.source = 'fold-hide'}
 
 # making the plot
 ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
@@ -1229,14 +1261,28 @@ ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) 
 #  geom_boxplot(width=0.2, color="grey") +
   geom_point(size=0.7, shape=16, color="grey") +
   facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4) + 
-  xlab("Main ecosystem type") + 
+  xlab("Wetland ecosystem sub-type") + 
   ylab("Scaled indicator value") 
 ```
+
+This figure is a bit easier to read if we remove the sub-types with very few data points:
+```{r fpiw-plot-maintype-v2, message=FALSE, warning=FALSE, fig.cap="Scaled vegetation indicator values for the four most common sub-types of wetland. 1 = cases where variable is lower than the reference value- 2 = cases where variablei is higher than the reference value.", out.width='100%', class.source = 'fold-hide'}
+ggplot(res.wetland[res.wetland$hovedtype_rute %in% c("V1", "V2", "V3", "V4"),], aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
+  geom_hline(yintercept=0.6, linetype="dashed") + 
+  geom_violin() +
+#  geom_boxplot(width=0.2, color="grey") +
+  geom_point(size=0.7, shape=16, color="grey") +
+  facet_wrap(~factor(fp_ind,levels=c("Light1","Moist1","pH1","Nitrogen1","Light2","Moist2","pH2","Nitrogen2")), ncol = 4) + 
+  xlab("Wetland ecosystem sub-type") + 
+  ylab("Scaled indicator value") +
+  guides(fill='none')
+```
+
 
 ### Indicator index maps
 We can also show the results as a map, for instance for pH1 (the lower pH indicator), either by directly plotting the data onto the map...
 
-```{r ph-lower-map-fpiw, echo=FALSE, warning=FALSE,message = FALSE, fig.cap="Functional plant indicator values for pH (lower) in wetlands."}
+```{r ph-lower-map-fpiw, warning=FALSE, message = FALSE, fig.cap="Functional plant indicator values for pH (lower) in wetlands.", class.source = 'fold-hide'}
 #### scaled value maps ####
 # keep wide format and add geometry again
 res.wetland2 <- results.wetland[['2-sided']]
@@ -1292,9 +1338,6 @@ Alternatively we can calculate and show the region-wise means and their related 
 Therefore, we need to (i) use a beta-model, that (ii) can account for the nested structure of the data.
 Here, we apply the following function using either a glmmTMB null-model with a beta-distribution, logit link, and the nesting as a random intercept, or a simple betareg null-model with logit link if the nesting is not extensive enough for a mixed model.
 ```{r}
-library(betareg)
-library(glmmTMB)
-
 expit <- function(L) exp(L) / (1+exp(L)) # since the beta-models use a logit link, we need to calculate the estimates back to the identity scale
 
 # the function performs a glmmTMB if there's >= 5 random levels in the nesting structure
@@ -1350,59 +1393,63 @@ indmean.beta <- function(df) {
 
 ```
 
-```{r}
+```{r ph-map-fpiw, fig.cap="Mean index value by region for the lower pH indicator (i.e. index shows deviations towards a more acidic environment). Numbers in grey fields show the number of observations in the respective region."}
 
 res.wetland2 = st_join(res.wetland2, regnor, left = TRUE)
 
 regnor <- regnor %>%
   mutate(
     pH1.reg.mean = c(indmean.beta(df=res.wetland2[res.wetland2$region=="Northern Norway",c("pH1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[1],
-                                 indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[1]
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[1],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[1],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[1],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[1]
     ),
     pH1.reg.se = c(indmean.beta(df=res.wetland2[res.wetland2$region=="Northern Norway",c("pH1","ano_flate_id")])[2],
-                               indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[2],
-                               indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[2],
-                               indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[2],
-                               indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[2]
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Central Norway",c("pH1","ano_flate_id")])[2],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Eastern Norway",c("pH1","ano_flate_id")])[2],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Western Norway",c("pH1","ano_flate_id")])[2],
+            indmean.beta(df=res.wetland2[res.wetland2$region=="Southern Norway",c("pH1","ano_flate_id")])[2]
     ),
     pH1.reg.n = c(nrow(res.wetland2[res.wetland2$region=="Northern Norway" & !is.na(res.wetland2$pH1),]),
-                              nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$pH1),]),
-                              nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$pH1),]),
-                              nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$pH1),]),
-                              nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$pH1),])
+            nrow(res.wetland2[res.wetland2$region=="Central Norway" & !is.na(res.wetland2$pH1),]),
+            nrow(res.wetland2[res.wetland2$region=="Eastern Norway" & !is.na(res.wetland2$pH1),]),
+            nrow(res.wetland2[res.wetland2$region=="Western Norway" & !is.na(res.wetland2$pH1),]),
+            nrow(res.wetland2[res.wetland2$region=="Southern Norway" & !is.na(res.wetland2$pH1),])
     )
   )
 
+# Colour palettes
+myCol <- "RdYlGn"
 
 ## scaled value maps for pH1 (lower indicator)
 # mean
 tm_shape(regnor) +
-  tm_polygons(col="pH1.reg.mean", title="pH (lower), mean", style="quantile", palette=rev(get_brewer_pal(palette="OrRd", n=5, plot=FALSE))) +
+  tm_polygons(col="pH1.reg.mean", title="pH (lower), mean", style="fixed", 
+              palette=myCol,
+              breaks = seq(0,1,.2)) +
   tm_text("pH1.reg.n",col="black",bg.color="grey")
 ```
-Mean index value by region for the lower pH indicator (i.e. index shows deviations towards a more acidic environment). Numbers in grey fields show the number of observations in the respective region.
 
-```{r}
-# se
+
+We can also plot the uncertainty, here represented as the spatial variation:
+```{r ph-se-fpiw, fig.cap="Standard error to the mean index value by region for the lower pH indicator. Numbers in grey fields show the number of observations in the respective region."}
+
 tm_shape(regnor) +
   tm_polygons(col="pH1.reg.se", title="pH (lower), sd", style="quantile", palette=get_brewer_pal(palette="OrRd", n=5, plot=FALSE)) +
   tm_text("pH1.reg.n",col="black",bg.color="grey")
 
 ```
-Standard error to the mean index value by region for the lower pH indicator. Numbers in grey fields show the number of observations in the respective region.
 
 
-### unscaled values vs. reference
+### Unscaled values vs. reference
 We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since pH and nitrogen show some deviation in the lower indicator we exemplify this with these two indicators for unscaled values.
 
-```{r}
-summary(res.wetland$kartleggingsenhet_1m2)
-length(unique(res.wetland$kartleggingsenhet_1m2))
+```{r pH-distcomp-fpiw, class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the pH indicator in ecosystem sub-type V1."}
+    #summary(res.wetland$kartleggingsenhet_1m2)
+    #length(unique(res.wetland$kartleggingsenhet_1m2))
 # 16 NiN-types to plot
-colnames(wetland.ref.cov[['Soil_reaction_pH']])
+    #colnames(wetland.ref.cov[['Soil_reaction_pH']])
 
 ### pH
 par(mfrow=c(2,4))
@@ -1478,7 +1525,9 @@ points(density(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingse
 points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original,
        rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original)),
        col="red")
+```
 
+```{r ph-distcomp2-fpiw, class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the pH indicator in ecosystem sub-types other than V1."}
 par(mfrow=c(2,4))
 ## V2s
 # V2-C-1
@@ -1557,10 +1606,9 @@ points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.w
        rep(0,length(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2=="V8-C-2",]$original)),
        col="red")
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
+```
 
-
-
-
+```{r n-distcomp-fpiw, class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the nitrogen affiliation indicator in ecosystem sub-type V1."}
 ### Nitrogen
 par(mfrow=c(2,4))
 ## V1s
@@ -1635,7 +1683,9 @@ points(density(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleg
 points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original,
        rep(0,length(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenhet_1m2=="V1-C-8",]$original)),
        col="red")
+```
 
+```{r n-distcomp2-fpiw,class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the nitrogen affiliation indicator in ecosystem sub-types other than V1."}
 par(mfrow=c(2,4))
 ## V2s
 # V2-C-1
@@ -1714,9 +1764,11 @@ points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$fp_ind=="Nitrog
        col="red")
 
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
-
 ```
+
+
+
 Deviations from the reference occur mainly in V2-C1, which represents limestone-poor swamp forests. According to the functional signature from the plant community composition many of the occurrences of this ecosystem type are too acidic and may have too low availability of nitrogen. 
 
 ### Eksport file (final product) {#exp-fpiw}
-<!-- Export final file. Ideally a georeferenced shape or raster wit indicators values (raw and normalised), reference values and errors. -->
+Nothing exported yet.
