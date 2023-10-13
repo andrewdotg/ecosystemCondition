@@ -1,4 +1,4 @@
-# Functional Plant Indicators - Naturally Open Ecosystems {#Functional-plant-indicators-open}
+# Functional Plant Indicators - Naturally Open Ecosystems {#functional-plant-indicators-open}
 
 <br />
 

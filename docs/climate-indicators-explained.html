@@ -81,8 +81,8 @@
 <li><a class="" href="median-summer-temp.html"><span class="header-section-number">4</span> Median Summer Temperature</a></li>
 <li><a class="" href="alien-species.html"><span class="header-section-number">5</span> Alien species</a></li>
 <li><a class="" href="Functional-plant-indicators-wetland.html"><span class="header-section-number">6</span> Functional Plant Indicators - Wetlands</a></li>
-<li><a class="" href="Functional-plant-indicators-seminat.html"><span class="header-section-number">7</span> Functional Plant Indicators - Semi-Natural Ecosystems</a></li>
-<li><a class="" href="Functional-plant-indicators-open.html"><span class="header-section-number">8</span> Functional Plant Indicators - Naturally Open Ecosystems</a></li>
+<li><a class="" href="functional-plant-indicators-seminat.html"><span class="header-section-number">7</span> Functional Plant Indicators - Semi-Natural Ecosystems</a></li>
+<li><a class="" href="functional-plant-indicators-open.html"><span class="header-section-number">8</span> Functional Plant Indicators - Naturally Open Ecosystems</a></li>
 <li><a class="" href="trophic-level-biomass-ratios.html"><span class="header-section-number">9</span> Trophic level biomass ratios</a></li>
 <li><a class="" href="insect-indicators.html"><span class="header-section-number">10</span> Insect indicators</a></li>
 <li class="book-part">R &amp; D</li>
@@ -136,14 +136,14 @@
 </h2>
 <p>This chapters describes the development of a workflow for generating or preparing indicators based on interpolated climate data from <a href="https://senorge.no/">SeNorge</a>. I describe the process using dummy data and also discuss alternate approaches and dead ends that occured in the development process. For a succinct workflow example for a specific indicator, see <a href="median-summer-temp.html#median-summer-temp">Median summer temperature</a>.</p>
 </div>
-<div id="about-the-underlying-data-11" class="section level2" number="20.2">
+<div id="about-the-underlying-data-10" class="section level2" number="20.2">
 <h2>
-<span class="header-section-number">20.2</span> About the underlying data<a class="anchor" aria-label="anchor" href="#about-the-underlying-data-11"><i class="fas fa-link"></i></a>
+<span class="header-section-number">20.2</span> About the underlying data<a class="anchor" aria-label="anchor" href="#about-the-underlying-data-10"><i class="fas fa-link"></i></a>
 </h2>
 <p>The data is in a raster format and extends back to 1957 in the form of multiple interpolated climate variables. The spatial resolution is 1 x 1 km.</p>
-<div id="representativity-in-time-and-space-11" class="section level3" number="20.2.1">
+<div id="representativity-in-time-and-space-10" class="section level3" number="20.2.1">
 <h3>
-<span class="header-section-number">20.2.1</span> Representativity in time and space<a class="anchor" aria-label="anchor" href="#representativity-in-time-and-space-11"><i class="fas fa-link"></i></a>
+<span class="header-section-number">20.2.1</span> Representativity in time and space<a class="anchor" aria-label="anchor" href="#representativity-in-time-and-space-10"><i class="fas fa-link"></i></a>
 </h3>
 <p>The data includes the last normal period (1961-1990) which defines the reference condition for climate variables. Therefore the temporal resolution is very good. Also considering the daily resolution of the data.</p>
 <p>Spatially, a 1x1 km resolution is sufficient for most climate variables, esp. in homogeneous terrain, but this needs to be evaluation for each variable and scenario specifically.</p>
@@ -154,9 +154,9 @@
 </h3>
 <p>Varied. Specified below for each parameter.</p>
 </div>
-<div id="temporal-coverage-9" class="section level3" number="20.2.3">
+<div id="temporal-coverage-8" class="section level3" number="20.2.3">
 <h3>
-<span class="header-section-number">20.2.3</span> Temporal coverage<a class="anchor" aria-label="anchor" href="#temporal-coverage-9"><i class="fas fa-link"></i></a>
+<span class="header-section-number">20.2.3</span> Temporal coverage<a class="anchor" aria-label="anchor" href="#temporal-coverage-8"><i class="fas fa-link"></i></a>
 </h3>
 <p>1957 - present</p>
 </div>
@@ -213,15 +213,15 @@
 <p>The choice to use 2 SD units as the threshold values is a subjective choice in many ways, and not founded in any empirical or known relationship between the indicators and ecosystem integrity. The value comes from the common practice of calling something <em>extreme weather</em> when it is outside 2 SD units of the current running average. So, if the indicator value today is &lt;0.6 it implies that the mean for that variable over the last year would have been referred to as <em>extreme</em> if it had occurred between 1961 and 1990. This is I think a conservative threshold, since one would/could call it <em>extreme</em> if only one year is outside the 2SD range, and having the mean of 5 years being outside this range is <em>really</em> extreme.</p>
 </div>
 </div>
-<div id="uncertainties-10" class="section level2" number="20.6">
+<div id="uncertainties-9" class="section level2" number="20.6">
 <h2>
-<span class="header-section-number">20.6</span> Uncertainties<a class="anchor" aria-label="anchor" href="#uncertainties-10"><i class="fas fa-link"></i></a>
+<span class="header-section-number">20.6</span> Uncertainties<a class="anchor" aria-label="anchor" href="#uncertainties-9"><i class="fas fa-link"></i></a>
 </h2>
 <p>For the indicator map (1 x 1 km raster) there is no uncertainty associated with the indicator values. For aggregated indicator values (e.g. for regions), the uncertainty in the indicator value is calculated from the spatial variation in the indicator values via bootstrapping. This might, however, be changed later to the temporal variation between the five years of each period.</p>
 </div>
-<div id="references-14" class="section level2" number="20.7">
+<div id="references-13" class="section level2" number="20.7">
 <h2>
-<span class="header-section-number">20.7</span> References<a class="anchor" aria-label="anchor" href="#references-14"><i class="fas fa-link"></i></a>
+<span class="header-section-number">20.7</span> References<a class="anchor" aria-label="anchor" href="#references-13"><i class="fas fa-link"></i></a>
 </h2>
 <p><a href="https://senorge.no/" class="uri">https://senorge.no/</a></p>
 <p><em>rr and tm are being download from:</em> <a href="https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html" class="uri">https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html</a></p>
@@ -243,32 +243,32 @@
 <span class="header-section-number">20.8.1</span> Data set<a class="anchor" aria-label="anchor" href="#data-set-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>The data is downloaded to a local NINA server, and updated regularly.</p>
-<div class="sourceCode" id="cb746"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb750"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">dir</span> <span class="op">==</span> <span class="st">"C:"</span>, </span>
 <span>      <span class="st">"R:/GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original"</span>,</span>
 <span>      <span class="st">"/data/R/GeoSpatialData/Meteorology/Norway_SeNorge2018_v22.09/Original"</span><span class="op">)</span></span></code></pre></div>
 <p>This folder contains folder for the different parameters</p>
-<div class="sourceCode" id="cb747"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb751"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "age"        "fsw"        "gwb_eva"    "gwb_gwtcl" </span></span>
 <span><span class="co">#&gt;  [5] "gwb_q"      "gwb_sssdev" "gwb_sssrel" "lwc"       </span></span>
 <span><span class="co">#&gt;  [9] "qsw"        "rr_tm"      "sd"         "sdfsw"     </span></span>
 <span><span class="co">#&gt; [13] "swe"</span></span></code></pre></div>
 <p>This table explains them in more detail</p>
-<div class="sourceCode" id="cb748"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb752"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">senorgelayers</span> <span class="op">&lt;-</span> <span class="fu">read_delim</span><span class="op">(</span><span class="st">"data/senorgelayers.txt"</span>, </span>
 <span>    delim <span class="op">=</span> <span class="st">"\t"</span>, escape_double <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>    trim_ws <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span><span class="va">senorgelayers</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-5"></span>
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-3b0217a443242645e56a" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-3b0217a443242645e56a">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"],["sdfsw","fsw","sd","age","swe","#swepr","#swepr","qsw","lwc","gwb_q","gwb_eva","gwb_gwtcl","gwb_sssdev","gwb_sssrel","tm","rr"],["16","8","16","8","16","no longer included","16","8","8","16","8","8","16","16","16","16"],[65535,255,65535,255,65535,null,65535,255,255,65535,255,255,32767,65535,65535,65535],[65534,254,null,254,null,null,null,254,254,null,null,null,null,null,null,null],["fresh snow depth","fresh snow","snow depth","snow age","snow water equivalent",null,"snow water equivalent percentage","snow melt","free water content in snow","runoff","evapotranspiration","ground water condition","water capacity of the soil","current water saturation of the soil","temperature","precipitation"],["mm","mm (water equivalent)","mm","number of days since last snowfall","1/10 mm (water equivalent)",null,"1/10 %","mm (water equivalent)","1/10 % free water in the snow layer","1/10 mm","1/10 mm","24h percentile of the normal period","mm in relation to maximum value of the normal period","% of the maximum value of the normal period","celsius","mm"],["Nysnødybde","Nysnø","Snødybde","Snøens alder","Snømengde",null,"Prosentandel swe","Snøsmelting","Snøtilstand","Avrenning","Fordamping","Grunnvannstilstand","Jordas vannkapasitet","Vannmetting i jord","Temperatur","Nedbør"],["Verdier i fil i 16bit integer verdier som angir mm snødybde.","Verdier angir mm vannekvivalent.","Verdier angir mm snødybde.","Verdiene angir antall dager siden siste snøfall.","Verdiene angir 1/10mm vannekvivalent. Altså en verdi på 102 er 10.2 mm vann.",null,"Veldig uklar beskrivelse gitt av NVE. Må sjekkes!","Verdiene angir mm vannekvivalent.","Verdien angir i prosent hvor mye fritt vann det er i snøpakka. Oppgitt i 1/10 %. En verdi på 45 er altså 4.5%.","Angir avrenning i 1/10mm vann. En verdi på 34 er altså 3.4 mm.","Angir fordampning i 1/10 mm vann.","Verdien angir hvilken døgnpercentilene i normalperioden som verdien tilhører. Verdiene er her 5, 25, 50, 75 og 95.","Verdien angir lagerkapasiteten (i mm) i forhold til maxverdien registrert i 30 årsperioden (1981-2010). Negativ verdi betyr altså at dagens vannlager verdi er over maxverdien.","Dagens vannlager verdi i prosent av den samme maksimale verdien som brukes i gwb_ssdev. En verdi over 100 angir altså at maksverdien er overskredet.","Verdien angir grader i Celsius (re-skalert fra tiendels Kelvin, der en verdi på 2811 er (2811-2731)/10 = 8.0 C.","Verdien angir nedbør i mm (re-skalert fra tiendels mm)."],["gt_Meteorology_Norway_seNorge_FreshSnowDepth_days","gt_Meteorology_Norway_seNorge_FreshSnow_days","gt_Meteorology_Norway_seNorge_SnowDepth_days","gt_Meteorology_Norway_seNorge_SnowAge_days","gt_Meteorology_Norway_seNorge_SnowAmount_days",null,"gt_Meteorology_Norway_seNorge_SnowAmountPercentage_days","gt_Meteorology_Norway_seNorge_SnowMelt_days","gt_Meteorology_Norway_seNorge_SnowFreeWaterContent_days","gt_Meteorology_Norway_seNorge_Runoff_days","gt_Meteorology_Norway_seNorge_Evapotranspiration_days","gt_Meteorology_Norway_seNorge_GroundWaterCondition_days","gt_Meteorology_Norway_seNorge_WaterCapacitySoil_days","gt_Meteorology_Norway_seNorge_WaterSaturationSoil_days","gt_Meteorology_Norway_seNorge_Temperature_days","gt_Meteorology_Norway_seNorge_Precipitation_days"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,"celsius","precipitation_daily"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>abbrev<\/th>\n      <th>bit<\/th>\n      <th>nodata<\/th>\n      <th>bare_ground<\/th>\n      <th>name<\/th>\n      <th>unit<\/th>\n      <th>navn<\/th>\n      <th>beskrivelse<\/th>\n      <th>grass_mapset<\/th>\n      <th>color_table<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p class="caption">
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-1e79a50053ec714cf67c" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1e79a50053ec714cf67c">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16"],["sdfsw","fsw","sd","age","swe","#swepr","#swepr","qsw","lwc","gwb_q","gwb_eva","gwb_gwtcl","gwb_sssdev","gwb_sssrel","tm","rr"],["16","8","16","8","16","no longer included","16","8","8","16","8","8","16","16","16","16"],[65535,255,65535,255,65535,null,65535,255,255,65535,255,255,32767,65535,65535,65535],[65534,254,null,254,null,null,null,254,254,null,null,null,null,null,null,null],["fresh snow depth","fresh snow","snow depth","snow age","snow water equivalent",null,"snow water equivalent percentage","snow melt","free water content in snow","runoff","evapotranspiration","ground water condition","water capacity of the soil","current water saturation of the soil","temperature","precipitation"],["mm","mm (water equivalent)","mm","number of days since last snowfall","1/10 mm (water equivalent)",null,"1/10 %","mm (water equivalent)","1/10 % free water in the snow layer","1/10 mm","1/10 mm","24h percentile of the normal period","mm in relation to maximum value of the normal period","% of the maximum value of the normal period","celsius","mm"],["Nysnødybde","Nysnø","Snødybde","Snøens alder","Snømengde",null,"Prosentandel swe","Snøsmelting","Snøtilstand","Avrenning","Fordamping","Grunnvannstilstand","Jordas vannkapasitet","Vannmetting i jord","Temperatur","Nedbør"],["Verdier i fil i 16bit integer verdier som angir mm snødybde.","Verdier angir mm vannekvivalent.","Verdier angir mm snødybde.","Verdiene angir antall dager siden siste snøfall.","Verdiene angir 1/10mm vannekvivalent. Altså en verdi på 102 er 10.2 mm vann.",null,"Veldig uklar beskrivelse gitt av NVE. Må sjekkes!","Verdiene angir mm vannekvivalent.","Verdien angir i prosent hvor mye fritt vann det er i snøpakka. Oppgitt i 1/10 %. En verdi på 45 er altså 4.5%.","Angir avrenning i 1/10mm vann. En verdi på 34 er altså 3.4 mm.","Angir fordampning i 1/10 mm vann.","Verdien angir hvilken døgnpercentilene i normalperioden som verdien tilhører. Verdiene er her 5, 25, 50, 75 og 95.","Verdien angir lagerkapasiteten (i mm) i forhold til maxverdien registrert i 30 årsperioden (1981-2010). Negativ verdi betyr altså at dagens vannlager verdi er over maxverdien.","Dagens vannlager verdi i prosent av den samme maksimale verdien som brukes i gwb_ssdev. En verdi over 100 angir altså at maksverdien er overskredet.","Verdien angir grader i Celsius (re-skalert fra tiendels Kelvin, der en verdi på 2811 er (2811-2731)/10 = 8.0 C.","Verdien angir nedbør i mm (re-skalert fra tiendels mm)."],["gt_Meteorology_Norway_seNorge_FreshSnowDepth_days","gt_Meteorology_Norway_seNorge_FreshSnow_days","gt_Meteorology_Norway_seNorge_SnowDepth_days","gt_Meteorology_Norway_seNorge_SnowAge_days","gt_Meteorology_Norway_seNorge_SnowAmount_days",null,"gt_Meteorology_Norway_seNorge_SnowAmountPercentage_days","gt_Meteorology_Norway_seNorge_SnowMelt_days","gt_Meteorology_Norway_seNorge_SnowFreeWaterContent_days","gt_Meteorology_Norway_seNorge_Runoff_days","gt_Meteorology_Norway_seNorge_Evapotranspiration_days","gt_Meteorology_Norway_seNorge_GroundWaterCondition_days","gt_Meteorology_Norway_seNorge_WaterCapacitySoil_days","gt_Meteorology_Norway_seNorge_WaterSaturationSoil_days","gt_Meteorology_Norway_seNorge_Temperature_days","gt_Meteorology_Norway_seNorge_Precipitation_days"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,"celsius","precipitation_daily"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>abbrev<\/th>\n      <th>bit<\/th>\n      <th>nodata<\/th>\n      <th>bare_ground<\/th>\n      <th>name<\/th>\n      <th>unit<\/th>\n      <th>navn<\/th>\n      <th>beskrivelse<\/th>\n      <th>grass_mapset<\/th>\n      <th>color_table<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p class="caption">
 Figure 15.1: Table explaining the available climate parameters in the data set.
 </p>
 </div>
 <p>Here is the content of one of these folders (first 10 entries)</p>
-<div class="sourceCode" id="cb749"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb753"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">files_tm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"/rr_tm"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span><span class="co">#&gt;  [1] "seNorge2018_1957.nc" "seNorge2018_1958.nc"</span></span>
 <span><span class="co">#&gt;  [3] "seNorge2018_1959.nc" "seNorge2018_1960.nc"</span></span>
@@ -277,20 +277,20 @@ Figure 15.1: Table explaining the available climate parameters in the data set.
 <span><span class="co">#&gt;  [9] "seNorge2018_1965.nc" "seNorge2018_1966.nc"</span></span></code></pre></div>
 <p>There are 67 files, i.e. 67 years of data, one file per year.</p>
 <p>Importing (proxy) file:</p>
-<div class="sourceCode" id="cb750"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb754"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tg_1957</span> <span class="op">&lt;-</span> <span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/read_ncdf.html">read_ncdf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"/rr_tm/seNorge2018_1957.nc"</span><span class="op">)</span>,</span>
 <span>                            var<span class="op">=</span><span class="st">"tg"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Large netcdf source found, returning proxy object.</span></span></code></pre></div>
 <p>I know the CRS, so setting it manually. Although I cannot rule out 32633, I don’t think it matters.</p>
-<div class="sourceCode" id="cb751"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb755"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">st_crs</span><span class="op">(</span><span class="va">tg_1957</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">25833</span></span></code></pre></div>
 <p>The data has three dimension</p>
-<div class="sourceCode" id="cb752"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb756"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">tg_1957</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    X    Y time </span></span>
 <span><span class="co">#&gt; 1195 1550  365</span></span></code></pre></div>
 <p>Initially the data had four attributes, but I subsettet to only include <em>tg</em>.</p>
-<div class="sourceCode" id="cb753"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb757"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">tg_1957</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "tg"</span></span></code></pre></div>
 <p><code>tg_1957</code> is a stars proxy object and <a href="https://r-spatial.github.io/stars/articles/stars8.html">most commands</a> will not initiate any change until later, typically I write to file and all the lazy operations are done in squeal. Therefore, I will prepare a test data set, which is smaller and which I can import to memory. Then I can perform the operations on that data set and we can see the results.</p>
@@ -299,7 +299,7 @@ Figure 15.1: Table explaining the available climate parameters in the data set.
 <span class="header-section-number">20.8.1.1</span> Dummy data<a class="anchor" aria-label="anchor" href="#dummy-data"><i class="fas fa-link"></i></a>
 </h4>
 <p>This test data is included in the {stars} package</p>
-<div class="sourceCode" id="cb754"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb758"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tif</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"tif/L7_ETMs.tif"</span>, package <span class="op">=</span> <span class="st">"stars"</span><span class="op">)</span></span>
 <span><span class="va">t1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="st">"1970-05-31"</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fu">read_stars</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">tif</span>, <span class="va">tif</span>, <span class="va">tif</span>, <span class="va">tif</span><span class="op">)</span>, along <span class="op">=</span> </span>
@@ -310,48 +310,48 @@ Figure 15.1: Table explaining the available climate parameters in the data set.
 <span>                               nYSize <span class="op">=</span> <span class="fl">50</span>, </span>
 <span>                               bands <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>A single attribute</p>
-<div class="sourceCode" id="cb755"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb759"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "L7_ETMs.tif"</span></span></code></pre></div>
 <p>I can rename it like this</p>
-<div class="sourceCode" id="cb756"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb760"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"Attribute_A"</span><span class="op">)</span></span></code></pre></div>
 <p>And I can add another dummy attribute.</p>
-<div class="sourceCode" id="cb757"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb761"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="st">"Attribute_B"</span> <span class="op">=</span> <span class="va">Attribute_A</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p>The dummy data also has four dimensions</p>
-<div class="sourceCode" id="cb758"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb762"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x    y band time </span></span>
 <span><span class="co">#&gt;   50   50    6    4</span></span></code></pre></div>
 <p>X and y area the coordinates. Band is an integer:</p>
-<div class="sourceCode" id="cb759"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb763"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">x</span>, <span class="st">"band"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 2 3 4 5 6</span></span></code></pre></div>
 <p>I will remove the <em>band</em> dimension.</p>
-<div class="sourceCode" id="cb760"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb764"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">band</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">adrop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Time is four dates covering four months in 1970:</p>
-<div class="sourceCode" id="cb761"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb765"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">oldTime</span> <span class="op">&lt;-</span> <span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">x</span>, <span class="st">"time"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "1970-05-31" "1970-06-01" "1970-07-20" "1970-09-08"</span></span></code></pre></div>
 <p>I’ll add some extra seasonal variation between to the mix</p>
-<div class="sourceCode" id="cb762"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb766"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="va">Attribute_A</span><span class="op">[</span>,,<span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">Attribute_A</span><span class="op">[</span>,,<span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="fl">1.2</span></span>
 <span><span class="va">x</span><span class="op">$</span><span class="va">Attribute_A</span><span class="op">[</span>,,<span class="fl">3</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">Attribute_A</span><span class="op">[</span>,,<span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="fl">1.4</span></span>
 <span><span class="va">x</span><span class="op">$</span><span class="va">Attribute_A</span><span class="op">[</span>,,<span class="fl">4</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">Attribute_A</span><span class="op">[</span>,,<span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="fl">1.1</span></span></code></pre></div>
 <p>Now I create another four copies of this data, adding some random noise and a continuous decreasing trend.</p>
-<div class="sourceCode" id="cb763"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb767"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Function to add random noise</span></span>
 <span><span class="va">myRandom</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">.05</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb764"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb768"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="va">x</span></span>
 <span><span class="va">y2</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">st_apply</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">myRandom</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">st_set_dimensions</span><span class="op">(</span><span class="st">"time"</span>, values <span class="op">=</span> <span class="va">oldTime</span> <span class="op">%m+%</span> <span class="fu">years</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Attribute_A <span class="op">=</span> <span class="va">Attribute_A</span><span class="op">*</span><span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="va">y3</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">st_apply</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">myRandom</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">st_set_dimensions</span><span class="op">(</span><span class="st">"time"</span>, values <span class="op">=</span> <span class="va">oldTime</span> <span class="op">%m+%</span> <span class="fu">years</span><span class="op">(</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Attribute_A <span class="op">=</span> <span class="va">Attribute_A</span><span class="op">*</span><span class="fl">0.90</span><span class="op">)</span></span>
 <span><span class="va">y4</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">st_apply</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">myRandom</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">st_set_dimensions</span><span class="op">(</span><span class="st">"time"</span>, values <span class="op">=</span> <span class="va">oldTime</span> <span class="op">%m+%</span> <span class="fu">years</span><span class="op">(</span><span class="op">-</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Attribute_A <span class="op">=</span> <span class="va">Attribute_A</span><span class="op">*</span><span class="fl">0.85</span><span class="op">)</span></span>
 <span><span class="va">y5</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">st_apply</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">myRandom</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">st_set_dimensions</span><span class="op">(</span><span class="st">"time"</span>, values <span class="op">=</span> <span class="va">oldTime</span> <span class="op">%m+%</span> <span class="fu">years</span><span class="op">(</span><span class="op">-</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Attribute_A <span class="op">=</span> <span class="va">Attribute_A</span><span class="op">*</span><span class="fl">0.80</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb765"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb769"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># We combine the data into one cube for plotting:</span></span>
 <span><span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">y1</span>, <span class="va">y2</span>, <span class="va">y3</span>, <span class="va">y4</span>, <span class="va">y5</span><span class="op">)</span> </span>
 <span></span>
@@ -365,7 +365,7 @@ Figure 15.1: Table explaining the available climate parameters in the data set.
 <span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">time</span>, ncol<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="climate_indicators_explained_files/figure-html/unnamed-chunk-22-1.png" width="672"></div>
 <p>Saving these to file.</p>
-<div class="sourceCode" id="cb766"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb770"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="st">"P:/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/dummy_data"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">y1</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"/y1.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">y2</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"/y2.rds"</span><span class="op">)</span><span class="op">)</span></span>
@@ -377,7 +377,7 @@ Figure 15.1: Table explaining the available climate parameters in the data set.
 <span class="header-section-number">20.8.1.1.1</span> Dummy regions and ET map<a class="anchor" aria-label="anchor" href="#dummy-regions-and-et-map"><i class="fas fa-link"></i></a>
 </h5>
 <p>Here is some dummy data for accounting areas (regions) and ecosystem occurrences as well, in case I need them later.</p>
-<div class="sourceCode" id="cb767"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb771"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dummy_aa</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="va">oldTime</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">adrop</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -392,7 +392,7 @@ Figure 15.1: Table explaining the available climate parameters in the data set.
 Figure 16.7: Showing the example account area delineation (raster format)
 </p>
 </div>
-<div class="sourceCode" id="cb768"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb772"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dummy_et</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="va">oldTime</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">adrop</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -414,7 +414,7 @@ Figure 20.1: Showing the example Ecosystem type delineation data.
 <span class="header-section-number">20.8.1.2</span> Regions<a class="anchor" aria-label="anchor" href="#regions-cli"><i class="fas fa-link"></i></a>
 </h4>
 <p>Importing a shape file with the regional delineation.</p>
-<div class="sourceCode" id="cb769"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb773"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">"data/regions.shp"</span>, options <span class="op">=</span> <span class="st">"ENCODING=UTF8"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; options:        ENCODING=UTF8 </span></span>
 <span><span class="co">#&gt; Reading layer `regions' from data source </span></span>
@@ -427,7 +427,7 @@ Figure 20.1: Showing the example Ecosystem type delineation data.
 <span><span class="co">#&gt; Projected CRS: ETRS89 / UTM zone 33N</span></span>
 <span><span class="co">#st_crs(reg)</span></span></code></pre></div>
 <p>Outline of Norway</p>
-<div class="sourceCode" id="cb770"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb774"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nor</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">"data/outlineOfNorway_EPSG25833.shp"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reading layer `outlineOfNorway_EPSG25833' from data source </span></span>
 <span><span class="co">#&gt;   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/outlineOfNorway_EPSG25833.shp' </span></span>
@@ -438,11 +438,11 @@ Figure 20.1: Showing the example Ecosystem type delineation data.
 <span><span class="co">#&gt; Bounding box:  xmin: -113472.7 ymin: 6448359 xmax: 1114618 ymax: 7939917</span></span>
 <span><span class="co">#&gt; Projected CRS: ETRS89 / UTM zone 33N</span></span></code></pre></div>
 <p>Remove marine areas from regions</p>
-<div class="sourceCode" id="cb771"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb775"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu">st_intersection</span><span class="op">(</span><span class="va">reg</span>, <span class="va">nor</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially</span></span>
 <span><span class="co">#&gt; constant throughout all geometries</span></span></code></pre></div>
-<div class="sourceCode" id="cb772"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb776"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tm_shape</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tm_polygons</span><span class="op">(</span>col<span class="op">=</span><span class="st">"region"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -512,26 +512,26 @@ Figure 5.8: Five accounting areas (regions) in Norway.
 </h3>
 <p>Say we want to calculate the mean summer temperature. We then want to exclude the data for the times that is not withing our definition of summer.</p>
 <p>Let’s try it on the dummy data. Remember this data had four time steps.</p>
-<div class="sourceCode" id="cb773"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb777"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">x</span>, <span class="st">"time"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "1970-05-31" "1970-06-01" "1970-07-20" "1970-09-08"</span></span></code></pre></div>
 <p>Our real data has 365 time steps for each year.</p>
 <p>First I define my start and end dates. I want to keep only the summer data, defined as jun - aug.</p>
-<div class="sourceCode" id="cb774"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb778"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">start_month</span> <span class="op">&lt;-</span>  <span class="st">"06"</span></span>
 <span><span class="va">end_month</span> <span class="op">&lt;-</span> <span class="st">"08"</span></span></code></pre></div>
 <p>Then for each iteration I need to get the year as well</p>
-<div class="sourceCode" id="cb775"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb779"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">year_temp</span> <span class="op">&lt;-</span> <span class="fu">year</span><span class="op">(</span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">x</span>, <span class="st">"time"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1970</span></span></code></pre></div>
 <p>Then I can create a time interval object</p>
-<div class="sourceCode" id="cb776"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb780"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu">ym</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">year_temp</span>, <span class="va">start_month</span>, sep<span class="op">=</span><span class="st">"-"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">end</span> <span class="op">&lt;-</span>  <span class="fu">ym</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">year_temp</span>, <span class="va">end_month</span>, sep<span class="op">=</span><span class="st">"-"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">(</span><span class="va">myInterval</span> <span class="op">&lt;-</span> <span class="fu">interval</span><span class="op">(</span><span class="va">start</span>, <span class="va">end</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1970-06-01 UTC--1970-08-01 UTC</span></span></code></pre></div>
 <p>Then I filter</p>
-<div class="sourceCode" id="cb777"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb781"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x_aug</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Attribute_A</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">adrop</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -545,7 +545,7 @@ Figure 5.8: Five accounting areas (regions) in Norway.
 <span class="header-section-number">20.8.5</span> Aggregate across time within a year<a class="anchor" aria-label="anchor" href="#aggregate-across-time-within-a-year"><i class="fas fa-link"></i></a>
 </h3>
 <p>For this example I want to calculate the mean temperature over the summer. I therefore need to aggregate over time. Many climate indicators will need this functionality. There are two ways, either using <code>st_apply</code> or using <code>aggregate</code>.</p>
-<div class="sourceCode" id="cb778"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb782"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temp_names</span> <span class="op">&lt;-</span> <span class="fu">year</span><span class="op">(</span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">x_aug</span>, <span class="st">"time"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">microOut</span> <span class="op">&lt;-</span> <span class="fu">microbenchmark</span><span class="op">(</span></span>
@@ -557,7 +557,7 @@ Figure 5.8: Five accounting areas (regions) in Norway.
 <span>times<span class="op">=</span><span class="fl">30</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The time dimension is now gone as we have aggregated across it.</p>
-<div class="sourceCode" id="cb779"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb783"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">autoplot</span><span class="op">(</span><span class="va">microOut</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Coordinate system already present. Adding new coordinate</span></span>
 <span><span class="co">#&gt; system, which will replace the existing one.</span></span></code></pre></div>
@@ -569,7 +569,7 @@ Figure 20.2: Comparing computation tome for two spatial aggregation functions.
 </div>
 <p><code>st_apply</code> is slightly faster, but <code>aggregate</code> has the advantage of that it retains the time dimension, whereas for <code>st_apply</code> I need to set the attribute name to be the year. I will try to use <code>st_apply</code>.</p>
 <p>But let me see if I can save time by masking to ET before doing this operation.</p>
-<div class="sourceCode" id="cb780"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb784"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x_masked</span> <span class="op">&lt;-</span> <span class="va">x_aug</span></span>
 <span><span class="va">x_masked</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">dummy_et</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x_masked</span><span class="op">[</span>,,,<span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
@@ -579,7 +579,7 @@ Figure 20.2: Comparing computation tome for two spatial aggregation functions.
 Figure 20.3: Demonstrating the effect of maskig the dummy data using a perfectly aligne raster ET map.
 </p>
 </div>
-<div class="sourceCode" id="cb781"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb785"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">autoplot</span><span class="op">(</span></span>
 <span>  <span class="fu">microbenchmark</span><span class="op">(</span></span>
 <span>No_masking <span class="op">=</span>  <span class="va">x_aug</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -600,7 +600,7 @@ Figure 20.4: Comparing computation time before and after masking of raster data.
 </div>
 <p>Since there is no increase in performance from masking, as we see in Fig. @ref(fig: withMasking) then it basically means we it is slower to mask beforehand, since the masking was not past of the benchmark assessment.</p>
 <p>So, this is my solution:</p>
-<div class="sourceCode" id="cb782"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb786"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># setNames dont work on stars proxy obejct, so I use rename instead</span></span>
 <span><span class="va">lookup</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"v_"</span>, <span class="va">temp_names</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -608,7 +608,7 @@ Figure 20.4: Comparing computation time before and after masking of raster data.
 <span>  <span class="fu">st_apply</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="va">mean</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html">all_of</a></span><span class="op">(</span><span class="va">lookup</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The <em>v_</em> follows the naming convention we have developed for ourselves.</p>
-<div class="sourceCode" id="cb783"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb787"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggarrange</span><span class="op">(</span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">geom_stars</span><span class="op">(</span>data <span class="op">=</span> <span class="va">x_aug</span><span class="op">)</span> <span class="op">+</span></span>
@@ -635,7 +635,7 @@ Figure 20.5: Plotting the dummy data showing Attribute_A for the two dates as sm
 </p>
 </div>
 <p>Here’s the whole first step of the conceptual workflow in action, on the dummy data.</p>
-<div class="sourceCode" id="cb784"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb788"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Setting up the parameters</span></span>
 <span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span></span>
@@ -678,9 +678,9 @@ Figure 20.5: Plotting the dummy data showing Attribute_A for the two dates as sm
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="st">"Attribute_A"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.124   0.004   0.134</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.134   0.000   0.141</span></span></code></pre></div>
 <p>And this is the result.</p>
-<div class="sourceCode" id="cb785"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb789"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">geom_stars</span><span class="op">(</span>data <span class="op">=</span> <span class="va">summerTemp_fullSeries</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">coord_equal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -698,7 +698,7 @@ Figure 20.6: Temporal aggregation on the dummy data set.
 <p>Now let’s try it on the real data.</p>
 <p><em>I initially tried to read stars proxy object and add steps to the call_list and execute these with <code>st_as_stars</code>, but this still returned proxy objects. Therefore I read the whole file in without proxy. To save time I can subset based on Julian dates.</em></p>
 <p>I will use <a href="https://tmieno2.github.io/R-as-GIS-for-Economists/EE.html">parallelization</a> to speed things up.</p>
-<div class="sourceCode" id="cb786"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb790"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">dir</span> <span class="op">==</span> <span class="st">"C:"</span>, </span>
 <span>      <span class="st">"R:/"</span>,</span>
 <span>      <span class="st">"/data/R/"</span><span class="op">)</span></span>
@@ -762,7 +762,7 @@ Figure 20.6: Temporal aggregation on the dummy data set.
 <span></span>
 <span><span class="fu">stopCluster</span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>This takes about 20 sec per file/year, or 22 min on total. That is not too bad. About 6000 raster are read into memory. Here’s a test for the effect of splitting over more cores.</p>
-<div class="sourceCode" id="cb787"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb791"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu">makeCluster</span><span class="op">(</span><span class="fl">2L</span><span class="op">)</span></span>
 <span><span class="va">cl2</span> <span class="op">&lt;-</span> <span class="fu">makeCluster</span><span class="op">(</span><span class="fl">6L</span><span class="op">)</span></span>
 <span><span class="va">cl3</span> <span class="op">&lt;-</span> <span class="fu">makeCluster</span><span class="op">(</span><span class="fl">10L</span><span class="op">)</span></span>
@@ -807,25 +807,25 @@ Figure 20.6: Temporal aggregation on the dummy data set.
 <li><p>Ten clusters (second run): 13.617 sec elapsed</p></li>
 </ul>
 <p>The RStudio server has 48 cores. More parallel cores is probably on average faster. The NINA guidelines is to use max 10 cores, and to remember to close parallel cluster when done.</p>
-<div class="sourceCode" id="cb788"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb792"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#saveRDS(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.rds")</span></span>
 <span><span class="co">#write_stars(real_temp_summer, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff")</span></span></code></pre></div>
 <p>These files are about 500 MB, but the tiff file reads in a lot quicker then the rds file, so from now on I’ll just export as tiff. <em>(This could perhaps have been solved with a <code><a href="https://rdrr.io/r/base/gc.html">gc()</a></code>. Later I tried saving as RData with no speed issues problems, but then I had a problem with RData files seemingly becoming corrupted over time - stars objects saved as RData files would not bind together using <code>c.stars()</code> with other matching stars object and I think this could be related to a time stamp in the RData format. So, stick to tiff).</em></p>
-<div class="sourceCode" id="cb789"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb793"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summer_median_temp</span> <span class="op">&lt;-</span> <span class="fu">read_stars</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">pData</span>, <span class="st">"climate_indicators/aggregated_climate_time_series/real_temp_summer.tiff"</span><span class="op">)</span>,</span>
 <span>                                 proxy<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb790"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb794"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">summer_median_temp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "real_temp_summer.tiff"</span></span></code></pre></div>
-<div class="sourceCode" id="cb791"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb795"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">summer_median_temp</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    x    y band </span></span>
 <span><span class="co">#&gt; 1195 1550   66</span></span></code></pre></div>
-<div class="sourceCode" id="cb792"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb796"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">summer_median_temp</span>, <span class="st">"Year"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>
 <p>Note that GTiff automatically renames the third dimension <em>band</em> and also renames the attribute.</p>
-<div class="sourceCode" id="cb793"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb797"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">summer_median_temp</span>, <span class="st">"band"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "v_2022" "v_2021" "v_2020" "v_2019" "v_2018" "v_2017"</span></span>
 <span><span class="co">#&gt;  [7] "v_2016" "v_2015" "v_2014" "v_2013" "v_2012" "v_2011"</span></span>
@@ -839,14 +839,14 @@ Figure 20.6: Temporal aggregation on the dummy data set.
 <span><span class="co">#&gt; [55] "v_1968" "v_1967" "v_1966" "v_1965" "v_1964" "v_1963"</span></span>
 <span><span class="co">#&gt; [61] "v_1962" "v_1961" "v_1960" "v_1959" "v_1958" "v_1957"</span></span></code></pre></div>
 <p>I can rename them.</p>
-<div class="sourceCode" id="cb794"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb798"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summer_median_temp</span> <span class="op">&lt;-</span> <span class="va">summer_median_temp</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">st_set_dimensions</span><span class="op">(</span>names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span>, <span class="st">"v_YEAR"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="st">"temperature"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">summer_median_temp</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      x      y v_YEAR </span></span>
 <span><span class="co">#&gt;   1195   1550     66</span></span></code></pre></div>
-<div class="sourceCode" id="cb795"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb799"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">geom_stars</span><span class="op">(</span>data <span class="op">=</span> <span class="va">summer_median_temp</span><span class="op">[</span>,,,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">11</span>,<span class="fl">22</span><span class="op">)</span><span class="op">]</span>, downsample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">coord_equal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -871,7 +871,7 @@ Figure 5.13: Showing three random slices of the year dimension.
 <span class="header-section-number">20.8.6.1</span> Aggregate across reference years<a class="anchor" aria-label="anchor" href="#aggregate-across-reference-years"><i class="fas fa-link"></i></a>
 </h4>
 <p>We need to first to define a reference period and then to subset our data <code>summer_median_temp</code>. We can practice on the dummy data <code>y</code>.</p>
-<div class="sourceCode" id="cb796"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb800"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">dir</span> <span class="op">==</span> <span class="st">"C:"</span>,</span>
 <span>       <span class="st">"P:/"</span>, </span>
@@ -886,37 +886,37 @@ Figure 5.13: Showing three random slices of the year dimension.
 <span>  <span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="va">myFiles</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
 <span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">temp</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb797"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb801"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">y</span>, <span class="st">"time"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "1966-05-31" "1966-06-01" "1966-07-20" "1966-09-08"</span></span>
 <span><span class="co">#&gt;  [5] "1967-05-31" "1967-06-01" "1967-07-20" "1967-09-08"</span></span>
 <span><span class="co">#&gt;  [9] "1968-05-31" "1968-06-01" "1968-07-20" "1968-09-08"</span></span>
 <span><span class="co">#&gt; [13] "1969-05-31" "1969-06-01" "1969-07-20" "1969-09-08"</span></span>
 <span><span class="co">#&gt; [17] "1970-05-31" "1970-06-01" "1970-07-20" "1970-09-08"</span></span></code></pre></div>
-<div class="sourceCode" id="cb798"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb802"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_filtered</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Attribute_A</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">%within%</span> <span class="fu">interval</span><span class="op">(</span><span class="st">"1961-01-01"</span>, <span class="st">"1990-12-31"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Now we aggregate across years, again using st_apply.</p>
-<div class="sourceCode" id="cb799"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb803"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">median_sd</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb800"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb804"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_ref</span> <span class="op">&lt;-</span> <span class="va">y_filtered</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">st_apply</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, FUN <span class="op">=</span>  <span class="va">median_sd</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb801"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb805"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">y_ref</span><span class="op">)</span></span>
 <span><span class="co">#&gt; median_sd         x         y </span></span>
 <span><span class="co">#&gt;         2        50        50</span></span></code></pre></div>
-<div class="sourceCode" id="cb802"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb806"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">y_ref</span>, <span class="st">"median_sd"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "median" "sd"</span></span></code></pre></div>
 <p>It’s perhaps easier if median and sd are unique attributes, rather than levels of a dimension.</p>
-<div class="sourceCode" id="cb803"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb807"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_ref</span> <span class="op">&lt;-</span> <span class="va">y_ref</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="st">"median_sd"</span><span class="op">)</span></span></code></pre></div>
 <p>The attribute name <em>mean</em> we can change this to something more meaningful.</p>
-<div class="sourceCode" id="cb804"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb808"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_ref</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">y_ref</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"reference_upper"</span>, <span class="st">"sd"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb805"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb809"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tmap_arrange</span><span class="op">(</span></span>
 <span><span class="fu">tm_shape</span><span class="op">(</span><span class="va">y_ref</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">tm_raster</span><span class="op">(</span><span class="st">"reference_upper"</span><span class="op">)</span></span>
@@ -932,13 +932,13 @@ Figure 3.21: Showing the upper reference levels and the standard deviation from 
 </p>
 </div>
 <p>Let’s transfer this over to the real data. First we need to rename our dimension values and turn them back into dates.</p>
-<div class="sourceCode" id="cb806"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb810"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">new_dims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">summer_median_temp</span>, <span class="st">"v_YEAR"</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span>, <span class="st">"-01-01"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">summer_median_temp_ref</span> <span class="op">&lt;-</span> <span class="va">summer_median_temp</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">st_set_dimensions</span><span class="op">(</span><span class="st">"v_YEAR"</span>, values <span class="op">=</span> <span class="va">new_dims</span><span class="op">)</span></span></code></pre></div>
 <p>Then I can filter to leave only the reference period.</p>
-<div class="sourceCode" id="cb807"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb811"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summer_median_temp_ref</span> <span class="op">&lt;-</span> <span class="va">summer_median_temp_ref</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">v_YEAR</span> <span class="op">%within%</span> <span class="fu">interval</span><span class="op">(</span><span class="st">"1961-01-01"</span>, <span class="st">"1990-12-31"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">st_get_dimension_values</span><span class="op">(</span><span class="va">summer_median_temp_ref</span>, <span class="st">"v_YEAR"</span><span class="op">)</span></span>
@@ -951,7 +951,7 @@ Figure 3.21: Showing the upper reference levels and the standard deviation from 
 <span><span class="co">#&gt; [25] "1966-01-01" "1965-01-01" "1964-01-01" "1963-01-01"</span></span>
 <span><span class="co">#&gt; [29] "1962-01-01" "1961-01-01"</span></span></code></pre></div>
 <p>And then we calculate the median and sd like above</p>
-<div class="sourceCode" id="cb808"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb812"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu">makeCluster</span><span class="op">(</span><span class="fl">10L</span><span class="op">)</span></span>
 <span><span class="va">summer_median_temp_ref</span> <span class="op">&lt;-</span> <span class="va">summer_median_temp_ref</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -973,19 +973,19 @@ Figure 3.21: Showing the upper reference levels and the standard deviation from 
 </tr></tbody>
 </table></div>
 <p>This is also something I can export.</p>
-<div class="sourceCode" id="cb809"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb813"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Note that write_stars can only export a single attribute, but we have put the 'attributes' as dimensions, and these will be read in as 'band' when importing tiff.</span></span>
 <span><span class="fu">write_stars</span><span class="op">(</span><span class="va">summer_median_temp_ref</span>, <span class="st">"/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.tiff"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># I initially saved as RData, like this, but ran into problems later when trying to bind stars objects using c.stars(). It appears RData becomes corrutpt in a sense, over time, perhaps due to some time stamp. If I recreated the object in the global environment and saved as RDatam I could read it in and work with it, but the next day it would not work again.</span></span>
 <span><span class="co">#saveRDS(summer_median_temp_ref, "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_ref.RData")</span></span></code></pre></div>
 <p>Pivot and turn dimension into attributes:</p>
-<div class="sourceCode" id="cb810"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb814"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summer_median_temp_ref_long</span> <span class="op">&lt;-</span> <span class="va">summer_median_temp_ref</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="st">"band"</span><span class="op">)</span></span></code></pre></div>
 <p>The attribute name is <em>mean</em>. We can change this to something more meaningful.</p>
-<div class="sourceCode" id="cb811"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb815"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summer_median_temp_ref_long</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">summer_median_temp_ref_long</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"reference_upper"</span>, <span class="st">"sd"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb812"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb816"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tmap_arrange</span><span class="op">(</span></span>
 <span><span class="fu">tm_shape</span><span class="op">(</span><span class="fu">st_downsample</span><span class="op">(</span><span class="va">summer_median_temp_ref_long</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">tm_raster</span><span class="op">(</span><span class="st">"reference_upper"</span><span class="op">)</span></span>
@@ -1006,7 +1006,7 @@ Figure 20.7: Showing the upper reference levels and the standard deviation from 
 <span class="header-section-number">20.8.6.2</span> Combine<a class="anchor" aria-label="anchor" href="#combine"><i class="fas fa-link"></i></a>
 </h4>
 <p>I need to combine the variables and the ref values in one data cube</p>
-<div class="sourceCode" id="cb813"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb817"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_var</span> <span class="op">&lt;-</span> <span class="va">summer_median_temp</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">summer_median_temp_ref_long</span><span class="op">)</span></span></code></pre></div>
@@ -1016,12 +1016,12 @@ Figure 20.7: Showing the upper reference levels and the standard deviation from 
 <h3>
 <span class="header-section-number">20.8.7</span> Normalise variable<a class="anchor" aria-label="anchor" href="#normalise-variable"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb814"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb818"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select the columns to normalise</span></span>
 <span><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">y_var</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">y_var</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"reference_upper"</span>, <span class="st">"sd"</span><span class="op">)</span> <span class="op">]</span></span>
 <span><span class="va">cols_new</span> <span class="op">&lt;-</span> <span class="va">cols</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">cols_new</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"v_"</span>, <span class="st">"i_"</span>, <span class="va">cols</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb815"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb819"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Mutate</span></span>
 <span></span>
 <span><span class="co"># The break point scaling is actually not needed here, since </span></span>
@@ -1063,10 +1063,10 @@ Figure 20.7: Showing the upper reference levels and the standard deviation from 
 </tr></tbody>
 </table></div>
 <p>Writing to file, this time as RData (could use rds) because tiff don’t allow multiple attributes, and because we don’t need to use <code>c.stars()</code> in this object.</p>
-<div class="sourceCode" id="cb816"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb820"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/gc.html">gc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">y_var_norm</span>, <span class="st">"/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/climate_indicators/aggregated_climate_time_series/summer_median_temp_normalised.RData"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb817"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb821"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">22</span><span class="op">)</span></span>
 <span></span>
@@ -1133,7 +1133,7 @@ Figure 20.8: Example showing median summer tempretur in 1970, the upper and lwoe
 </h3>
 <p>We could also plot a time series as a series of maps, but then we need to average over these 5 year time periods first. We can get to that later.</p>
 <p>To plot time series I first need to do a spatial aggregation. One option is to spatially aggregate the stars object directly, using the <code>reg</code> data set:</p>
-<div class="sourceCode" id="cb818"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb822"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temp</span> <span class="op">&lt;-</span> <span class="va">y_var_norm</span><span class="op">[</span><span class="fl">1</span>,,<span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">reg</span>, <span class="va">mean</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">temp</span><span class="op">)</span></span>
@@ -1141,15 +1141,15 @@ Figure 20.8: Example showing median summer tempretur in 1970, the upper and lwoe
 <span>  <span class="fu">st_as_sf</span><span class="op">(</span><span class="op">)</span> <span class="co"># too slow</span></span></code></pre></div>
 <p>However, this does no preserve the region name, and a subsequent <code>st_intersection</code> taks a little while and gives some boundary problems.</p>
 <p>I can also convert pixels to points and then do the intersection.</p>
-<div class="sourceCode" id="cb819"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb819-1"><a href="climate-indicators-explained.html#cb819-1" aria-hidden="true" tabindex="-1"></a>temp_points <span class="ot">&lt;-</span> y_var_norm[<span class="dv">1</span>,,] <span class="sc">%&gt;%</span></span>
-<span id="cb819-2"><a href="climate-indicators-explained.html#cb819-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">as_points =</span> <span class="cn">TRUE</span>, <span class="at">merge =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb819-3"><a href="climate-indicators-explained.html#cb819-3" aria-hidden="true" tabindex="-1"></a>temp_points2 <span class="ot">&lt;-</span> temp_points <span class="sc">%&gt;%</span></span>
-<span id="cb819-4"><a href="climate-indicators-explained.html#cb819-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_intersection</span>(reg) <span class="st">" too slow"</span></span></code></pre></div>
+<div class="sourceCode" id="cb823"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb823-1"><a href="climate-indicators-explained.html#cb823-1" aria-hidden="true" tabindex="-1"></a>temp_points <span class="ot">&lt;-</span> y_var_norm[<span class="dv">1</span>,,] <span class="sc">%&gt;%</span></span>
+<span id="cb823-2"><a href="climate-indicators-explained.html#cb823-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">as_points =</span> <span class="cn">TRUE</span>, <span class="at">merge =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb823-3"><a href="climate-indicators-explained.html#cb823-3" aria-hidden="true" tabindex="-1"></a>temp_points2 <span class="ot">&lt;-</span> temp_points <span class="sc">%&gt;%</span></span>
+<span id="cb823-4"><a href="climate-indicators-explained.html#cb823-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_intersection</span>(reg) <span class="st">" too slow"</span></span></code></pre></div>
 <p>But this also took too long.</p>
 <p>I can perhaps aggregate, and then turn to points and intersect, but that did not work perfect either.</p>
 <p>I can rasterize the regions data set, turn it into a coded dimension and use st_apply, but that is tedious.</p>
 <p>Let me try using <code>exact_extract</code>, as an alternative to <code>aggregate</code>. This requires us to turn to the <code>terra</code> package for a bit.</p>
-<div class="sourceCode" id="cb820"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb824"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span></span>
 <span><span class="va">regional_means</span> <span class="op">&lt;-</span> <span class="fu">rast</span><span class="op">(</span><span class="va">y_var_norm</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">exact_extract</span><span class="op">(</span><span class="va">reg</span>, fun <span class="op">=</span> <span class="st">'mean'</span>, append_cols <span class="op">=</span> <span class="st">"region"</span>, progress<span class="op">=</span><span class="cn">T</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1158,18 +1158,18 @@ Figure 20.8: Example showing median summer tempretur in 1970, the upper and lwoe
 <p>user; system; elapsed: 7.603; 3.071; 10.697</p>
 <p>That was fast!</p>
 <p>I should also get the sd:</p>
-<div class="sourceCode" id="cb821"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb825"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span></span>
 <span><span class="va">regional_sd</span> <span class="op">&lt;-</span> <span class="fu">rast</span><span class="op">(</span><span class="va">y_var_norm</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">exact_extract</span><span class="op">(</span><span class="va">reg</span>, fun <span class="op">=</span> <span class="st">'stdev'</span>, append_cols <span class="op">=</span> <span class="st">"region"</span>, progress<span class="op">=</span><span class="cn">T</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"region"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">y_var_norm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p>user; system; elapsed: 7.420; 2.921; 10.355</p>
-<div class="sourceCode" id="cb822"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb826"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">regional_means</span>, <span class="st">"temp/regional_means.rds"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span><span class="op">(</span><span class="va">regional_sd</span>, <span class="st">"temp/regional_sd.rds"</span><span class="op">)</span></span></code></pre></div>
 <p>Reshape and plot</p>
-<div class="sourceCode" id="cb823"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb827"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">div</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"reference_upper"</span>,</span>
 <span>         <span class="st">"reference_low"</span>,</span>
 <span>         <span class="st">"reference_low2"</span>,</span>
@@ -1223,7 +1223,7 @@ Figure 20.8: Example showing median summer tempretur in 1970, the upper and lwoe
 <span><span class="co">#&gt; #   threshold_low_centered &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   threshold_high_centered &lt;dbl&gt;, and abbreviated variable</span></span>
 <span><span class="co">#&gt; #   names ¹​reference_upper, ²​reference_low</span></span></code></pre></div>
-<div class="sourceCode" id="cb824"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb828"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">regOrder</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Østlandet"</span>,<span class="st">"Sørlandet"</span>,<span class="st">"Vestlandet"</span>,<span class="st">"Midt-Norge"</span>,<span class="st">"Nord-Norge"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">regional_means_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1253,7 +1253,7 @@ Figure 20.9: Times series for median summer temperature centered on the median v
 </p>
 </div>
 <p>Then we can take the mean over the last 5 years and add to a spatial representation.</p>
-<div class="sourceCode" id="cb825"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb829"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span></span>
 <span><span class="va">i_aggregatedToPeriods</span> <span class="op">&lt;-</span> <span class="va">regional_means_long</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1297,7 +1297,7 @@ Figure 20.9: Times series for median summer temperature centered on the median v
 <span><span class="co">#&gt;  9 Nord-Norge 2018-2022           5     0.625     0.118 </span></span>
 <span><span class="co">#&gt; 10 Nord-Norge pre 2003            1     0.625     0.0266</span></span>
 <span><span class="co">#&gt; # … with 15 more rows</span></span></code></pre></div>
-<div class="sourceCode" id="cb826"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb830"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">labs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">i_aggregatedToPeriods</span><span class="op">$</span><span class="va">period</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">i_aggregatedToPeriods</span><span class="op">$</span><span class="va">period_rank</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">i_aggregatedToPeriods</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1321,14 +1321,14 @@ Figure 20.10: Scaled indicator values, aggregated over 5 year intervals. Errors 
 </p>
 </div>
 <p>Finally, I can add these values to the sp object.</p>
-<div class="sourceCode" id="cb827"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb831"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg2</span> <span class="op">&lt;-</span> <span class="va">reg</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">i_aggregatedToPeriods</span><span class="op">[</span><span class="va">i_aggregatedToPeriods</span><span class="op">$</span><span class="va">period_rank</span><span class="op">==</span><span class="fl">5</span>,<span class="op">]</span>, by<span class="op">=</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/join_by.html">join_by</a></span><span class="op">(</span><span class="va">region</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">reg2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "id"          "region"      "GID_0"       "NAME_0"     </span></span>
 <span><span class="co">#&gt; [5] "period"      "period_rank" "indicator"   "spatial_sd" </span></span>
 <span><span class="co">#&gt; [9] "geometry"</span></span></code></pre></div>
-<div class="sourceCode" id="cb828"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb832"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myCol</span> <span class="op">&lt;-</span> <span class="st">"RdYlGn"</span></span>
 <span><span class="va">myCol2</span> <span class="op">&lt;-</span> <span class="st">"-RdYlGn"</span></span>
 <span></span>
@@ -1378,10 +1378,10 @@ Figure 20.11: Summer tempreature indicator values for five accounting areas in N
 <li><a class="nav-link" href="#climate-indicators-explained"><span class="header-section-number">20</span> Climate indicators explained</a></li>
 <li><a class="nav-link" href="#intro-cli"><span class="header-section-number">20.1</span> Introduction</a></li>
 <li>
-<a class="nav-link" href="#about-the-underlying-data-11"><span class="header-section-number">20.2</span> About the underlying data</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#representativity-in-time-and-space-11"><span class="header-section-number">20.2.1</span> Representativity in time and space</a></li>
+<a class="nav-link" href="#about-the-underlying-data-10"><span class="header-section-number">20.2</span> About the underlying data</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#representativity-in-time-and-space-10"><span class="header-section-number">20.2.1</span> Representativity in time and space</a></li>
 <li><a class="nav-link" href="#original-units-7"><span class="header-section-number">20.2.2</span> Original units</a></li>
-<li><a class="nav-link" href="#temporal-coverage-9"><span class="header-section-number">20.2.3</span> Temporal coverage</a></li>
+<li><a class="nav-link" href="#temporal-coverage-8"><span class="header-section-number">20.2.3</span> Temporal coverage</a></li>
 <li><a class="nav-link" href="#additional-comments-about-the-data-set-1"><span class="header-section-number">20.2.4</span> Additional comments about the data set</a></li>
 </ul>
 </li>
@@ -1398,9 +1398,9 @@ Figure 20.11: Summer tempreature indicator values for five accounting areas in N
 <li><a class="nav-link" href="#ref-vals-cli"><span class="header-section-number">20.5.2</span> Reference values, thresholds for defining good ecological condition, minimum and/or maximum values</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#uncertainties-10"><span class="header-section-number">20.6</span> Uncertainties</a></li>
+<li><a class="nav-link" href="#uncertainties-9"><span class="header-section-number">20.6</span> Uncertainties</a></li>
 <li>
-<a class="nav-link" href="#references-14"><span class="header-section-number">20.7</span> References</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#additional-resources-1"><span class="header-section-number">20.7.1</span> Additional resources</a></li></ul>
+<a class="nav-link" href="#references-13"><span class="header-section-number">20.7</span> References</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#additional-resources-1"><span class="header-section-number">20.7.1</span> Additional resources</a></li></ul>
 </li>
 <li>
 <a class="nav-link" href="#analyses-cli"><span class="header-section-number">20.8</span> Analyses</a><ul class="nav navbar-nav">
@@ -1431,7 +1431,7 @@ Figure 20.11: Summer tempreature indicator values for five accounting areas in N
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-10-05.</p>
+    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-10-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
