@@ -1,4 +1,4 @@
-# Functional Plant Indicators - Semi-Natural Ecosystems {#Functional-plant-indicators-seminat}
+# Functional Plant Indicators - Semi-Natural Ecosystems {#functional-plant-indicators-seminat}
 
 
 

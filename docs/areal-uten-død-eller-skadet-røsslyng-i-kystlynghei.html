@@ -81,8 +81,8 @@
 <li><a class="" href="median-summer-temp.html"><span class="header-section-number">4</span> Median Summer Temperature</a></li>
 <li><a class="" href="alien-species.html"><span class="header-section-number">5</span> Alien species</a></li>
 <li><a class="" href="Functional-plant-indicators-wetland.html"><span class="header-section-number">6</span> Functional Plant Indicators - Wetlands</a></li>
-<li><a class="" href="Functional-plant-indicators-seminat.html"><span class="header-section-number">7</span> Functional Plant Indicators - Semi-Natural Ecosystems</a></li>
-<li><a class="" href="Functional-plant-indicators-open.html"><span class="header-section-number">8</span> Functional Plant Indicators - Naturally Open Ecosystems</a></li>
+<li><a class="" href="functional-plant-indicators-seminat.html"><span class="header-section-number">7</span> Functional Plant Indicators - Semi-Natural Ecosystems</a></li>
+<li><a class="" href="functional-plant-indicators-open.html"><span class="header-section-number">8</span> Functional Plant Indicators - Naturally Open Ecosystems</a></li>
 <li><a class="" href="trophic-level-biomass-ratios.html"><span class="header-section-number">9</span> Trophic level biomass ratios</a></li>
 <li><a class="" href="insect-indicators.html"><span class="header-section-number">10</span> Insect indicators</a></li>
 <li class="book-part">R &amp; D</li>
@@ -151,7 +151,7 @@
 </h4>
 <p>Data is downloaded from <a href="https://kartkatalog.miljodirektoratet.no/Dataset/Details/2054">here</a>.</p>
 <p>Import and list terms:</p>
-<div class="sourceCode" id="cb567"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb571"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ano</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">"/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/Naturovervaking_eksport.gdb"</span>,</span>
 <span>                   layer <span class="op">=</span> <span class="st">"ANO_SurveyPoint"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reading layer `ANO_SurveyPoint' from data source </span></span>
@@ -237,12 +237,12 @@
 <span><span class="co">#&gt; [71] "editdate"                      </span></span>
 <span><span class="co">#&gt; [72] "SHAPE"</span></span></code></pre></div>
 <p>Table of the number of sampling points per year:</p>
-<div class="sourceCode" id="cb568"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb572"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">ano</span><span class="op">$</span><span class="va">aar</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 2019 2020 2021 </span></span>
 <span><span class="co">#&gt; 1111 3411 4452</span></span></code></pre></div>
-<div class="sourceCode" id="cb569"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb573"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">15</span>,<span class="fl">5</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">ano</span><span class="op">$</span><span class="va">hovedoekosystem_punkt</span><span class="op">)</span>, las<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -252,11 +252,11 @@ Figure 15.1: The distribution of ANO points that fall within different main ecos
 </p>
 </div>
 <p>Sub-setting the data to only consider seni natural areas.</p>
-<div class="sourceCode" id="cb570"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb574"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snat</span> <span class="op">&lt;-</span> <span class="va">ano</span><span class="op">[</span><span class="va">ano</span><span class="op">$</span><span class="va">hovedoekosystem_punkt</span> <span class="op">==</span> <span class="st">"semi_naturlig_mark"</span>,<span class="op">]</span></span>
 <span><span class="va">snat2</span> <span class="op">&lt;-</span> <span class="va">snat</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">snat</span><span class="op">$</span><span class="va">GlobalID</span><span class="op">)</span>,<span class="op">]</span></span></code></pre></div>
 <p>230 points are semi-natural.</p>
-<div class="sourceCode" id="cb571"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb575"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">snat</span><span class="op">$</span><span class="va">hovedtype_1m2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;       Åpen jordvannsmyr              Boreal hei </span></span>
@@ -272,7 +272,7 @@ Figure 15.1: The distribution of ANO points that fall within different main ecos
 <span><span class="co">#&gt;               Skogsmark </span></span>
 <span><span class="co">#&gt;                       4</span></span></code></pre></div>
 <p>Only 49 1m2 samples are kystlynghei.</p>
-<div class="sourceCode" id="cb572"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb576"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">ano</span><span class="op">$</span><span class="va">hovedtype_250m2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;                                      Åker </span></span>
@@ -402,7 +402,7 @@ Figure 15.1: The distribution of ANO points that fall within different main ecos
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-10-05.</p>
+    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-10-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

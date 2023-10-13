@@ -81,8 +81,8 @@
 <li><a class="" href="median-summer-temp.html"><span class="header-section-number">4</span> Median Summer Temperature</a></li>
 <li><a class="" href="alien-species.html"><span class="header-section-number">5</span> Alien species</a></li>
 <li><a class="" href="Functional-plant-indicators-wetland.html"><span class="header-section-number">6</span> Functional Plant Indicators - Wetlands</a></li>
-<li><a class="" href="Functional-plant-indicators-seminat.html"><span class="header-section-number">7</span> Functional Plant Indicators - Semi-Natural Ecosystems</a></li>
-<li><a class="" href="Functional-plant-indicators-open.html"><span class="header-section-number">8</span> Functional Plant Indicators - Naturally Open Ecosystems</a></li>
+<li><a class="" href="functional-plant-indicators-seminat.html"><span class="header-section-number">7</span> Functional Plant Indicators - Semi-Natural Ecosystems</a></li>
+<li><a class="" href="functional-plant-indicators-open.html"><span class="header-section-number">8</span> Functional Plant Indicators - Naturally Open Ecosystems</a></li>
 <li><a class="" href="trophic-level-biomass-ratios.html"><span class="header-section-number">9</span> Trophic level biomass ratios</a></li>
 <li><a class="" href="insect-indicators.html"><span class="header-section-number">10</span> Insect indicators</a></li>
 <li class="book-part">R &amp; D</li>
@@ -373,9 +373,9 @@ area of interest) as well as its corresponding standard error and
 standard deviation as a measure of spatial uncertainty for a
 geographical area (see Töpper &amp; Jakobsson 2021).</p>
 </div>
-<div id="references-10" class="section level2" number="12.6">
+<div id="references-9" class="section level2" number="12.6">
 <h2>
-<span class="header-section-number">12.6</span> References<a class="anchor" aria-label="anchor" href="#references-10"><i class="fas fa-link"></i></a>
+<span class="header-section-number">12.6</span> References<a class="anchor" aria-label="anchor" href="#references-9"><i class="fas fa-link"></i></a>
 </h2>
 <p>Framstad, E., Kolstad, A. L., Nybø, S., Töpper, J. &amp; Vandvik, V. 2022.
 The condition of forest and mountain ecosystems in Norway. Assessment by
@@ -418,12 +418,12 @@ Norwegian Institute for Nature Research.</p>
 </h4>
 <p>We read the NiN data for this document from a cache at the GitHub
 repository…</p>
-<div class="sourceCode" id="cb449"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb453"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add NiN data from cache</span></span>
 <span><span class="va">nin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org//reference/here.html">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/data/cache/nin.RDS"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>…but it can also be directly downloaded from Miljødirektoratets
 kartkatalog (<a href="https://kartkatalog.miljodirektoratet.no/Dataset" class="uri">https://kartkatalog.miljodirektoratet.no/Dataset</a>)</p>
-<div class="sourceCode" id="cb450"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb454"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://nedlasting.miljodirektoratet.no/Miljodata//Naturtyper_nin/FILEGDB/4326/Naturtyper_nin_0000_norge_4326_FILEGDB.zip"</span></span>
 <span><span class="fu">download</span><span class="op">(</span><span class="va">url</span>, dest <span class="op">=</span> <span class="st">"P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip"</span>, mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span><span class="op">(</span><span class="st">"P:/41201785_okologisk_tilstand_2022_2023/data/Naturtyper_nin_0000_norge_4326_FILEGDB.zip"</span>,</span>
@@ -435,7 +435,7 @@ kartkatalog (<a href="https://kartkatalog.miljodirektoratet.no/Dataset" class="u
 <span><span class="op">)</span></span></code></pre></div>
 <p>And we upload maps for Norway and the five regions: Southern, Western,
 Eastern, Central, and Northern Norway</p>
-<div class="sourceCode" id="cb451"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb455"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import region- og Norgeskart, make sure they have the same geometry as the nin data</span></span>
 <span><span class="va">nor</span> <span class="op">&lt;-</span> <span class="fu">st_read</span><span class="op">(</span><span class="st">"data/outlineOfNorway_EPSG25833.shp"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">st_as_sf</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -490,7 +490,7 @@ The image collection contains Sentinel imagery from June, July and
 August 2015-2022 To not exceed GEE memory limits, the exported files had
 to be iterated over a grid which resulted in 42 separate csv files. This
 script merges them and then merges the dataframe to the NiN data.</p>
-<div class="sourceCode" id="cb452"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb456"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import Sentinel NDVI Data</span></span>
 <span><span class="va">df.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_Sentinel/"</span>, pattern <span class="op">=</span> <span class="st">"*.csv"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">map_df</span><span class="op">(</span><span class="op">~</span> <span class="fu">fread</span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -503,7 +503,7 @@ script merges them and then merges the dataframe to the NiN data.</p>
 <a href="https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84" class="uri">https://code.earthengine.google.com/efb84013701f1d5f6e1e81345f389b84</a>
 The image collection contains MODIS imagery from June, July and August
 2000-2022</p>
-<div class="sourceCode" id="cb453"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb457"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import MODIS NDVI Data</span></span>
 <span><span class="co"># MODIS NDVI is scaled by 0.0001. Mean must be divided by 10000.</span></span>
 <span><span class="va">df.m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"/data/P-Prosjekter241201785_okologisk_tilstand_2022_2023/data/NDVI_åpenlavland/NDVI_data_MODIS/modis_ndvi_ts_2000_2022.csv"</span>, <span class="op">)</span></span>
@@ -519,7 +519,7 @@ The image collection contains Landsat imagery from June, July and August
 1984-2022 To not exceed GEE memory limits, the exported files had to be
 iterated over a grid which resulted in 42 separate csv files. This
 script merges them and then merges the dataframe to the NiN data.</p>
-<div class="sourceCode" id="cb454"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb458"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import Landsat NDVI Data</span></span>
 <span><span class="co"># Set up conditional file paths</span></span>
 <span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span>
@@ -560,7 +560,7 @@ script merges them and then merges the dataframe to the NiN data.</p>
 <h4>
 <span class="header-section-number">12.7.2.1</span> NiN data<a class="anchor" aria-label="anchor" href="#nin-data-ndvis"><i class="fas fa-link"></i></a>
 </h4>
-<div class="sourceCode" id="cb455"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb459"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># fixing variable- and ecosystem-names with special characters</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">nin</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">nin</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span>, <span class="fl">17</span>, <span class="fl">26</span>, <span class="fl">31</span>, <span class="fl">33</span>, <span class="fl">34</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
@@ -689,7 +689,7 @@ script merges them and then merges the dataframe to the NiN data.</p>
 <span class="header-section-number">12.7.2.2</span> NDVI data<a class="anchor" aria-label="anchor" href="#ndvi-data-ndvis"><i class="fas fa-link"></i></a>
 </h4>
 <!-- RUNTIME 4 min. Caching it. -->
-<div class="sourceCode" id="cb456"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb460"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Sentinel-2</span></span>
 <span><span class="co"># join nin.seminat &amp; Sentinel NDVI data</span></span>
 <span><span class="va">SentinelNDVI.seminat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">full_join</a></span><span class="op">(</span><span class="va">nin.seminat</span>, <span class="va">df.s</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
@@ -811,7 +811,7 @@ script merges them and then merges the dataframe to the NiN data.</p>
 <span class="header-section-number">12.7.3</span> Exploratory analyses, Sentinel-2<a class="anchor" aria-label="anchor" href="#exploratory-analyses-sentinel-2"><i class="fas fa-link"></i></a>
 </h3>
 <p><strong>Where are the seminat sites?</strong></p>
-<div class="sourceCode" id="cb457"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb461"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">tm_shape</span><span class="op">(</span><span class="va">regnor</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tm_fill</span><span class="op">(</span><span class="st">"GID_0"</span>, labels <span class="op">=</span> <span class="st">""</span>, title <span class="op">=</span> <span class="st">""</span>, legend.show <span class="op">=</span> <span class="cn">FALSE</span>, alpha<span class="op">=</span><span class="fl">0</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tm_borders</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -843,7 +843,7 @@ Figure 12.1: A map of Norway showing the location of the semi-natural ecosystem 
 </div>
 <p>T31…Boreal heath, T32…semi-natural grasslands, T33…semi-natural coastal grasslands, T34…Coastal heathlands, T40/T41…previously heavily managed grasslands (now similar to T32)</p>
 <p><strong>How are polygon sizes distributed?</strong></p>
-<div class="sourceCode" id="cb458"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb462"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">SentinelNDVI.seminat</span><span class="op">$</span><span class="va">area_meters</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. </span></span>
 <span><span class="co">#&gt;     111.6    1508.6    3714.9   15297.9   10059.0 2954478.0</span></span>
@@ -860,7 +860,7 @@ Figure 12.2: A histogram showing the distribution of polygon sizes.
 sqm.
 The dashed line indicates the minimum size of the Sentinel-2 pixels for NDVI, all NiN-polygons smaller than that have been removed form the data.</p>
 <p><strong>How does NDVI vary over the years</strong></p>
-<div class="sourceCode" id="cb459"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb463"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">tilstand</span><span class="op">!=</span><span class="st">""</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">year</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -877,10 +877,10 @@ Figure 12.3: A figure showing NDVI values for semi-natural ecosystem over time f
 </div>
 <p>2022 stands out with the highest NDVI values missing.
 We omit 2022 for this analysis.</p>
-<div class="sourceCode" id="cb460"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb464"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat</span> <span class="op">&lt;-</span> <span class="va">SentinelNDVI.seminat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">!=</span> <span class="st">"2022"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>How do NDVI values vary between major and basic ecosystem types for sites in good condition? (using only NDVI data matching NiN-mapping years)</strong></p>
-<div class="sourceCode" id="cb461"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb465"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">tilstand</span> <span class="op">==</span> <span class="st">"God"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="va">kartleggingsaar</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -895,7 +895,7 @@ We omit 2022 for this analysis.</p>
 Figure 12.4: NDVI values in major and basic semi natural ecosystem types in good condition.
 </p>
 </div>
-<div class="sourceCode" id="cb462"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb466"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">SentinelNDVI.seminat</span><span class="op">$</span><span class="va">subtype</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">SentinelNDVI.seminat</span><span class="op">$</span><span class="va">subtype</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"C1"</span>, <span class="st">"C2"</span>, <span class="st">"C3"</span>, <span class="st">"C4"</span>, <span class="st">"C5"</span>, <span class="st">"C6"</span>, <span class="st">"C7"</span>, <span class="st">"C8"</span>, <span class="st">"C9"</span>, <span class="st">"C10"</span>, <span class="st">"C11"</span>, <span class="st">"C12"</span>, <span class="st">"C13"</span>, <span class="st">"C14"</span>, <span class="st">"C15"</span>, <span class="st">"C16"</span>, <span class="st">"C17"</span>, <span class="st">"C18"</span>, <span class="st">"C19"</span>, <span class="st">"C20"</span>, <span class="st">"C21"</span>, <span class="st">"E1"</span>, <span class="st">"E2"</span>, <span class="st">"E3"</span>, <span class="st">"E4"</span>, <span class="st">"E5"</span>, <span class="st">"E6"</span>, <span class="st">"E7"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">SentinelNDVI.seminat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -926,7 +926,7 @@ plots have a smaller sample size. There is no obvious trend related to
 the structuring environmental gradients withing the major types, and
 also here the overlap is large.</p>
 <p><strong>How does NDVI vary across regions in semi-natural ecosystems (major types) in good condition? (using only NDVI data matching NiN-mapping years)</strong></p>
-<div class="sourceCode" id="cb463"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb467"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">tilstand</span> <span class="op">==</span> <span class="st">"God"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="va">kartleggingsaar</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -948,7 +948,7 @@ Figure 12.6: DVI variation across regions in semi-natural ecosystems (major type
 in geography. In the heath systems (T31, T34) the distribution of NDVI
 values in Central Norway is somewhat lower than in the other regions.</p>
 <p><strong>How does NDVI vary across condition classes (for major types and NDVI data matching NiN-mapping years)</strong></p>
-<div class="sourceCode" id="cb464"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb468"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op">==</span> <span class="va">kartleggingsaar</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">tilstand</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -969,7 +969,7 @@ respectively) NDVI seems to increase as condition deteriorates, but in
 the remaining types such a pattern is absent. Overlaps between condition
 classes are generally very large.</p>
 <p><strong>Which ecological relevant variable(s) is the condition measure in the NiN data related to?</strong></p>
-<div class="sourceCode" id="cb465"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb469"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nin.seminat2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">hovedtype</span> <span class="op">==</span> <span class="st">"T31"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">NiN_variable_code</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"7JB-BT"</span>, <span class="st">"7RA-BA"</span>, <span class="st">"7FA"</span>, <span class="st">"7TK"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -992,7 +992,7 @@ classes are generally very large.</p>
 Figure 12.8: Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 </p>
 </div>
-<div class="sourceCode" id="cb466"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb470"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="va">nin.seminat2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1018,7 +1018,7 @@ Figure 12.8: Which ecological relevant variable(s) is the condition measure in t
 Figure 12.9: Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 </p>
 </div>
-<div class="sourceCode" id="cb467"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb471"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">nin.seminat2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">hovedtype</span> <span class="op">==</span> <span class="st">"T33"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1042,7 +1042,7 @@ Figure 12.9: Which ecological relevant variable(s) is the condition measure in t
 Figure 12.10: Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 </p>
 </div>
-<div class="sourceCode" id="cb468"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb472"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">nin.seminat2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">hovedtype</span> <span class="op">==</span> <span class="st">"T34"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1066,7 +1066,7 @@ Figure 12.10: Which ecological relevant variable(s) is the condition measure in 
 Figure 12.11: Which ecological relevant variable(s) is the condition measure in the NiN data related to?
 </p>
 </div>
-<div class="sourceCode" id="cb469"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb473"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">nin.seminat2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">hovedtype</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"T40"</span>, <span class="st">"T41"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1111,7 +1111,7 @@ ecosystem types.</p>
 regression analyses.</p>
 <p>First, we take a look at how balanced the data are across major
 ecosystem types, regions and condition classes</p>
-<div class="sourceCode" id="cb470"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb474"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># NDVI across hovedtyper, regions and condition classes (only for NDVI years data matching NiN-mapping years)</span></span>
 <span><span class="va">SentinelNDVI.seminat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">year</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1136,7 +1136,7 @@ and might need to model T31 and T32 there only.</p>
 <p>NDVI data are bounded between -1 and 1, and thus require modelling with
 an appropriate method that can handle bounded data. We can transform the
 variable to be bounded between 0 and 1 and use beta-regression models:</p>
-<div class="sourceCode" id="cb471"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb475"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat</span><span class="op">$</span><span class="va">mean_beta</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">SentinelNDVI.seminat</span><span class="op">$</span><span class="va">mean</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span></span>
 <span><span class="co"># NDVI data from the year of NiN-mapping (and thus with condition assessment) to train the condition models</span></span>
 <span><span class="co"># we drop T41 for the analysis as it lacks data for most combinations of condition and region, and thus would cause convergence issues</span></span>
@@ -1153,7 +1153,7 @@ variable to be bounded between 0 and 1 and use beta-regression models:</p>
 <span><span class="va">LandsatNDVI.seminat</span> <span class="op">&lt;-</span> <span class="va">LandsatNDVI.seminat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>mean_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/replace.html">replace</a></span><span class="op">(</span><span class="va">mean_beta</span>, <span class="va">mean_beta</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">0.9999</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <!-- RUNTIME approx. 2 min -->
-<div class="sourceCode" id="cb472"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb476"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># We run a stepwise-function on the full model including condition, ecosystem type, and region to find the most parsimonious model</span></span>
 <span><span class="va">model.seminat.cond.Sent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/betareg/man/betareg.html">betareg</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">tilstand_num</span> <span class="op">*</span> <span class="va">region</span> <span class="op">*</span> <span class="va">hovedtype</span>, data <span class="op">=</span> <span class="va">SentinelNDVI.seminat.train</span><span class="op">[</span><span class="va">SentinelNDVI.seminat.train</span><span class="op">$</span><span class="va">region</span> <span class="op">!=</span> <span class="st">"Northern Norway"</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.cond.Sent</span> <span class="op">&lt;-</span> <span class="fu">StepBeta</span><span class="op">(</span><span class="va">model.seminat.cond.Sent</span><span class="op">)</span></span>
@@ -1168,14 +1168,14 @@ classes</p>
 But since we are not interested in the statistics for region differences,
 we run <strong>separate models for every region</strong> for ease of interpretation.</p>
 <!-- RUNTIME 5 sec -->
-<div class="sourceCode" id="cb473"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb477"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model.seminat.cond.Sent.N</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/betareg/man/betareg.html">betareg</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">tilstand_num</span> <span class="op">*</span> <span class="va">hovedtype</span>, data <span class="op">=</span> <span class="va">SentinelNDVI.seminat.train</span><span class="op">[</span><span class="va">SentinelNDVI.seminat.train</span><span class="op">$</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Northern Norway"</span> <span class="op">&amp;</span> <span class="va">SentinelNDVI.seminat.train</span><span class="op">$</span><span class="va">hovedtype</span> <span class="op">!=</span> <span class="st">"T34"</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.cond.Sent.C</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/betareg/man/betareg.html">betareg</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">tilstand_num</span> <span class="op">*</span> <span class="va">hovedtype</span>, data <span class="op">=</span> <span class="va">SentinelNDVI.seminat.train</span><span class="op">[</span><span class="va">SentinelNDVI.seminat.train</span><span class="op">$</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Central Norway"</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.cond.Sent.W</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/betareg/man/betareg.html">betareg</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">tilstand_num</span> <span class="op">*</span> <span class="va">hovedtype</span>, data <span class="op">=</span> <span class="va">SentinelNDVI.seminat.train</span><span class="op">[</span><span class="va">SentinelNDVI.seminat.train</span><span class="op">$</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Western Norway"</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.cond.Sent.E</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/betareg/man/betareg.html">betareg</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">tilstand_num</span> <span class="op">*</span> <span class="va">hovedtype</span>, data <span class="op">=</span> <span class="va">SentinelNDVI.seminat.train</span><span class="op">[</span><span class="va">SentinelNDVI.seminat.train</span><span class="op">$</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Eastern Norway"</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.cond.Sent.S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/betareg/man/betareg.html">betareg</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">tilstand_num</span> <span class="op">*</span> <span class="va">hovedtype</span>, data <span class="op">=</span> <span class="va">SentinelNDVI.seminat.train</span><span class="op">[</span><span class="va">SentinelNDVI.seminat.train</span><span class="op">$</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Southern Norway"</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Northern Norway</strong></p>
-<div class="sourceCode" id="cb474"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb478"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat.train</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Northern Norway"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">tilstand</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1191,7 +1191,7 @@ we run <strong>separate models for every region</strong> for ease of interpretat
 Figure 12.14: NDVI agains ecosystm condition for five semi-natural ecosystems in Northern Norway.
 </p>
 </div>
-<div class="sourceCode" id="cb475"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb479"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.cond.Sent.N</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span></span>
 <span><span class="co">#&gt; $mean</span></span>
 <span><span class="co">#&gt;                              Estimate  Std. Error</span></span>
@@ -1221,7 +1221,7 @@ few data)</p>
 <p>T31,T33,T40: NDVI increases as condition deteriorates T32: NDVI does not
 change with condition</p>
 <p><strong>Central Norway</strong></p>
-<div class="sourceCode" id="cb476"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb480"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat.train</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Central Norway"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">tilstand</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1237,7 +1237,7 @@ change with condition</p>
 Figure 12.15: NDVI against ecosystem condition for five semi-natural ecosystems in Central Norway.
 </p>
 </div>
-<div class="sourceCode" id="cb477"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb481"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.cond.Sent.C</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span></span>
 <span><span class="co">#&gt; $mean</span></span>
 <span><span class="co">#&gt;                              Estimate Std. Error   z value</span></span>
@@ -1271,7 +1271,7 @@ Figure 12.15: NDVI against ecosystem condition for five semi-natural ecosystems 
 increases sig. less than in T31 as condition deteriorates, but it still
 increases</p>
 <p><strong>Western Norway</strong></p>
-<div class="sourceCode" id="cb478"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb482"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat.train</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Western Norway"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">tilstand</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1287,7 +1287,7 @@ increases</p>
 Figure 12.16: NDVI agains ecosystm condition for five semi-natural ecosystems in W-Norway.
 </p>
 </div>
-<div class="sourceCode" id="cb479"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb483"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.cond.Sent.W</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span></span>
 <span><span class="co">#&gt; $mean</span></span>
 <span><span class="co">#&gt;                               Estimate Std. Error</span></span>
@@ -1320,7 +1320,7 @@ Figure 12.16: NDVI agains ecosystm condition for five semi-natural ecosystems in
 <p>all types: NDVI increases slightly as condition deteriorates, but just
 about sig.</p>
 <p><strong>Eastern Norway</strong></p>
-<div class="sourceCode" id="cb480"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb484"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat.train</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Eastern Norway"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">tilstand</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1336,7 +1336,7 @@ about sig.</p>
 Figure 12.17: NDVI against ecosystem condition for five semi-natural ecosystems in E-Norway.
 </p>
 </div>
-<div class="sourceCode" id="cb481"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb485"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.cond.Sent.E</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span></span>
 <span><span class="co">#&gt; $mean</span></span>
 <span><span class="co">#&gt;                                Estimate  Std. Error</span></span>
@@ -1370,7 +1370,7 @@ Figure 12.17: NDVI against ecosystem condition for five semi-natural ecosystems 
 NDVI increases as condition deteriorates, more strongly than in the
 other types</p>
 <p><strong>Southern Norway</strong></p>
-<div class="sourceCode" id="cb482"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb486"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">SentinelNDVI.seminat.train</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">region</span> <span class="op">==</span> <span class="st">"Southern Norway"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">tilstand</span>, y <span class="op">=</span> <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1386,7 +1386,7 @@ other types</p>
 Figure 12.18: NDVI against ecosystem condition for five semi-natural ecosystems in S-Norway.
 </p>
 </div>
-<div class="sourceCode" id="cb483"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb487"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.cond.Sent.S</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span></span>
 <span><span class="co">#&gt; $mean</span></span>
 <span><span class="co">#&gt;                               Estimate Std. Error</span></span>
@@ -1435,7 +1435,7 @@ Sentinel-2.</p>
 <p>First, there’s again some data handling to do. We merge the Sentinel,
 MODIS, and Landsat data to show the full picture across time. Then we
 model the time series for each Satellite separately.</p>
-<div class="sourceCode" id="cb484"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb488"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## data handling for time series analysis</span></span>
 <span><span class="co"># Sentinel time series checked in exploratory analysis script</span></span>
 <span></span>
@@ -1512,7 +1512,7 @@ model the time series for each Satellite separately.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">allSatNDVI.seminat</span><span class="op">$</span><span class="va">Sat</span><span class="op">)</span></span></code></pre></div>
 <p>Now we can plot the time series for each main ecosystem type, showing
 each satellite time series separately:</p>
-<div class="sourceCode" id="cb485"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb489"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot</span></span>
 <span><span class="va">allSatNDVI.seminat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">year_jit</span>, y <span class="op">=</span> <span class="va">mean</span>, color <span class="op">=</span> <span class="va">Sat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1538,11 +1538,11 @@ regressions including year as a covariate.</p>
 ecosystem type for polygons in good condition, and we do so separately
 for each satellite.</p>
 <!-- RUNTIME 10 min -->
-<div class="sourceCode" id="cb486"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb490"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model.seminat.time.GodTilst.Sent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html">glmmTMB</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">hovedtype</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/nbinom2.html">beta_family</a></span><span class="op">(</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">SentinelNDVI.seminat</span><span class="op">[</span><span class="va">SentinelNDVI.seminat</span><span class="op">$</span><span class="va">tilstand</span> <span class="op">==</span> <span class="st">"God"</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.time.GodTilst.Modi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html">glmmTMB</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">hovedtype</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/nbinom2.html">beta_family</a></span><span class="op">(</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">ModisNDVI.seminat</span><span class="op">[</span><span class="va">ModisNDVI.seminat</span><span class="op">$</span><span class="va">tilstand</span> <span class="op">==</span> <span class="st">"God"</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.time.GodTilst.Land</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html">glmmTMB</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">hovedtype</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/nbinom2.html">beta_family</a></span><span class="op">(</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">LandsatNDVI.seminat</span><span class="op">[</span><span class="va">LandsatNDVI.seminat</span><span class="op">$</span><span class="va">tilstand</span> <span class="op">==</span> <span class="st">"God"</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb487"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb491"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.time.GodTilst.Sent</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">$</span><span class="va">cond</span></span>
 <span><span class="co">#&gt;                        Estimate   Std. Error     z value</span></span>
 <span><span class="co">#&gt; (Intercept)       -45.780951305  3.081255872 -14.8578869</span></span>
@@ -1570,7 +1570,7 @@ for each satellite.</p>
 <span><span class="co">#&gt; year:hovedtypeT34 1.734478e-07</span></span>
 <span><span class="co">#&gt; year:hovedtypeT40 2.291104e-11</span></span>
 <span><span class="co">#&gt; year:hovedtypeT41 6.024424e-01</span></span></code></pre></div>
-<div class="sourceCode" id="cb488"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb492"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.time.GodTilst.Modi</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">$</span><span class="va">cond</span></span>
 <span><span class="co">#&gt;                        Estimate  Std. Error    z value</span></span>
 <span><span class="co">#&gt; (Intercept)        0.9417938119 2.404923160  0.3916108</span></span>
@@ -1590,7 +1590,7 @@ for each satellite.</p>
 <span><span class="co">#&gt; year:hovedtypeT32 7.721566e-01</span></span>
 <span><span class="co">#&gt; year:hovedtypeT33 1.694797e-01</span></span>
 <span><span class="co">#&gt; year:hovedtypeT34 4.184809e-05</span></span></code></pre></div>
-<div class="sourceCode" id="cb489"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb493"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.time.GodTilst.Land</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">$</span><span class="va">cond</span></span>
 <span><span class="co">#&gt;                        Estimate   Std. Error     z value</span></span>
 <span><span class="co">#&gt; (Intercept)       -2.178073e+01 0.4411725413 -49.3701030</span></span>
@@ -1623,11 +1623,11 @@ compared to Sentinel and Landsat.</p>
 <strong>boreal heath</strong>, We may ask the question if the temporal NDVI increase
 might be stronger under reduced condition?</p>
 <!-- RUNTIME 10 min -->
-<div class="sourceCode" id="cb490"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb494"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model.seminat.time.tilst.T31.Sent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html">glmmTMB</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">tilstand</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/nbinom2.html">beta_family</a></span><span class="op">(</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">SentinelNDVI.seminat</span><span class="op">[</span><span class="va">SentinelNDVI.seminat</span><span class="op">$</span><span class="va">hovedtype</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"T31"</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.time.tilst.T31.Modi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html">glmmTMB</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">tilstand</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/nbinom2.html">beta_family</a></span><span class="op">(</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">ModisNDVI.seminat</span><span class="op">[</span><span class="va">ModisNDVI.seminat</span><span class="op">$</span><span class="va">hovedtype</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"T31"</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.time.tilst.T31.Land</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html">glmmTMB</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">tilstand</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/nbinom2.html">beta_family</a></span><span class="op">(</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">LandsatNDVI.seminat</span><span class="op">[</span><span class="va">LandsatNDVI.seminat</span><span class="op">$</span><span class="va">hovedtype</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"T31"</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb491"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb495"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.time.tilst.T31.Sent</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">$</span><span class="va">cond</span></span>
 <span><span class="co">#&gt;                                   Estimate  Std. Error</span></span>
 <span><span class="co">#&gt; (Intercept)                  -4.575579e+01 3.120798729</span></span>
@@ -1647,7 +1647,7 @@ might be stronger under reduced condition?</p>
 <span><span class="co">#&gt; year:tilstandModerat          -0.01619112 9.870819e-01</span></span>
 <span><span class="co">#&gt; year:tilstandRedusert         -2.78793699 5.304486e-03</span></span>
 <span><span class="co">#&gt; year:tilstandSvaert_redusert   0.30599834 7.596059e-01</span></span></code></pre></div>
-<div class="sourceCode" id="cb492"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb496"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.time.tilst.T31.Modi</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">$</span><span class="va">cond</span></span>
 <span><span class="co">#&gt;                                   Estimate   Std. Error</span></span>
 <span><span class="co">#&gt; (Intercept)                   0.9376760636 1.9284718315</span></span>
@@ -1667,7 +1667,7 @@ might be stronger under reduced condition?</p>
 <span><span class="co">#&gt; year:tilstandModerat         -0.4256494 0.67036332</span></span>
 <span><span class="co">#&gt; year:tilstandRedusert        -1.7666923 0.07727977</span></span>
 <span><span class="co">#&gt; year:tilstandSvaert_redusert -0.5279772 0.59751516</span></span></code></pre></div>
-<div class="sourceCode" id="cb493"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb497"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model.seminat.time.tilst.T31.Land</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span><span class="op">$</span><span class="va">cond</span></span>
 <span><span class="co">#&gt;                                   Estimate   Std. Error</span></span>
 <span><span class="co">#&gt; (Intercept)                  -2.179185e+01 0.4337005742</span></span>
@@ -1693,7 +1693,7 @@ like a promising way to go.</p>
 <p>We could check for the same pattern in T32 and
 T34, just because they are the other semi-natural major ecosystem types
 with a substantial number of occurrences in the the NiN data. Here’s the code for that, stored for later.</p>
-<div class="sourceCode" id="cb494"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb498"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model.seminat.time.tilst.T32.Sent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html">glmmTMB</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">tilstand</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/nbinom2.html">beta_family</a></span><span class="op">(</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">SentinelNDVI.seminat</span><span class="op">[</span><span class="va">SentinelNDVI.seminat</span><span class="op">$</span><span class="va">hovedtype</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"T32"</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.time.tilst.T32.Modi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html">glmmTMB</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">tilstand</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/nbinom2.html">beta_family</a></span><span class="op">(</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">ModisNDVI.seminat</span><span class="op">[</span><span class="va">ModisNDVI.seminat</span><span class="op">$</span><span class="va">hovedtype</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"T32"</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">model.seminat.time.tilst.T32.Land</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/glmmTMB.html">glmmTMB</a></span><span class="op">(</span><span class="va">mean_beta</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">tilstand</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">id</span><span class="op">)</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glmmTMB/man/nbinom2.html">beta_family</a></span><span class="op">(</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">LandsatNDVI.seminat</span><span class="op">[</span><span class="va">LandsatNDVI.seminat</span><span class="op">$</span><span class="va">hovedtype</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"T32"</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
@@ -1793,7 +1793,7 @@ understand the results for the administrative regions.</p>
 <a class="nav-link" href="#ref-state-ndvis"><span class="header-section-number">12.4</span> Reference state and values</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#ref-state2-ndvis"><span class="header-section-number">12.4.1</span> Reference state and scaling values</a></li></ul>
 </li>
 <li><a class="nav-link" href="#uncertainties-ndvis"><span class="header-section-number">12.5</span> Uncertainties</a></li>
-<li><a class="nav-link" href="#references-10"><span class="header-section-number">12.6</span> References</a></li>
+<li><a class="nav-link" href="#references-9"><span class="header-section-number">12.6</span> References</a></li>
 <li>
 <a class="nav-link" href="#analyses-ndvis"><span class="header-section-number">12.7</span> Analyses</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#datasets-ndvis"><span class="header-section-number">12.7.1</span> Data sets</a></li>
@@ -1823,7 +1823,7 @@ understand the results for the administrative regions.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-10-05.</p>
+    <p>"<strong>Indicators for Ecosystem Condition in Norway</strong>" was written by Anders L. Kolstad. It was last built on 2023-10-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
