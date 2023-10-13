@@ -1,9 +1,3 @@
----
-output:
-  html_document:
-    code_folding: show
----
-
 # Functional Plant Indicators - Wetlands {#Functional-plant-indicators-wetland}
 
 <br />
@@ -20,7 +14,7 @@ May 2023
 <br />
 
 <!-- Load all you dependencies here -->
-```{r setup, class.source = 'fold-hide'}
+```{r setup, include=FALSE, warning=F, message=F}
 library(sf)
 library(plyr)
 library(tidyverse)
@@ -68,12 +62,13 @@ knitr::kable(metaData)
 <br />
 
 
-Indicators described in this chaper:
+Indicators described in this chapter:
 
 - Moisture
 - Light
 - pH
 - Nitrogen
+
 
 
 <!-- Don't remove these three html lines -->
@@ -173,9 +168,9 @@ Tyler, T., Herbertsson, L., Olofsson, J., & Olsson, P. A. 2021. Ecological indic
 ## Analyses {#analyses-fpiw}
 ### Data sets
 <!-- Please print the entire workflow with echo=T. Also, simply reading cached data creates loose ends - I cant find out where this data comes from. You may also chose to read tin this data (or a cached version of it) way at the top of the file, so that you can add some in-line R code for the summary stats in the introduction part (see previous comments)-->
-ANO data
 
-```{r, class.source = 'fold-hide'}
+Import ANO data:
+```{r}
 # Add data from cache
 ANO.sp<-readRDS(paste0(here::here(),"/data/cache/ANO.sp.RDS"))
 ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
@@ -189,8 +184,8 @@ ANO.geo<-readRDS(paste0(here::here(),"/data/cache/ANO.geo.RDS"))
 # head(ANO.geo)
 ```
 
-Plant indicators from Tyler et al. (2021)
-```{r, class.source = 'fold-hide'}
+Import Plant indicators from Tyler et al. (2021):
+```{r}
 ## Tyler indicator data
 ## data from cache
 ind.dat <-readRDS(paste0(here::here(),"/data/cache/ind.dat.RDS"))
@@ -200,8 +195,8 @@ ind.dat <-readRDS(paste0(here::here(),"/data/cache/ind.dat.RDS"))
 
 ```
 
-Generalized species lists NiN
-```{r, class.source = 'fold-hide'}
+Import Generalized species lists NiN
+```{r}
 # data from cache
 Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
 # load("/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/functional plant indicators/reference from NiN/Eco_State.RData")
@@ -216,7 +211,7 @@ Eco_State<-readRDS(paste0(here::here(),"/data/cache/Eco_State.RDS"))
 <!-- Please include everything like this, but you can chose to have it take up less space by adding the attr.output option, like this: -->
 
 
-```{r, include = T, results='hide', warning=F, message=F, class.source = 'fold-hide'}
+```{r, include = T, results='hide', warning=F, message=F}
 
 ### Plant indicator data
 names(ind.dat)
@@ -670,7 +665,7 @@ NiN.wetland.cov$sp <- as.factor(NiN.wetland.cov$sp)
 This leaves us with the monitoring data including plant indicators (ANO.sp.ind) and the reference data including plant indicators (NiN.wetland.cov):
 
 <!-- Print head of data set with horizontal scrolling -->
-```{r ano-sp-tab, class.source = 'fold-hide'}
+```{r ano-sp-tab, echo=F}
 head(ANO.sp.ind) %>%
   kable("html",caption = "ANO species occurence data set with attached plant trait data.") %>% 
   kable_styling("striped") %>% scroll_box(width = "100%")
@@ -678,7 +673,7 @@ head(ANO.sp.ind) %>%
 
 
 
-```{r wetland-ref-data-tab, class.source = 'fold-hide'}
+```{r wetland-ref-data-tab, echo=FALSE}
 head(NiN.wetland.cov) %>% 
   kable("html", caption = "Reference data set") %>% 
   kable_styling("striped") %>% scroll_box(width = "100%")
@@ -807,7 +802,7 @@ Next, we need to derive scaling values from these bootstrap-lists (the columns) 
 - 0.025 and 0.975 quantiles = lower and upper limit values
 - min and max of the respective indicator's scale = min/max values
 
-```{r, attr.output='style="max-height: 300px;"', results='hide', class.source = 'fold-hide'}
+```{r, attr.output='style="max-height: 300px;"', results='hide'}
 
 # every NiN-type is represented by one 'generalisert artsliste'
 # some NiN-types are represented by two such species lists
@@ -972,7 +967,7 @@ scal <- function() {
 ```
 
 We then can prepare a list of data frames to hold the results and perform the scaling according to the principles described in NINA report 1967 (Töpper and Jakobsson 2021).
-```{r, results='hide', class.source = 'fold-hide'}
+```{r, results='hide'}
 
 unique(ANO.geo$hovedtype_rute) # NiN types in data
 unique(substr(wetland.ref.cov.val$grunn,1,2)) # NiN types in reference
@@ -1047,7 +1042,7 @@ results.wetland[['original']]$hovedtype_rute    <- as.factor(results.wetland[['o
 results.wetland[['scaled']] <- results.wetland[['non-truncated']] <- results.wetland[['original']]
 ```
 
-```{r, eval = F, class.source = 'fold-hide'}
+```{r, eval = F}
 
 #### calculating scaled and non-truncated values for the indicators based on the dataset ####
 for (i in 1:nrow(ANO.wetland) ) {  #
@@ -1252,8 +1247,7 @@ pull(original)
 
 ### Ecosystem sub-types {#ecosystem-sub-types-fpiw}
 And we can show the resulting scaled values as Violin plots for each indicator and main ecosystem type 
-```{r fpiw-plot-maintype, message=FALSE, warning=FALSE, fig.cap="Scaled vegetation indicator values for wetlands. 1 = cases where variable is lower than the reference value- 2 = cases where variablei is higher than the reference value.", out.width='100%', class.source = 'fold-hide'}
-
+```{r fpiw-plot-maintype, message=FALSE, warning=FALSE, fig.cap="Scaled vegetation indicator values for wetlands. 1 = cases where variable is lower than the reference value- 2 = cases where variablei is higher than the reference value.", out.width='100%', echo=F}
 # making the plot
 ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
@@ -1266,7 +1260,7 @@ ggplot(res.wetland, aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) 
 ```
 
 This figure is a bit easier to read if we remove the sub-types with very few data points:
-```{r fpiw-plot-maintype-v2, message=FALSE, warning=FALSE, fig.cap="Scaled vegetation indicator values for the four most common sub-types of wetland. 1 = cases where variable is lower than the reference value- 2 = cases where variablei is higher than the reference value.", out.width='100%', class.source = 'fold-hide'}
+```{r fpiw-plot-maintype-v2, message=FALSE, warning=FALSE, fig.cap="Scaled vegetation indicator values for the four most common sub-types of wetland. 1 = cases where variable is lower than the reference value- 2 = cases where variablei is higher than the reference value.", out.width='100%'}
 ggplot(res.wetland[res.wetland$hovedtype_rute %in% c("V1", "V2", "V3", "V4"),], aes(x=factor(hovedtype_rute), y=scaled_value, fill=fp_ind)) + 
   geom_hline(yintercept=0.6, linetype="dashed") + 
   geom_violin() +
@@ -1282,7 +1276,7 @@ ggplot(res.wetland[res.wetland$hovedtype_rute %in% c("V1", "V2", "V3", "V4"),], 
 ### Indicator index maps
 We can also show the results as a map, for instance for pH1 (the lower pH indicator), either by directly plotting the data onto the map...
 
-```{r ph-lower-map-fpiw, warning=FALSE, message = FALSE, fig.cap="Functional plant indicator values for pH (lower) in wetlands.", class.source = 'fold-hide'}
+```{r ph-lower-map-fpiw, warning=FALSE, message = FALSE, fig.cap="Functional plant indicator values for pH (lower) in wetlands."}
 #### scaled value maps ####
 # keep wide format and add geometry again
 res.wetland2 <- results.wetland[['2-sided']]
@@ -1443,9 +1437,9 @@ tm_shape(regnor) +
 
 
 ### Unscaled values vs. reference
-We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since pH and nitrogen show some deviation in the lower indicator we exemplify this with these two indicators for unscaled values.
+We can also compare the unscaled values to the reference distribution in order to identify ecosystem types and functional plant indicators showing a deviation from the expectation. Since pH and nitrogen show some deviation in the lower indicator we exemplify this with these two indicators for unscaled values. (Only the code for the first figure is shown).
 
-```{r pH-distcomp-fpiw, class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the pH indicator in ecosystem sub-type V1."}
+```{r pH-distcomp-fpiw, fig.cap="Comparing the reference and variable distribution for the pH indicator in ecosystem sub-type V1."}
     #summary(res.wetland$kartleggingsenhet_1m2)
     #length(unique(res.wetland$kartleggingsenhet_1m2))
 # 16 NiN-types to plot
@@ -1527,7 +1521,7 @@ points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$kartleggingsenhet_1m2
        col="red")
 ```
 
-```{r ph-distcomp2-fpiw, class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the pH indicator in ecosystem sub-types other than V1."}
+```{r ph-distcomp2-fpiw, fig.cap="Comparing the reference and variable distribution for the pH indicator in ecosystem sub-types other than V1.", echo=FALSE}
 par(mfrow=c(2,4))
 ## V2s
 # V2-C-1
@@ -1608,7 +1602,7 @@ points(res.wetland[res.wetland$fp_ind=="pH1" & res.wetland$fp_ind=="pH1" & res.w
 legend("topleft", legend=c("reference","field data"), pch=c(NA,1), lty=1, col=c("black","red"))
 ```
 
-```{r n-distcomp-fpiw, class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the nitrogen affiliation indicator in ecosystem sub-type V1."}
+```{r n-distcomp-fpiw, fig.cap="Comparing the reference and variable distribution for the nitrogen affiliation indicator in ecosystem sub-type V1.", echo=F}
 ### Nitrogen
 par(mfrow=c(2,4))
 ## V1s
@@ -1685,7 +1679,7 @@ points(res.wetland[res.wetland$fp_ind=="Nitrogen1" & res.wetland$kartleggingsenh
        col="red")
 ```
 
-```{r n-distcomp2-fpiw,class.source = 'fold-hide', fig.cap="Comparing the reference and variable distribution for the nitrogen affiliation indicator in ecosystem sub-types other than V1."}
+```{r n-distcomp2-fpiw, fig.cap="Comparing the reference and variable distribution for the nitrogen affiliation indicator in ecosystem sub-types other than V1.", echo=F}
 par(mfrow=c(2,4))
 ## V2s
 # V2-C-1
