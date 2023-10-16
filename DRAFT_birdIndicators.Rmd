@@ -1,0 +1,141 @@
+---
+title: "Breeding bird indicators"
+output:
+  html_document
+---
+
+
+# Breeding bird indicators
+
+<br />
+
+_Author and date:_
+Chloé R. Nater, Diego Pavón-Jordán
+
+
+<br />
+
+<!-- Load all you dependencies here -->
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=F}
+Ecosystem <- "Skog, fjell, våtmark, seminaturlig mark" 
+Egenskap  <- "Biologisk mangfold" 
+ECT       <- "Compositional state characteristic" 
+Contact   <- "Chloé R. Nater" 
+```
+
+```{r, echo=F}
+metaData <- data.frame(Ecosystem,
+                       "Økologisk egenskap" = Egenskap,
+                       "ECT class" = ECT)
+knitr::kable(metaData)
+```
+
+<br />
+<br />
+<hr />
+
+
+## Introduction
+<!-- @Diego: please add a few short paragraphs on the monitoring programme (data details will be in the next section), on its role in national and international reporting, and on the linkage with PECBMS (incl. what PECBMS is and why its good/important). Don't worry too much about flow, I'll add to this section as well and try to make it into a cohesive description. -->
+
+## About the underlying data
+<!-- @Diego: please add content here and in the following four subsections -->
+
+
+### Representativity in time and space
+<!-- Text here -->
+
+### Original units
+<!-- Text here -->
+
+
+### Temporal coverage
+<!-- Text here -->
+
+
+### Aditional comments about the dataset
+<!-- Text here -->
+
+
+## Ecosystem characteristic
+
+### Norwegain standard
+
+Breeding bird indicators are regarded as indicators of biodiversity ("biologisk mangfold").
+It is important to note though that the indicators represent species abundance (trends) in this context and are **not** indicators of species richness or species distribution.
+
+### SEEA EA (UN standard)
+Breeding bird indicators are tagged as "Compositional state characteristic".
+We develop the indicators here to be as consistent as possible with the internationally reported and well-established farmland bird index (https://agridata.ec.europa.eu/Qlik_Downloads/InfoSheetEnvironmental/infoC35.html) and common bird indices (https://www.eea.europa.eu/ims/abundance-and-distribution-of-selected).
+
+## Collinearities with other indicators
+Several species that are part of the breeding bird indicators are also part of the Norwegian Nature Index (NI). For some ecosystems, e.g. wetlands, NI is dominated by bird indicators, potentially leading to substantial collinearity with the corresponding breeding bird index. In the chapter on NI products, we suggest to remove bird indicators from NI products when using them in ecosystem condition assessments that also make use of composite breeding bird indicators. 
+
+## Reference condition and values
+### Reference condition
+In general, the reference condition for breeding bird indicators should be defined along the same lines as for the other indicators in ecological condition assessments.
+
+The internationally established composite bird indicators (farmland bird index, common bird index, etc.), however, are trend indicators can be presented with a few different baseline years. It is the availability of monitoring data of sufficient quality that determines which years may be used as baselines, and the "Hekkefuglovervåkingen", the monitoring programme that supplies the data for the Norwegian breeding bird indicators, has been running since 2007/2008. For some species, a predecessor monitoring scheme has been providing data since 1996. The possible baselines for the breeding bird indicators can therefore be no earlier than 1996, and using baselines consistent with the other nationally (https://miljostatus.miljodirektoratet.no/tema/arter/fugler/; https://hekkefuglovervakingen.nina.no/Fugl/Default.aspx) and internationally reported indices (https://pecbms.info/trends-and-indicators/) seems sensible. 
+
+We note that composite breeding bird indicators could also be built as Nature Index (NI) product (see separate chapters). For the species included in NI, reference values corresponding to "ecosystems with minimal human impacts" were determined previously, and an NI product for a selection of breeding birds would therefore be an indicator taking values between 0 and 1, where 1 = reference condition.
+We refer to the chapter on NI products for more information (and implementation code) for this alternative approach. 
+
+### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+The breeding bird indicators represent average trends relative to a reference year and are therefore scaled with respect to population size in the reference year. Therefore, the indicator value in the reference year is 1. In theory, the indicators can take values between 0 (representing complete extinction of all species) and infinity (infinite population increase). 
+The reference value 1 represents unchanged abundance relative to the reference year. Determining a threshold for what level of decrease in bird abundance is acceptable under "good ecological condition", however, is a challenging task. One approach to setting a threshold may be to consider thresholds of population decline used in other frameworks. The IUCN Red List of threatened species, for example, considers single species as "endangered" when a population decrease of 30% or more has been observed for the most recent decade [@iucn2001]. While it is unclear to what degree that can (or should) be extended to assemblages of multiple species, one may use this as a guideline to stipulate that >70% of the original population (indicator value 0.7) should be present (i.e. the species assemblage should not be endangered) when¨the ecosystem is in good condition. Another approach to determining a threshold would be to assume that bird populations should not be declining at all if an ecosystem is in good condition, i.e. that 1 is the threshold for good ecological condition instead of the reference value. In that case, however, one may need to come up with a reference value that is greater than 1, and determining what level of population increase would be ideal is a nearly impossible task.
+We want to highlight here that these are very preliminary thoughts, and that the reference and threshold values have not been discussed in any more details yet. These discussions will nonetheless be needed, and possibly augmented with simulations, before putting the breeding bird indicators to use for ecosystem condition assessments. 
+
+
+## Uncertainties
+<!-- Text here -->
+
+## References
+
+::: {#refs}
+:::
+
+## Analyses
+### Data sets
+<!-- Text here -->
+
+
+#### Monitoring data from "Hekkefuglovervåkingen"
+<!-- Text here -->
+
+
+#### PECBMS Trim results from predecessor monitoring programme
+<!-- Text here -->
+
+#### Regions
+
+As per now, the breeding bird indicators are calculated at the national scale only and the data is therefore not linked to any geofiles here.
+
+We note that some species may be sufficiently common and have enough data to allow for calculating indicator values for two major regions, Northern Norway and Southern Norway, but this requires careful evaluation that needs to be planned and organized as part of a future project. 
+
+### PECBMS Trim analyses 
+
+
+### Combining data series using SWAN
+
+
+### Scaled indicator values
+
+
+### Uncertainty
+
+
+
+## Prepare export
+
+### Eksport file (final product)
+
+
+
+
+
