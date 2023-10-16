@@ -12,7 +12,7 @@ editor_options:
 
 Chloé R. Nater
 
-September 2023
+October 2023
 
 <br />
 
@@ -76,7 +76,7 @@ New data will be added in 2024, and we are currently working on extending the da
 
 The data held in the NI database are a mixture of observational data, modelled estimates, and quantitative expert assessments.
 
-Here, we focus primarily on an NI product for wetlands, and the following table gives an overview of the indicators included in the official NI for wetlands in 2020.
+Here, we focus primarily on showcasing thw workflow for creating an NI product for wetlands, and the following table gives an overview of all the indicators included in the official NI for wetlands in 2020.
 It also provides information on each indicators trophic level, underlying data, whether we expect updated indicator data towards NI 2025, and additional notes.
 
 ```{r, echo = FALSE}
@@ -116,6 +116,7 @@ This is an imputation procedure that uses (temporal) correlations among included
 Uncertainty due to NA imputation is propagated into the final NI product.
 Since the imputation procedure is based on correlations, it will be influenced by the composition of the dataset, i.e. the choice of indicators, years, and locations will affect the parameters in the imputation routine.
 For now, we recommend using data for all official NI years when calculating products with NA imputation as this will be the approach that most closely resembles the routine used for the official regular NI analyses.
+NI products can also be calculated without NA imputation. In that case, indicators with NA values in a given year get dropped from the NI product for that year, meaning that the same NI product for different years may contain a sightly different indicator set. This is no an issue unless the focus is on the time series itself, i.e. on the change in the characteristic that an NI product represents over time. 
 
 ## Ecosystem characteristic
 
@@ -131,10 +132,9 @@ This seems like the obvious choice for biodiversity indicators that focus on spe
 
 ## Collinearities with other indicators
 
-There is a substantial potential for collinearity between NI products and other indicators, primarily due to the fact that a range of indicators that may be part of an NI product for a given ecosystem may also enter the Ecological Condition Assessment as indicators in their own right or through other composite indicators.
-For the wetlands ecosystem, this is the case, for example, for the bird indicators based on data from "Hekkefuglovervåkingen".
-These indicators form an important proportion of wetlands NI products (at least how they are defined now) but also enter into the Ecological Condition Assessment as a composite bird indicator.
-Collinearity between the two indicators/indices should be checked.
+There is a substantial potential for collinearity between NI products and other indicators, primarily due to the fact that a range of indicators that may be part of an NI product for a given ecosystem have been suggested to enter the Ecological Condition Assessment also as indicators in their own right or through other composite indicators.
+For the wetlands ecosystem, this is the case, for example, for the bird indicators based on data from "Hekkefuglovervåkingen". These indicators form an important proportion of wetlands NI products (at least how they are defined now) but also enter into the Ecological Condition Assessment as a composite bird indicator.
+Collinearity and double-use of data are issues here, and we discuss these at the end of the introduction of this chapter below. 
 
 ## Reference condition and values
 
@@ -147,7 +147,7 @@ The reference condition is defined along the same lines for NI and for other ind
 As NI products are already scaled to range from 0 to 1 and reference conditions are set according to the same approach, the reference value is 1.
 For wetlands ecosystems in particular, we have not yet discussed the definition of "good ecological condition", but it seems that in the Ecological Condition Assessments for forest and mountain ecosystems, 0.6 was used as "good ecological condition" consistent with the approach from "Vanndirektivet".
 To what degree this is appropriate is difficult to judge.
-It may well be best to use 0.6 due to its consistency with other frameworks (e.g. Vanndirektivet) as it would be challenging to otherwise determine what is "good enough" condition for a highly derived variable such as NI products.
+It may well be best to use 0.6 due to its consistency with other frameworks (e.g. Vanndirektivet) as it would be challenging to otherwise determine what is "good enough" condition for a highly derived variables such as NI products.
 
 ## Uncertainties
 
@@ -161,8 +161,23 @@ This is linked to methodological questions regarding how (and perhaps if) highly
 While some of these questions are of a more philosohpical nature, some more pragmatic ones include decisions about which indicators to include/exclude (especially considering indicators that may get used directly and via NI products and indicators that do not really quantify species abundance), how to weigh indicators, and whether or not to impute NA values as part of generating the NI product.
 
 We present some thoughts and suggestions regarding these latter questions in the next section.
-## Suggestions for using NI products in Ecological Condition Assessments [This section will hold some insights and suggestions based on a discussion to be held once Anders is back from leave.
-Content will be added later.]
+
+## Suggestions for using NI products in Ecological Condition Assessments
+
+NI products used for ecological condition assessments may deviate from the regularly published official version of NI in terms of 1) indicator selection, 2) weighting, and 3) treatment of missing data. 
+
+The general rule is that NI products used for ecosystem condition assessments should follow a definition of NI as an indicator of the abundance of species. This means that the indicators that are part of such NI products should be indicators representing abundance and/or population status of specific species and species groups. Indicators that describe properties linked to the condition and/or occurrence of habitat types, on the other hand, should be dropped. For wetlands, for example, this includes the NI indicators "Atlantisk høgmyr areal" and "Palsmyr areal". 
+The second group of indicators that should not be included in NI products are indicators that are also used as additional independent indicators in the ecosystem assessment, or that use the same underlying data as other indicators in the ecosystem assessment. This includes, e.g., indicators such as breeding birds, wolves, small rodents etc. Including the same data/information through different channel is problematic for several reasons including artificially increased indicator weight, inflated precision of the resulting aggregate metrics, high correlations among indicators, and increased risk for mistakes due to paralell workflows.  
+The last group of indicators from the NI database that needs discussing are indicators based on expert knowledge. It has been decided that ecosystem condition assessments using the IBECA method should only include indicators based on data and model predictions. To what degree NI products that contain a portion of indicators based on expert knowledge should be allowed will require discussion.
+Considering all the groups of indicators that should not be included in NI products for ecosystem condition assessments opens up a discussion on whether, instead of using a composite index across a small and very unbalanced set of species (groups), a better approach might be to design NI products that represent specific taxonomic and/or functional species groups. Take, for example, the wetlands NI product presented below: if the bird indicators are removed as they are a separate index, and the four indicators representing expert knowledge on rare mosses and insects are discontinued, all that remains is eight species of vasular plants and wild reindeer. Instead of averaging across plants and reindeer here, it may be more sensible to make an NI product for vascular plants, and potentially include reindeer as a separate indicator. 
+
+Weighting of indicators during aggregation happens at three levels in the NI framework: area weighting, trophic weighting, and key indicator weighting. 
+Area and trophic weighting aim to smooth over imbalances in spatial and taxonomic coverage of indicators while increased weights for a priori defined key indicators are supposed to increase the influence of indicators that are thought to be functionally important species and habitats. 
+Area weighting is central to the method and should always be done when calculating NI products, while the need for trophic weighting depends on the indicator selection of the specific NI product: weighting by trophic group can be useful for indicator sets that are taxonomically diverse while it is largely moot for sets of indicators representing functionally and/or taxonomically closely related species. 
+For the majority of NI products for inclusion in ecosystem condition assessments key indicator weighting will not be relevant because most NI key indicators fall into the categories of either habitat indicators and/or indicators that are used independently in the assessments and are therefore removed from NI products. If any key indicators remain in the relevant indicator set after that, there is a good chance it will be only one or two, and allocating literally half the weight in a composite index to a single indicator is not reasonable. 
+
+The last adjustment that can be made for NI products for use in ecosystem condition assessments deals with how gaps (NA values) in the data are treated. The official NI has always had a time series perspective, i.e. the focus lies on changes in the index over time. To be able to compare NI across different years it is necessary to impute missing indicator values as this ensures that the same (complete) set of indicators is used every year. The MICE algorithm that is used for the NA imputation is a practical solution that works well enough when there are many indicators and as long as the data gaps are randomly distributed across years. That being said, it has not been tested how well the imputation performs with smaller indicator sets, which is going to be the case with the NI products for use in the ecosystem condition assessments. The tidiest and most robust approach as of now is therefore to not impute missing data and calculate NI products based on indicators without missing data in the relevant time period. This is likely to be the best way to go as long as the focus of ecosystem condition assessments does not shift over to a primary focus on time series. 
+
 
 ## References
 
@@ -221,10 +236,10 @@ shapeLibraryPath <- "/data/P-Prosjekter/41201611_naturindeks_2021_2023_vitenskap
 
 NIflex offers a workflow for calculating NI products that can be customized in terms of a range of options.
 So next, we set the global options for calculating our wetlands NI product, starting with the years of data we want to include.
-Since we may want to use NA imputation, we select all official NI years:
+Since we will not use NA imputation here, we drop the first year with available data for in the NI database (1990) as many indicators do not actually have values for this year. 
 
 ```{r}
-years <- c("1990", "2000", "2010", "2014", "2019")
+years <- c("2000", "2010", "2014", "2019")
 ```
 
 Next, we decide what type of output we want and whether or not to impute missing values
@@ -233,7 +248,7 @@ Next, we decide what type of output we want and whether or not to impute missing
 OutputType <- "EcologicalCondition"
 EC_ecosystem <- c("Wetlands", "Våtmark")
 
-NAImputation <- TRUE 
+NAImputation <- FALSE 
 ```
 
 and continue to set how we want indicators to be weighed.
@@ -256,11 +271,13 @@ norwegianNames <- TRUE
 
 and set the way in which we want to specify which indicators are dropped.
 There are two options for this: "pre-defined" drops the hard-coded set of indicators that should be dropped in any case.
-So far, there is only one indicator that gets dropped for wetlands and that is "lavhei" (due to low representativeness for the ecosystem).
-It's also possible to set it to "custom" and specify which indicators should be dropped, but we are not doing that here.
+So far, there is only one indicator that gets dropped for wetlands by default and that is "lavhei" (due to low representativeness for the ecosystem).
+The alternative is to set the mode to "custom" and specify which indicators should be dropped. We will demonstrate this here as we would also like to also drop the two indicators that do not represent species abundance but habitat condition, "Atlantisk høgmyr areal" and "Palsmyr areal", as well as the indicator "Tamrein" which is not relevant when considering natural biodiversity. 
 
 ```{r}
-DropIndMode <- "pre-defined"
+DropIndMode <- "custom"
+DropIndList <- c(7, 142, 155, 436)
+
 if(DropIndMode == "pre-defined"){DropIndList <- NULL}
 ```
 
@@ -268,7 +285,7 @@ With the final options, we choose whether we want dataset diagnostics to be calc
 
 ```{r}
 Diagnostics <- TRUE # Yes
-TestRun <- TRUE # Yes
+TestRun <- FALSE # Yes
 ```
 
 The difference for the latter is that in a test run, we only run NA imputation and bootstrap for 10 iterations instead of 1000, which makes the runtime of the workflow a lot more "practical" (but 1000 or even more iterations should be run for the final results).
@@ -321,7 +338,7 @@ CustomNI <- calculateCustomNI(ecosystem = ecosystem_use,
 ```
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-CustomNI<-readRDS("data/cache/CustomNI.RDS")
+CustomNI <- readRDS("data/cache/CustomNI.RDS")
 ```
 
 After calculating the index values, we can extract summary metrics for a specified year and match them to geospatial data for further analysis and/or inclusion in the Ecosystem Condition framework:
@@ -335,7 +352,7 @@ CustomNI_map <- geomapNI(Index = CustomNI$CustomIndex,
 ```
 
 ```{r, echo=FALSE}
-CustomNI_map<-readRDS("data/cache/CustomNI_map.RDS")
+CustomNI_map <- readRDS("data/cache/CustomNI_map.RDS")
 ```
 
 Next we can have a look at some visualizations of our NI product.
@@ -374,8 +391,8 @@ plotNI_Map(shp = CustomNI_map,
 Based on recent work done as part of a pilot study on visualizing NI products (<https://ninanor.github.io/NIviz/index.html>) I have also implemented some more advanced plotting functions.
 The first one plots a time-series as well, but including the entire uncertainty distribution, not just summary statistics:
 
-```{r, results = FALSE, message = FALSE, warning=FALSE}
-Index <- Index <- CustomNI$CustomIndex
+```{r, results = FALSE, message = FALSE, warning = FALSE}
+Index <- CustomNI$CustomIndex
 
 plotNI_DensityRidgeTS(Index = Index, 
                       OutputType = OutputType, 
