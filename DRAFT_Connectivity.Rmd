@@ -62,7 +62,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
 ```{r, echo=F}
 Ecosystem <- "Våtmark"
-Egenskap  <- "Konnektivitet"
+Egenskap  <- "Landskapsøkologiske mønstre"
 ECT       <- "Landscape and seascape characteristics"
 Contact   <- "Vegar Bakkestuen"
 ```
@@ -99,6 +99,8 @@ Here a general workflow for the calculation of the indicator.
 
 Currently step 8, and a subsequent step 9 (to aggregate scaled indicators to regions and simultaneously calculate errors) are not complete. Se [this issue]()https://github.com/NINAnor/ecosystemCondition/issues/144. 
 
+It is also possible to create a time series for this indicator, but this is not yet done. See [GitHub issue](https://github.com/NINAnor/ecosystemCondition/issues/145).
+
 ## About the underlying data {#underlying-data-con}
 The **infrastructure index** is one part of the connectivity index for wetlands. The infrastructure index was calculated for three time points: 2003, 2013, and 2023. This provides a temporal perspective for assessing changes over time. The data used included information on various types of infrastructure, such as roads and buildings. Additionally, a **new wetland** map for Norway has been developed. This map is based on Sentinel-2 and LiDAR data from the year 2020. The U-Net model, implemented through Google Earth Engine and TensorFlow, has been used for mapping wetlands in southern Norway. The model achieved a balanced accuracy rate of 90.9% when validated against ground-truth samples, significantly improving upon the accuracy rates achieved with manually digitized maps in Norway. 
 
@@ -118,7 +120,7 @@ It is important to note that infrastructure data are based on available map and 
 In the context of the Norwegian standard, the "Connectivity" indicator aligns with the ecosystem characteristic known as **Landskapsøkologiske mønstre**. 
 
 ### SEEA EA (UN standard) {#seea-con}
-In the framework of the United Nations System of Environmental-Economic Accounting (SEEA EA), the "Connectivity" indicator can be classified as a C1 "Landscape and seascape characteristics" indicator.
+In the framework of the United Nations System of Environmental-Economic Accounting (SEEA EA), the _Connectivity_ indicator can be classified as a **C1 Landscape and seascape characteristics** indicator.
 
 ## Collinearities with other indicators {#collinear-con}
 Connectivity is not thought to exhibit collinearity with any other indicator at the present.
@@ -263,23 +265,10 @@ Export.table.toDrive({
   fileFormat: 'SHP' // Filformat for eksport (Shapefile)
 });
 
-# Skift til scenariet "Konnektivitet uten infrastruktur" ved å fjerne infrastrukturdataene
-infrastruktur = ee.Image(0); // Nullstiller infrastruktur til et tomt bilde
-var omraderMedGjennomsnittligAvstandUtenInfrastruktur = omraderGeometries.map(calculateMeanDistance);
-
-// Vis scenariet "Konnektivitet uten infrastruktur" på kartet
-Map.addLayer(omraderMedGjennomsnittligAvstandUtenInfrastruktur, visParams, 'Gjennomsnittlig avstand uten infrastruktur');
-
-// Eksporter resultatene som en Shapefile til Google Drive for scenariet "Konnektivitet uten infrastruktur"
-Export.table.toDrive({
-  collection: omraderMedGjennomsnittligAvstandUtenInfrastruktur,
-  description:'Konnektivitet_uten_infrastruktur', // Navnet på eksportfilen for scenariet "Konnektivitet uten infrastruktur"
-  fileFormat: 'SHP' // Filformat for eksport (Shapefile)
-});
 
 ```
 
-The sclaed "Connectivity" values is created by dividing the result without infrastructure by the result that includes infrastructure. This ratio will give you a value between 0 and 1, where 0 represents complete disruption of connectivity due to infrastructure, and 1 represents undisturbed natural connectivity.
+The scaled "Connectivity" values are created by dividing the result without infrastructure by the result that includes infrastructure. This ratio will give you a value between 0 and 1, where 0 represents complete disruption of connectivity due to infrastructure, and 1 represents undisturbed natural connectivity.
 
 This step is not yet done, but in R this is how one would do it.
 Calculate the reference value for connectivity
