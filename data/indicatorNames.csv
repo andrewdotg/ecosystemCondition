@@ -1,17 +1,26 @@
-ID;Name used on GitHub;Norwegian name used in the report;Label name (for tagging issues);Synonyms;abb.
-NO_001_SEVERAL_001_20231010;Enchroachemnt;Gjengroing;INDICATOR - enchroachment;Vegetation regrowth/encroachment (gjengroing);enc
-NO_002_SEVERAL_ALL_20231010;Climate indicators;Klimaindikatorer;INDICATOR - Climate indicators;...;cli
-NO_002_SEVERAL_001_20231010;Median summer temperature;Sommertemperatur;INDICATOR - Climate indicators;...;mst
-NO_003_SEVERAL_001_20231010;Alien species;Fravær av fremmede arter;INDICATOR - alien species;...;ali
-NO_004_SEVERAL_001_20231010;Anthropogenic disturbance to soil and vegetation;Slitasje;INDICATOR - slitasje indicator;Slitasje og kjørespor;adsv
-NO_005_SEVERAL_ALL_20231010;Functional plant indicators;Planteindikatorer;INDICATOR - Functional plant indicators;...;fpi
-NO_005_NATURALYOPEN_001_20231010;Functional plant indicators - Naturally Open Ecosystems;Planteindikatorer;Functional plant indicators;...;fpin
-NO_005_SEMINATURAL_001_20231010;Functional plant indicators - Semi-natural Ecosystems;Planteindikatorer;Functional plant indicators;...;fpis
-NO_005_WETLANDS_001_20231010;Functional plant indicators - Wetlands;Planteindikatorer;Functional plant indicators;...;fpiw
-NO_006_SEVERAL_ALL_20231010;Trophic level biomass ratios;Fordeling av biomasse i trifiske nivåer;Trophic level biomass ratio indicators;Biomasse i trofiske nivåer (vertebrater/ vegetasjon);tlb
-NO_006_SEVERAL_001_20231010;Deviation from expected vertebrate herbivore biomass;Beitedyr;Trophic level biomass ratio indicators;...;herb
-NO_006_SEVERAL_002_20231010;Deviation from expected carnivore biomass;Rovdyr;Trophic level biomass ratio indicators;...;carn
-NO_007_SEVERAL_ALL_20231010;NDVI;Primærproduksjon;INDICATOR - NDVI;...;ndvi
-NO_007_NATURALYOPEN_001_20231010;NDVI - Naturally open ecosystems;Primærproduksjon;INDICATOR - NDVI;...;ndvin
-NO_007_SEMINATURAL_001_20231010;NDVI - Semi-natural ecosystems;Primærproduksjon;INDICATOR - NDVI;...;ndvis
-NO_007_WETLANDS_001_20231010;NDVI - wetlands;Primærproduksjon;INDICATOR - NDVI;...;ndviw
+Indicator_ID;Name used on GitHub;Norwegian name used in the report;Label name;Synonyms;abb
+NO_ENCH_001;Enchroachemnt;Gjengroing;INDICATOR - enchroachment;Vegetation regrowth/encroachment (gjengroing);enc
+NO_CLIM;Climate indicators;Klimaindikatorer;INDICATOR - Climate indicators;;cli
+NO_CLIM_001;Median summer temperature;Sommertemperatur;INDICATOR - Climate indicators;;mst
+NO_ALIE_001;Alien species;Fravær av fremmede arter;INDICATOR - alien species;;ali
+NO_ADSV_001;Anthropogenic disturbance to soil and vegetation;Slitasje;INDICATOR - slitasje indicator;Slitasje og kjørespor;adsv
+NO_FUNC;Functional plant indicators;Vegtasjonsindikatorer;INDICATOR - Functional plant indicators;;fpi
+NO_FUNC_001;Functional plant indicators - Light;Vegtasjon og lys;INDICATOR - Functional plant indicators;;
+NO_FUNC_002;Functional plant indicators - Moisture;Vegetasjon og fuktighet;INDICATOR - Functional plant indicators;;
+NO_FUNC_003;Functional plant indicators - pH;Vegetasjon og pH;INDICATOR - Functional plant indicators;;
+NO_FUNC_004;Functional plant indicators - Nitrogen;Vegetasjon og nitrogen;INDICATOR - Functional plant indicators;;
+NO_FUNC_005;Functional plant indicators - Phosphorus;Vegetasjon og fosfor;INDICATOR - Functional plant indicators;;
+NO_FUNC_006;Functional plant indicators - Grazing/mowing;Vegetasjon og beiting/slått;INDICATOR - Functional plant indicators;;
+NO_FUNC_007;Functional plant indicators - Soil disturbance;Vegetasjon og jordforstyrrelse;INDICATOR - Functional plant indicators;;
+NO_FUNC_008;Functional plant indicators - Grimes C;Vegetasjon og strategi mot konkurranse;INDICATOR - Functional plant indicators;;
+NO_FUNC_009;Functional plant indicators - Grimes R;Vegetasjon og strategi mot forstyrrelse;INDICATOR - Functional plant indicators;;
+NO_FUNC_010;Functional plant indicators - Grimes S;Vegetasjon og strategi mot stress;INDICATOR - Functional plant indicators;;
+NO_TLBR;Trophic level biomass ratios;Fordeling av biomasse i trifiske nivåer;INDICATOR - Trophic level biomass ratio indicator;Biomasse i trofiske nivåer (vertebrater/ vegetasjon);tlb
+NO_TLBR_001;Deviation from expected vertebrate herbivore biomass;Beitedyr;INDICATOR - Trophic level biomass ratio indicator;;herb
+NO_TLBR_002;Deviation from expected carnivore biomass;Rovdyr;INDICATOR - Trophic level biomass ratio indicator;;carn
+NO_NDVI_001;NDVI;Primærproduksjon;INDICATOR - NDVI;;ndvi
+NO_CONN_001;Connectivity;Konnektivitet;INDICATOR - Connectivity;;con
+NO_INSE;Insect indicators;Insektindikatorer;INDICATOR - insects;;ins
+NO_NMBB;Bumplebees and butterflies;Humler og dagsommerfugler;INDICATOR - insects;;ins
+NO_NMBB_001;Bumblebees in open landscapes;Humler i semi-naturlig mark;INDICATOR - insects;;
+NO_NMBB_002;Butterflies in open landscapes;Sommerfulger i semi-naturlig mark;INDICATOR - insects;;
