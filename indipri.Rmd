@@ -1,0 +1,14 @@
+
+
+# IndiPri
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, out.width='100%', echo=FALSE}
+knitr::include_app("https://anderskolstad.shinyapps.io/indiPri/",
+                   height = "800px")
+```
+
