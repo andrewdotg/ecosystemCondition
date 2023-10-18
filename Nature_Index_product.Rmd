@@ -346,6 +346,7 @@ CustomNI <- calculateCustomNI(ecosystem = ecosystem_use,
                               norwegianNames = norwegianNames,
                               saveSteps = FALSE)
 ```
+
 ```{r, include=F}
 dir <- substr(getwd(), 1,2)
 pData <- ifelse(dir == "C:", 
@@ -387,14 +388,6 @@ data.frame("Region"= rownames(summary(Index$wholeArea)), summary(Index$wholeArea
   set_table_properties(layout = "autofit")
 ```
 
-
-```{r, echo=FALSE}
-Index <- CustomNI$CustomIndex
-#plot(Index$wholeArea, main = "Custom index", cex = 1, lwd = 2, shade = TRUE)
-summary(Index$wholeArea)
-
-```
-
 The summary metrics (here median) for any given year can then be plotted onto a map by matching them up to the shapefiles:
 
 ```{r, message = FALSE, warning = FALSE}
@@ -408,7 +401,7 @@ plotNI_Map(shp = CustomNI_map,
 ```
 
 
-### Uncertainty
+### Uncertainty {#uncertainty-ni}
 
 Based on recent work done as part of a pilot study on visualizing NI products (<https://ninanor.github.io/NIviz/index.html>) I have also implemented some more advanced plotting functions.
 The first one plots a time-series as well, but including the entire uncertainty distribution, not just summary statistics:
@@ -458,7 +451,7 @@ plotNI_Map(shp = CustomNI_map,
            plotMedian = TRUE, plotCI = FALSE, plotDisplacement = TRUE,
            interactiveMap = FALSE)
 ```
-## Prepare export
+## Prepare export {#prepare-export-ni}
 
 Preparing the export is only a matter of renaming columns at this stage.
 Using `geomapNI()` we have already extracted summaries and matched them to spatial data.
