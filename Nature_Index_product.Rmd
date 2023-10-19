@@ -40,7 +40,10 @@ metaData <- data.frame(Ecosystem,
                        "Økologisk egenskap" = Egenskap,
                        "ECT class" = ECT,
                        check.names = F)
-knitr::kable(metaData)
+flextable(metaData) %>%
+  bg(bg = "lightblue", part="header") %>%
+  theme_vanilla() %>%
+  set_table_properties(layout = "autofit")
 ```
 
 <!-- Don't remove these three html lines -->
