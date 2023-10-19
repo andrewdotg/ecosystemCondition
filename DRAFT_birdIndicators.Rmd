@@ -49,23 +49,33 @@ Furthermore, these data are shared with the Pan-European Common Bird Monitoring 
 Data from hekkefuglovervåking are also use in scientific research both at a national and supra-national scale.
 
 The hekkefuglovervåking, coordinated by NINA and BirdLife Norway and supported financially by the Norwegian Environment Agency (Miljødirektoratet), replaced the previous scheme, which ran between 1995 and 2008.  
+
 ## About the underlying data
-<!-- @Diego: please add content here and in the following four subsections -->
+These data are gathered mostly by volunteer experienced bird-watchers following a standardized sampling protocol (https://hekkefuglovervakingen.nina.no/Fugl/public/papirskjema/MethodologyEng.pdf). Observers will visit each route once a year between 20.05 and 10.06 (depending on latitude) and carry out the census in good weather conditions. The observer will record any bird seen or heard during 5 minutes at each of the pre-selected counting points in the route. A total of 229 species are typically recorded during this census. After 5 minutes, the observer walks to the next point in a straight line (when possible). During this 'transect' the observer is requested to record also a subset of species that are considered rare or difficult to capture during the 5-minute point counts (n = 121). 
 
 
 ### Representativity in time and space
-Diego is on it!
+Nation-wide monitoring scheme consisting in 492 fix routes across all terrestrial habitats present in Norway (MAP HERE?? I can provide this). Each route has between 12 and 20 counting points (ca. 9000 across Norway), which typically are 300 m apart, describing a square with side 1.5 km long (the observer walks on a straight line between two consecutive points). Deviations of this typical route shape are normally due to the landscape configuration (e.g. rough terrain, presence of a lake or river, sea, glacier...).  Due to lack on resources, only a random sample of 370 routes are surveyed every year. The aim is to survey at least 80% of the routes yearly. 
+
+This monitoring scheme is designed to gather representative sample in all (common) habitats in both the latitudinal and altitudinal gradients. 
+
+Although this monitoring scheme started in 2005, full coverage at national scale was achieved in 2010. 
+
 
 ### Original units
-<!-- Text here -->
+The observers will record 'number of individuals' seen or heard during the census. Then, those values are converted into 'number of pairs' by multiplying the number of individuals by a conversion factor, which is 2 or 5 depending on the species (for national reporting only).
+Information on bird abundance is then processed in the software TRIM to estimate abundance indices relative to a base year (in Norway this is typically 2008). Such abundance indices are used for reporting population trends across Norway, generate multi-species indicators in Norway and shared with PECBMS for pan-European assessment of bird populations and their habitats.
 
 
 ### Temporal coverage
-<!-- Text here -->
+The Norwegian common breeding bird monitoring scheme was established in 2005 in central Norway and but reached full development (nation-wide) in 2010. These scheme provides high quality data for many species already since 2008. This monitoring programme is still ongoing as of 2023.
+A previous monitoring scheme existed, which was established in 1995 and was discontinued in 2008. 
+Although these two monitoring programmes are not the same, tools available (e.g. RSWAN) can combine the abundance indices calculated with TRIM from the two different schemes and then combine them for a single trend estimate. This is possible because both monitoring schemes overlapped for one year (2008). 
+
 
 
 ### Aditional comments about the dataset
-<!-- Text here -->
+From all species recorded within the Norwegian common breeding bird monitoring scheme (n = 229), only 71 species are requested by PECBMS (most widely distribute with continental-wide relevance). Longer (combined) time series can be calculated for 55 species of which 39 species are used for the multi-species indicators (farmland = 7 species; forest = 24 species; mountain = 8 species).
 
 
 ## Ecosystem characteristic
