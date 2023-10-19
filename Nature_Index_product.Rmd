@@ -347,7 +347,7 @@ CustomNI <- calculateCustomNI(ecosystem = ecosystem_use,
                               saveSteps = FALSE)
 ```
 
-```{r, include=F}
+```{r, include=F, eval=F}
 dir <- substr(getwd(), 1,2)
 pData <- ifelse(dir == "C:", 
                "P:/41201785_okologisk_tilstand_2022_2023/data/",
