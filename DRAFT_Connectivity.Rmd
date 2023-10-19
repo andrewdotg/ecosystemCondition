@@ -187,35 +187,57 @@ Koden er utviklet i JAVA for Google Earth Engine:
 // Senter kartet til en bestemt geografisk posisjon (bredde- og lengdegrad) og velg en zoomnivå
 Map.setCenter(11.0534047, 62.14137, 12);
 
-// Laste inn infrastrukturindeks og myr datasett fra Google Earth Engine (GEE). Datasettene er delt og fitt tilgjengelig for alle fra GEE 
-
-Data 
+// Laste inn infrastrukturindeks og myr datasett fra Google Earth Engine Data
 var infrastruktur = ee.Image('users/vegar/NY_INFRA_IND');
 var myrpred2 = ee.ImageCollection('users/vegarbakkestuen/Myr153');
-var myrpred2 = ee.ImageCollection('users/vegarbakkestuen/Myr153');
-var myrpredNN = ee.ImageCollection('users/vegarbakkestuen/Myr168NN');
-
-var myrpredNN = myrpredNN.mean()
-var myrpred = myrpred2.mean()//.rename('DTM');
-
+var myr = myrpred2.mean();
 
 // Legg til myrdata som et lag på kartet med tilpassede visningsparametere
-Map.addLayer(myr, {min: 0, max: 1, palette: ['white', 'green']}, 'myr');
-Map.addLayer(infrastruktur, {min: 0, max: 13, palette: ['blue', 'yellow', 'red']}, 'infrastruktur');
+Map.addLayer(myr, { min: 0, max: 1, palette: ['white', 'green'] }, 'myr');
+Map.addLayer(infrastruktur, { min: 0, max: 13, palette: ['blue', 'yellow', 'red'] }, 'infrastruktur');
 
 // Definer en bufferavstand (i meter) som bestemmer området som blir analysert rundt hvert myrpolygon
 var bufferDistance = 500;
 
-// Funksjon for å beregne gjennomsnittlig avstand til infrastruktur
-var calculateMeanDistance = function(feature) {
+// Funksjon for å beregne gjennomsnittlig avstand til infrastruktur basert på grenseverdien
+var calculateMeanDistance = function (feature) {
+  var threshold = 3;  // Definer din grenseverdi for infrastruktur
+
+  // Filtrer infrastrukturbildet basert på grenseverdien
+  var filteredInfrastructure = infrastruktur.gt(threshold);
+
+  // Hent myrpolygonets sentrum
+  var myrCenter = feature.geometry().centroid(100);
+
   // Beregn gjennomsnittlig avstand til infrastruktur ved å redusere regionen rundt hvert myrpolygon
-  var distance = infrastruktur.rename('infrastruktur').reduceRegion({
+  var distanceWithInfrastructure = filteredInfrastructure.rename('filtered_infra').reduceRegion({
     reducer: ee.Reducer.mean(),
     geometry: feature.geometry().buffer(bufferDistance),
     scale: 10,  // Oppløsningen til datasettet (meters per piksel)
     maxPixels: 1e13
-  }).get('infrastruktur');
-  return feature.set('mean_distance', distance);
+  }).get('filtered_infra');
+
+  var distanceWithoutInfrastructure = filteredInfrastructure.rename('filtered_infra').reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: myrCenter.buffer(bufferDistance),
+    scale: 10,  // Oppløsningen til datasettet (meters per piksel)
+    maxPixels: 1e13
+  }).get('filtered_infra');
+
+  // Skalér brøkverdien til meter ved å multiplisere med bufferavstanden
+  var scaledDistanceWithInfrastructure = ee.Number(distanceWithInfrastructure).multiply(bufferDistance);
+  var scaledDistanceWithoutInfrastructure = ee.Number(distanceWithoutInfrastructure).multiply(bufferDistance);
+
+  // Beregn kvotienten (forholdet mellom avstand uten infrastruktur og avstand med infrastruktur)
+  var kvotient = scaledDistanceWithoutInfrastructure.divide(scaledDistanceWithInfrastructure);
+
+  var properties = {
+    'distinfra_meters': scaledDistanceWithInfrastructure,
+    'distnoinfra_meters': scaledDistanceWithoutInfrastructure,
+    'kvotient': kvotient
+  };
+
+  return feature.set(properties);
 };
 
 // Velg områder med myr (myrinnhold > 80%) og bruk dette som geometri for analysen
@@ -223,18 +245,16 @@ var omraderMedMyr = myr.gt(0.8).selfMask();
 
 // Hent geometriene for hvert område med myr
 var omraderGeometries = omraderMedMyr.reduceToVectors({
-  geometry: Map.getBounds(true),
+  geometry: geometry,
   scale: 10,  // Oppløsningen til datasettet (meters per piksel)
   maxPixels: 1e13
 });
 
 // Bruk funksjonen calculateMeanDistance for å beregne gjennomsnittlig avstand til infrastruktur for hvert område med myr
-
-// For scenariet "Konnektivitet med infrastruktur" 
 var omraderMedGjennomsnittligAvstand = omraderGeometries.map(calculateMeanDistance);
 
 // Legg til lag som viser myrpolygonene og lag med gjennomsnittlig avstand til infrastruktur på kartet
-Map.addLayer(omraderMedMyr, {min: 0, max: 1, palette: ['white', 'green']}, 'Myrpolygoner');
+Map.addLayer(omraderMedMyr, { min: 0, max: 1, palette: ['white', 'green'] }, 'Myrpolygoner');
 
 // Vis scenariet "Konnektivitet med infrastruktur" på kartet
 var visParams = {
@@ -247,24 +267,9 @@ Map.addLayer(omraderMedGjennomsnittligAvstand, visParams, 'Gjennomsnittlig avsta
 // Eksporter resultatene som en Shapefile til Google Drive
 Export.table.toDrive({
   collection: omraderMedGjennomsnittligAvstand,
-  description:'Konnektivitet_med_infrastruktur', // Navnet på eksportfilen for scenariet "Konnektivitet med infrastruktur"
-  fileFormat: 'SHP' // Filformat for eksport (Shapefile)
+  description: 'Konnektivitet_med_infrastruktur',
+  fileFormat: 'SHP',
 });
-
-// Skift til scenariet "Konnektivitet uten infrastruktur" ved å fjerne infrastrukturdataene
-infrastruktur = ee.Image(0); // Nullstiller infrastruktur til et tomt bilde
-var omraderMedGjennomsnittligAvstandUtenInfrastruktur = omraderGeometries.map(calculateMeanDistance);
-
-// Vis scenariet "Konnektivitet uten infrastruktur" på kartet
-Map.addLayer(omraderMedGjennomsnittligAvstandUtenInfrastruktur, visParams, 'Gjennomsnittlig avstand uten infrastruktur');
-
-// Eksporter resultatene som en Shapefile til Google Drive for scenariet "Konnektivitet uten infrastruktur"
-Export.table.toDrive({
-  collection: omraderMedGjennomsnittligAvstandUtenInfrastruktur,
-  description:'Konnektivitet_uten_infrastruktur', // Navnet på eksportfilen for scenariet "Konnektivitet uten infrastruktur"
-  fileFormat: 'SHP' // Filformat for eksport (Shapefile)
-});
-
 
 ```
 
