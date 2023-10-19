@@ -3,6 +3,19 @@
 # Enchroachment {#gjengroing}
 <br />
 
+
+<!-- Limit code block height and force scrolling -->
+```{css, echo=FALSE}
+pre {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
 Norwegian name: **Gjengroing**
 
 
@@ -448,7 +461,7 @@ refAapne %>%
        x = "Elevation (meters above sea level)")
 ```
 
-```{r ref-open-enc, fig.cap="Refenerence vegetation height in wetland ecosystems under the forest line in Norway."}
+```{r ref-wet-enc, fig.cap="Refenerence vegetation height in wetland ecosystems under the forest line in Norway."}
 refVaatmark %>%
   mutate(elevation = factor(elevation, levels = c("0-300", "300-600", "600-900", "900-1200", ">1200")),
          vegClimZoneLab = factor(vegClimZoneLab)) %>%
