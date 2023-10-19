@@ -8,7 +8,7 @@ Anders L. Kolstad
 September 2023
 
 
-Norwegian indicator name: Slitasje
+Norwegian indicator name: **Slitasje**
 
 
 ```{r setup, include=FALSE}
@@ -21,6 +21,7 @@ library(units)
 library(eaTools)
 library(tidyverse)
 library(tibble)
+library(flextable)
 knitr::opts_chunk$set(echo = TRUE)
 
 # Set up conditional file paths
@@ -46,8 +47,12 @@ Contact   <- "anders.kolstad@nina.no"
 ```{r, echo=F}
 metaData <- data.frame(Ecosystem,
                        "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT)
-knitr::kable(metaData)
+                       "ECT class" = ECT,
+                       check.names = F)
+flextable(metaData) %>%
+  bg(bg = "lightblue", part="header") %>%
+  theme_vanilla() %>%
+  set_table_properties(layout = "autofit")
 ```
 
 <hr/>
@@ -1166,6 +1171,19 @@ areas. Especially when down-weighting the importance of those
 groups/categories that have very little data.
 
 
+```{r, include=FALSE, eval=FALSE}
+# Figure for the report 2023
+
+corrCheck %>%
+  filter(hovedøkosystem == "naturligÅpneOmråderILavlandet") %>%
+ggplot(aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
+  geom_bar(position="fill")+
+  theme_bw(base_size = 12)+
+  guides(fill = guide_legend("Skalerte indikatorverdier"))+
+  ylab("Andel av datapunkter")+
+  xlab("Infrastrukturindeksen (kategorisk versjon)")+
+  scale_fill_brewer(palette = "RdYlGn")
+```
 #### Looking at the HIA
 
 Here is a view of the data zooming in on Trondheim
