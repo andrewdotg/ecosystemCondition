@@ -49,7 +49,7 @@ knitr::kable(metaData)
 
 
 ### Representativity in time and space
-<!-- Text here -->
+Diego is on it!
 
 ### Original units
 <!-- Text here -->
