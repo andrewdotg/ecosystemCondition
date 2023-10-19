@@ -1,0 +1,20 @@
+
+
+# Oversikt over indikatorforslag
+
+Dette kapittelet gir en oversikt over gamle og nye forslag på indikatorer på økologisk tilstand i de tre hovedøkosystemene semi-naturlig mark, naturlig åpne områder under skoggrensa og våtmark. 
+Under vises en interaktiv applikasjon med navn IndiPri hvor man kan bla i indikatortabellen og foreta ulike filtreringer og/eller uthevinger.
+Appen vedlikeholdes gjennom en separat [GitHub repo](https://github.com/anders-kolstad/indiPri).
+
+## IndiPri
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, out.width='100%', echo=FALSE}
+knitr::include_app("https://anderskolstad.shinyapps.io/indiPri/",
+                   height = "800px")
+```
+
