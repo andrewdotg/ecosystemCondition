@@ -42,8 +42,13 @@ knitr::kable(metaData)
 
 
 ## Introduction
-<!-- @Diego: please add a few short paragraphs on the monitoring programme (data details will be in the next section), on its role in national and international reporting, and on the linkage with PECBMS (incl. what PECBMS is and why its good/important). Don't worry too much about flow, I'll add to this section as well and try to make it into a cohesive description. -->
+The Norwegian common breeding bird monitoring scheme (hekkefuglovervåking in Norwegian; formerly called TOV-E) was established between 2005 and 2010. The main goal of the programme is to gather data on the abundance of the most common terrestrial bird species to assess population trends and changes across Norway (available at the website), and help proposing efficient management and conservation measures for these species and their habitats in Norway. These data are the basis to update the Red List of Birds in Norway following the IUCN protocol, and are also used to generate indicators of mountain, farmland and forest habitats. 
 
+Furthermore, these data are shared with the Pan-European Common Bird Monitoring Scheme (PECBMS; https://pecbms.info/), which, by combining data from different long-term and large-scale bird monitoring programmes in all European countries, aims at producing indicators of the general state of nature at continental scale. 
+
+Data from hekkefuglovervåking are also use in scientific research both at a national and supra-national scale.
+
+The hekkefuglovervåking, coordinated by NINA and BirdLife Norway and supported financially by the Norwegian Environment Agency (Miljødirektoratet), replaced the previous scheme, which ran between 1995 and 2008.  
 ## About the underlying data
 <!-- @Diego: please add content here and in the following four subsections -->
 
