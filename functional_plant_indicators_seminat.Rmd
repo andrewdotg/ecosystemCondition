@@ -28,6 +28,7 @@ library(tmaptools)
 library(raster)
 library(stars)
 library(knitr)
+library(flextable)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -42,8 +43,12 @@ Contact   <- "Joachim Töpper"
 ```{r, echo=FALSE}
 metaData <- data.frame(Ecosystem,
                        "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT)
-knitr::kable(metaData)
+                       "ECT class" = ECT,
+                       check.names = F)
+flextable(metaData) %>%
+  bg(bg = "lightblue", part="header") %>%
+  theme_vanilla() %>%
+  set_table_properties(layout = "autofit")
 ```
 
 

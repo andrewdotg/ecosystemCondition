@@ -16,6 +16,7 @@ March 2023
 ```{r setup, include=FALSE}
 library(knitr)
 library(sf)
+library(flextable)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -31,8 +32,12 @@ Contact   <- "Anders L. Kolstad" # e.g. "Anders Kolstad"
 ```{r, echo=F}
 metaData <- data.frame(Ecosystem,
                        "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT)
-knitr::kable(metaData)
+                       "ECT class" = ECT,
+                       check.names = F)
+flextable(metaData) %>%
+  bg(bg = "lightblue", part="header") %>%
+  theme_vanilla() %>%
+  set_table_properties(layout = "autofit")
 ```
 
 <!-- Don't remove these three html lines -->
