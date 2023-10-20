@@ -185,7 +185,7 @@ NI indicators are normalised (i.e. scaled relative to their reference values) at
 This is the spatial resolution of the raw observation data, and the reference values have the same spatial resolution as the observation data.
 Quite often the BSU it is a municipal scale, but not always. 
 The EAA (ecosystem assessment area), however, is typically much larger, with only five regions in Norway.
-Therefore, scaled indicator valeus are aggregated to produce regional estimates, with the effect that the regional estimated now represents the (area weighted) condition of the BSUs, and not the staus of the population.
+Therefore, scaled indicator valeus are aggregated to produce regional estimates, with the effect that the regional estimated now represents the (area weighted) condition of the BSUs, and not the status of the population.
 An alternative to this, for indicators where the raw data is in the form of counts or mass (densities are not suited), one might sum the variable and the reference values for each region and then scale the variable based on these sums (e.g. number of individuals).
 This approach would produce an indicator which reflect the _population_ status rather than the mean status for any given area.
 
