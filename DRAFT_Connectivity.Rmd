@@ -149,6 +149,7 @@ Erikstad, L.; Simensen, T.; Bakkestuen, V.; Halvorsen, R. Index Measuring Land U
 
 Framstad, E., Eide, N.E., Eide, W., Klanderud, K., Kolstad, A., Töpper, J. & Vandvik, V. 2022. Vurdering av økologisk tilstand for fjell i Norge i 2021. NINA Rapport 2050. Norsk institutt for naturforskning.
 
+Husk en refERANSE TIL KKLG
 
 ## Analyses {#analyses-con}
 ### Data sets {#datasets-con}
