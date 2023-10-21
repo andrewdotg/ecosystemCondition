@@ -128,7 +128,7 @@ We want to highlight here that these are very preliminary thoughts, and that the
 
 
 ## Uncertainties
-There is a substantial amount of uncertainty related to which year should be considered as a baseline and how the reference and threshold values should be set (see preceeding section). This is also closely related to a second question that requires discussion: over what time period should breeding bird indicators be considered in ecosystem condition assessments? One option would be to use an average over the entire period with available data (but note that for mountain and wetland indicators, the starting year may have to be set to 2008 or even 2009 or 2010 to ensure sufficient data coverage). Alternatively, averages over shorter periods leading up to the year for which ecosystem condition should be assessed. This will require some careful evaluation. 
+There is a substantial amount of uncertainty related to which year should be considered as a baseline and how the reference and threshold values should be set (see preceeding section). This is also closely related to a second question that requires discussion: over what time period should breeding bird indicators be considered in ecosystem condition assessments? One option would be to use an average over the entire period with available data). Alternatively, averages over shorter periods leading up to the year for which ecosystem condition should be assessed. This will require some careful evaluation. 
 
 Another source of uncertainty comes from the assumption that multi-species abundance indices use a representative selection of species sampled in a representative set of habitats. However, due to resource- and logistic constraints, that is often not the case and non-random sampling along, for example, rural-urban gradients may bias breeding bird indices derived from data from "hekkefuglovervåkingen" [@husby2021].
 
@@ -392,7 +392,7 @@ plotTimeSeries_MSI(MSI = MSI_longTerm,
                    savePDF = FALSE)
 ```
 
-Now we'll calculate indices for all ecosystems using the same setup, but using 2008 as a reference year for all of them to make values comparable: 
+Now we'll calculate indices for all ecosystems using the same setup, but using 2008 as a reference year. This makes the farmland and forest indices which can be calculated from 1996, and the mountain and wetland indices which can only be calculated from 2008 (due to insufficient data before) comparable: 
 
 ```{r, eval = FALSE}
 ## Setting function arguments
