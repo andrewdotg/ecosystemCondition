@@ -3,9 +3,20 @@
 # Enchroachment {#gjengroing}
 <br />
 
-Norwegian name: **Gjengroing**
 
-_Vegetation regrowth/encroachment_
+<!-- Limit code block height and force scrolling -->
+<style type="text/css">
+pre {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+</style>
+
+Norwegian name: **Gjengroing**
 
 
 *Author and date:*
@@ -25,9 +36,9 @@ September 2023
 
 
 
-|Ecosystem                      |Økologisk.egenskap |ECT.class                       |
-|:------------------------------|:------------------|:-------------------------------|
-|Våtmark og Semi-/Naturlig-åpne |Gjengroing         |Structural state characteristic |
+```{=html}
+<div class="tabwid"><style>.cl-81c7f0de{table-layout:auto;}.cl-81c15526{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-81c1553a{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-81c457f8{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-81c46cd4{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-81c46cde{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-81c7f0de'><thead><tr style="overflow-wrap:break-word;"><th class="cl-81c46cd4"><p class="cl-81c457f8"><span class="cl-81c15526">Ecosystem</span></p></th><th class="cl-81c46cd4"><p class="cl-81c457f8"><span class="cl-81c15526">Økologisk egenskap</span></p></th><th class="cl-81c46cd4"><p class="cl-81c457f8"><span class="cl-81c15526">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-81c46cde"><p class="cl-81c457f8"><span class="cl-81c1553a">Våtmark og Semi-/Naturlig-åpne</span></p></td><td class="cl-81c46cde"><p class="cl-81c457f8"><span class="cl-81c1553a">Funksjonell sammensetning innen trofiske nivåer</span></p></td><td class="cl-81c46cde"><p class="cl-81c457f8"><span class="cl-81c1553a">Structural state characteristic</span></p></td></tr></tbody></table></div>
+```
 
 <!-- Don't remove these three html lines -->
 
@@ -47,9 +58,9 @@ The workflow spans two platforms including RStudio and Google Earth Engine (GEE)
 
 We rely on the following datasets:
 
--   [NiN polygons](https://kartkatalog.miljodirektoratet.no/dataset/Details/2050) are used to identify reference areas with good ecological condition.
+-   [Nature type polygons](https://kartkatalog.miljodirektoratet.no/Dataset/Details/2031) are used to identify reference areas with good ecological condition.
 -   NIBIO's [AR5](https://kartkatalog.geonorge.no/metadata/arealressurskart-fkb-ar5-arealtyper/280bbd7a-5ce9-4c83-9e15-ac162cabd8a6) is used as the population sample for each ecosystem type. The population sample are the areas used to determine ecological condition relative to the reference areas. We also use the AR5 data to identify forest surrounding the population polygons for defining the lower limit of ecological condition index (i.e.. poor condition),
--   LiDAR-derived digital elevation model from Kartverket's [høydedata](https://hoydedata.no/LaserInnsyn/). This includes both a terrain (DTM) and surface mode (DSM). We calculate the canopy height model (DSM - DTM) to get the height of objects above the ground. From this we remove buildings, and what remains is vegetation - mostly trees but also some bushes or smaller woody plants.
+-   LiDAR-derived digital elevation model from Kartverket's [høydedata](https://hoydedata.no/LaserInnsyn/). This includes both a terrain (DTM) and surface model (DSM). We calculate the canopy height model (DSM - DTM) to get the height of objects above the ground. From this we remove buildings, and what remains is vegetation - mostly trees but also some bushes or smaller woody plants.
 -   Kartverket's [national 10m elevation model](https://kartkatalog.geonorge.no/metadata/dtm-10-terrengmodell-utm32/fd851873-f363-46f9-9fc6-bb1b403575df). We use this to stratify reference (good condition) and forest (poor condition) heights by elevational band. This is done in combination with bioclimatic zones - see next point.
 -   Moen's [bioclimatic zones](https://artsdatabanken.no/Pages/181901/Bioklimatiske_soner). We use this to stratify reference (good condition) and forest (poor condition) heights by bioclimatic (also referred to as vegetation/climatic) zones.
 -   [FKB building footprints](https://kartkatalog.geonorge.no/metadata/fkb-bygning/8b4304ea-4fb0-479c-a24d-fa225e2c6e97) are used to isolate vegetation in the LiDAR height data.
@@ -77,29 +88,41 @@ None.
 
 ### Norwegian standard
 
-Not sure what this means??
+Funksjonell sammensetning innen trofiske nivåer, reflecting the change in dominant growth form.
 
 ## Collinearities with other indicators
 
-There is possibly a collinearity with the primary production indicator (primærproduksjon). The primary production indicator uses the normalized difference vegetation index (NDVI) as a proxy for vegetation production. NDVI can be correlated with vegetation height and consequently yield similar results to the LiDAR-based gjengroing indicator.
+There is possibly a collinearity with the [primary production indicator](#NDVI-indicator-natopen) (primærproduksjon). The primary production indicator uses the normalized difference vegetation index (NDVI) as a proxy for vegetation production. NDVI can be correlated with vegetation height and consequently yield similar results to the LiDAR-based gjengroing indicator.
 
 ## Reference state and values
 
-The methodology used to calculate the gjengroing indicator is outlined in the schematic below. The workflow in the schematic is conducted for all reference and population polygons in Norway and repeated for each ecosystem type (åpne and våtmark), respectively. The indicator values are aggregated to a 50km grid and regional level at the end. The individual steps are discussed in turn in the following subsections.
+The methodology used to calculate the _gjengroing_ indicator is outlined in the schematic below. The workflow in the schematic is conducted for all reference and population polygons in Norway and repeated for each ecosystem type (åpne and våtmark), respectively. The indicator values are aggregated to a 50km grid and regional level at the end. The individual steps are discussed in turn in the following subsections.
 
-![](images/gjengroing_schematic.jpg){width="70%"}
+<div class="figure">
+<img src="images/gjengroing_schematic.jpg" alt="Schematic illustration of how the encroachment indicator is calculated. The lower bound for poor condition is set by LiDAR heights from mature forest surrounding the population polygon. The upper bound for good condition is set by regional median LiDAR heights within NiN polygons in the same bioclimatic-elevation zone as the population polygon." width="70%" />
+<p class="caption">(\#fig:enc-workflow)Schematic illustration of how the encroachment indicator is calculated. The lower bound for poor condition is set by LiDAR heights from mature forest surrounding the population polygon. The upper bound for good condition is set by regional median LiDAR heights within NiN polygons in the same bioclimatic-elevation zone as the population polygon.</p>
+</div>
+
+
 
 ### Reference state {#state-enc}
 
-The NiN polygons including "Naturlig åpne områder under skoggrensa", "Semi-naturlig mark", and "Våtmark" with good ecological condition are used to define a reference gjengroing state. We use the all-encompassing "Tilstand" variable assigned to each NiN polygon. The 50th percentile of LiDAR-derived vegetation heights within these polygons is used to define the upper limit (ie. 1) of the scaled indicator value. We cannot define local reference values based on proximity, because the NiN polygons are spatially biased and not close to all AR5 population polygons. Therefore we calculate regional reference values using elevation (300m bands) and bioclimatic zones as stratification. We calculate the mean reference value for each unique combination of elevation-bioclimatic zone. When calculating the index for each population polygon, the reference value is inherited from the elevation-bioclimatic zone it falls within.
+The reference state is defined as one where åpne ecosystems are indeed open, with little to no woody encroachment. 
+For natural ecosystems this reflects a state where climate warming, wetland drainage, and alien species etc have not led to any net loss of these nature types and their internal functioning. 
+For semi natural ecosystems it reflects a state where traditional husbandry is keeping he ecosystems open due to grazing and hay making.
+
 
 ### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values {#ref-enc}
+The NiN polygons including "Naturlig åpne områder under skoggrensa", "Semi-naturlig mark", and "Våtmark" with good ecological condition are used to define a reference gjengroing state. We use the aggregated "Tilstand" variable assigned to each NiN polygon. The 50th percentile of LiDAR-derived vegetation heights within these polygons is used to define the upper limit (ie. 1) of the scaled indicator value. We cannot define local reference values based on proximity, because the NiN polygons are spatially biased and not close to all AR5 population polygons. Therefore we calculate regional reference values using elevation (300m bands) and bioclimatic zones as stratification. We calculate the mean reference value for each unique combination of elevation-bioclimatic zone. When calculating the index for each population polygon, the reference value is inherited from the elevation-bioclimatic zone it falls within.
 
 Once we have the reference vegetation height for a given ecosystem type and elevation-bioclimatic zone, we need to define the minimum (or worst/bad) condition. We use the 50th percentile of LiDAR-derived vegetation heights within AR5 skog polygons to define a climax vegetation successional stage where gjengroing is at its most extreme. In order not to include forest patches that have recently been harvested, we mask out any forest which has been clear-cut since 1986. Here, 1986 is a hard limit defined by the clear-cut dataset which was based on Landsat imagery. Therefore we can be assured that we are measuring forest that is at least 35 years old.
 
 We use both local and regional "reference" approaches to defining poor ecological condition. To do this we calculate the forest heights in AR5 forest patches that fall within 200m of a population polygon (local reference). For population polygons that do not have forest within their proximity, we use the mean forest height within the unique elevation-bioblimatic zone the population falls within (regional reference).
 
 To define the ecological condition of the population polygon, we measure 50th percentile of LiDAR-derived vegetation height. As a reminder, we use AR5 polygons that have types that are approximately compatible with the NiN ecosystem types. For våtmark we use the AR5 polygons defined as "Myr". For åpne ecosystems we use the AR5 polygons defined as either "Åpent fastmark" or "Innmarksbeite".
+
+We acknowledge that the AR5 data set has several shortcomings in terms of lags in update frequency and with precision in the maps themselves. 
+This indicator will therefore benefit strongly from new ecosystem delineation maps, that update more frequently, and preferably once that can differentiate between semi-natural and naturally open ecosystems.
 
 The vegetation height percentiles are then scaled to between 0 and 1 using a sigmoid transformation [Oliver at al. (2021)](https://www.sciencedirect.com/science/article/pii/S1470160X21000066).
 
@@ -115,7 +138,7 @@ Links to data and resources are provided with hyperlinks in-line.
 
 ### Data sets {#data-enc}
 
-There are several datasets which are used in GEE which will not be imported into the R session here. These datasets have been obtained from the source and ingested into GEE by Zander Venter or Vegard Bakkestuen with the help of Miljædata section at NINA. They include
+There are several datasets which are used in GEE which will not be imported into the R session here. These datasets have been obtained from the source and ingested into GEE by Zander Venter or Vegard Bakkestuen with the help of Miljødata section at NINA. They include
 
 -   [AR5](https://kartkatalog.geonorge.no/metadata/arealressurskart-fkb-ar5-arealtyper/280bbd7a-5ce9-4c83-9e15-ac162cabd8a6)
 -   [LiDAR-derived digital elevation model from høydedata](https://hoydedata.no/LaserInnsyn/).
@@ -131,18 +154,17 @@ The regional delineation for Norway (five regions) are used for aggregating and 
 
 
 ```r
-regions <- st_read('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/regions.shp') %>%
-  mutate(region = factor(region) )
+regions <- sf::st_read("data/regions.shp", options = "ENCODING=UTF8") %>%
+  mutate(region = factor(region))
+#> options:        ENCODING=UTF8 
 #> Reading layer `regions' from data source 
-#>   `/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/regions.shp' 
+#>   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/regions.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 5 features and 2 fields
 #> Geometry type: POLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: -99551.21 ymin: 6426048 xmax: 1121941 ymax: 7962744
 #> Projected CRS: ETRS89 / UTM zone 33N
-# Rename regions with correct Norwegian characters
-levels(regions$region) <- c("Østlandet", "Midt-Norge","Nord-Norge","Sørlandet","Vestlandet")
 ```
 
 #### SSB 10 and 50km grids
@@ -182,7 +204,7 @@ ssb50km <- st_transform(ssb50km, st_crs(regions))
 
 #### Bioclimatic regions
 
-The Moen's bioclimatic regions are imported from NINA R/GeoSpatialData/ server.
+The [Moen's bioclimatic regions](https://data.artsdatabanken.no//Natur_i_Norge/Natursystem/Beskrivelsessystem/Regional_naturvariasjon/Bioklimatisk_sone) are imported from NINA R/GeoSpatialData/ server.
 
 
 ```r
@@ -201,7 +223,7 @@ bioclim <- st_transform(bioclim, st_crs(regions))
 
 #### NiN polygons
 
-[NiN polygons](https://kartkatalog.miljodirektoratet.no/dataset/Details/2050) are imported here from the NINA servers:
+[NiN polygons](https://kartkatalog.miljodirektoratet.no/dataset/Details/2031) are imported here from the NINA servers:
 
 
 ```r
@@ -254,7 +276,7 @@ nin <- st_read('/data/R/GeoSpatialData/Habitats_biotopes/Norway_Miljodirektorate
 
 #### Data from Google Earth Engine
 
-Once you have run the GEE script above, and downloaded the data to the /data/gjengroing/From_GEE directory, you can proceed with this R workflow.
+Once you have run the GEE script above, and downloaded the data to the `/gjengroing/R_project/DATA/From_GEE/` directory, you can proceed with this R workflow.
 
 Create functions to import vegetation height files and stratify data by elevation band and vegetation/climate zone
 
@@ -364,9 +386,9 @@ if (runFromScratch){
   
   # Export to file for reference
   refVaatmark %>%
-    st_write('data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/refVaatmark.csv')
+    st_write('data/encroachment/refVaatmark.csv')
   refAapne %>%
-    st_write('data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/refAapne.csv')
+    st_write('data/encroachment/refAapne.csv')
   
   # Import median LiDAR heights for AR5 polygons for population measurement
   popVaatmarkHt <- readVegHeightFiles('vaatmark_pop')  %>%
@@ -452,11 +474,49 @@ if (runFromScratch){
   
 } else {
   
-  refVaatmark  <- read_csv('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/refVaatmark.csv')
-  refAapne <- read_csv('/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/gjengroing/R_project/DATA/refAapne.csv')
+  refVaatmark  <- read_csv('data/encroachment/refVaatmark.csv')
+  refAapne <- read_csv('data/encroachment/refAapne.csv')
   
 }
 ```
+
+
+```r
+refAapne %>%
+  mutate(elevation = factor(elevation, levels = c("0-300", "300-600", "600-900", "900-1200", ">1200")),
+         vegClimZoneLab = factor(vegClimZoneLab)) %>%
+  ggplot(aes(x = elevation, y = ref))+
+  geom_bar(stat="identity")+
+  theme_bw(base_size = 12)+
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 12))+
+  facet_wrap(.~vegClimZoneLab)+
+  labs(y = "Reference vegetation height (m)",
+       x = "Elevation (meters above sea level)")
+```
+
+<div class="figure">
+<img src="gjengroing_files/figure-html/ref-open-enc-1.png" alt="Refenerence vegetation height in semi-natural and naturally open ecosystems under the forest line in Norway." width="672" />
+<p class="caption">(\#fig:ref-open-enc)Refenerence vegetation height in semi-natural and naturally open ecosystems under the forest line in Norway.</p>
+</div>
+
+
+```r
+refVaatmark %>%
+  mutate(elevation = factor(elevation, levels = c("0-300", "300-600", "600-900", "900-1200", ">1200")),
+         vegClimZoneLab = factor(vegClimZoneLab)) %>%
+  ggplot(aes(x = elevation, y = ref))+
+  geom_bar(stat="identity")+
+  theme_bw(base_size = 12)+
+  theme(axis.text.x = element_text(angle = -45, vjust = 0.5, hjust = 0.2, size = 12))+
+  facet_wrap(.~vegClimZoneLab)+
+  labs(y = "Reference vegetation height (m)",
+       x = "Elevation (meters above sea level)")
+```
+
+<div class="figure">
+<img src="gjengroing_files/figure-html/ref-wet-enc-1.png" alt="Refenerence vegetation height in wetland ecosystems under the forest line in Norway." width="672" />
+<p class="caption">(\#fig:ref-wet-enc)Refenerence vegetation height in wetland ecosystems under the forest line in Norway.</p>
+</div>
 
 ### Explore data coverages
 
@@ -474,7 +534,7 @@ c1 <- ssb10km %>%
   ggplot() +
   geom_sf(aes(fill=areaPerc), color=NA) +
   geom_sf(data=regions, fill=NA, size=0.3) +
-  scale_fill_gradientn(colours = c('#e6bf6b', '#91b5a2'),
+  scale_fill_gradientn(colours = c('black', 'orange'),
                        name = '% cover',
                        limits=c(0, 2),
                        oob=scales::squish) +
@@ -490,7 +550,7 @@ c2 <- ssb10km %>%
   ggplot() +
   geom_sf(aes(fill=areaPerc), color=NA) +
   geom_sf(data=regions, fill=NA, size=0.3) +
-  scale_fill_gradientn(colours = c('#e6bf6b', '#91b5a2'),
+  scale_fill_gradientn(colours = c('black', 'orange'),
                        name = '% cover',
                        limits=c(0, 100),
                        oob=scales::squish) +
@@ -506,7 +566,7 @@ c3 <- ssb10km %>%
   ggplot() +
   geom_sf(aes(fill=areaPerc), color=NA) +
   geom_sf(data=regions, fill=NA, size=0.3) +
-  scale_fill_gradientn(colours = c('#e6bf6b', '#91b5a2'),
+  scale_fill_gradientn(colours = c('black', 'orange'),
                        name = '% cover',
                        limits=c(0, 100),
                        oob=scales::squish) +
@@ -518,7 +578,10 @@ c3 <- ssb10km %>%
 coverageFig <- grid.arrange(c1, c2, c3, ncol=3, widths=c(1,1,1), padding = unit(0, "line"), newpage = T) 
 ```
 
-<img src="gjengroing_files/figure-html/unnamed-chunk-11-1.png" width="1440" />
+<div class="figure">
+<img src="gjengroing_files/figure-html/coverage-map-enc-1.png" alt="Map of Norway showing coverage of different data sets." width="1440" />
+<p class="caption">(\#fig:coverage-map-enc)Map of Norway showing coverage of different data sets.</p>
+</div>
 
 ### Bioclimatic zone and elevation strata for regional reference values
 
@@ -545,7 +608,10 @@ elevPlot <- elevStrata %>%
 strataPlot <- grid.arrange(bioclimPlot, elevPlot, ncol=2, widths=c(1,1), padding = unit(0, "line"), newpage = T) 
 ```
 
-<img src="gjengroing_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+<div class="figure">
+<img src="gjengroing_files/figure-html/sones-and-bands-1.png" alt="Bioclimatic sones and elevation bands used to define strata in the enchroachment indicator." width="672" />
+<p class="caption">(\#fig:sones-and-bands)Bioclimatic sones and elevation bands used to define strata in the enchroachment indicator.</p>
+</div>
 
 We can see that while AR5 polygons are well distributed across the country, the NiN polygons are clustered and biased toward low elevation regions of the country. The LiDAR data covers nearly the entire country with some exceptions in the north. Future iterations of this work will need to attempt to quantify the biases introduced by the relative distributions of reference and population polygons and by the datasets used to quantify gjengroing (in this case LiDAR).
 
@@ -643,7 +709,7 @@ if (runFromScratch){
 #> Projected CRS: ETRS89 / UTM zone 33N
 ```
 
-Here we will visualize the spatial variation in scaled gjengroind indicator values, as well as the vegetation heights for reference (good condition), indicator, and mature forest (poor condition) over the country. We could plot all the polygons, but it is computationally intensive and very difficult to visualize spatial variations over the entire country. Therefore we will calculate the area-weighted mean in values for each bioclimatic-elevation strata (n = 21) over the country.
+Here we will visualize the spatial variation in scaled gjengroings indicator values, as well as the vegetation heights for reference (good condition), indicator, and mature forest (poor condition) over the country. We could plot all the polygons, but it is computationally intensive and very difficult to visualize spatial variations over the entire country. Therefore we will calculate the area-weighted mean in values for each bioclimatic-elevation strata (n = 21) over the country.
 
 
 ```r
@@ -749,7 +815,10 @@ v4 <- makeStrataHeightMap(vaatmarkIndexStrata, "skog", 'H) Mature forest height'
 strataHeightPlot <- grid.arrange(a1,a2,a3,a4, v1,v2,v3,v4, ncol=4, widths=c(1,1,1,1), padding = unit(0, "line"), newpage = T) 
 ```
 
-<img src="gjengroing_files/figure-html/unnamed-chunk-14-1.png" width="960" />
+<div class="figure">
+<img src="gjengroing_files/figure-html/multiple-maps-enc-1.png" alt="Maps of scaled and unscaled indicator values, as well as reference values. For the unscaled variables the legend is truncated at 5 m to ensure the same colour gradient for all maps." width="960" />
+<p class="caption">(\#fig:multiple-maps-enc)Maps of scaled and unscaled indicator values, as well as reference values. For the unscaled variables the legend is truncated at 5 m to ensure the same colour gradient for all maps.</p>
+</div>
 
 We can see that overall, the condition scores for both ecosystem types are poor along the coastal areas and lower-altitude zones of the country (A and E). At higher altitudes the gjengroing condition scores are higher.
 
@@ -843,7 +912,10 @@ vGrid2 <- vaatmarkIndexGrid %>%
 indexGridFig <- grid.arrange(vGrid1, vGrid2, ncol=2, widths=c(1,1), padding = unit(0, "line"), newpage = T) 
 ```
 
-<img src="gjengroing_files/figure-html/unnamed-chunk-16-1.png" width="672" />
+<div class="figure">
+<img src="gjengroing_files/figure-html/grid-level-enc-1.png" alt="Maps displaying scaled encroachment indicator values (A, E) along with the raw vegetation heights defining upper limits for good (B, F), and bad (D, H) condition, and observed population vegetation heights (C, G). Values are aggregaed to polygons defining unique bioclimatic-elevation strata over the country." width="672" />
+<p class="caption">(\#fig:grid-level-enc)Maps displaying scaled encroachment indicator values (A, E) along with the raw vegetation heights defining upper limits for good (B, F), and bad (D, H) condition, and observed population vegetation heights (C, G). Values are aggregaed to polygons defining unique bioclimatic-elevation strata over the country.</p>
+</div>
 
 These patterns mirror those in the previous section with higher condition scores at higher elevations and lower scores along the coastal zone and low-lying parts of the country.
 
@@ -998,7 +1070,7 @@ i2 <- getIndicatorPlot('Våtmark')
 indicatorGraphFig <- grid.arrange(i1, i2, ncol=2, widths=c(1,1), padding = unit(0, "line"), newpage = T) 
 ```
 
-<img src="gjengroing_files/figure-html/unnamed-chunk-18-1.png" width="672" />
+<img src="gjengroing_files/figure-html/unnamed-chunk-15-1.png" width="672" />
 
 ```r
 
@@ -1019,7 +1091,7 @@ m2 <- getIndicatorMap(vaatmarkTable, 'B) Våtmark')
 indicatorGMapFig <- grid.arrange(m1, m2, ncol=2, widths=c(1,1), padding = unit(0, "line"), newpage = T) 
 ```
 
-<img src="gjengroing_files/figure-html/unnamed-chunk-18-2.png" width="672" />
+<img src="gjengroing_files/figure-html/unnamed-chunk-15-2.png" width="672" />
 
 From these tables, figures and maps we can see that the gjengroing condition indicator scores are on average above 0.8 and therefore indicate a good overall condition in Norway. Østlandet comes out best for våtmark and semi-naturlig åpne ecosystems. Nord-Norge has poorest condition for semi-naturlig åpne ecosystems, while vestlandet has the poorest scores for våtmark.
 
@@ -1035,13 +1107,13 @@ The calculation of the indicator involves many small decisions which can have si
 
 -   **Quantifying regional vs local references for poor and good condition.** For good condition, we used NiN polygons and were restricted to these due to lack of better data. However, for poor condition we use climax successional stage for trees (as explained above) within 200m of each population polygon. For polygons with no surrounding forest, we impute with regional reference values (mean of forest height in elevation-bioclamic zone). The choice of 200m buffer zone was largely based on computational limitations. Calculating the average LiDAR vegetation height within 200m of nearly 2 million complex polygons takes time, even in GEE. It may make more ecological sense to define a larger buffer zone to use for defining reference for poor condition. However, longer processing times need to be expected.
 
--   **Quantification of uncertainty around indicator scores.** Here we used the standard deviation in the vegetation heights for reference (NiN) polygons within each region to quantify the uncertainty around scaled indicator scores. We did this because the method used in eaTools::ea_spread() function is a bootstrapping approach which resulted in extremely small uncertainty estimates due to the large number of polygons included in our analysis. In the future, a better method for quantifying uncertainty is needed. Perhaps by running sensitivity analyses that test several variations of the points mentioned above can form the basis for quantifying an error margin around indicator values.
+-   **Quantification of uncertainty around indicator scores.** Here we used the standard deviation in the vegetation heights for reference (NiN) polygons within each region to quantify the uncertainty around scaled indicator scores. We did this because the method used in `eaTools::ea_spread()` function is a bootstrapping approach which resulted in extremely small uncertainty estimates due to the large number of polygons included in our analysis. [In the future, a better method for quantifying uncertainty is needed.](https://github.com/NINAnor/eaTools/issues/17) Perhaps by running sensitivity analyses that test several variations of the points mentioned above can form the basis for quantifying an error margin around indicator values.
 
 #### Validation of random polygons
 
 After exporting the final polygon-level indicator scores, we imported to QGIS and explored how they look at the landscape scale. We chose random locations spread across the 5 regions in Norway. The figures below show våtmark and åpne (semi- and naturlig-åpne) ecosystem polygons from AR5. The polygons have jagged edges because we chose a low resolution geometry export from GEE to save computing time and minimize storage space. Each polygon is colored based on the final scaled gjengroing indicator score (0 to 1). The polygons are also labelled with the median LiDAR-derived forest height. An orthophoto from Norgeibilder is displayed in the background for reference.
 
-In the first example from midt-norge, we see a våtmark polygon colored red (ie. in poor condition) due to the growth of a forest in the northern section. It looks like a plantation forest and possibly occurred after the wetland was drained. The height of the forest vegetation equates to a median of 2.4m which is higher than the reference value for this region (1.09m) and almost as high as the mature forest height reference of 2.8m. Therefore it gets a scaped indicator score of 0.1. In contrast the wetland polygon in the middle of the image is in good condition because it has a median vegetation height of 1.1m which is only fractionally higher than the regional reference for good ecological condition.
+In the first example from midt-norge, we see a våtmark polygon colored red (ie. in poor condition) due to the growth of a forest in the northern section. It looks like a plantation forest and possibly occurred after the wetland was drained. The height of the forest vegetation equates to a median of 2.4m which is higher than the reference value for this region (1.09m) and almost as high as the mature forest height reference of 2.8m. Therefore it gets a scaled indicator score of 0.1. In contrast the wetland polygon in the middle of the image is in good condition because it has a median vegetation height of 1.1m which is only fractionally higher than the regional reference for good ecological condition.
 
 ![](images/val_1.jpg){width="50%"}
 

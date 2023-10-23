@@ -19,10 +19,11 @@ October 2023
 <!-- Load all you dependencies here -->
 
 ```{r setup, include=FALSE}
-library(NIflex)
 library(magrittr)
 library(knitr)
 library(flextable)
+library(NIflex)
+library(NIcalc)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -350,11 +351,15 @@ CustomNI <- calculateCustomNI(ecosystem = ecosystem_use,
                               saveSteps = FALSE)
 ```
 
-```{r, include=F, eval=F}
+```{r, include=F}
 dir <- substr(getwd(), 1,2)
 pData <- ifelse(dir == "C:", 
                "P:/41201785_okologisk_tilstand_2022_2023/data/",
                "/data/P-Prosjekter2/41201785_okologisk_tilstand_2022_2023/data/")
+
+```
+
+```{r, include=F, eval=F}
 saveRDS(CustomNI, paste0(pData, "cache/CustomNI.RDS"))
 ```
 
@@ -384,6 +389,7 @@ First, we can plot the "traditional" time-series plot of the index averaged acro
 Index <- CustomNI$CustomIndex
 plot(Index$wholeArea, main = "Custom index", cex = 1, lwd = 2, shade = TRUE)
 ```
+
 ```{r}
 data.frame("Region"= rownames(summary(Index$wholeArea)), summary(Index$wholeArea), check.names = F) %>%
   flextable() %>%
