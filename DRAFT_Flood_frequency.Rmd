@@ -1,48 +1,15 @@
----
-title: "Template for indicator documentation"
-output:
-  html_document
----
 
-<!-- This is a template for how to document the indicator analyses. 
-
-Make a copy of this file and store it in the root folder (same as where this template is stored) folder. 
-Name the file DRAFT_myIndicatorName.Rmd. 
-
-Because this is a stand-alone Rmd file inside a bookdown project, in order to knit the file for preview purposes,
-you need to type rmarkdown::render("template.Rmd") in the console, 
-as the the usual Ctrl + Alt + k will not work. 
-
-Make sure also to not change the order, or modify the headers, unless you really need to. This is because it
-easier to read the web page as a whole of the indicators are presented using the same layout. 
-
-When the analyses is complete, Anders Kolstad, or someone else, will perform a rapid code review, making sure 
-the analysis is repeatable by someone else. Be therefore very careful to annotate 
-and comment on every step in the analysis. When completed, Anders will make a copy
-of the working file and put it in the same project root folder, but removing the 'DRAFT_' part of the name. 
-After modifying it slightly (mainly removing the top YAML header and updating the rmd_files argument in '_bookdown.yml') 
-the output will become available on the website (https://ninanor.github.io/ecosystemCondition/). -->
-
-
-<!-- Examples: 
-
-For an example, see 'indicators/breareal-workingFile.Rmd' 
-and the subsequent 'breareal.Rmd' 
-which again, when rendered, produces this:
-https://ninanor.github.io/ecosystemCondition/areal-av-isbreer.html
-
-Notice the degree of annotation.
-
--->
-
-
-<!-- Replace 'indicator name' with yor own indicator name  -->
 # Flood frequency
 
 <br />
+Norwegian name: **Oversvømmelseshyppighet**
+<br />
 
 _Author and date:_
-Vegar Bakkestuen, October 2023_
+
+Vegar Bakkestuen
+
+October 2023
 
 
 <br />
@@ -50,6 +17,7 @@ Vegar Bakkestuen, October 2023_
 <!-- Load all you dependencies here -->
 ```{r setup, include=FALSE}
 library(knitr)
+library(flextable)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -57,16 +25,20 @@ knitr::opts_chunk$set(echo = TRUE)
 <!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
 ```{r, echo=F}
 Ecosystem <- "Våtmark"
-Egenskap  <- "Oversvømmelse"
-ECT       <- " Oversvømmelseshyppighet"
+Egenskap  <- "Abiotiske forhold"
+ECT       <- "A1 Physical state characteristics"
 Contact   <- "Vegar Bakkestuen"
 ```
 
 ```{r, echo=F}
 metaData <- data.frame(Ecosystem,
                        "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT)
-knitr::kable(metaData)
+                       "ECT class" = ECT,
+                       check.names = F)
+flextable(metaData) %>%
+  bg(bg = "lightblue", part="header") %>%
+  theme_vanilla() %>%
+  set_table_properties(layout = "autofit")
 ```
 
 <!-- Don't remove these three html lines -->
@@ -75,56 +47,108 @@ knitr::kable(metaData)
 <hr />
 
 
+```{r ff-example, fig.cap="Flood frequency last 5 years, somewhere in Norway. Light blue areas are flooded once, and dark blue areas are flooded five times.", out.width='100%', echo=FALSE}
+knitr::include_graphics("images/floodFreqExample.png")
+```
 
-<!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
 
-## Introduction
-Water and inundated areas are a land cover class that can be relatively easily distinguished from other land cover classes with high accuracy using remote sensing data, particularly Copernicus Sentinel-1 data. Sentinel-1 employs Synthetic Aperture Radar (SAR) instruments that can "see through" clouds. In Norway, Sentinel-1 data is available at a minimum frequency of once a week.
-Utilizing Google Earth Engine, all available Sentinel-1 data can be accessed, and there are pre-established scripts for distinguishing water-covered areas from other land cover classes. For example, you can refer to "Flood Mapping and Area Calculation of Flood Extent Using Sentinel-I SAR Data in Google Earth Engine: the case of Super Typhoon Odette (Rai)" [^1^] and "Applying Google Earth Engine for flood mapping and monitoring in the downstream provinces of the Mekong river" [^2^].
-By aggregating Sentinel-1 images over an entire growing season, it becomes possible to model when areas are covered by water. This approach has been successfully used in various countries to map deltas and floodplains that are periodically submerged. We aim to apply this methodology to the deltas and floodplains in Norway to assess the accuracy of this method in Norwegian conditions.
-The code is developed in Java for Google Earth Engine and calculates flood frequency over a five-year period, which can be extended to ten years. Reference states need to be defined both before and after flood events, which is accomplished by specifying pre- and post-flood dates. You can determine these dates using hydrology scripts.
-This script uses Sentinel-1 imagery in a change detection approach, comparing images before and after a flood event. The key preprocessing steps for Sentinel-1 Ground Range Detected (GRD) data are thermal noise removal, radiometric calibration, and terrain correction. Therefore, the primary preprocessing step is applying a speckle filter.
-In this script, you can define your study area, select your desired time frame, and set SAR parameters. Make sure to adjust these parameters according to your study area's specific conditions. 
-Workflow: Calculate Flood Indicator Using Google Earth Engine Script
+## Introduction {#intro-ff}
+Water and inundated areas is a land cover class that can be relatively easily distinguished from other land cover classes with high accuracy using remote sensing data, particularly Copernicus Sentinel-1 data. 
+Sentinel-1 employs Synthetic Aperture Radar (SAR) instruments that can _see through_ clouds. 
+In Norway, Sentinel-1 data is available at a minimum frequency of once a week.
+Utilizing Google Earth Engine, all available Sentinel-1 data can be accessed, and there are pre-established scripts for distinguishing water-covered areas from other land cover classes. 
+For example, you can refer to "Flood Mapping and Area Calculation of Flood Extent Using Sentinel-I SAR Data in Google Earth Engine: 
+
+"the case of Super Typhoon Odette (Rai)", and;
+
+"Applying Google Earth Engine for flood mapping and monitoring in the downstream provinces of the Mekong river".
+
+By aggregating Sentinel-1 images over an entire growing season, it becomes possible to model when areas are covered by water. 
+This approach has been successfully used in various countries to map deltas and floodplains that are periodically submerged. 
+We aim to apply this methodology to the deltas and floodplains in Norway to assess the accuracy of this method in Norwegian conditions.
+The code is developed in Java for Google Earth Engine and calculates flood frequency over a five-year period, which can be extended to ten years. 
+Reference states need to be defined both before and after flood events, which is accomplished by specifying pre- and post-flood dates. 
+You can determine these dates using hydrology scripts.
+This script uses Sentinel-1 imagery in a change detection approach, comparing images before and after a flood event. 
+The key pre-processing steps for Sentinel-1 Ground Range Detected (GRD) data are thermal noise removal, radiometric calibration, and terrain correction. 
+Therefore, the primary pre-processing step is applying a speckle filter.
+In this script, you can define your study area, select your desired time frame, and set SAR parameters. 
+Make sure to adjust these parameters according to your study area's specific conditions. 
+
+**Workflow**: 
+
+Calculate Flood Indicator Using Google Earth Engine Script
+
 1.	Initialization:
-•	Set up your Google Earth Engine environment.
-•	Import the necessary geometries or AOI.
-2.	Define Functions:
-•	Define a function for calculating flood extent and area based on the provided script. The function should take parameters like the year, polarization, and AOI.
-3.	Define Constants:
-•	Set constant values such as polarization, pass direction, smoothing radius, and difference threshold. Ensure these values are appropriate for your study area.
-4.	Define Years and Date Ranges:
-•	Create an array or list of years for which you want to calculate the flood indicator.
-•	Define the "before" and "after" date ranges for each year based on your specific study periods.
-5.	Loop Through Years:
-•	Use a loop to iterate through each year in your defined list.
-•	For each year, call the flood extent calculation function you defined, passing the appropriate parameters (e.g., SAR collections for "before" and "after," polarization, AOI).
-6.	Calculate Flood Frequency:
-•	After calculating flood extent for each year, calculate the flood frequency. You can create a frequency count image by accumulating flood extent layers from each year.
-7.	Data Visualization:
-•	Define a color palette for displaying flood frequency on the map.
-•	Add the flood frequency layer to the map for visualization.
-•	Optionally, you can also display individual flood extents for each year.
-8.	Print Results:
-•	In the loop, after calculating flood extent for each year, print the calculated flood extent areas to the console for each year.
-9.	Data Export (Optional):
-•	If needed, you can export the results, such as the frequency map, for further analysis or reporting.
-10.	Fine-Tuning:
-•	As needed, adjust parameters in the script, such as smoothing radius, difference threshold, or additional data sources, to optimize the flood indicator calculation.
-11.	Interpretation:
-•	Analyze the results to understand the flood extent areas and frequencies for different years.
 
-## About the underlying data
+    •	Set up your Google Earth Engine environment.
+    
+    •	Import the necessary geometries or AOI.
+
+2.	Define Functions:
+
+    •	Define a function for calculating flood extent and area based on the provided script. The function should take parameters like the year, polarization, and AOI.
+
+3.	Define Constants:
+    
+    •	Set constant values such as polarization, pass direction, smoothing radius, and difference threshold. Ensure these values are appropriate for your study area.
+
+4.	Define Years and Date Ranges:
+
+    •	Create an array or list of years for which you want to calculate the flood indicator.
+    
+    •	Define the "before" and "after" date ranges for each year based on your specific study periods.
+
+5.	Loop Through Years:
+
+    •	Use a loop to iterate through each year in your defined list.
+    
+    •	For each year, call the flood extent calculation function you defined, passing the appropriate parameters (e.g., SAR collections for "before" and "after," polarization, AOI).
+
+6.	Calculate Flood Frequency:
+
+    •	After calculating flood extent for each year, calculate the flood frequency. You can create a frequency count image by accumulating flood extent layers from each year.
+
+7.	Data Visualization:
+
+    •	Define a color palette for displaying flood frequency on the map.
+    
+    •	Add the flood frequency layer to the map for visualization.
+    
+    •	Optionally, you can also display individual flood extents for each year.
+
+8.	Print Results:
+
+    •	In the loop, after calculating flood extent for each year, print the calculated flood extent areas to the console for each year.
+
+9.	Data Export (Optional):
+
+    •	If needed, you can export the results, such as the frequency map, for further analysis or reporting.
+
+10.	Fine-Tuning:
+
+    •	As needed, adjust parameters in the script, such as smoothing radius, difference threshold, or additional data sources, to optimize the flood indicator calculation.
+
+11.	Interpretation:
+
+    •	Analyze the results to understand the flood extent areas and frequencies for different years.
+
+## About the underlying data {#underlying-data-ff}
+
 The flood frequency indicator is derived from a time series of Sentinel-1 SAR data covering multiple years. The analysis involves the following steps:
+
 1.	Data Collection: Sentinel-1 GRD imagery, including the VH polarization, was used to create a comprehensive dataset. The data covered several years, enabling a temporal perspective on flood frequency.
 2.	Preprocessing: The data underwent preprocessing, including thermal-noise removal, radiometric calibration, and terrain correction, resulting in high-quality radar backscatter information. A speckle filter was applied for data refinement.
 3.	Flood Extent Calculation: Flood extents for each year were determined through a change detection approach, comparing "before" and "after" flood event images. The selected polarization, VH, was utilized to differentiate flooded areas.
 4.	Flood Frequency Mapping: The accumulated flood extents for different years were used to create a flood frequency map. This map illustrates the frequency of flooding events in the study area over the analyzed period.
 
-### Representativity in time and space
+### Representativity in time and space {#rep-time-space-ff}
 The analysis spans multiple years, offering a long-term view of flooding events in the study area. This extended time frame enables the identification of recurrent patterns and trends, which is vital for understanding wetland dynamics. 
+
+
 ### Original units
 The original units of the calculated flood extent area are in square meters.
+
 ### Temporal coverage
 The data covers the last five years. It is possible to go back to 2015.  
 
@@ -132,30 +156,62 @@ The data covers the last five years. It is possible to go back to 2015.
 Sentinel-1 data provides valuable information; however, its spatial and temporal resolution can affect the accuracy of flood extent mapping. In this analysis, a 10-meter spatial resolution was used, which means that smaller-scale features may not be fully captured. Additionally, Sentinel-1 data has a temporal revisit time, which may result in missed flood events or difficulties in distinguishing between different flood events that occurred close in time.
 
 ## Ecosystem characteristic
-In the context of the Norwegian standard, the 'Flood frequency' indicator aligns with the ecosystem characteristic known as 'Biologisk mangfold' or 'Biological diversity.' This classification underscores the significance of the indicator in assessing its impact on biological diversity within ecosystems. Flood frequency is a crucial factor in understanding how changes in hydrology, including flood events, influence the composition and distribution of species within ecosystems. It can also be instrumental in evaluating the resilience of ecosystems to such disturbances.
+In the context of the Norwegian standard, the 'Flood frequency' indicator aligns with the ecosystem characteristic known as _Abiotiske forhold_. 
+Flood frequency is a crucial factor in understanding how changes in hydrology, including flood events, influence the composition and distribution of species within ecosystems. 
+It can also be instrumental in evaluating the resilience of ecosystems to such disturbances.
+
 Furthermore, the indicator could also be relevant in the context of 'funksjonelt viktige arter og strukturer,' or 'functionally important species and structures.' Flood frequency plays a pivotal role in shaping the habitat availability and accessibility for species critical to ecosystem functioning. This includes species that are essential for nutrient cycling, species recruitment, and other key ecosystem functions. Frequent or infrequent flood events can have far-reaching consequences on the viability of these functionally important components of ecosystems.
+
 Therefore, understanding and monitoring flood frequency not only serve as a hydrological metric but also have profound implications for ecosystem dynamics, which are vital for the overall health and sustainability of ecosystems. This integrated perspective highlights the interconnectedness of hydrological patterns and ecosystem characteristics, emphasizing the indicator's significance in ecological and conservation assessments.
-UN Standard
+
 ### SEEA EA (UN standard)
-In the framework of the United Nations System of Environmental-Economic Accounting (SEEA EA), the "Flood frequency" indicator can be classified as a B1 "Compositional state characteristics" indicator. This classification within the SEEA EA framework highlights the indicator's role in assessing the compositional state of ecosystems. By examining how connectivity influences the arrangement and presence of species and structures within an ecosystem, it provides valuable insights into the overall composition and structure of ecosystems.
+In the framework of the United Nations System of Environmental-Economic Accounting (SEEA EA), the "Flood frequency" indicator can be classified as a _Physical state characteristics_. 
 
 ## Collinearities with other indicators
 Flood frequency is not thought to exhibit collinearity with any other indicator at the present.
 
 ## Reference condition and values
 ### Reference condition
-The reference condition for the "Connectivity" indicator is characterized as one with minimal negative human impact on the connectivity of ecosystems. In this reference condition, the landscape exhibits natural and undisturbed patterns of connectivity between suitable habitats. This state represents the optimal ecological condition for connectivity assessment.
+The reference condition is one where human activities that impact large scale hydrological patterns are minimal. The most important drivers of anthropogenic change are climate change, water regulation, draning and flood prevention and river channelization. 
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
-Reference values for hydrological parameters, such as water level, water flow, and temperature, are crucial for assessing the ecological condition of aquatic ecosystems. In the context of this analysis, we are planning to derive reference values from extensive datasets collected by the Norwegian Water Resources and Energy Directorate (NVE) through its hydrological API (HydAPI). NVE has been instrumental in gathering long-term hydrological data, with records dating back to the 1800s. These historical measurements serve as a valuable baseline to evaluate contemporary conditions. W 
-Data Retrieval Solution - Python Code (get-observations-NINA.py): This Python script (get-observations-NINA.py) serves as a data retrieval solution to access hydrological data from the Norwegian Water Resources and Energy Directorate's (NVE) Hydrological API (HydAPI). It is designed to fetch observational data and metadata for hydrological stations across Norway. The script is versatile and allows users to specify parameters such as the station ID, observed parameters, resolution time, reference time, and a mandatory API key.
+Reference values are not yet developed for this indicator. 
+Note that the term reference level when used for this indicator sometime pertains to baseline hydrological conditions, and not a reference for the level of flood frequency under the reference condition.
+
+
+## References
+## Analyses
+### NVE data
+
+Innsynsløsning: https://nina.maps.arcgis.com/apps/instant/basic/index.html?appid=4344dd7f769048ed9dedf1803638ff48
+
+Baseline data for hydrological parameters, such as water level, water flow, and temperature, are crucial for assessing the ecological condition of aquatic ecosystems. 
+In the context of this analysis, we are planning to derive baseline values from extensive datasets collected by the Norwegian Water Resources and Energy Directorate (NVE) through its hydrological API (HydAPI). 
+NVE has been instrumental in gathering long-term hydrological data, with records dating back to the 1800s. 
+These historical measurements serve as a valuable baseline to evaluate contemporary conditions. 
+
+W Data Retrieval Solution - Python Code (get-observations-NINA.py): 
+
+This Python script (get-observations-NINA.py) serves as a data retrieval solution to access hydrological data from the Norwegian Water Resources and Energy Directorate's (NVE) Hydrological API (HydAPI). 
+It is designed to fetch observational data and metadata for hydrological stations across Norway. 
+The script is versatile and allows users to specify parameters such as the station ID, observed parameters, resolution time, reference time, and a mandatory API key.
+
 •	Station ID (-s): Users can input one or multiple station IDs separated by a comma, allowing access to specific hydrological data from various locations.
+
 •	Parameters (-p): This parameter allows users to specify the type of observation data they need. Multiple parameters can be specified, enhancing flexibility.
+
 •	Resolution Time (-r): Users can select the resolution time, choosing between instantaneous (0), hourly (60), or daily (1440) data.
+
 •	API Key (-a): The API key is a mandatory component to authenticate and access the HydAPI data. Users need to register and obtain their API key from the HydAPI platform.
-The script leverages Python's request library to send HTTP requests to the HydAPI, and it retrieves data in JSON format. It also provides the ability to define a reference time for data retrieval. The retrieved data is written to a user-defined output file, facilitating further analysis and utilization.
+
+The script leverages Python's request library to send HTTP requests to the HydAPI, and it retrieves data in JSON format. 
+It also provides the ability to define a reference time for data retrieval. 
+The retrieved data is written to a user-defined output file, facilitating further analysis and utilization.
+
 Data Retrieval Procedure:
+
 To retrieve data using the code:
+
 1.	Set Working Directory: Define the desired folder path, typically using the os.chdir() function, to ensure that the script operates in the intended directory.
 2.	Define the Command: Create a command as a list of strings, including the Python interpreter (python), the script name (get-observations-NINA.py), and the various parameters required for data retrieval (e.g., station, parameters, resolution time, and API key).
 3.	Execute the Command: Use subprocess.call() to execute the command, which triggers the Python script to fetch the requested data from the HydAPI.
@@ -163,8 +219,9 @@ To retrieve data using the code:
 
 Script (in python)
 
-Koden er skrevet i python og henter hydrologiske data fra NVE sin API. Skriptet heter get-observations-NINA.py. Den fungerer hvis man oppretter en mappe på C:/ kalt Konnektivetet/python og legger scriptet der.
+Koden er skrevet i python og henter hydrologiske data fra NVE sin API. Skriptet heter get-observations-NINA.py. Den fungerer hvis man oppretter en mappe på `C:/` kalt `Konnektivetet/python` og legger scriptet der.
 
+```{js}
 #!/usr/bin/python
 
 import getopt
@@ -264,8 +321,12 @@ def main(argv):
 if __name__ == "__main__":
     main(sys.argv[1:])
 
+```
+
+
 Dataene hentes ut ved å skrive inn følgende kommandoer i python vinduet:
 
+```{js}
 import os
 #Angi banen til den ønskede mappen
 ny_mappe = r'C:\Konnektivitet\python'
@@ -284,22 +345,23 @@ kommando = [
      '-t', '2018-01-01T10:00:00/2018-01-14T20:00:00'  # Merk at timestamp er uten ekstra anførselstegn
  ]
 subprocess.call(kommando)
-Innsynsløsning: https://nina.maps.arcgis.com/apps/instant/basic/index.html?appid=4344dd7f769048ed9dedf1803638ff48
+```
 
-Sentinel-1 radar data can be affected by speckle noise, which appears as random variations in pixel values. While speckle filtering was applied to reduce this noise, some level of uncertainty remains, particularly in areas with complex terrain.
 
-## References
-## Analyses
-### Data sets
+Sentinel-1 radar data can be affected by speckle noise, which appears as random variations in pixel values. 
+While speckle filtering was applied to reduce this noise, some level of uncertainty remains, particularly in areas with complex terrain.
 
 ### Scaled indicator values
+The indicator is not scaled.
+
 ### Uncertainty
-## Prepare export
+We have no measure for the uncertainty or errors assosiated with the estimated frequency of floods.
+
+## JAVA code
 You must run the whole code below. There is a maximum of 5000 wetland polygons for each export.
 
+```{js}
 
-
-### Eksport file (final product)
 /*===========================================================================================
                        SAR-FLOOD MAPPING USING A CHANGE DETECTION APPROACH
   ===========================================================================================
@@ -819,4 +881,6 @@ var wetlandStats = wetlandPixelArea.reduceRegion({
 
 Map.addLayer(wetlandAffected, {min: 1, max: 5, palette: colorPalette}, 'Flood Frequency in Wetlands');
 
+
+```
 
