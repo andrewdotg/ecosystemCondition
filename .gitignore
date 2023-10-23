@@ -28,3 +28,4 @@ vignettes/*.pdf
 .Renviron
 ecosystemCondition.rds
 test.html
+CustomIndex_Data.rds
