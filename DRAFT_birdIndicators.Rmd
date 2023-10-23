@@ -213,7 +213,7 @@ The workflow relies on two major sources of data: the up-to-date raw data from "
 #### Monitoring data from "Hekkefuglovervåkingen"
 The route-based raw data from "hekkefuglovervåkingen" are compiled after each breeding season and stored in NINA's database. From that database we download the data relevant for the PECBMS Trim analyses and for the specified range of years (here from 2006 up to and including 2022). 
 
-```{r, eval = FALSE}
+```{r}
 minYear <- 2006
 maxYear <- 2022
 
