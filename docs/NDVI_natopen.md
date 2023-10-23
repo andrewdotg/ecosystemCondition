@@ -2,6 +2,8 @@
 
 # NDVI - Naturally Open Ecosystems {#NDVI-indicator-natopen}
 
+<br /> Norwegian name: **Primærproduksjon** <br />
+
 NDVI (greenness) indicator, naturally open ecosystems below the treeline
 
 <br />
@@ -21,9 +23,9 @@ September 2023
 
 
 
-|Ecosystem     |Økologisk.egenskap |ECT.class                        |
-|:-------------|:------------------|:--------------------------------|
-|naturlig åpen |Primærproduksjon   |Structural state characteristics |
+```{=html}
+<div class="tabwid"><style>.cl-85e4e882{table-layout:auto;}.cl-85dcd16a{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-85dcd174{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-85e06dd4{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-85e08bde{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-85e08be8{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-85e4e882'><thead><tr style="overflow-wrap:break-word;"><th class="cl-85e08bde"><p class="cl-85e06dd4"><span class="cl-85dcd16a">Ecosystem</span></p></th><th class="cl-85e08bde"><p class="cl-85e06dd4"><span class="cl-85dcd16a">Økologisk egenskap</span></p></th><th class="cl-85e08bde"><p class="cl-85e06dd4"><span class="cl-85dcd16a">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-85e08be8"><p class="cl-85e06dd4"><span class="cl-85dcd174">naturlig åpen</span></p></td><td class="cl-85e08be8"><p class="cl-85e06dd4"><span class="cl-85dcd174">Primærproduksjon</span></p></td><td class="cl-85e08be8"><p class="cl-85e06dd4"><span class="cl-85dcd174">Structural state characteristics</span></p></td></tr></tbody></table></div>
+```
 
 <!-- Don't remove these three html lines -->
 <br />

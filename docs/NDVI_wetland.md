@@ -20,9 +20,9 @@ September 2023
 
 
 
-|Ecosystem |Økologisk.egenskap |ECT.class                        |
-|:---------|:------------------|:--------------------------------|
-|Våtmark   |Primærproduksjon   |Structural state characteristics |
+```{=html}
+<div class="tabwid"><style>.cl-c5968cf0{table-layout:auto;}.cl-c58faf34{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-c58faf3e{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-c592ff54{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-c5931b24{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-c5931b25{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-c5968cf0'><thead><tr style="overflow-wrap:break-word;"><th class="cl-c5931b24"><p class="cl-c592ff54"><span class="cl-c58faf34">Ecosystem</span></p></th><th class="cl-c5931b24"><p class="cl-c592ff54"><span class="cl-c58faf34">Økologisk egenskap</span></p></th><th class="cl-c5931b24"><p class="cl-c592ff54"><span class="cl-c58faf34">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-c5931b25"><p class="cl-c592ff54"><span class="cl-c58faf3e">Våtmark</span></p></td><td class="cl-c5931b25"><p class="cl-c592ff54"><span class="cl-c58faf3e">Primærproduksjon</span></p></td><td class="cl-c5931b25"><p class="cl-c592ff54"><span class="cl-c58faf3e">Structural state characteristics</span></p></td></tr></tbody></table></div>
+```
 
 <!-- Don't remove these three html lines -->
 <br />

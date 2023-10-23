@@ -17,9 +17,9 @@ March 2023
 
 
 
-|Ecosystem |Økologisk.egenskap   |ECT.class                      |
-|:---------|:--------------------|:------------------------------|
-|All       |Abiotiske egenskaper |Physical state characteristics |
+```{=html}
+<div class="tabwid"><style>.cl-28ca181c{table-layout:auto;}.cl-28c316a2{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-28c316ac{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-28c6741e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-28c6900c{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-28c69016{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-28ca181c'><thead><tr style="overflow-wrap:break-word;"><th class="cl-28c6900c"><p class="cl-28c6741e"><span class="cl-28c316a2">Ecosystem</span></p></th><th class="cl-28c6900c"><p class="cl-28c6741e"><span class="cl-28c316a2">Økologisk egenskap</span></p></th><th class="cl-28c6900c"><p class="cl-28c6741e"><span class="cl-28c316a2">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-28c69016"><p class="cl-28c6741e"><span class="cl-28c316ac">All</span></p></td><td class="cl-28c69016"><p class="cl-28c6741e"><span class="cl-28c316ac">Abiotiske egenskaper</span></p></td><td class="cl-28c69016"><p class="cl-28c6741e"><span class="cl-28c316ac">Physical state characteristics</span></p></td></tr></tbody></table></div>
+```
 
 <br /> <br />
 

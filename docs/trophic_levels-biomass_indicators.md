@@ -1,14 +1,21 @@
-
 # Trophic level biomass ratios
 
 <br />
 
-_Author and date:_
+*Author and date:*
+
+
+
 
 James D. M. Speed, Gunnar Austrheim, Erling J. Solberg
 
 August 2023
 
+<br />
+Norwegian names of indicators: 
+
+- **Store beitedyr**
+- **Store rovdyr**
 <br />
 
 <!-- Load all you dependencies here -->
@@ -17,24 +24,30 @@ August 2023
 
 
 
-|Ecosystem |Økologisk.egenskap                        |ECT.class                       |
-|:---------|:-----------------------------------------|:-------------------------------|
-|All       |Biomass distribution among trophic levels |Structural state characteristic |
 
+```{=html}
+<div class="tabwid"><style>.cl-d14cae5a{table-layout:auto;}.cl-d1464394{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d14643a8{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d14939a0{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d1494dbe{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d1494dbf{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-d14cae5a'><thead><tr style="overflow-wrap:break-word;"><th class="cl-d1494dbe"><p class="cl-d14939a0"><span class="cl-d1464394">Ecosystem</span></p></th><th class="cl-d1494dbe"><p class="cl-d14939a0"><span class="cl-d1464394">Økologisk egenskap</span></p></th><th class="cl-d1494dbe"><p class="cl-d14939a0"><span class="cl-d1464394">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d1494dbf"><p class="cl-d14939a0"><span class="cl-d14643a8">All</span></p></td><td class="cl-d1494dbf"><p class="cl-d14939a0"><span class="cl-d14643a8">Biomass distribution among trophic levels</span></p></td><td class="cl-d1494dbf"><p class="cl-d14939a0"><span class="cl-d14643a8">Structural state characteristic</span></p></td></tr></tbody></table></div>
+```
 
 <!-- Don't remove these three html lines -->
-<br />
-<br />
-<hr />
 
+<br /> <br />
+
+<hr />
 
 <!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
 
-## Introduction
+## Introduction {#intro-tlb}
 
-Here we will develop indicators of ecological condition for Norway, based on the distribution of biomass between trophic levels – specifically between vegetation and vertebrate consumers. This includes three trophic levels, plants, herbivores and carnivores. Indicators of trophic interactions are based on deviation between the observed biomass at each consumer trophic level from the expected biomass based on the biomass at the prey trophic level. The expected biomass estimates are derived from global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://doi.org/10.1126/science.aac6284)).
+Here we will develop indicators of ecological condition for Norway, based on the distribution of biomass between trophic levels -- specifically between vegetation and vertebrate consumers. This includes three trophic levels, plants, herbivores and carnivores. Indicators of trophic interactions are based on deviation between the observed biomass at each consumer trophic level from the expected biomass based on the biomass at the prey trophic level. The expected biomass estimates are derived from global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://doi.org/10.1126/science.aac6284)).
 
-## About the underlying data
+Indicators developed are:
+
+**Deviation from expected vertebrate herbivore biomass** (in total, and for each ecosystem)
+
+**Deviation from expected vertebrate carnivore biomass** (in total, and for each ecosystem)
+
+## About the underlying data {#underlying-data-tlb}
 
 As the plant biomass level we use Net Primary Productivity. MODIS NPP was selected since it provides the highest temporal extent of available data sources (1999 to present). Spatial resolution is low relative to other remote sensing sources, however, the spatial resolution is still far higher than the consumer data, so the temporal extent was prioritised.
 
@@ -48,13 +61,13 @@ The carnivore data is taken from back-cast population modelling for the large ca
 
 We calculate indicators (1) across all ecosystems and the total consumer communities (all localities and all herbivores and all carnivores) and (2) specific indicators for each main ecosystem type.
 
-### Representativity in time and space
+### Representativity in time and space {#rep-time-and-space-tlb}
 
-The data spans 1907 to 2015, with data points roughly every 10 years. The whole of Norway is covered. Herbivore data is collated at the municipality level (with the exception of semi-domestic reindeer in Finnmark at county level) and carnivore data at the county level. Municipalities and counties valid in 2007 were used. NPP is at a pixel resolution. 
+The data spans 1907 to 2015, with data points roughly every 10 years. The whole of Norway is covered. Herbivore data is collated at the municipality level (with the exception of semi-domestic reindeer in Finnmark at county level) and carnivore data at the county level. Municipalities and counties valid in 2007 were used. NPP is at a 500 m resolution.
 
 ### Original units
 
-The biomass of the trophic levels is as kg km^-2^. 
+The biomass of the herbivore and carnivore trophic levels is as kg km^-2^. For NPP the original units is kg C m^-2^ year^-1^.
 
 ### Temporal coverage
 
@@ -72,35 +85,53 @@ This indicator alines most closely with B2 Structural state characteristics (alt
 
 ## Collinearities with other indicators
 
-Colinearities are likely to exist with climatic variables and disturbance. 
+Colinearities are likely to exist with climatic variables and disturbance.
 
 ## Reference condition and values
 
 ### Reference condition
 
-Reference values are taken from published global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://doi.org/10.1126/science.aac6284)). 
+Reference values are taken from published global relationships between plants and vertebrate herbivores ([Fløjgaard et al. 2022](https://doi.org/10.1111/1365-2664.14047)) and between vertebrate prey and predators ([Hatton et al 2015](https://doi.org/10.1126/science.aac6284)).
 
-### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
+For herbivores the expected biomass is calculated as:
 
-Deviations from the reference (expected) biomass of consumer based on consumed trophic level biomass are expressed as a two-sided percentage. Good condition was defined as within ±40% of the reference value (i.e. that expected from global relationships). Poor condition as over ±40% of the reference level. The choice of 40% is arbitary. 
+$$
+NPP^{0.47}\times0.643
+$$
+
+For carnivores the expected biomass is calculated as:
+
+$$
+Herbivore\ biomass^{0.73}\times 0.014
+$$
+
+### Reference values, thresholds for defining *good ecological condition*, minimum and/or maximum values
+
+Deviations from the reference (expected) biomass of consumer based on consumed trophic level biomass are expressed as a two-sided percentage. Good condition was defined as within ±40% of the reference value (i.e. that expected from global relationships). Poor condition as over ±40% of the reference level. The choice of 40% is arbitary, and is based on the expert opinion of the authors.
+
+Reference levels for this indicator are discussed [here](https://github.com/NINAnor/ecosystemCondition/issues/113).
 
 ## Uncertainties
 
-Uncertainties around the estimates have not been estimated. However, there are potential uncertainties around the reported livestock and hunting statistics and the demographic models used to estimate metabolic biomass at the population level. See Austrheim et al. (2011) and Speed et al. (2015) for further details. 
+Uncertainties around the estimates have not been estimated. However, there are potential uncertainties around the reported livestock and hunting statistics and the demographic models used to estimate metabolic biomass at the population level. See Austrheim et al. (2011) and Speed et al. (2015) for further details. There are further uncertainties related to the deviance around the equations used to estimate consumer biomass from consumed biomass, as well as the applicability of the global relationships to the Norwegian context.
 
 ## References
 
 Austrheim, G., Solberg, E. J., & Mysterud, A. (2011). Spatio‐temporal variation in large herbivore pressure in Norway during 1949‐1999: has decreased grazing by livestock been countered by increased browsing by cervids? Wildlife Biology, 17(3), 286-298.
+
 Fløjgaard, C., Pedersen, P. B. M., Sandom, C. J., Svenning, J. C., & Ejrnæs, R. (2022). Exploring a natural baseline for large‐herbivore biomass in ecological restoration. Journal of Applied Ecology, 59(1), 18-24.
+
 Hatton, I. A., McCann, K. S., Fryxell, J. M., Davies, T. J., Smerlak, M., Sinclair, A. R., & Loreau, M. (2015). The predator-prey power law: Biomass scaling across terrestrial and aquatic biomes. Science, 349(6252), aac6284.
-Sobocinski, A. (2022). Mapping large carnivores in Norway across 175 years of changing policy (Master's thesis, NTNU). https://hdl.handle.net/11250/3047580 
+
+Sobocinski, A. (2022). Mapping large carnivores in Norway across 175 years of changing policy (Master's thesis, NTNU). <https://hdl.handle.net/11250/3047580>
+
 Speed, J. D. M., Austrheim, G., Kolstad, A. L., & Solberg, E. J. (2019). Long-term changes in northern large-herbivore communities reveal differential rewilding rates in space and time. PLoS One, 14(5), e0217166.
 
 ## Additional information about the data
 
 The raw data is available [here](https://doi.org/10.6084/m9.figshare.24015072).
 
-## Analyses
+## Analyses {#analyses-tlb}
 
 ## Part 1: Total communities
 
@@ -152,34 +183,32 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
          scale_fill_continuous(low="lightgreen",high="darkgreen",na.value=NA,expression('kg C km'^-2~'year'^-1))+theme_bw()
 ```
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/Plotting basic data-1.png" width="672" />
+<div class="figure">
+<img src="trophic_levels-biomass_indicators_files/figure-html/Plotting-basic-data-1.png" alt="Net primary production over Norway" width="672" />
+<p class="caption">(\#fig:Plotting-basic-data)Net primary production over Norway</p>
+</div>
 
 Next total herbivore biomass:
 
 
 ```r
+
 #Total herbivore biomass
 #For some reason need to read the raster in again
 livestockrast<-rast(paste0(pData,"/Trophic_levels/Livestock_RawBiomass.tiff"))
 
 totalherbivorebiomass<-livestockrast[[sapply(strsplit(names(livestockrast),"_"),'[',1) %in% "TotalHerbivoreBiomass"]]
 names(totalherbivorebiomass)<-allyears_vect
-totalherbivorebiomass
-#> class       : SpatRaster 
-#> dimensions  : 3378, 2701, 12  (nrow, ncol, nlyr)
-#> resolution  : 440.9985, 441.0127  (x, y)
-#> extent      : -76208, 1114929, 6450245, 7939986  (xmin, xmax, ymin, ymax)
-#> coord. ref. : +proj=utm +zone=33 +ellps=GRS80 +units=m +no_defs 
-#> source      : Livestock_RawBiomass.tiff 
-#> names       :     1907,     1917,     1929,     1938,        1949,        1959, ... 
-#> min values  :     0.00,     0.00,     0.00,     0.00,    36.40469,    37.53634, ... 
-#> max values  : 24068.81, 32279.18, 33138.37, 36387.98, 15082.97559, 22528.81055, ...
+#totalherbivorebiomass
 ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
   geom_spatraster(data=totalherbivorebiomass)+facet_wrap(~lyr)+
   scale_fill_continuous(trans='log10',low="lightskyblue",high="darkblue", na.value=NA,expression(atop('Herbivore \nbiomass', 'kg km'^-2)))+theme_bw()
 ```
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/PlotTotalHerbivoreBiomass-1.png" width="672" />
+<div class="figure">
+<img src="trophic_levels-biomass_indicators_files/figure-html/PlotTotalHerbivoreBiomass-1.png" alt="Herbivore biomass over Norway" width="672" />
+<p class="caption">(\#fig:PlotTotalHerbivoreBiomass)Herbivore biomass over Norway</p>
+</div>
 
 And finally total carnivore biomass:
 
@@ -196,7 +225,10 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
   theme(strip.text.x = element_text(size = 10))
 ```
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/Plot carnivore biomass-1.png" width="672" />
+<div class="figure">
+<img src="trophic_levels-biomass_indicators_files/figure-html/Plot-carnivore-biomass-1.png" alt="Carnivore biomass over Norway" width="672" />
+<p class="caption">(\#fig:Plot-carnivore-biomass)Carnivore biomass over Norway</p>
+</div>
 
 Now we use the NPP to estimate the expected herbivore biomass (Fløjgaard et al. 2015, Figure 1/Table 1, Global relationship "mean NPP1km"):
 
@@ -209,11 +241,16 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
   scale_fill_continuous(low='lightskyblue',high="darkblue",na.value=NA,expression('kg km'^-2))
 ```
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/Calculating expected herbivore biomass-1.png" width="672" />
+<div class="figure">
+<img src="trophic_levels-biomass_indicators_files/figure-html/Calculating-expected-herbivore-biomass-1.png" alt="Expected herbivore biomass" width="672" />
+<p class="caption">(\#fig:Calculating-expected-herbivore-biomass)Expected herbivore biomass</p>
+</div>
 
 Now we can calculate the deviation between the observed herbivore biomass and the expected herbivore biomass. We calculate this as a % change:
 
-100 x (ActualBiomass -- ExpectedBiomass) / (ExpectedBiomass + 1)
+$$
+100 \times (ActualBiomass - ExpectedBiomass) / (ExpectedBiomass + 1)
+$$
 
 To display this we truncated to 100%\|-100%
 
@@ -239,11 +276,14 @@ totalherbivorebiomass_npp<-totalherbivorebiomass[[names(totalherbivorebiomass) %
 #> SpatRaster resampled to ncells = 500703
 ```
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/DifferenceHerbivoreBiomass-1.png" width="672" />
+<div class="figure">
+<img src="trophic_levels-biomass_indicators_files/figure-html/DifferenceHerbivoreBiomass-1.png" alt="Difference from expected herbivore biomass" width="672" />
+<p class="caption">(\#fig:DifferenceHerbivoreBiomass)Difference from expected herbivore biomass</p>
+</div>
 
 Above we see that on the West coast, Trøndelag, Oppland have double herbivore biomass than expected. There is more herbivore biomass than expected in parts of Finnmark, while Nordland and Lierne have lower herbivore biomass than expected based on NPP. Vestfold & Telemark (and parts of Viken) change from having more herbivore biomass than expected in 2000 to less than expected in 2015 (this is consistent with reduction in moose population in these regions)
 
--- Next we move on to estimate the expected carnivore biomass based on observed herbivore biomass and calculate the deviation as a % difference from expected as for the herbivores. This is based on Hatton et al. (2015, Figure 1, predator prey biomass relationships).
+Next we move on to estimate the expected carnivore biomass based on observed herbivore biomass and calculate the deviation as a % difference from expected as for the herbivores. This is based on Hatton et al. (2015, Figure 1, predator prey biomass relationships).
 
 
 ```r
@@ -260,16 +300,17 @@ ggplot()+geom_spatraster(data=expected_carnivore_biomass)+
   facet_wrap(~lyr)+theme_bw()+
   scale_fill_continuous(low='lightskyblue',high="darkblue",na.value=NA,expression('kg km'^-2),trans='log10')
 #> SpatRaster resampled to ncells = 500703
-#> Warning: Transformation introduced infinite values in discrete
-#> y-axis
 ```
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/Expected carnivore biomass-1.png" width="672" />
+<div class="figure">
+<img src="trophic_levels-biomass_indicators_files/figure-html/Expected-carnivore-biomass-1.png" alt="Expected carnivore biomass" width="672" />
+<p class="caption">(\#fig:Expected-carnivore-biomass)Expected carnivore biomass</p>
+</div>
+
 
 ```r
-
-diffcarn<-100* (totalcarnivores-expected_carnivore_biomass)/(expected_carnivore_biomass+1)
-names(diffcarn)<-allyears_vect
+diffcarn <-100*(totalcarnivores-expected_carnivore_biomass)/(expected_carnivore_biomass+1)
+names(diffcarn) <- allyears_vect
 
 ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
   geom_spatraster(data=diffcarn)+
@@ -279,7 +320,10 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
 #> SpatRaster resampled to ncells = 500703
 ```
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/Expected carnivore biomass-2.png" width="672" />
+<div class="figure">
+<img src="trophic_levels-biomass_indicators_files/figure-html/diff-carnivores-tlb-1.png" alt="Difference from expected carnivore biomass" width="672" />
+<p class="caption">(\#fig:diff-carnivores-tlb)Difference from expected carnivore biomass</p>
+</div>
 
 From the above we see that Norway has had less carnivore biomass than expected based on the available herbivore biomass across the time period. Some counties and time periods (e.g. Hedmark today and Finnmark in 1907 had about the same carnivore biomass as predicted.
 
@@ -301,6 +345,18 @@ Table of the consumer species associated with each habitat.
 
 Since a suitable ecosystem map is still under development, we use the AR50 land-cover map as a place-holding solution. AR50 does not give a good representation of naturlig åpne områder or semi-naturlig mark, so we demonstrate the habitat specific biomass distributions using the forest class in AR50 and the species outlined above.
 
+<!-- Limit code block height and force scrolling -->
+<style type="text/css">
+pre {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+</style>
+
 
 ```r
 #Forest
@@ -319,13 +375,7 @@ levels(artype50_F)<-arTdf
 
 arcols<-c("black","orange","darkgreen","wheat","lightblue","white","blue","blue",NA)
 ggplot()+geom_spatraster(data=artype50_F)+scale_fill_manual(values=arcols,na.value = NA)
-#> SpatRaster resampled to ncells = 500830
-```
-
-<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-1.png" width="672" />
-
-```r
-
+ggsave("data/cache/gg1_tlb.png")
 
 #Project the AR50 to the NPP rasters
 
@@ -337,7 +387,6 @@ allherbivores<-c(viltrast,livestockrast)
 #Mask out forest from rasters
 forest_expected_herbivore_biomass<-mask(expected_herbivore_biomass,artype50_FR,maskvalues=30,inverse=TRUE)
 forest_herbivores<-mask(allherbivores,artype50_FR,maskvalues=30,inverse=TRUE)
-#> |---------|---------|---------|---------|=========================================                                          
 forest_carnivores<-mask(carnivorerast,artype50_FR,maskvalues=30,inverse=TRUE)
 forest_expected_carnivore_biomass<-mask(expected_carnivore_biomass,artype50_FR,maskvalues=30,inverse=TRUE)
 
@@ -354,18 +403,6 @@ for(i in 1:length(allyears_vect)){
                                                           %in% c("roe","hjort","elg","storf")]]
 )
 }
-#> [1] 1
-#> [1] 2
-#> [1] 3
-#> [1] 4
-#> [1] 5
-#> [1] 6
-#> [1] 7
-#> [1] 8
-#> [1] 9
-#> [1] 10
-#> [1] 11
-#> [1] 12
 names(forest_herbivores_selectspp)<-allyears_vect
  
  #Sum up selected forest carnivore species
@@ -379,18 +416,6 @@ names(forest_herbivores_selectspp)<-allyears_vect
                                                             %in% c("Wolf","Lynx","Bear")]]
    )
  }
-#> [1] 1
-#> [1] 2
-#> [1] 3
-#> [1] 4
-#> [1] 5
-#> [1] 6
-#> [1] 7
-#> [1] 8
-#> [1] 9
-#> [1] 10
-#> [1] 11
-#> [1] 12
  names(forest_carnivores_selectspp)<-allyears_vect
  
  
@@ -412,13 +437,8 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
    scale_fill_distiller(type="div",palette='RdYlBu',limit=c(-100,100),oob=squish,na.value=NA, "% difference from \nexpected biomass")+
    facet_wrap(~lyr)+theme_bw()+
   labs(x="Year", y="Difference")
-#> SpatRaster resampled to ncells = 500703
-```
+ ggsave("data/cache/gg2_tlb.png")
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-2.png" width="672" />
-
-```r
- 
  
 forest_diffcarn<-100*(forest_carnivores_selectspp-forest_expected_carnivore_biomass)/
    (forest_expected_carnivore_biomass+1)
@@ -429,13 +449,8 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
    scale_fill_distiller(type="div",palette='RdYlBu',limit=c(-100,100),oob=squish,na.value=NA,"% difference from\nexpected biomass")+
    facet_wrap(~lyr)+theme_bw()+
   labs(x="Year", y="Difference")
-#> SpatRaster resampled to ncells = 500703
-```
+  ggsave("data/cache/gg3_tlb.png")
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-3.png" width="672" />
-
-```r
- 
  
  
 # #Scaling as indicators
@@ -446,13 +461,8 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
   scale_fill_gradientn(colors= c("blue","yellow",'yellow' ,  "red"),
                        breaks=c(-100,-40,0,40,100),limits=c(-100,100),na.value=NA,"% difference from\nexpected biomass")+
    facet_wrap(~lyr)+theme_bw()
-#> SpatRaster resampled to ncells = 500703
-```
+  ggsave("data/cache/gg4_tlb.png")
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-4.png" width="672" />
-
-```r
- 
  
  ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
    geom_spatraster(data=forest_diffcarn)+
@@ -460,10 +470,35 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
    scale_fill_gradientn(colors= c("blue","yellow",'yellow' ,  "red"),
                      breaks=c(-100,-40,0,40,100),limits=c(-100,100),na.value=NA,"% difference from\nexpected biomass")+
    facet_wrap(~lyr)+theme_bw()
-#> SpatRaster resampled to ncells = 500703
+  ggsave("data/cache/gg5_tlb.png")
+
 ```
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/Habitat specific rasters-5.png" width="672" />
+<div class="figure">
+<img src="data/cache/gg1_tlb.png" alt="A view of the AR50 data used as a placeholder for an ecosystem map." width="50%" />
+<p class="caption">(\#fig:ar50)A view of the AR50 data used as a placeholder for an ecosystem map.</p>
+</div>
+
+<div class="figure">
+<img src="data/cache/gg2_tlb.png" alt="Difference in forest herbivore biomass from expectation" width="100%" />
+<p class="caption">(\#fig:forestdiff-tlb)Difference in forest herbivore biomass from expectation</p>
+</div>
+
+<div class="figure">
+<img src="data/cache/gg3_tlb.png" alt="Difference in forest carnivore biomass from expectation" width="100%" />
+<p class="caption">(\#fig:forestcarn-tlb)Difference in forest carnivore biomass from expectation</p>
+</div>
+
+<div class="figure">
+<img src="data/cache/gg4_tlb.png" alt="Difference in forest herbivore biomass from expectation" width="100%" />
+<p class="caption">(\#fig:forestherbdiff-tlb)Difference in forest herbivore biomass from expectation</p>
+</div>
+
+<div class="figure">
+<img src="data/cache/gg5_tlb.png" alt="Difference in forest carnivore biomass from expectation" width="100%" />
+<p class="caption">(\#fig:forestcarn2-tlb)Difference in forest carnivore biomass from expectation</p>
+</div>
+
 
 In the above maps, yellow indicates good condition (within 40% of expected biomass between 60% and 140% of expected biomass). Blue indicates poor condition, with \>40% less biomass than expected (i.e. \<60% of expected biomass), while red indicates poor conditions with \>40% biomass than expected (i.e. \>140% of expected biomass).
 
@@ -491,36 +526,33 @@ forest_carn_herb_county$ID<-norcounty_vect$FylkeNr#Replace IDs with Fylke Nrs
 forest_carn_herb_county$CountyName<-norcounty_vect$CountyName#Replace IDs with Fylke Nrs
 forest_carn_herb_countyDF<-gather(forest_carn_herb_county,key="Year",value="Difference",-ID,-CountyName)
 #forest_carn_herb_countyDF$YearN<-as.numeric(substr(forest_carn_herb_countyDF$Year,2,5))
-forest_carn_herb_countyDF$YearN<-as.numeric(forest_carn_herb_countyDF$Year)
-#> Warning: NAs introduced by coercion
+forest_carn_herb_countyDF$Year2 <- substr(forest_carn_herb_countyDF$Year, 2, nchar(forest_carn_herb_countyDF$Year))
+forest_carn_herb_countyDF$YearN<-as.numeric(forest_carn_herb_countyDF$Year2)
 
 ggplot(data=forest_carn_herb_countyDF,aes(x=YearN,y=Difference,color=CountyName))+geom_line()+scale_color_discrete()+
   ggtitle("Forest: % Difference from expected carnivore biomass")+theme_bw()+xlim(c(1905,2025))+geom_hline(yintercept=c(-40,0),lty=c(2,1))+
   geom_text(data=forest_carn_herb_countyDF[forest_carn_herb_countyDF$YearN==2015,],aes(label = CountyName, x = 2015, y = Difference), hjust = -.1) 
-#> Warning: Removed 228 rows containing missing values
-#> (`geom_line()`).
-#> Warning: Removed 228 rows containing missing values
-#> (`geom_text()`).
-```
-
-<img src="trophic_levels-biomass_indicators_files/figure-html/CountySummaries-1.png" width="672" />
-
-```r
-
+ggsave("data/cache/gg6_tlb.png")
 
 forest_herb_veg_county<-terra::extract(forest_diffherb,norcounty_vect,mean,na.rm=T)
 forest_herb_veg_county$ID<-norcounty_vect$FylkeNr#Replace IDs with Fylke Nrs
 forest_herb_veg_county$CountyName<-norcounty_vect$CountyName#Replace IDs with Fylke Nrs
 forest_herb_veg_countyDF<-gather(forest_herb_veg_county,key="Year",value="Difference",-ID,-CountyName)
-forest_herb_veg_countyDF$YearN<-as.numeric(forest_herb_veg_countyDF$Year)
-#> Warning: NAs introduced by coercion
+forest_herb_veg_countyDF$Year2 <- substr(forest_herb_veg_countyDF$Year, 2, nchar(forest_herb_veg_countyDF$Year))
+forest_herb_veg_countyDF$YearN<-as.numeric(forest_herb_veg_countyDF$Year2)
 ggplot(data=forest_herb_veg_countyDF,aes(x=YearN,y=Difference,color=CountyName))+geom_line()+scale_color_discrete()+
   ggtitle("Forest: % Difference from expected herbivore biomass")+theme_bw()+xlim(c(1999,2018))+geom_hline(yintercept=c(-40,0,40),lty=c(2,1,2))+
   geom_text(data=forest_herb_veg_countyDF[forest_herb_veg_countyDF$YearN==2015,],aes(label = CountyName, x = 2015, y = Difference), hjust = -.1) 
-#> Warning: Removed 57 rows containing missing values
-#> (`geom_line()`).
-#> Warning: Removed 57 rows containing missing values
-#> (`geom_text()`).
+ggsave("data/cache/gg7_tlb.png")
+
 ```
 
-<img src="trophic_levels-biomass_indicators_files/figure-html/CountySummaries-2.png" width="672" />
+<div class="figure">
+<img src="data/cache/gg6_tlb.png" alt="Difference in herbivore biomass from expectations" width="1100" />
+<p class="caption">(\#fig:herbtime)Difference in herbivore biomass from expectations</p>
+</div>
+
+<div class="figure">
+<img src="data/cache/gg7_tlb.png" alt="Difference in herbivore biomass from expectations" width="1100" />
+<p class="caption">(\#fig:carntime)Difference in herbivore biomass from expectations</p>
+</div>

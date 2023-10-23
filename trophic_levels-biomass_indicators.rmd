@@ -172,8 +172,7 @@ The raw data is available [here](https://doi.org/10.6084/m9.figshare.24015072).
 We start by calculation biomass ratios across all herbivores and carnivores, with no regard to the ecosystem type.
 
 ```{r, message=FALSE, warning=FALSE}
-#| label: Data-import
-#| cache: TRUE
+#| label: data-import
 
 #NPP
 #Read in
@@ -204,7 +203,6 @@ First NPP:
 
 ```{r, message=FALSE, warning=FALSE, fig.cap= "Net primary production over Norway"}
 #| label: Plotting-basic-data
-#| cache: TRUE
 
 #Select relevant years for NPP
 npprast_yrs<-npprast[[names(npprast)%in%c("NPP_2000","NPP_2009","NPP_2015")]]
@@ -220,7 +218,6 @@ Next total herbivore biomass:
 
 ```{r, message=FALSE, warning=FALSE}
 #| label: PlotTotalHerbivoreBiomass
-#| cache: TRUE
 #| fig.cap: "Herbivore biomass over Norway"
 
 
@@ -242,7 +239,6 @@ And finally total carnivore biomass:
 
 ```{r, message=FALSE, warning=FALSE}
 #| label: Plot-carnivore-biomass
-#| cache: TRUE
 #| fig.cap: "Carnivore biomass over Norway"
 carnivorerast<-rast(paste0(pData,"/Trophic_levels/Carnivores_RawBiomass.tiff"))
 
@@ -260,7 +256,6 @@ Now we use the NPP to estimate the expected herbivore biomass (Fløjgaard et al.
 
 ```{r, message=FALSE, warning=FALSE}
 #| label: Calculating-expected-herbivore-biomass
-#| cache: TRUE
 #| fig.cap: "Expected herbivore biomass"
 expected_herbivore_biomass<-(npprast_yrs^0.47 * 0.643)#Global 
 ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
@@ -284,7 +279,6 @@ A value of 0 indicates that the locality has expected biomass. Value of 100 indi
 
 ```{r}
 #| label: DifferenceHerbivoreBiomass
-#| cache: TRUE
 #| fig.cap: "Difference from expected herbivore biomass"
 totalherbivorebiomass<-livestockrast[[sapply(strsplit(names(livestockrast),"_"),'[',1) %in% "TotalHerbivoreBiomass"]]
 names(totalherbivorebiomass)<-allyears_vect
@@ -309,7 +303,6 @@ Next we move on to estimate the expected carnivore biomass based on observed her
 
 ```{r}
 #| label: Expected-carnivore-biomass
-#| cache: TRUE 
 #| fig.cap: "Expected carnivore biomass"
 #| warning: FALSE
 
@@ -328,8 +321,8 @@ ggplot()+geom_spatraster(data=expected_carnivore_biomass)+
 ```
 
 ```{r diff-carnivores-tlb, fig.cap="Difference from expected carnivore biomass"}
-diffcarn<-100* (totalcarnivores-expected_carnivore_biomass)/(expected_carnivore_biomass+1)
-names(diffcarn)<-allyears_vect
+diffcarn <-100*(totalcarnivores-expected_carnivore_biomass)/(expected_carnivore_biomass+1)
+names(diffcarn) <- allyears_vect
 
 ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
   geom_spatraster(data=diffcarn)+

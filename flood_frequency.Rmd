@@ -17,6 +17,7 @@ October 2023
 ```{r setup, include=FALSE}
 library(knitr)
 library(flextable)
+library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 

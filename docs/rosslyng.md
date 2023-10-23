@@ -20,9 +20,9 @@ March 2023
 
 
 
-|Ecosystem          |Økologisk.egenskap |ECT.class                      |
-|:------------------|:------------------|:------------------------------|
-|Semi-naturlig mark |Primærproduksjon   |Structual state characteristic |
+```{=html}
+<div class="tabwid"><style>.cl-b58a56f6{table-layout:auto;}.cl-b58219a0{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-b58219aa{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-b585909e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-b585a9c6{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-b585a9d0{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-b58a56f6'><thead><tr style="overflow-wrap:break-word;"><th class="cl-b585a9c6"><p class="cl-b585909e"><span class="cl-b58219a0">Ecosystem</span></p></th><th class="cl-b585a9c6"><p class="cl-b585909e"><span class="cl-b58219a0">Økologisk egenskap</span></p></th><th class="cl-b585a9c6"><p class="cl-b585909e"><span class="cl-b58219a0">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-b585a9d0"><p class="cl-b585909e"><span class="cl-b58219aa">Semi-naturlig mark</span></p></td><td class="cl-b585a9d0"><p class="cl-b585909e"><span class="cl-b58219aa">Primærproduksjon</span></p></td><td class="cl-b585a9d0"><p class="cl-b585909e"><span class="cl-b58219aa">Structual state characteristic</span></p></td></tr></tbody></table></div>
+```
 
 <!-- Don't remove these three html lines -->
 <br />
