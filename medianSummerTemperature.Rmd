@@ -28,6 +28,7 @@ library(parallel)
 library(exactextractr)
 library(data.table)
 library(terra)
+library(flextable)
 dir <- substr(getwd(), 1,2)
 pData <- ifelse(dir == "C:", 
   "P:/41201785_okologisk_tilstand_2022_2023/data/",
@@ -44,8 +45,13 @@ Contact   <- "Anders L. Kolstad"
 ```{r, echo=F}
 metaData <- data.frame(Ecosystem,
                        "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT)
-knitr::kable(metaData)
+                       "ECT class" = ECT,
+                       check.names = F)
+flextable(metaData) %>%
+  bg(bg = "lightblue", part="header") %>%
+  theme_vanilla() %>%
+  set_table_properties(layout = "autofit")
+
 ```
 
 <br /> <br />

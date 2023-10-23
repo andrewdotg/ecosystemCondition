@@ -23,6 +23,7 @@ library(eaTools)
 library(tibble)
 library(stars)
 library(gdalUtilities)
+library(flextable)
 knitr::opts_chunk$set(echo = TRUE)
 
 # Set up conditional file paths
@@ -48,8 +49,12 @@ Contact   <- "anders.kolstad@nina.no"
 ```{r, echo=F}
 metaData <- data.frame(Ecosystem,
                        "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT)
-knitr::kable(metaData)
+                       "ECT class" = ECT,
+                       check.names = F)
+flextable(metaData) %>%
+  bg(bg = "lightblue", part="header") %>%
+  theme_vanilla() %>%
+  set_table_properties(layout = "autofit")
 ```
 
 <hr/>
@@ -932,7 +937,7 @@ corrCheck <- readRDS(paste0(pData, "cache/corrCheck_alienSpecies.rds"))
 ```
  
 
-```{r alien-precentageplot, fig.height=5, fig.width=8, fig.cap="Relative frequency plot showing the distribution of polygons with different indicator values."}
+```{r alien-precentageplot, fig.cap="Relative frequency plot showing the distribution of polygons with different indicator values."}
 ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
   geom_bar(position="fill")+
   theme_bw(base_size = 12)+
@@ -946,6 +951,24 @@ ggplot(corrCheck, aes(x = factor(infrastructureIndex), fill = factor(round(i_202
 The figure above I think supports the indicator-pressure relationship
 and justifies using the HIA x municipality intersections as local reference
 areas.
+
+```{r, include=FALSE, eval=FALSE}
+# Figure for the report
+corrCheck  %>%
+  mutate(hovedøkosystem = forcats::fct_recode(factor(hovedøkosystem), "Naturlig åpne" = "naturligÅpneOmråderUnderSkoggrensa",
+                      "Semi-naturlig mark" = "semi-naturligMark",
+                      "Våtmark" = "våtmark")) %>%
+ggplot(aes(x = factor(infrastructureIndex), fill = factor(round(i_2020,2))))+
+  geom_bar(position="fill")+
+  theme_bw(base_size = 12)+
+  guides(fill = guide_legend("Indikatorverdi"))+
+  ylab("Andel av datapunkter")+
+  xlab("Infrastrukturindeksen (kategorisk versjon)")+
+  scale_fill_brewer(palette = "RdYlGn")+
+  facet_wrap(.~hovedøkosystem)
+
+
+```
 
 Let us look at the effect of sample size on the indicator uncertainty.
 

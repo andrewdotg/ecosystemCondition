@@ -37,6 +37,7 @@ library(betareg)
 library(StepBeta)
 library(glmmTMB)
 library(knitr)
+library(flextable)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -49,10 +50,13 @@ Contact <- "Joachim Töpper"
 
 ```{r, echo=FALSE}
 metaData <- data.frame(Ecosystem,
-  "Økologisk egenskap" = Egenskap,
-  "ECT class" = ECT
-)
-knitr::kable(metaData)
+                       "Økologisk egenskap" = Egenskap,
+                       "ECT class" = ECT,
+                       check.names = F)
+flextable(metaData) %>%
+  bg(bg = "lightblue", part="header") %>%
+  theme_vanilla() %>%
+  set_table_properties(layout = "autofit")
 ```
 
 <!-- Don't remove these three html lines -->
