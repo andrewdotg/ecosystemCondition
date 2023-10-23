@@ -16,11 +16,13 @@ NO_FUNC_008;Functional plant indicators - Grimes C;Vegetasjon og strategi mot ko
 NO_FUNC_009;Functional plant indicators - Grimes R;Vegetasjon og strategi mot forstyrrelse;INDICATOR - Functional plant indicators;;
 NO_FUNC_010;Functional plant indicators - Grimes S;Vegetasjon og strategi mot stress;INDICATOR - Functional plant indicators;;
 NO_TLBR;Trophic level biomass ratios;Fordeling av biomasse i trifiske nivåer;INDICATOR - Trophic level biomass ratio indicator;Biomasse i trofiske nivåer (vertebrater/ vegetasjon);tlb
-NO_TLBR_001;Deviation from expected vertebrate herbivore biomass;Beitedyr;INDICATOR - Trophic level biomass ratio indicator;;herb
-NO_TLBR_002;Deviation from expected carnivore biomass;Rovdyr;INDICATOR - Trophic level biomass ratio indicator;;carn
+NO_TLBR_001;Deviation from expected vertebrate herbivore biomass;Store beitedyr;INDICATOR - Trophic level biomass ratio indicator;;herb
+NO_TLBR_002;Deviation from expected carnivore biomass;Store rovdyr;INDICATOR - Trophic level biomass ratio indicator;;carn
 NO_NDVI_001;NDVI;Primærproduksjon;INDICATOR - NDVI;;ndvi
 NO_CONN_001;Connectivity;Konnektivitet;INDICATOR - Connectivity;;con
 NO_INSE;Insect indicators;Insektindikatorer;INDICATOR - insects;;ins
 NO_NMBB;Bumplebees and butterflies;Humler og dagsommerfugler;INDICATOR - insects;;ins
 NO_NMBB_001;Bumblebees in open landscapes;Humler i semi-naturlig mark;INDICATOR - insects;;
 NO_NMBB_002;Butterflies in open landscapes;Sommerfulger i semi-naturlig mark;INDICATOR - insects;;
+NO_NIPR;Nature Indeks product;Naturindeks-produkt;INDICATOR - naturindeks;;ni
+NO_HYDR_001;Flood frequency;Oversvømmelseshyppighet;INDICATOR - Flood frequency;;ff
