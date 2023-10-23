@@ -172,7 +172,7 @@ The raw data is available [here](https://doi.org/10.6084/m9.figshare.24015072).
 We start by calculation biomass ratios across all herbivores and carnivores, with no regard to the ecosystem type.
 
 ```{r, message=FALSE, warning=FALSE}
-#| label: Data import
+#| label: Data-import
 #| cache: TRUE
 
 #NPP
@@ -202,10 +202,9 @@ Now we can plot the raw biomass data.
 
 First NPP:
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, fig.cap= "Net primary production over Norway"}
 #| label: Plotting-basic-data
 #| cache: TRUE
-#| fig.cap: "Net primary production over Norway"
 
 #Select relevant years for NPP
 npprast_yrs<-npprast[[names(npprast)%in%c("NPP_2000","NPP_2009","NPP_2015")]]
@@ -223,6 +222,8 @@ Next total herbivore biomass:
 #| label: PlotTotalHerbivoreBiomass
 #| cache: TRUE
 #| fig.cap: "Herbivore biomass over Norway"
+
+
 #Total herbivore biomass
 #For some reason need to read the raster in again
 livestockrast<-rast(paste0(pData,"/Trophic_levels/Livestock_RawBiomass.tiff"))
@@ -242,7 +243,7 @@ And finally total carnivore biomass:
 ```{r, message=FALSE, warning=FALSE}
 #| label: Plot-carnivore-biomass
 #| cache: TRUE
-#| fig.cap: "Carnivore biomass over Norway
+#| fig.cap: "Carnivore biomass over Norway"
 carnivorerast<-rast(paste0(pData,"/Trophic_levels/Carnivores_RawBiomass.tiff"))
 
 totalcarnivores<-carnivorerast[[49:60]]
@@ -260,7 +261,7 @@ Now we use the NPP to estimate the expected herbivore biomass (Fløjgaard et al.
 ```{r, message=FALSE, warning=FALSE}
 #| label: Calculating-expected-herbivore-biomass
 #| cache: TRUE
-#| fig.cap:"Expected herbivore biomass"
+#| fig.cap: "Expected herbivore biomass"
 expected_herbivore_biomass<-(npprast_yrs^0.47 * 0.643)#Global 
 ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
   ggtitle("Expected herbivore biomass")+
@@ -284,7 +285,7 @@ A value of 0 indicates that the locality has expected biomass. Value of 100 indi
 ```{r}
 #| label: DifferenceHerbivoreBiomass
 #| cache: TRUE
-#| fig.cap:"Difference from expected herbivore biomass"
+#| fig.cap: "Difference from expected herbivore biomass"
 totalherbivorebiomass<-livestockrast[[sapply(strsplit(names(livestockrast),"_"),'[',1) %in% "TotalHerbivoreBiomass"]]
 names(totalherbivorebiomass)<-allyears_vect
 totalherbivorebiomass_npp<-totalherbivorebiomass[[names(totalherbivorebiomass) %in% c("1999","2009","2015")]]
@@ -309,7 +310,7 @@ Next we move on to estimate the expected carnivore biomass based on observed her
 ```{r}
 #| label: Expected-carnivore-biomass
 #| cache: TRUE 
-#| fig.cap:"Expected carnivore biomass"
+#| fig.cap: "Expected carnivore biomass"
 #| warning: FALSE
 
 totalherbivorebiomass<-livestockrast[[sapply(strsplit(names(livestockrast),"_"),'[',1) %in% "TotalHerbivoreBiomass"]]
@@ -490,23 +491,23 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
 
 ```
 
-```{r ar50, fig.cap="A view of the AR50 data used as a placeholder for an ecosystem map.", out.width='50%'}
+```{r ar50, fig.cap="A view of the AR50 data used as a placeholder for an ecosystem map.", out.width='50%', echo=FALSE}
 knitr::include_graphics("data/cache/gg1_tlb.png")
 ```
 
-```{r forestdiff-tlb, fig.cap="Difference in forest herbivore biomass from expectation", out.width='50%'}
+```{r forestdiff-tlb, fig.cap="Difference in forest herbivore biomass from expectation", out.width='100%', echo=FALSE}
 knitr::include_graphics("data/cache/gg2_tlb.png")
 ```
 
-```{r forestcarn-tlb, fig.cap="Difference in forest carnivore biomass from expectation", out.width='50%'}
+```{r forestcarn-tlb, fig.cap="Difference in forest carnivore biomass from expectation", out.width='100%', echo=FALSE}
 knitr::include_graphics("data/cache/gg3_tlb.png")
 ```
 
-```{r forestherbdiff-tlb, fig.cap="Difference in forest herbivore biomass from expectation", out.width='50%'}
+```{r forestherbdiff-tlb, fig.cap="Difference in forest herbivore biomass from expectation", out.width='100%', echo=FALSE}
 knitr::include_graphics("data/cache/gg4_tlb.png")
 ```
 
-```{r forestcarn2-tlb, fig.cap="Difference in forest carnivore biomass from expectation", out.width='50%'}
+```{r forestcarn2-tlb, fig.cap="Difference in forest carnivore biomass from expectation", out.width='100%', echo=FALSE}
 knitr::include_graphics("data/cache/gg5_tlb.png")
 ```
 
@@ -560,10 +561,10 @@ ggsave("data/cache/gg7_tlb.png")
 
 ```
 
-```{r herbtime, fig.cap="Difference in herbivore biomass from expectations"}
+```{r herbtime, fig.cap="Difference in herbivore biomass from expectations", echo=FALSE}
 knitr::include_graphics("data/cache/gg6_tlb.png")
 ```
 
-```{r carntime, fig.cap="Difference in herbivore biomass from expectations"}
+```{r carntime, fig.cap="Difference in herbivore biomass from expectations", echo=FALSE}
 knitr::include_graphics("data/cache/gg7_tlb.png")
 ```
