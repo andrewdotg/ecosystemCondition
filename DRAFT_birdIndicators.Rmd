@@ -211,7 +211,7 @@ for(i in 1:length(dir.list)){
 The workflow relies on two major sources of data: the up-to-date raw data from "hekkefuglovervåkingen" and the calculated abundance indices from the predecessor monitoring schemes. Additionally, we also a couple of lists holding information on which species (and years) are to be included in which parts of the analytical workflow.  
 
 #### Monitoring data from "Hekkefuglovervåkingen"
-The route-based raw data from "hekkefuglovervåkingen" are compiled after each breeding season and stored in NINA's database. From that database we download the data relevant for the PECBMS Trim analyses and for the specified range of years (here from 2006 up to and including 2022). 
+The route-based raw data from "hekkefuglovervåkingen" are compiled after each breeding season and stored in NINA's database. From that database we download the data relevant for the PECBMS Trim analyses and for the specified range of years (here from 2006 up to and including 2022). The function ``downloadData_TRIM`` does that for a specified year range (from ``minYear`` up to and including ``maxYear``), and requires specifying which driver is used for accessing the database (via argument ``DriverName``). When running from the NINA RStudio server, we need to use "FreeTDS". When running locally from NINA computers, we need to select "SQL Server".
 
 ```{r}
 minYear <- 2006
