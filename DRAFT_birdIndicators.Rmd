@@ -8,9 +8,17 @@ output:
 # Breeding bird indicators
 
 <br />
+Norwegian name: **Hekkefulgindikatorer**
+<br />
+
 
 _Author and date:_
-Chloé R. Nater, Diego Pavón-Jordán
+
+Chloé R. Nater, 
+
+Diego Pavón-Jordán
+
+Oktober 2023
 
 
 <br />
@@ -31,23 +39,28 @@ library(lubridate)
 library(xtable)
 library(rtrim)
 library(readxl)
+library(flextable)
 library(data.table)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
 ```{r, echo=F}
-Ecosystem <- "Skog, fjell, våtmark, seminaturlig mark" 
-Egenskap  <- "Biologisk mangfold" 
-ECT       <- "Compositional state characteristic" 
-Contact   <- "Chloé R. Nater" 
+Ecosystem <- c("Skog", "fjell", "våtmark", "seminaturlig mark")
+Egenskap  <- rep("Biologisk mangfold" , 4)
+ECT       <- rep("Compositional state characteristic" , 4)
+Contact   <- rep("Chloé R. Nater" , 4)
 ```
 
 ```{r, echo=F}
 metaData <- data.frame(Ecosystem,
                        "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT)
-knitr::kable(metaData)
+                       "ECT class" = ECT,
+                       check.names = F)
+flextable(metaData) %>%
+  bg(bg = "lightblue", part="header") %>%
+  theme_vanilla() %>%
+  set_table_properties(layout = "autofit")
 ```
 
 <br />
@@ -74,7 +87,7 @@ The data are subsequently entered into a database (https://hekkefuglovervakingen
 
 
 ### Representativity in time and space
-"Hekkefuglovervåking" is a nation-wide monitoring scheme consisting of 492 fixed routes across all terrestrial habitats present in Norway (MAP HERE?? I can provide this). Each route has between 12 and 20 counting points (ca. 9000 across Norway), which typically are 300 m apart, describing a square with side 1.5 km long (the observer walks on a straight line between two consecutive points). Deviations of this typical route shape are normally due to the landscape configuration (e.g. rough terrain, presence of a lake or river, sea, glacier, etc.). Due to limited resources, only a random sample of 370 routes are surveyed every year with an aim to survey at least 80% of the routes yearly. 
+"Hekkefuglovervåking" is a nation-wide monitoring scheme consisting of 492 fixed routes across all terrestrial habitats present in Norway. Each route has between 12 and 20 counting points (ca. 9000 across Norway), which typically are 300 m apart, describing a square with side 1.5 km long (the observer walks on a straight line between two consecutive points). Deviations of this typical route shape are normally due to the landscape configuration (e.g. rough terrain, presence of a lake or river, sea, glacier, etc.). Due to limited resources, only a random sample of 370 routes are surveyed every year with an aim to survey at least 80% of the routes yearly. 
 
 This monitoring scheme is therefore designed to gather representative samples in all (common) habitats along both latitudinal and altitudinal gradients. 
 
@@ -117,12 +130,14 @@ In general, the reference condition for breeding bird indicators should be defin
 
 The internationally established composite bird indicators (farmland bird index, common bird index, etc.), however, are trend indicators that can be presented with a few different baseline years. It is the availability of monitoring data of sufficient quality that determines which years may be used as baselines, and the "hekkefuglovervåkingen", the monitoring programme that supplies the data for the Norwegian breeding bird indicators, has been running since 2007/2008. For some species, predecessor monitoring schemes have been providing data since 1996. The possible baselines for the breeding bird indicators can therefore be no earlier than 1996 or 2008 depending on the species (assemblage), and using baselines consistent with the other nationally (https://miljostatus.miljodirektoratet.no/tema/arter/fugler/; https://hekkefuglovervakingen.nina.no/Fugl/Default.aspx) and internationally reported indices (https://pecbms.info/trends-and-indicators/) seems sensible. 
 
-We note that composite breeding bird indicators could also be built as Nature Index (NI) product (see separate chapters). For the species included in NI, reference values corresponding to "ecosystems with minimal human impacts" were determined previously, and an NI product for a selection of breeding birds would therefore be an indicator taking values between 0 and 1, where 1 = reference condition.
+We note that composite breeding bird indicators could also be built as [Nature Index (NI) product]("nature-index-product) (see separate chapters). For the species included in NI, reference values corresponding to "ecosystems with minimal human impacts" were determined previously, and an NI product for a selection of breeding birds would therefore be an indicator taking values between 0 and 1, where 1 = reference condition.
 We refer to the chapter on NI products for more information (and implementation code) for this alternative approach. 
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
 The breeding bird indicators represent average trends relative to a reference year and are therefore scaled with respect to population size in the reference year. Therefore, the indicator value in the reference year is 100 (percent). In theory, the indicators can take values between 0 (representing complete extinction of all species) and infinity (infinite population increase). 
-The reference value 100 represents unchanged abundance relative to the reference year. Determining a threshold for what level of decrease in bird abundance is acceptable under "good ecological condition", however, is a challenging task. 
+The reference value 100 represents unchanged abundance relative to the reference year. 
+
+Determining a threshold for what level of decrease in bird abundance is acceptable under "good ecological condition", however, is a challenging task. 
 One approach to setting a threshold may be to consider thresholds of population decline used in other frameworks. The IUCN Red List of threatened species, for example, considers single species as "endangered" when a population decrease of 30% or more has been observed for the most recent decade or over the most recent 3 generations [@iucn2001]. While it is unclear to what degree that can (or should) be extended to assemblages of multiple species, one may use this as a guideline to stipulate that >70% of the original population (indicator value 70 when considering a recent trend over 10 years or 3 average generations) should be present (i.e. the species assemblage should not be endangered) when the ecosystem is in good condition. Another approach to determining a threshold would be to assume that bird populations should not be declining at all if an ecosystem is in good condition, i.e. that 100 is the threshold for good ecological condition instead of the reference value. In that case, however, one may need to come up with a reference value that is greater than 100, and determining what level of population increase would be ideal is a nearly impossible task.
 We want to highlight here that these are very preliminary thoughts, and that the reference and threshold values have not been discussed in any more details yet. These discussions will nonetheless be needed, and possibly augmented with simulation studies, before putting the breeding bird indicators to use for ecosystem condition assessments. 
 
@@ -145,7 +160,7 @@ Another source of uncertainty comes from the assumption that multi-species abund
 The code for the following analyses has been developed in a separate GitHub repository: https://github.com/NINAnor/birdIndicators
 As a first step, we therefore need to read in all the functions from that repository. The repository has not been converted into a package yet, so we need to download the entire repository and source all function files in the "R" folder manually:  
 
-```{r}
+```{r, results='hide'}
 download.file(url = "https://github.com/NINAnor/birdIndicators/archive/refs/heads/main.zip",
               destfile = "temp/birdIndicators_Repo.zip")
 unzip(zipfile = "temp/birdIndicators_Repo.zip",
@@ -208,7 +223,7 @@ for(i in 1:length(dir.list)){
 ```
 
 ### Data sets
-The workflow relies on two major sources of data: the up-to-date raw data from "hekkefuglovervåkingen" and the calculated abundance indices from the predecessor monitoring schemes. Additionally, we also a couple of lists holding information on which species (and years) are to be included in which parts of the analytical workflow.  
+The workflow relies on two major sources of data: the up-to-date raw data from "hekkefuglovervåkingen" and the calculated abundance indices from the predecessor monitoring schemes. Additionally, we also use a couple of lists holding information on which species (and years) are to be included in which parts of the analytical workflow.  
 
 #### Monitoring data from "Hekkefuglovervåkingen"
 The route-based raw data from "hekkefuglovervåkingen" are compiled after each breeding season and stored in NINA's database. From that database we download the data relevant for the PECBMS Trim analyses and for the specified range of years (here from 2006 up to and including 2022). The function ``downloadData_TRIM`` does that for a specified year range (from ``minYear`` up to and including ``maxYear``), and requires specifying which driver is used for accessing the database (via argument ``DriverName``). When running from the NINA RStudio server, we need to use "FreeTDS". When running locally from NINA computers, we need to select "SQL Server".
@@ -248,21 +263,31 @@ Spp_selection <- sppLists$sppData
 The table ``Spp_selection`` contains information for each species on which reporting routes is should be included in. The multispecies indices are grouped into a single category ("MSI") here, but we can extract the species that go into the MSI for each ecosystem via the additionally provided lists.
 
 Farmland MSI species:
-```{r, echo = F}
-print(Spp_selection$Species[which(Spp_selection$EURINGCode %in% sppLists$sppLists$MSI_farmland)])
+
+```{r, echo = F, results='asis'}
+temp <- sort(Spp_selection$Species[which(Spp_selection$EURINGCode %in% sppLists$sppLists$MSI_farmland)])
+cat(paste0("- ", temp), sep = "\n")
 ``` 
+
 Forest MSI species:
-```{r, echo = F}
-print(Spp_selection$Species[which(Spp_selection$EURINGCode %in% sppLists$sppLists$MSI_forest)])
+
+```{r, echo = F, results='asis'}
+temp <- sort(Spp_selection$Species[which(Spp_selection$EURINGCode %in% sppLists$sppLists$MSI_forest)])
+cat(paste0("- ", temp), sep = "\n")
 ``` 
 
 Mountain MSI species:
-```{r, echo = F}
-print(Spp_selection$Species[which(Spp_selection$EURINGCode %in% sppLists$sppLists$MSI_mountain)])
+
+```{r, echo = F, results='asis'}
+temp <- sort(Spp_selection$Species[which(Spp_selection$EURINGCode %in% sppLists$sppLists$MSI_mountain)])
+cat(paste0("- ", temp), sep = "\n")
 ``` 
+
 Wetlands MSI species:
-```{r, echo = F}
-print(Spp_selection$Species[which(Spp_selection$EURINGCode %in% sppLists$sppLists$MSI_wetlands)])
+
+```{r, echo = F, results='asis'}
+temp <- sort(Spp_selection$Species[which(Spp_selection$EURINGCode %in% sppLists$sppLists$MSI_wetlands)])
+cat(paste0("- ", temp), sep = "\n")
 ``` 
 
 #### Regions
@@ -438,7 +463,7 @@ Uncertainty in the point estimate MSI is provided via an associated standard err
 
 Below we are preparing the output in the requested format. We are reporting the point estimate MSI here but note that we have not discussed to what degree the smoothed trend may be suitable. The breeding bird indicators exist only at the national scale as of now, so there are no spatial units associated with them. 
 
-```{r}
+```{r, eval=F}
 MSI_export <- list(NA, NA, NA, NA)
 names(MSI_export) <- unique(MSI_all$IndexName)
 
@@ -469,7 +494,7 @@ Notably, I have not added the ``i_YYYY` columns yet as these can only be calcula
 
 ### Eksport file (final product)
 
-```{r}
+```{r, eval=F}
 saveRDS(MSI_export, file = "indicators/BreedingBirdIndicators.rds")
 ```
 
