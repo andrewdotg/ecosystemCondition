@@ -212,8 +212,9 @@ The workflow relies on two major sources of data: the up-to-date raw data from "
 
 #### Monitoring data from "Hekkefuglovervåkingen"
 The route-based raw data from "hekkefuglovervåkingen" are compiled after each breeding season and stored in NINA's database. From that database we download the data relevant for the PECBMS Trim analyses and for the specified range of years (here from 2006 up to and including 2022). The function ``downloadData_TRIM`` does that for a specified year range (from ``minYear`` up to and including ``maxYear``), and requires specifying which driver is used for accessing the database (via argument ``DriverName``). When running from the NINA RStudio server, we need to use "FreeTDS". When running locally from NINA computers, we need to select "SQL Server".
+Note that downloading this data requires user-specific access privileges which can be requested from NINA. 
 
-```{r}
+```{r, eval = FALSE}
 minYear <- 2006
 maxYear <- 2022
 
@@ -234,7 +235,12 @@ collectSpeciesFiles_Legacy(origin_folder = legacyFile_folder,
 
 The species list files should have been downloaded together with the rest of the `birdIndicators` repository and we can use `makeSpeciesLists()` to assemble the information. 
 
-```{r}
+```{r, echo = FALSE}
+sppLists <- readRDS("data/birdIndicators_sppLists.rds")
+Spp_selection <- sppLists$sppData
+```
+
+```{r, eval = FALSE}
 sppLists <- makeSpeciesLists(Trim_data = Trim_data, spp_DataPath = "temp/birdIndicators-main/data")
 Spp_selection <- sppLists$sppData
 ``` 
