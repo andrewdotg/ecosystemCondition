@@ -82,7 +82,7 @@ New data will be added in 2024, and we are currently working on extending the da
 
 The data held in the NI database are a mixture of observational data, modelled estimates, and quantitative expert assessments.
 
-Here, we focus primarily on showcasing thw workflow for creating an NI product for wetlands, and the following table gives an overview of all the indicators included in the official NI for wetlands in 2020.
+Here, we focus primarily on showcasing the workflow for creating an NI product for wetlands, and the following table gives an overview of all the indicators included in the official NI for wetlands in 2020.
 It also provides information on each indicators trophic level, underlying data, whether we expect updated indicator data towards NI 2025, and additional notes.
 
 ```{r, echo = FALSE}
@@ -175,7 +175,7 @@ NI products used for ecological condition assessments may deviate from the regul
 The general rule is that NI products used for ecosystem condition assessments should follow a definition of NI as an indicator of the abundance of species. This means that the indicators that are part of such NI products should be indicators representing abundance and/or population status of specific species and species groups. Indicators that describe properties linked to the condition and/or occurrence of habitat types, on the other hand, should be dropped. For wetlands, for example, this includes the NI indicators "Atlantisk høgmyr areal" and "Palsmyr areal". 
 The second group of indicators that should not be included in NI products are indicators that are also used as additional independent indicators in the ecosystem assessment, or that use the same underlying data as other indicators in the ecosystem assessment. This includes, e.g., indicators such as breeding birds, wolves, small rodents etc. Including the same data/information through different channels is problematic for several reasons including artificially increased indicator weight, inflated precision of the resulting aggregate metrics, high correlations among indicators, and increased risk for mistakes due to parallel workflows.  
 The last group of indicators from the NI database that needs discussing are indicators based on expert knowledge. It has been decided that ecosystem condition assessments using the IBECA method should only include indicators based on data and model predictions. To what degree NI products that contain a portion of indicators based on expert knowledge should be allowed will require discussion. It is clear, however, that expert knowledge can also be considered data. There is also large variation in how expert elicitation is conducted which will influence the quality and transparency of the this kind of data.
-Considering all the groups of indicators that should not be included in NI products for ecosystem condition assessments opens up a discussion on whether, instead of using a composite index across a small and very unbalanced set of species (groups), a better approach might be to design NI products that represent specific taxonomic and/or functional species groups. Take, for example, the wetlands NI product presented below: if the bird indicators are removed as they are a separate index, and the four indicators representing expert knowledge on rare mosses and insects are discontinued, all that remains are eight species of vascular plants and wild reindeer. Instead of averaging across plants and reindeer here, it may be more sensible to make an NI product for vascular plants, and potentially include reindeer as a separate indicator. 
+Considering all the groups of indicators that should not be included in NI products for ecosystem condition assessments opens up a discussion on whether, instead of using a composite index across a small and very unbalanced set of species (groups), a better approach might be to design NI products that represent specific taxonomic and/or functional species groups. Take, for example, the wetlands NI product presented below: if the bird indicators are removed as they are a separate index, and the four indicators representing expert knowledge on rare mosses and insects are discontinued, all that remains are eight species of vascular plants, wild reindeer, and semi-domestic reindeer. Instead of averaging across plants and reindeer here, it may be more sensible to make an NI product for vascular plants, and potentially include reindeer (either joint or divided into wild and semi-domestic) as a separate indicator. 
 
 Weighting of indicators during aggregation happens at three levels in the NI framework: area weighting, trophic weighting, and key indicator weighting. 
 Area and trophic weighting aim to smooth over imbalances in spatial and taxonomic coverage of indicators while increased weights for _a priori_ defined key indicators are supposed to increase the influence of indicators that are thought to be functionally important species or habitats. 
@@ -286,11 +286,11 @@ norwegianNames <- TRUE
 and set the way in which we want to specify which indicators are dropped.
 There are two options for this: "pre-defined" drops the hard-coded set of indicators that should be dropped in any case.
 So far, there is only one indicator that gets dropped for wetlands by default and that is "lavhei" (due to low representativeness for the ecosystem).
-The alternative is to set the mode to "custom" and specify which indicators should be dropped. We will demonstrate this here as we would also like to also drop the two indicators that do not represent species abundance but habitat condition, "Atlantisk høgmyr areal" and "Palsmyr areal", as well as the indicator "Tamrein" which is not relevant when considering natural biodiversity. 
+The alternative is to set the mode to "custom" and specify which indicators should be dropped. We will demonstrate this here as we would also like to also drop the two indicators that do not represent species abundance but habitat condition, "Atlantisk høgmyr areal" and "Palsmyr areal". 
 
 ```{r}
 DropIndMode <- "custom"
-DropIndList <- c(7, 142, 155, 436)
+DropIndList <- c(7, 142, 155)
 
 if(DropIndMode == "pre-defined"){DropIndList <- NULL}
 ```
