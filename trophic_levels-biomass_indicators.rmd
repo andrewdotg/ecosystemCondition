@@ -86,6 +86,7 @@ Indicators developed are:
 As the plant biomass level we use Net Primary Productivity. MODIS NPP was selected since it provides the highest temporal extent of available data sources (1999 to present). Spatial resolution is low relative to other remote sensing sources, however, the spatial resolution is still far higher than the consumer data, so the temporal extent was prioritised.
 
 The herbivore data is an extension of the data presented in [Austrheim et al. (2008)](https://doi.org/10.2981/10-038) and [Speed et al. (2015)](https://doi.org/10.1371/journal.pone.0217166). For the development of the trophic interaction indicators the same methods were applied to herbivore data going back to 1907 (contra 1949 in the two studies above). This data was extracted by Gunnar Austrheim (livestock) and Erling J. Solberg (wild cervids). In each dataset, the metabolic biomass and the raw biomass of a given species is provided for each year and municipality. The 2007 municipalities were used. The data were rasterized to the same grid as the NPP data.
+The livestock biomass is adjusted to account for only the time of year that the animals is outside in nature.
 
 Metabolic biomass measures were used in the previous studies on Norwegian herbivores cited above. However, for consistency with the global studies used to find predicted biomass, we use raw (unscaled) biomass here.
 
@@ -333,6 +334,17 @@ ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
 ```
 
 From the above we see that Norway has had less carnivore biomass than expected based on the available herbivore biomass across the time period. Some counties and time periods (e.g. Hedmark today and Finnmark in 1907 had about the same carnivore biomass as predicted.
+
+```{r figure-for-rapport, eval=FALSE, include=F}
+
+ggplot()+geom_sf(data=norcounty,fill="white",lwd=0.1)+
+  geom_spatraster(data=diffcarn[[c(1,12)]])+
+  ggtitle('Difference from expected carnivore biomass')+
+  scale_fill_distiller(type="div",limit=c(-100,100),oob=squish,na.value=NA,"% difference from \nexpected biomass")+
+  facet_wrap(~lyr)+
+  theme_bw()
+ggsave("images/expCarnivoreBiomass.jpg")
+```
 
 ## Part 2 - Habitat specific biomass distributions
 
