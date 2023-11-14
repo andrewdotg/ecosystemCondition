@@ -14,31 +14,15 @@ November 2023
 <br />
 
 <!-- Load all you dependencies here -->
-```{r setup, include=FALSE}
-library(knitr)
-knitr::opts_chunk$set(echo = TRUE)
-library(flextable)
-library(tidyverse)
-```
+
 
 
 <!-- Fill in which ecosystem the indicator belongs to, as well as the ecosystem characteristic it should be linked to. It's OK to use some Norwegian here -->
-```{r, echo=F}
-Ecosystem <- "Våtmark"
-Egenskap  <- "Landskapsøkologiske mønstre"
-ECT       <- "Landscape and seascape characteristics"
-Contact   <- "Vegar Bakkestuen"
-```
 
-```{r, echo=F}
-metaData <- data.frame(Ecosystem,
-                       "Økologisk egenskap" = Egenskap,
-                       "ECT class" = ECT,
-                       check.names = F)
-flextable(metaData) %>%
-  bg(bg = "lightblue", part="header") %>%
-  theme_vanilla() %>%
-  set_table_properties(layout = "autofit")
+
+
+```{=html}
+<div class="tabwid"><style>.cl-934e8e9a{table-layout:auto;}.cl-93480e80{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-93480e8a{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-934b0356{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-934b172e{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-934b172f{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-934e8e9a'><thead><tr style="overflow-wrap:break-word;"><th class="cl-934b172e"><p class="cl-934b0356"><span class="cl-93480e80">Ecosystem</span></p></th><th class="cl-934b172e"><p class="cl-934b0356"><span class="cl-93480e80">Økologisk egenskap</span></p></th><th class="cl-934b172e"><p class="cl-934b0356"><span class="cl-93480e80">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-934b172f"><p class="cl-934b0356"><span class="cl-93480e8a">Våtmark</span></p></td><td class="cl-934b172f"><p class="cl-934b0356"><span class="cl-93480e8a">Landskapsøkologiske mønstre</span></p></td><td class="cl-934b172f"><p class="cl-934b0356"><span class="cl-93480e8a">Landscape and seascape characteristics</span></p></td></tr></tbody></table></div>
 ```
 
 <!-- Don't remove these three html lines -->

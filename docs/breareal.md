@@ -218,7 +218,7 @@ Importing a shape file with the regional delineation.
 ```r
 reg <- st_read("data/regions.shp")
 #> Reading layer `regions' from data source 
-#>   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition/data/regions.shp' 
+#>   `/data/Egenutvikling/41001581_egenutvikling_anders_kolstad/github/ecosystemCondition_v2/data/regions.shp' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 5 features and 2 fields
 #> Geometry type: POLYGON
