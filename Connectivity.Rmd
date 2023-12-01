@@ -76,7 +76,7 @@ Currently step 8, and a subsequent step 9 (to aggregate scaled indicators to reg
 
 It is also possible to create a time series for this indicator, but this is not yet done. See [GitHub issue](https://github.com/NINAnor/ecosystemCondition/issues/145).
 
-```{r concon, fig.cap="Conceptual model for the calculation of the conectivity indicator. Two distances are calculated: one from the centre point of one mire polygon to the closest neighbouring polygon (green arrow = the reference value), and one from the same centre point to the closest infrastructure (red arrow  = area with infrastructure index value above 3). The scaled indicator is the ratio, or quotient, of the length of the red arrow divided by the length of the green arrow."}
+```{r concon, echo=F, fig.cap="Conceptual model for the calculation of the conectivity indicator. Two distances are calculated: one from the centre point of one mire polygon to the closest neighbouring polygon (green arrow = the reference value), and one from the same centre point to the closest infrastructure (red arrow  = area with infrastructure index value above 3). The scaled indicator is the ratio, or quotient, of the length of the red arrow divided by the length of the green arrow."}
 knitr::include_graphics("images/conectivity-concept.png")
 ```
 
