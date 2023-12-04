@@ -1421,7 +1421,7 @@ ggplot(richness_gdm_join) +
                  y = GDM,
                  color = region_name),
               method = lm) +
-  scale_color_nina(name = "Region") +
+  NinaR::scale_color_nina(name = "Region") +
   xlab("Antall arter")
 ```
 <br/>
@@ -1436,7 +1436,7 @@ ggplot(richness_gdm_join) +
                  y = GDM,
                  color = region_name),
               method = lm) +
-  scale_color_nina(name = "Region") +
+  NinaR::scale_color_nina(name = "Region") +
   xlab("Antall genetiske varianter per art")
 ```
 <br/>
@@ -1451,7 +1451,7 @@ ggplot(richness_gdm_join) +
                  y = mean_no_asv_per_species,
                  color = region_name),
               method = lm) +
-  scale_color_nina(name = "Region") +
+  NinaR::scale_color_nina(name = "Region") +
   xlab("Antall arter") +
   ylab("Antall genetiske varianter per art")
 
@@ -1910,7 +1910,7 @@ to_export <- ls()[grepl("insect_", ls())] %>%
  
 ```
 
-```{r echo = T, results = "hide"}
+```{r echo = T, results = "hide", eval = FALSE}
 
 write_indicators <- function(x,
                              out_dir = "indicators/indicatorMaps",
