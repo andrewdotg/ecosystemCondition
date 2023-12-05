@@ -4,7 +4,10 @@
 
 _Author and date:_
 
-Jens Åström `r Sys.Date()`
+Jens Åström
+Marie Davey 
+
+`r Sys.Date()`
 
 
 <br />
