@@ -1,23 +1,13 @@
-
 # Insect indicators
 
 <br />
 
 _Author and date:_
 
-Jens Åström 2023-12-01
+Jens Åström 2023-12-04
 
 
 <br />
-
-<!--# Notes on this draft
-Most things are done but some things needs updates or touching up.
-
-Incomplete list of things that will change:
-
-* Upgrade genetic diversity calculation. The current calculation is just a placeholder, awaiting some new data from Marie. Waiting for software installation by IT. Unsure of timeline.
-* Calculate NorIns indicators on 5 year interval. (Moving window?)
-* Fix remaining comments in this draft inside hard brackets.-->
 
 
 <!-- Load all you dependencies here -->
@@ -33,7 +23,7 @@ Incomplete list of things that will change:
 
 
 ```{=html}
-<div class="tabwid"><style>.cl-79d0ee5a{table-layout:auto;}.cl-79ca497e{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-79ca4992{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-79cd2b44{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-79cd40d4{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-79cd40de{background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-79cd40df{background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-79cd40e0{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-79d0ee5a'><thead><tr style="overflow-wrap:break-word;"><th class="cl-79cd40d4"><p class="cl-79cd2b44"><span class="cl-79ca497e">Ecosystem</span></p></th><th class="cl-79cd40d4"><p class="cl-79cd2b44"><span class="cl-79ca497e">Økologisk egenskap</span></p></th><th class="cl-79cd40d4"><p class="cl-79cd2b44"><span class="cl-79ca497e">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-79cd40de"><p class="cl-79cd2b44"><span class="cl-79ca4992">Semi-naturlig mark</span></p></td><td class="cl-79cd40de"><p class="cl-79cd2b44"><span class="cl-79ca4992">Biologisk mangfold</span></p></td><td class="cl-79cd40de"><p class="cl-79cd2b44"><span class="cl-79ca4992">Functional state characteristics</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-79cd40df"><p class="cl-79cd2b44"><span class="cl-79ca4992">Semi-naturlig mark</span></p></td><td class="cl-79cd40df"><p class="cl-79cd2b44"><span class="cl-79ca4992">Funksjonelle grupper innen trofiske nivåer</span></p></td><td class="cl-79cd40df"><p class="cl-79cd2b44"><span class="cl-79ca4992">Functional state characteristics</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-79cd40e0"><p class="cl-79cd2b44"><span class="cl-79ca4992">Semi-naturlig mark</span></p></td><td class="cl-79cd40e0"><p class="cl-79cd2b44"><span class="cl-79ca4992">Funksjonelt viktige arter og biofysiske strukturer</span></p></td><td class="cl-79cd40e0"><p class="cl-79cd2b44"><span class="cl-79ca4992">Functional state characteristics</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-fe538e72{table-layout:auto;}.cl-fe4a92fe{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-fe4a9308{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-fe4ec2f2{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-fe4edba2{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-fe4edbac{background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-fe4edbb6{background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-fe4edbca{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-fe538e72'><thead><tr style="overflow-wrap:break-word;"><th class="cl-fe4edba2"><p class="cl-fe4ec2f2"><span class="cl-fe4a92fe">Ecosystem</span></p></th><th class="cl-fe4edba2"><p class="cl-fe4ec2f2"><span class="cl-fe4a92fe">Økologisk egenskap</span></p></th><th class="cl-fe4edba2"><p class="cl-fe4ec2f2"><span class="cl-fe4a92fe">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-fe4edbac"><p class="cl-fe4ec2f2"><span class="cl-fe4a9308">Semi-naturlig mark</span></p></td><td class="cl-fe4edbac"><p class="cl-fe4ec2f2"><span class="cl-fe4a9308">Biologisk mangfold</span></p></td><td class="cl-fe4edbac"><p class="cl-fe4ec2f2"><span class="cl-fe4a9308">Functional state characteristics</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-fe4edbb6"><p class="cl-fe4ec2f2"><span class="cl-fe4a9308">Semi-naturlig mark</span></p></td><td class="cl-fe4edbb6"><p class="cl-fe4ec2f2"><span class="cl-fe4a9308">Funksjonelle grupper innen trofiske nivåer</span></p></td><td class="cl-fe4edbb6"><p class="cl-fe4ec2f2"><span class="cl-fe4a9308">Functional state characteristics</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-fe4edbca"><p class="cl-fe4ec2f2"><span class="cl-fe4a9308">Semi-naturlig mark</span></p></td><td class="cl-fe4edbca"><p class="cl-fe4ec2f2"><span class="cl-fe4a9308">Funksjonelt viktige arter og biofysiske strukturer</span></p></td><td class="cl-fe4edbca"><p class="cl-fe4ec2f2"><span class="cl-fe4a9308">Functional state characteristics</span></p></td></tr></tbody></table></div>
 ```
 
 <!-- Don't remove these three html lines -->
@@ -42,13 +32,10 @@ Incomplete list of things that will change:
 <hr />
 
 
-
-<!-- Document you work below. Try not to change  the headers too much. Data can be stored on NINA server. Since the book is rendered on the R Server this works fine, but note that directory paths are different on the server compared to you local machine. If it is not too big you may store under /data/ on this repository -->
-
 ## Introduction
 We here show how to calculate a set of indicators for terrestrial insects in Norway. Two of them are adapted from earlier work on the Nature Index for Norway and use data from the Norwegian monitoring program on bumblebees and butterflies (**NMBB**). The others are developed during 2023, and use data from the Norwegian insect monitoring program (**NorIns**). 
 
-This workflow is shortened by putting most of the underlying code in separate R-packages, which are freely available through Github. The relevant packages are `bombLepiSurv` https://github.com/jenast/bombLepiSurv for the bumblebee and butterfly indicators (**Not public yet**), and `Norimon` https://github.com/jenast/Norimon for the rest of the indicators.
+This workflow is shortened by putting most of the underlying code in separate R-packages, which are freely available through Github. The relevant packages are `bombLepiSurv` https://github.com/jenast/bombLepiSurv for the bumblebee and butterfly indicators, and `Norimon` https://github.com/jenast/Norimon for the rest of the indicators.
 
 For the indicators from the NMBB program, community reference values has been elicited from experts, and is explained further below. For the indicators from the NorIns program, this is significantly harder to do, because of the size of the communities, lack of historical timeseries and changes in sampling and identification techniques. We therefore currently lack reference values for many of these indicators.
 
@@ -59,29 +46,30 @@ Below is a list of the indicators calculated in this document, and their state o
 
 |Dataset |Indicator                                        |Norwegian type                                     |ECT |Current geographical scope                         |Indicator data |Reference values |
 |:-------|:------------------------------------------------|:--------------------------------------------------|:---|:--------------------------------------------------|:--------------|:----------------|
-|NMBB    |Bumblebees in semi-natural grasslands            |Funksjonelt viktige arter og biofysiske stukturer  |B1  |Sørlandet, Østfold-Vestfold, Vestlandet, Trøndelag |Present        |Present          |
-|NMBB    |Butterflies in semi-natural grasslands           |Funksjonelt viktige arter og biofysiske stukturer  |B1  |Sørlandet, Østfold-Vestfold, Vestlandet, Trøndelag |Present        |Present          |
+|NMBB    |Bumblebees in semi-natural grasslands            |Funksjonelt viktige arter og biofysiske stukturer  |B2  |Sørlandet, Østfold-Vestfold, Vestlandet, Trøndelag |Present        |Present          |
+|NMBB    |Butterflies in semi-natural grasslands           |Biologisk mangfold                                 |B1  |Sørlandet, Østfold-Vestfold, Vestlandet, Trøndelag |Present        |Present          |
 |NorIns  |Biomass of flying insects                        |Funksjonelt viktige arter og biofysiske stukturer  |B2  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
 |NorIns  |Species richness of flying insects               |Biologisk mangfold                                 |B1  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
 |NorIns  |Species richness of pollinating insects          |Biologisk mangfold                                 |B1  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
 |NorIns  |Species richness of dung associated insects      |Biologisk mangfold                                 |B1  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
 |NorIns  |Quotent of Apocrita vs Symphyta species richness |Funksjonelt viktige arter og biofysiske strukturer |B2  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
+|NorIns  |Number of alien species                          |Biologisk mangfold                                 |B1  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
 |NorIns  |Intraspesific genetic variation                  |Biologisk mangfold                                 |B1  |Sørlandet, Østlandet, Trøndelag, Nord-Norge        |Present        |Lacking          |
 Many of these indicators are self-explanatory and don't require much justification. **Bumblebees in semi-natural grasslands** and **Butterflies in semi-natural grasslands** are functionally important pollinators, and are as a community dependent on a varied herbaceous flora. They therefore both represent key functionality, as well as indicators of habitat quality. **Biomass of flying insects** represent a key functional characteristic in ecosystem functioning as food for insectivores, and as a response to habitat quality and management. **Species richness of flying insects** represents the total breadth of the insect community, and **Species richness of pollinating insects** complements the butterfly and bumblebee indicators in taxonomic breadth and spatial resolution.
-**Species richness of dung associated insects** represent a key functional group in decomposition, and function as an indicator of grazing intensity and diversity. **Quotent of Apocrita vs Symphyta species richness** tries to go beyond simple amounts, and capture compositional changes in the insect community. Apocrita covers predatory and parasitic wasps, while Symphyta is plant-feeding wasps. A relative decrease in predatory/parasitic wasps could indicate a degradation in insect prey communities, and a decrease in the potential for natural pest control. Lastly, **Intraspecific genetic variation** captures biodiversity that until now has been hidden, due to lack of practical technologies to measure it. The need to conserve genetic diversity is identified in Norwegian law, and decreased intraspecific diversity could signal population decreases, and decreased potential to adapt to environmental changes, before whole species are lost to an area. 
+**Species richness of dung associated insects** represent a key functional group in decomposition, and function as an indicator of grazing intensity and diversity. **Quotent of Apocrita vs Symphyta species richness** tries to go beyond simple amounts, and capture compositional changes in the insect community. Apocrita covers predatory and parasitic wasps, while Symphyta is plant-feeding wasps. A relative decrease in predatory/parasitic wasps could indicate a degradation in insect prey communities, and a decrease in the potential for natural pest control. This indicator is optionally given as just the species richness of Apocrita. **Number of alien species** takes into account the number of alien species found in a region and optionally, the frequency of sampling events they are observed in. This is based on the alien species list from the Norwegian Biodiversity Information Center, which lists known alien species and an increasing list of door-knocker species. Note that due to large historical knowledge gaps of insect species distributions, there could potentially be many more alien species in Norway, which are not picked up on this alien species list. Lastly, **Intraspecific genetic variation** captures biodiversity that until now has been hidden, due to lack of practical technologies to measure it. The need to conserve genetic diversity is identified in Norwegian law, and decreases in intraspecific diversity could signal population decreases, and a decreased potential to adapt to environmental changes, before whole species are lost to an area. 
 
 
 ## About the underlying data
-The data used here comes from the ongoing monitoring programs "Norwegian insect monitoring" ([NorIns](https://www.nina.no/Naturmangfold/Insekter/Overv%C3%A5king-av-insekter)) and "Norwegian monitoring of bumblebees and butterflies" ([NMBB](https://www.nina.no/V%C3%A5re-fagomr%C3%A5der/Milj%C3%B8overv%C3%A5king-p%C3%A5-land/Humler-og-dagsommerfugler)). Both programs are initiated and financed by the Environmental agency, with the aim to produce continuous, areal representative, time-series of insect community data. The **NorIns** program use malaise and window traps to sample a broad community of insect species, which are identified through metabarcoding of DNA. The **NMBB** program use sweep netting along transect walks where the species are identified manually in the field. More information is available in the links above.
+The data used here comes from the ongoing monitoring programs "Norwegian insect monitoring" ([NorIns](https://www.nina.no/Naturmangfold/Insekter/Overv%C3%A5king-av-insekter)) and "Norwegian monitoring of bumblebees and butterflies" ([NMBB](https://www.nina.no/V%C3%A5re-fagomr%C3%A5der/Milj%C3%B8overv%C3%A5king-p%C3%A5-land/Humler-og-dagsommerfugler)). Both programs are initiated and financed by the Environmental agency, with the aim to produce continuous area representative time-series of insect community data. The **NorIns** program use malaise and window traps to sample a broad community of insect species, which are identified through metabarcoding of DNA. The **NMBB** program use sweep netting along transect walks where the species are identified manually in the field. More information is available in the links above.
 
 ### Representativity in time and space
 The **NorIns** program started in 2020 with monitoring in semi-natural land and forests in the south-eastern region of Norway (Østlandet), with the long-term ambition to cover the entire country. In 2021, the program was expanded to semi-natural land in central Norway (Trøndelag), in 2022 to semi-natural land in south-western Norway (Sørlandet), and in 2023 to semi-natural land in northern Norway (Nord-Norge), with a possible expansion to western Norway (Vestlandet) in 2024. So far, forest habitats are only monitored in south-eastern Norway.
 
-These 5 regions represents the planned spatial precision of the survey. Finer resolution could be evaluated in the future, although it is unlikely to be feasible without more intense sampling. This program uses a staggered sampling scheme where we visit different locations each year, and return to each location every 5 years. This sampling scheme, coupled with the strong yearly variation in insect abundances makes it reasonable to use a temporal resolution of 5 years. [How to deal with this now? average over 5 years? Add 5 year aggregation in bootstrap_value()]
+The monitoring program is designed to produce estimates with a spatial resolution of these 5 large regions. Finer resolution could be evaluated in the future, although it is unlikely to be feasible without more intense sampling. The program uses a staggered sampling scheme where we visit different locations each year, and return to each location every 5 years. This sampling scheme, coupled with the strong yearly variation in insect abundances makes it reasonable to use a temporal resolution of 5 years. The indicator values from **NorIns** are therefore calculated on 5 year long rolling windows. 
 
 The **NMBB** program started in 2009 in a subset of south-eastern Norway (counties of Vestfold and Østfold), and was expanded to central Norway (Trøndelag) in 2010, south-western Norway in 2013, and to western Norway (Vestland and Møre og Romsdal fylke) in 2022. The spatial resolution aligns with these (as of now) 4 regions, and it is not recommended to downscale the predictions due to the limited number of sampling locations in each region. Since the same locations are visited each year, yearly estimates of the condition could be calculated, but should be interpreted by caution due to natural yearly variability.
 
-Both programs are designed to be area representative, within their respective habitat types and regions. Both use semi-randomized selection schemes of localities, the **NorIns** selects by random draws, and the **NMBB** by a predefined continuous network of survey squares. In both programs however, some subjective decisions are made to define habitat criteria and to discard unpractical survey locations.
+Both programs are designed to be area representative, within their respective habitat types and regions. Both use stratified randomized selection of localities. The **NorIns** program selects localities by random draws within habitat strata, and the **NMBB** by a predefined continuous network of survey squares, within which individual transects are then manually placed. In both programs, some subjective decisions are made in the definition of habitat criteria and in discarding unpractical survey locations.
 
 
 ### Original units
@@ -94,39 +82,46 @@ The original units from **NorIns** include number of species, total biomass as w
 
 ## Ecosystem characteristic
 ### Norwegian standard
-Four of the indicators are tied to the *Økologisk egenskap* (Ecological characteristic) of **Funksjonelt viktige arter og biofysiske stukturer** (Funktionally important species and structures), and the other four to **Biologisk mangfold** (Biodiversity).
+Three of the indicators are tied to the *Økologisk egenskap* (Ecological characteristic) of **Funksjonelt viktige arter og biofysiske stukturer** (Funktionally important species and structures), and the other six to **Biologisk mangfold** (Biodiversity).
 
 ### UN standard
 Six of the indicators are tied to the UN standard (ECT-classes) **B1 Compositional state characteristics**, and the two remaining to **B2 Structural state characteristics**.
 
 
 ## Collinearities with other indicators
-None measured so far, but it is reasonable to assume that some of these indicators will share some causal relationships with each other, and therefore correlate to some degree. They might also correlate to other indicators, not described here, as well.
+None measured so far, but it is reasonable to assume that some of these indicators will share some causal factors, and therefore correlate to some degree. They might also correlate to other indicators as well, not described here.
 
 ## Reference condition and values
 The reference condition is meant to be one with minimal negative human impact, but this has a special interpretation for semi-natural land. These habitats are formed and maintained through human activities. Thus, "minimal negative human impact" is replaced by a state of "good maintenance", here understood as resembling the traditional agricultural maintenance regime, existing for several hundred years up until the late 1800s. This is characterized by extensive grazing, meadows and lays, crop rotation with legumes to bind nitrogen in addition to fertilization from manure, relatively small field sizes and abundant field margins, and a lack of artificial fertilization and mechanized tilling. 
 
 
 ### Reference condition
-Assessing the current state of insect communities may be a complicated task, due to their taxonomic and functional breadth and high temporal and spatial variability. Still, even more challenging is to establishing reference values, when the reference states are extinct or prohibitively difficult to measure empirically. We currently lack reference values for all indicators from the **NorIns** program. It is unlikely that this can be solved "simply" by surveying a state in a reference area, since intact reference areas of sufficient size and numbers likely no longer exist. The question of how to handle these reference values is currently unresolved, and we present these indicator value calculations with made up reference values as placeholders in the code.
+Assessing the current state of insect communities is a complicated task, due to their taxonomic and functional breadth and high temporal and spatial variability. Still, even more challenging is establishing reference values, when the reference states are extinct or prohibitively difficult to measure empirically. We currently lack reference values for all indicators from the **NorIns** program, except for the alien species indicators where the reference value is zero by definition. It is unlikely that this can be solved by "simply" surveying a state in a reference area, since intact reference areas of sufficient size and numbers likely no longer exist. The question of how to handle these reference values is currently unresolved, and we present these indicator value calculations with made up reference values as placeholders in the code.
 
-For the **NMBB** indicators, the communities are small enough and well known enough to identify reference communities by expert opinion. These communities specify the expected rate of observing each species. The current rates of observation are then compared to the expected rates. The calculations are further explained below.
+For the **NMBB** indicators, the communities are small enough and well-known enough to identify reference communities by expert opinion. These communities specify the expected rate of observing each species. The current rates of observation are then compared to the expected rates. The calculations are further explained below.
 
 
 ### Reference values, thresholds for defining _good ecological condition_, minimum and/or maximum values
 <!-- Text here -->
-The specific reference communities for the **NMBB** indicators won't be spelled out here, see instead the scripts below. We have not specified a value for _good ecological condition_ as of yet, since there lack a straightforward empirical basis to do so.
+The specific reference communities for the **NMBB** indicators won't be spelled out here, see instead the scripts below. We have not specified a value for _good ecological condition_ as of yet, since we lack a straightforward empirical basis to do so. By default then, the values is set to 0.6 , following the general framework.
 
 ## Uncertainties
-The uncertainties for the indicator values is calculated by bootstrapping the average values for each locality within a year. This takes the variability between the localities into account. For the **NorIns** indicators, this uncertainties are given as standard deviation, as well as confidence intervals.The uncertainties for the **NMBB** indicators are constituted by a distribution of discrete values, and therefore we only provide confidence intervals and not a standard deviation. 
+The uncertainties for the indicator values is calculated by bootstrapping the values for each locality within a year. This takes the variability between the localities into account. For the **NorIns** indicators, these uncertainties are given as standard deviation, as well as confidence intervals. The uncertainties for the **NMBB** indicators are constituted by a distribution of discrete values, and therefore we only provide confidence intervals and not a standard deviation. 
 
 ## References
+
+* French, C. M., Bertola, L. D., Carnaval, A. C., Economo, E. P., Kass, J. M., Lohman, D. J., … Hickerson, M. J. 2023, juli 17. Global determinants of insect mitochondrial genetic diversity. bioRxiv. bioRxiv. https://doi.org/10.1101/2022.02.09.479762
+
+* Miraldo, A., Li, S., Borregaard, M. K., Flórez-Rodríguez, A., Gopalakrishnan, S., Rizvanovic, M., … Nogués-Bravo, D. 2016. An Anthropocene map of genetic diversity. Science 353(6307): 1532–1535. https://doi.org/10.1126/science.aaf4381
+
+* Rohde, K. 1992. Latitudinal Gradients in Species Diversity: The Search for the Primary Cause. Oikos 65(3): 514. https://doi.org/10.2307/3545569
+
+* Theodoridis, S., Fordham, D. A., Brown, S. C., Li, S., Rahbek, C., & Nogues-Bravo, D. 2020. Evolutionary history and past climate change shape the distribution of genetic diversity in terrestrial mammals. Nature Communications 11(1): 2557. https://doi.org/10.1038/s41467-020-16449-5
+
 * Åström, Jens; Birkemoe, Tone; Brandsegg, Hege; Dahle, Sondre; Davey, Marie Louise; Ekrem, Torbjørn; Fossøy, Frode; Hanssen, Oddvar; Laugsand, Arne Endre; Majaneva, Markus; Staverløkk, Arnstein; Sverdrup-Thygeson, Anne; Ødegaard, Frode.
 Insektovervåking på Østlandet, Sørlandet og i Trøndelag. Rapport fra feltsesong 2022. Trondheim: Norsk institutt for naturforskning (NINA) 2023 (ISBN 978‐82‐426‐5037‐5) 99 s. NINA rapport(2241)
 
 * Åström, Sandra Charlotte Helene; Åström, Jens; Bøhn, Kristoffer; Gjershaug, Jan Ove; Staverløkk, Arnstein; Dahle, Sondre; Ødegaard, Frode. Nasjonal overvåking av dagsommerfugler og humler i Norge. Oppsummering av aktiviteten i 2022. Trondheim: Norsk institutt for naturforskning (NINA) 2023 (ISBN 978-82-426-5009-2) 54 s. NINA rapport(2214)
-
-* Connor M French, Laura D Bertola, Ana C Carnaval, Evan P Economo, Jamie M Kass, David J Lohman, Katharine A Marske, Rudolf Meier, Isaac Overcast, Andrew J. Rominger, Phillip Staniczenko, Michael J Hickerson. 2023. Global determinants of insect mitochondrial genetic diversity. https://doi.org/10.1101/2022.02.09.479762
 
 * Öberg, S., Gjershaug, J. O., Diserud, O. & Ødegaard, F. 2011. Videreutvikling av metodikk for 
 arealrepresentativ overvåking av dagsommerfugler og humler. Naturindeks for Norge. – NINA 
@@ -147,15 +142,15 @@ The indicators from the Norwegian insect monitoring are calculated with function
 
 <img src="images/NorIns_flow_chart.png" width="400pt" />
 
-Most of the ecology comes into step 1, in choosing what data to use to describe a quality. This can be a custom selection of species, or a set of higher taxa such as specific genuses, families or even order. The goal is to choose a set of taxa that represent specific qualities of the community that can indicate the ecological status of the ecosystem. In addition to the selection of taxa, we have to decide on the level of aggregation, e.g. if we should aggregate the data on the region scale, locality scale, or even the individual sample occasion scale. For ecological indicators, we will aggregate the values to a year locality scale, where the variables summarises all catches in a locality in a year.[NOTE, implement 5 year/region aggregation]
+Most of the ecology comes into step 1, in choosing what data to use to describe a quality. This can be a custom selection of species, or a set of higher taxa such as specific genuses, families or even order. The goal is to choose a set of taxa that represent specific qualities of the community that can indicate the ecological status of the ecosystem. In addition to the selection of taxa, we have to decide on the level of spatial and temporal aggregation, e.g. if we should aggregate the data spatially on the region scale, habitat scale or locality scale, and if we should aggregate it temporally on yearly or even the individual sample occasions within years. For the ecological indicators, we will aggregate the raw observation values to the year locality scale, where the data summarize all catches in a locality in a year.
 
-The second step is to get an estimate of the uncertainty of the data, were we use the bootstrap method. This method is flexible, as we could bootstrap the samples on different sampling levels (samples within localities, regions within country). For the insect indicators, we will bootstrap and summarize the variables to regional values, for example expressing the mean values of insect biomass in Trøndelag in 2021, with uncertainty.
+The second step is to get an estimate of the uncertainty of the data, were we use the bootstrap method. This method is also flexible, as we could bootstrap the samples on different sampling levels (e.g. samples within localities, localities within a region, or regions within country). When working with raw data on the year locality level, the most granular bootstrap would be to summarize the variables to the yearly, habitat, and regional level, for example expressing the mean values of insect biomass in semi-natural land and forests in Østlandet in 2021, with uncertainty. 
 
 Ecological knowledge also comes into step 3, comparing the values to a reference state. Here we have several options. We could for example use a single defined value as the reference state. But we can also use a point in time as a reference point (e.g. the start of a time series).
 
-Taken together, this framework is meant to facilitate the calculation of an arbitrary set of insect indicators, based on the combination of choices in data to fetch, aggregation level, and reference comparison. We can work through an example with pollinators, to showcase the framework. 
+Taken together, this framework is meant to facilitate the calculation of an arbitrary set of insect indicators, based on the combination of choices in data to fetch, aggregation level, and reference comparison. We showcase the framework by working through an example with pollinators. 
 
-In the example, we start with connecting to the database in order to fetch the data.
+In the example we start with connecting to the database, in order to fetch the data.
 
 
 ```r
@@ -192,10 +187,10 @@ pollinators_fam <- pollinators %>%
 |Svalestjerter             |Papilionidae |
 |Hvitvinger                |Pieridae     |
 |Metallmerker (uoffisiell) |Riodinidae   |
-
+<br/>
 We then fetch the community data for these families through the `get_observations` function. We additionally subset the habitat type that we are interested in, here semi-natural land. The result is a tibble of the aggregated number of species, shannon diversity, and the mean number of genetic variants per species. The default aggregation level is "year_locality", meaning the total observations for a locality within a year. 
 
-Note that the output currently contains some experimental values, awaiting a more robust methodology. "Shannon diversity" doesn't really make sense without counts or amounts, etc. This will be replaced by measurements of genetic diversity that are based on published peer-reviewed methodology (Connor et al. 2023), in the (hopefully near) future.
+Note that the output currently contains some experimental values, awaiting a more robust methodology. "Shannon diversity" doesn't really make sense without counts or amounts, etc. This will be replaced by measurements of genetic diversity that are based on published peer-reviewed methodology (French et al. 2023), in the (hopefully near) future.
 
 
 ```r
@@ -220,7 +215,7 @@ kableExtra::kbl()
    <th style="text-align:left;"> region_name </th>
    <th style="text-align:right;"> no_species </th>
    <th style="text-align:right;"> shannon_div </th>
-   <th style="text-align:right;"> mean_asv_per_species </th>
+   <th style="text-align:right;"> mean_no_asv_per_species </th>
    <th style="text-align:right;"> GDE_by_asv </th>
   </tr>
  </thead>
@@ -279,9 +274,9 @@ kableExtra::kbl()
 </table>
 
 #### Bootstrap observations
-The localities in the NorIns program are (semi-)randomly selected and can be viewed as samples of a larger population. Individually, they represent a single measurement of an insect community in a habitat type in a region. To get the sampling uncertainty for this representation, we can bootstrap the values by this simple process: we choose a random set of localities within a year and region (with replacement) and calculate the average values. We then repeat this process a large number of times to get a bootstrap sample of values, which can be used to express the uncertainty in the dataset.
+The localities in the NorIns program are (semi-)randomly selected and can be viewed as samples of a larger population. Individually, they represent a single measurement of an insect community in a habitat type in a region. To get the sampling uncertainty for this representation, we can bootstrap the values by this simple process: we choose a random set of localities within a year and region (with replacement) and calculate the average value. We then repeat this process a large number of times to get a bootstrap sample of values, which can be used to express the uncertainty in the dataset.
 
-We typically have 10 localities for a given habitat type and region each year, which is not very much to base our uncertainty estimates on. But bootstrapping works fairly well on small samples and has the advantage that is doesn't make assumptions of the statistical distribution of the errors. Note that once we get a larger dataset with repeating surveys every 5 years, aggregating and bootstrapping over a whole 5 year period.
+We typically have 10 localities for a given habitat type and region each year, which is not very much to base our uncertainty estimates on. But bootstrapping works fairly well on small samples and has the advantage that is doesn't make assumptions of the statistical distribution of the errors. We will use this level to showcase the functionality and to visualize some variation between years. However, since the sampling scheme of the monitoring program semi-randomly selects 10 new localities for each of the 5 years the rotating scheme, each years estimate will include some randomness that is caused by variability between localities. This means that the values between individual years might appear more random than the underlying overall trend. To get robust estimates that averages over this variability, we will summarize the actual indicator values to 5 year periods, further described below.
 
 When **NorIns** is fully scaled up, it will have 50 localities for each covered habitat type in every country region, with 10 localities every year, in a rotating survey scheme over 5 years. Since the program is rolled out sequentially starting in 2020, for semi-natural land it currently covers 4/5 of the country, with varying amounts of localities within each region. The map below displays the localities surveyed so far. 
 
@@ -318,7 +313,8 @@ The bootstrap routine is implemented in the function `bootstrap_value()`, which 
 poll_richness_boot <- bootstrap_value(poll_loc_year,
                                       value = no_species,
                                       groups = c("year",
-                                                 "region_name")
+                                                 "region_name"),
+                                      rolling_year_window = FALSE
                                       )
 ```
 
@@ -327,15 +323,15 @@ This creates an object of type `boot_stat`. Calling it prints a simple summary o
 ```r
 poll_richness_boot
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
-#> 1  2020 Østlandet         60.5    6.12          48.6    73.7
-#> 2  2021 Trøndelag         41.8    3.04          34.7    47.1
-#> 3  2021 Østlandet         53.4    5.86          42.6    64.6
-#> 4  2022 Sørlandet         29.7    5.82          18.3    41.4
-#> 5  2022 Trøndelag         34.7    2.58          29.6    39.7
-#> 6  2022 Østlandet         35.9    2.93          30.1    41.7
-#> # … with abbreviated variable name ¹​boot_upper97.5
+#>    year region_name no_species boot_sd boot_lower2.5
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>
+#> 1  2020 Østlandet         60.2    6.06          49  
+#> 2  2021 Trøndelag         42.1    2.99          35.9
+#> 3  2021 Østlandet         53.7    6.12          41.5
+#> 4  2022 Sørlandet         29.6    5.90          18.5
+#> 5  2022 Trøndelag         34.8    2.57          29.8
+#> 6  2022 Østlandet         35.7    2.95          30  
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 But the `boot_stat` object also stores the individual bootstrap values for later computation. By default, we use 999 bootstrap samples, which here results in 999 samples * 6 groups = 5994 rows of bootstrap values.
@@ -349,34 +345,34 @@ poll_richness_boot[2]
 #>     year region_name boot_values
 #>    <int> <chr>             <dbl>
 #>  1  2020 Østlandet          62.4
-#>  2  2020 Østlandet          63.6
-#>  3  2020 Østlandet          60.2
-#>  4  2020 Østlandet          59.8
-#>  5  2020 Østlandet          63.8
-#>  6  2020 Østlandet          56.4
-#>  7  2020 Østlandet          60.1
-#>  8  2020 Østlandet          64.1
-#>  9  2020 Østlandet          54  
-#> 10  2020 Østlandet          78.5
-#> # … with 5,984 more rows
+#>  2  2020 Østlandet          68.4
+#>  3  2020 Østlandet          52  
+#>  4  2020 Østlandet          63.5
+#>  5  2020 Østlandet          60.1
+#>  6  2020 Østlandet          51.9
+#>  7  2020 Østlandet          70.5
+#>  8  2020 Østlandet          56  
+#>  9  2020 Østlandet          62.4
+#> 10  2020 Østlandet          62.8
+#> # ℹ 5,984 more rows
 ```
 
 #### Comparing bootstrap values to a reference point
-Setting aside the practical difficulties in establishing robust reference values, the next step in the methodology is to compare the observed values (with bootstrapped uncertainty) to a chosen reference value. This can be made in several ways. Most simply, if we have a single numeric value as a reference value, we can simply subtract that from the observed values. For example, if we observe 13 species of pollinators in 2022 at a location, and the reference point is 10, the 2022 value has increased by 13 - 10 = 3 species. Such subtractions should be made on the set of bootstrapped values, followed by new summary statistics being calculated, preserving the uncertainty from the bootstrap. The `boot_stat` has its own subtraction method `-` do to just that. In this example, we set the reference value arbitrarily to 30 species.
+Setting aside the practical difficulties in establishing robust reference values, the next step in the methodology is to compare the observed values (with bootstrapped uncertainty) to a chosen reference value. This can be made in several ways. Most simply, if we have a single numeric value as a reference value, we can simply subtract that from the observed values. For example, if we observe 13 species of pollinators in 2022 at a location, and the reference point is 10, the 2022 value has increased by 13 - 10 = 3 species. Such subtractions should be made on the set of bootstrapped values, followed by new summary statistics being calculated, preserving the uncertainty from the bootstrap. The `boot_stat` object class has its own subtraction method `-` do to just that. In this example, we set the reference value arbitrarily to 30 species.
 
 
 ```r
 poll_richness_boot
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
-#> 1  2020 Østlandet         60.5    6.12          48.6    73.7
-#> 2  2021 Trøndelag         41.8    3.04          34.7    47.1
-#> 3  2021 Østlandet         53.4    5.86          42.6    64.6
-#> 4  2022 Sørlandet         29.7    5.82          18.3    41.4
-#> 5  2022 Trøndelag         34.7    2.58          29.6    39.7
-#> 6  2022 Østlandet         35.9    2.93          30.1    41.7
-#> # … with abbreviated variable name ¹​boot_upper97.5
+#>    year region_name no_species boot_sd boot_lower2.5
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>
+#> 1  2020 Østlandet         60.2    6.06          49  
+#> 2  2021 Trøndelag         42.1    2.99          35.9
+#> 3  2021 Østlandet         53.7    6.12          41.5
+#> 4  2022 Sørlandet         29.6    5.90          18.5
+#> 5  2022 Trøndelag         34.8    2.57          29.8
+#> 6  2022 Østlandet         35.7    2.95          30  
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 
@@ -388,15 +384,15 @@ diff_poll_richness_boot <- poll_richness_boot - 30
 ```r
 diff_poll_richness_boot
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
-#> 1  2020 Østlandet       30.5      6.12        18.6      43.7
-#> 2  2021 Trøndelag       11.8      3.04         4.7      17.1
-#> 3  2021 Østlandet       23.4      5.86        12.6      34.6
-#> 4  2022 Sørlandet       -0.276    5.82       -11.7      11.4
-#> 5  2022 Trøndelag        4.68     2.58        -0.400     9.7
-#> 6  2022 Østlandet        5.92     2.93         0.100    11.7
-#> # … with abbreviated variable name ¹​boot_upper97.5
+#>    year region_name no_species boot_sd boot_lower2.5
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>
+#> 1  2020 Østlandet       30.2      6.06        19    
+#> 2  2021 Trøndelag       12.1      2.99         5.9  
+#> 3  2021 Østlandet       23.7      6.12        11.5  
+#> 4  2022 Sørlandet       -0.439    5.90       -11.5  
+#> 5  2022 Trøndelag        4.80     2.57        -0.200
+#> 6  2022 Østlandet        5.69     2.95         0    
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 Alternatively, we could use a reference point in the time series itself. Say for example that we want to use the values for species richness of pollinators in semi-natural land i Østlandet 2020 as a reference point. We can then calculate the difference (the contrast) between this level and all the other levels. We do this by the function `boot_contrast()`
@@ -415,19 +411,19 @@ diff_poll_richness_boot2 <- poll_richness_boot %>%
 ```r
 diff_poll_richness_boot2
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
-#> 1  2020 Østlandet          0      0              0       0  
-#> 2  2021 Trøndelag        -18.7    6.75         -32.4    -6.1
-#> 3  2021 Østlandet         -7.1    8.33         -23.4     9.3
-#> 4  2022 Sørlandet        -30.8    8.26         -48.2   -15.1
-#> 5  2022 Trøndelag        -25.9    6.64         -39.5   -13.1
-#> 6  2022 Østlandet        -24.6    6.73         -38     -11.5
-#> # … with abbreviated variable name ¹​boot_upper97.5
+#>    year region_name no_species boot_sd boot_lower2.5
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>
+#> 1  2020 Østlandet         0       0              0  
+#> 2  2021 Trøndelag       -18.2     6.74         -31.3
+#> 3  2021 Østlandet        -6.50    8.67         -24.3
+#> 4  2022 Sørlandet       -30.7     8.58         -47.6
+#> 5  2022 Trøndelag       -25.4     6.68         -38.7
+#> 6  2022 Østlandet       -24.5     6.86         -38.2
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 #### Normalizing the values
-After the comparison to a reference value, we need to normalize the indicator values so that they lie between 0 and 1. This can be done in several ways (se e.g. [eaTools](https://github.com/NINAnor/eaTools)). The simplest case is to use a linear scaling, with a natural zero, which e.g. can be done by dividing the indicator values by the highest value state. A `boot_stat` class has a `/` function that divides each bootstrap value by a given value, truncates the highest values to 1, and recalculates the summary values. We can also simply divide by the reference state, to compare the values to the reference state, and normalize them in one go. Here, we exemplify the method by dividing the value by 30.
+After the comparison to a reference value, we need to normalize the indicator values so that they lie between 0 and 1. This can be done in several ways (se e.g. [eaTools](https://github.com/NINAnor/eaTools)). The simplest case is to use a linear scaling, with a natural zero, which e.g. can be done by dividing the indicator values by the highest value state. A `boot_stat` class has a `/` function that divides each bootstrap value by a given value, truncates the highest values to 1, and recalculates the summary values. We can similarly divide by a predefined reference state. Here, we exemplify the method by dividing the value by 30.
 
 
 
@@ -439,18 +435,16 @@ diff_poll_richness_boot3 <- poll_richness_boot / 30
 ```r
 diff_poll_richness_boot3
 #> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
-#> 1  2020 Østlandet        1     0               1           1
-#> 2  2021 Trøndelag        1.00  0.00104         1           1
-#> 3  2021 Østlandet        1     0               1           1
-#> 4  2022 Sørlandet        0.918 0.115           0.61        1
-#> 5  2022 Trøndelag        0.999 0.00786         0.987       1
-#> 6  2022 Østlandet        0.999 0.00590         1           1
-#> # … with abbreviated variable name ¹​boot_upper97.5
+#>    year region_name no_species boot_sd boot_lower2.5
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>
+#> 1  2020 Østlandet        1     0               1    
+#> 2  2021 Trøndelag        1     0               1    
+#> 3  2021 Østlandet        1     0               1    
+#> 4  2022 Sørlandet        0.913 0.114           0.617
+#> 5  2022 Trøndelag        0.999 0.00421         0.993
+#> 6  2022 Østlandet        0.999 0.00703         1    
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
-
-
 
 #### Display and plot bootstrap values
 The boot_stat class also has its own plot function. It tries to plot a comparison of the bootstrap distributions over years, for each group. For example, if we plot the object `diff_poll_richness_boot`, we can look at the yearly differences in beetles species richness in the two geographic regions: (Note that we have only 1 year of data from Sørlandet so far)
@@ -471,11 +465,28 @@ plot(diff_poll_richness_boot2)
 
 <img src="insectIndicators_files/figure-html/diff_beetle_richness_boot2-1.png" width="672" />
 
-More plotting options are available, see the `Norimon` indicator workflow vignette.
+
+#### Time-series plots
+The default plots are good for showing the uncertainty distributions, but can be a bit difficult to track the time series trends this way. We can instad use the `ts_plot` function for a simple time-series plot.
+
+
+```r
+ts_plot(poll_richness_boot)
+#> Warning: The `<scale>` argument of `guides()` cannot be `FALSE`. Use
+#> "none" instead as of ggplot2 3.3.4.
+#> ℹ The deprecated feature was likely used in the Norimon
+#>   package.
+#>   Please report the issue to the authors.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where
+#> this warning was generated.
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-22-1.png" width="672" />
 
 
 #### Map plots
-In addition to the density plots above, we can also display the values geographically. The `map_plot()` function takes a `boot_stat` object and plots the values according to its region names.
+In addition to these plots, we can also display the values geographically. The `map_plot()` function takes a `boot_stat` object and plots the values according to its region names.
 
 
 ```r
@@ -492,8 +503,7 @@ map_plot(poll_richness_boot,
 ```
 
 <img src="insectIndicators_files/figure-html/map_plot_whole-1.png" width="672" />
-
-We can also choose a different palette, for example from the NinaR package, and visualize the uncertainty by setting the transparency of the colors from the bootstrap standard deviations. By the way, most of these functions can be piped as well:
+We can also choose a different palette, for example from the NinaR package, and visualize the uncertainty by setting the transparency of the colors from the bootstrap standard deviations. Most of these functions can be piped as well:
 
 
 ```r
@@ -505,6 +515,42 @@ map_plot(palette = "orange-green",
 
 <img src="insectIndicators_files/figure-html/diff_beetle_richness_boot_map-1.png" width="672" />
 
+More plotting options are available, see the `Norimon` indicator workflow vignette.
+
+
+#### 5 year rolling window summaries
+As described above, to take the staggered 5 year survey scheme into account and to average over random yearly variation, it makes sense to summarize the state over a whole 5 year period. This does not need to adhere to predefined periods, since any 5 year long period will result in a complete data set. We can therefore calculate 5 year long summaries in rolling windows, where each focal year is surrounded by +- 2 years. The bootstrap_value does this by default, if we don't specify `rolling_year_average = FALSE`
+
+
+
+```r
+poll_richness_boot_5_year <- bootstrap_value(poll_loc_year,
+                                      value = no_species,
+                                      groups = c("year",
+                                                 "region_name"),
+                                      rolling_year_window = TRUE
+                                      )
+```
+Since we are only on the third year in the survey scheme however, the rolling windows are too large to show any differences between years. This will change, starting with the 2023 year data.
+
+
+
+```r
+plot(poll_richness_boot_5_year)
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-24-1.png" width="672" />
+
+The averaging over 5-years also shows up in the time-series plots. Note the very wide confidence intervals of the Sørlandet region, with only 1-year worth of data.
+
+
+```r
+ts_plot(poll_richness_boot_5_year)
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-25-1.png" width="672" />
+
+
 This concludes the tour of the `Norimon` functionality.
 
 ### Calculation principles for NBBM indicators
@@ -514,7 +560,7 @@ These indicators summarize the state of a bumblebee or butterfly community by es
 
 
 $$CI = \frac{SR-SC}{SR}$$
-The state of reference (SR) represents a community of species that can be expected to be observed in a given habitat type and region. It is calculated by assigning each species to class of expected commonality: common (C), sporadic (S) and rare (R) species. This classification is done by expert opinion, informed by known present and past species distributions. Note that this state of reference only contains a subset of highlighted species, making up a historical reference community. Potential observations of "new" species therefore don't inform the indicator value at all. Common species are expected to be observed in at least 5 % of the surveyed transects in a habitat type and region. Sporadic species similarly are defined as having a presence below 5 % but above 1 %. Rare species are seen in no more than 1 % of the transects, and lastly, species not seen in any transect are assumed as lost (L) for the purpose of this calculation. 
+The state of reference (SR) represents a community of species which can be expected to be observed in a given habitat type and region. It is calculated by assigning each species to class of expected commonality: common (C), sporadic (S) and rare (R) species. This classification is done by expert opinion, informed by known present and past species distributions. Note that this state of reference only contains a subset of highlighted species, making up a historical reference community. Potential observations of "new" species therefore don't inform the indicator value at all. Common species are expected to be observed in at least 5 % of the surveyed transects in a habitat type and region. Sporadic species similarly are defined as having a presence below 5 % but above 1 %. Rare species are seen in no more than 1 % of the transects, and lastly, species not seen in any transect are assumed as lost (L) for the purpose of this calculation. 
   
 Each commonality class gets its own weight, so that common species inform the reference state more than sporadic species, followed by rare species. The state of reference (SR) is thus a value where each species adds to the state according to its commonality. Formally, it is defined as:
 
@@ -524,7 +570,7 @@ where $n_i$ is the number of species in a commonality class (C, S, R), and the w
 
 The state of change (SC) is calculated as
  $$SC = n_{CS} * w_{CS} + n_{CR} * w_{CR} + n_{CL} * w_{CL} + n_{SR} * w_{SR} + n_{SL} * w_{SL} + n_{RL} * w_{RL}, $$ 
-where $n_{CS}$ is the number of expected common species (C) that is observed sporadically (S), and $w_{CS}$ is the weight of this change. Similarly, $n_{CR}$ is the number of expected species that is observed rarely, $n_{RL}$ is the number of rare species that is lost, and so on. Potential increases in observation rates do not inform the indicator. Changes for common species are weighted more heavily than changes for less common species, and larger decreases are weighted more heavily than smaller decreases, such that $[w_{CS}, w_{CR}, w_{CL}, w_{SR}, w_{SL}, w_{RL}]= [0.50, 0.75, 1.00, 0.50, 0.75, 0.50]$.
+where $n_{CS}$ is the number of expected common species (C) that is observed sporadically (S), and $w_{CS}$ is the weight of this change. Similarly, $n_{CR}$ is the number of expected common species that is observed rarely, $n_{RL}$ is the number of rare species that is lost, and so on. Potential increases in observation rates do not inform the indicator. Changes for common species are weighted more heavily than changes for less common species, and larger decreases are weighted more heavily than smaller decreases, such that $[w_{CS}, w_{CR}, w_{CL}, w_{SR}, w_{SL}, w_{RL}]= [0.50, 0.75, 1.00, 0.50, 0.75, 0.50]$.
 
 The indicator values are estimated with uncertainty, by bootstrapping the set of localities within a region, and calculating the indicator for each of 9999 such samples.
 
@@ -550,7 +596,6 @@ allBombusGrassland2022 <- getAllData(type = "bumblebees",
                                      language = "norsk")
 ```
 
-
 A summary of the records is most easily plotted by `surveyBarPlot`:
 
 
@@ -558,7 +603,7 @@ A summary of the records is most easily plotted by `surveyBarPlot`:
 surveyBarplot(allBombusGrassland2022)
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-25-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-29-1.png" width="672" />
 
 Note that for calculating the indicator values, we only consider the transects that were surveyed for the standard 3 times per year, to cover the phenology of the entire season without bias. Data of these complete survey rounds can be fetched from the database by the function `getComplData`, which fetches data from one habitat type and region at a time. 
 
@@ -591,7 +636,7 @@ plotArt(bombus_trond_2022,
         exp_bombus_trond)
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-28-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-32-1.png" width="672" />
 
 The actual calculation and bootstrapping of the indicator is done in the function `calcInd`. This function calls the `getComplData` and `getExpectedValues` functions internally. It also requires the weights for the commonality classes in the reference community (SR), and the weights for the changes in state (CS). This is fetched internally via the functions `getAmountWeights` and `getDiffWeights`, respectively. Here the classes are coded in Norwegian (v = common, m = sporadic, s = rare).
 
@@ -604,7 +649,6 @@ getDiffWeights()
 #> s 0.75 0.50 0.0
 #> t 1.00 0.75 0.5
 ```
-
 
 
 ```r
@@ -638,7 +682,7 @@ The result is an object of class "comm_index" (community index). It comes with s
 hInd2022TrondGress
 #> $`Community indicator estimates, with percentiles`
 #>           2.5%             5% Point estimate            95% 
-#>      0.5625000      0.5625000      0.7083333      0.7500000 
+#>      0.5416667      0.5625000      0.7083333      0.7500000 
 #>          97.5% 
 #>      0.7500000
 ```
@@ -648,9 +692,9 @@ hInd2022TrondGress
 plot(hInd2022TrondGress)
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-34-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-38-1.png" width="672" />
 
-Plotting functions for a series of indicator values is shown below in the indicator calculations.
+Plotting functions for a series of indicator values is shown below in the indicator calculations. This concludes the tour of the `bombLepiSurv` package.
 
 
 ### Data sets
@@ -658,11 +702,11 @@ There are a few different ways to access the data required for these indicators.
 
 
 #### NorIns data
-The `Norimon` package has convenience functions to fetch data from the database, housed internally at NINA. This database is currently not available outside NINA, but we will implement a solution for this. Either we will make the database externally available, or we will provide an alternative route to the data from the GBIF export. For now, we will fetch the data through the `Norimon` functions.
+The `Norimon` package has convenience functions to fetch data from the database. This database is currently not available outside NINA, but we will implement a solution for this in the future. Either we will make the database externally available, or we will provide an alternative route to the data from the GBIF export. For now, we will fetch the data through the `Norimon` functions.
 
 
 #### NMBB data
-The data for the bumblebee and butterfly indicators can be accessed through the R-package `bombLepiSurv`. 
+The data for the bumblebee and butterfly indicators can similarly be accessed through the R-package `bombLepiSurv`. 
 
 
 #### Regions
@@ -693,9 +737,16 @@ tm_shape(norway_reg_NorIns) +
   tm_polygons(col = "region") 
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-38-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-42-1.png" width="672" />
 
-The indicators from the NMBB program are similary connected to regions, with the exception that the south-east region only covers the old counties of Vestfold and Østfold, and that Nord-Norge isn't covered yet.
+The indicators from the NMBB program are similarly connected to regions, with the exception that the south-east region only covers the old counties of Vestfold and Østfold, and that Nord-Norge isn't covered yet.
+
+
+```r
+bombLepiSurv::humlesommerfConnect()
+```
+
+
 
 
 ```r
@@ -718,7 +769,7 @@ tm_shape(norway_reg_NBBM) +
   tm_polygons(col = "region") 
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-41-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-47-1.png" width="672" />
 
 
 ### Calculation of NorIns indicators
@@ -726,11 +777,18 @@ Here we calculate the indicators in abbreviated form, following the general fram
 
 #### Biomass of flying insects in semi-natural land
 
+```r
+connect_to_insect_db()
+```
+
+
+
 Fetch the data.
 
 ```r
 biomass_sn <- get_biomass(subset_year = 2020:2022,
-                          subset_region = NULL)
+                          subset_region = NULL,
+                          subset_habitat = "Semi-nat")
 ```
 
 
@@ -744,10 +802,9 @@ biomass_sn_boot <- bootstrap_value(df = biomass_sn,
                                    )
 ```
 
-Compare values to a reference state. The reference state is here set uniformly for all regions, with a made-up value just to be able to continue the calculations. Alternatively, we could calculate the indicator values for each region separately, compare to individual reference states, and then put it all together again.
+Compare values to a reference state. The reference state is here set uniformly for all regions. Alternatively, we could calculate the indicator values for each region separately, compare to individual reference states, and then put it all together again.
 
-We here use a single value as a reference state and normalize the values at the same time, using the `/` function.
-
+To exemplify, we here use a single "made-up" value as a reference state and normalize the values at the same time, using the `/` function.
 
 
 ```r
@@ -760,17 +817,19 @@ Plot the results and display uncertainty.
 
 ```r
 biomass_sn_diff
-#> # A tibble: 6 × 6
-#>    year region_name avg_wet_weight boot_sd boot_lo…¹ boot_…²
-#>   <int> <chr>                <dbl>   <dbl>     <dbl>   <dbl>
-#> 1  2020 Østlandet            0.671  0.0781     0.517   0.820
-#> 2  2021 Trøndelag            0.861  0.101      0.643   1    
-#> 3  2021 Østlandet            0.585  0.0762     0.432   0.739
-#> 4  2022 Sørlandet            0.465  0.0684     0.331   0.593
-#> 5  2022 Trøndelag            0.626  0.0711     0.491   0.779
-#> 6  2022 Østlandet            0.376  0.0418     0.293   0.461
-#> # … with abbreviated variable names ¹​boot_lower2.5,
-#> #   ²​boot_upper97.5
+#> # A tibble: 9 × 6
+#>    year region_name avg_wet_weight boot_sd boot_lower2.5
+#>   <int> <chr>                <dbl>   <dbl>         <dbl>
+#> 1  2020 Sørlandet            0.470  0.0661         0.351
+#> 2  2020 Trøndelag            0.747  0.0672         0.616
+#> 3  2020 Østlandet            0.759  0.0494         0.664
+#> 4  2021 Sørlandet            0.465  0.0647         0.347
+#> 5  2021 Trøndelag            0.748  0.0709         0.607
+#> 6  2021 Østlandet            0.761  0.0521         0.656
+#> 7  2022 Sørlandet            0.465  0.0675         0.343
+#> 8  2022 Trøndelag            0.747  0.0692         0.618
+#> 9  2022 Østlandet            0.758  0.0520         0.655
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 
@@ -778,48 +837,36 @@ biomass_sn_diff
 plot(biomass_sn_diff)
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-46-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/biomass_diff-1.png" width="672" />
 
 Prepare export format.
 
 
 ```r
-biomass_sn_to_exp <- biomass_sn_diff$bootstrap_summary
+biomass_sn_to_exp <- biomass_sn_boot$bootstrap_summary
 
 biomass_sn_to_exp <- biomass_sn_to_exp %>% 
+  mutate(reference_high = NA,
+         reference_low = 0,
+         thr = 0.6,
+         i = NA) %>% 
   select(year,
          region = region_name,
-         ind_value = boot_value,
-         ind_sd = boot_sd,
-         ind_lower2.5 = boot_lower2.5,
-         ind_upper97.5 = boot_upper97.5)
+         v = boot_value,
+         sd = boot_sd,
+         reference_high,
+         reference_low,
+         thr,
+         i
+         )
 
 biomass_sn_to_exp <- norway_reg_NorIns  %>% 
   inner_join(biomass_sn_to_exp,
             by = c("region" = "region"),
             multiple = "all")
 
-biomass_sn_to_exp
-#> Simple feature collection with 6 features and 6 fields
-#> Geometry type: MULTIPOLYGON
-#> Dimension:     XY
-#> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
-#> Projected CRS: ETRS89 / UTM zone 33N
-#> # A tibble: 6 × 7
-#>   region                           geom  year ind_v…¹ ind_sd
-#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.465 0.0684
-#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.861 0.101 
-#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.626 0.0711
-#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.671 0.0781
-#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.585 0.0762
-#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.376 0.0418
-#> # … with 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>, and abbreviated variable name
-#> #   ¹​ind_value
+insect_biomass_semi_nat <- biomass_sn_to_exp
 ```
-
-
 
 #### Species richness of flying insects in semi-natural land
 
@@ -828,7 +875,8 @@ Fetch the data.
 
 ```r
 richness_sn <- get_observations(subset_year = 2020:2022,
-                                subset_region = NULL)
+                                subset_region = NULL,
+                                subset_habitat = "Semi-nat")
 ```
 
 
@@ -854,62 +902,65 @@ Plot the results and display uncertainty.
 
 ```r
 richness_sn_diff
-#> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
-#> 1  2020 Østlandet        0.523  0.0470         0.433   0.620
-#> 2  2021 Trøndelag        0.699  0.0454         0.599   0.776
-#> 3  2021 Østlandet        0.769  0.0417         0.687   0.851
-#> 4  2022 Sørlandet        0.546  0.0674         0.408   0.675
-#> 5  2022 Trøndelag        0.631  0.0294         0.572   0.689
-#> 6  2022 Østlandet        0.626  0.0213         0.585   0.668
-#> # … with abbreviated variable name ¹​boot_upper97.5
+#> # A tibble: 9 × 6
+#>    year region_name no_species boot_sd boot_lower2.5
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>
+#> 1  2020 Sørlandet        0.546  0.0637         0.420
+#> 2  2020 Trøndelag        0.664  0.0283         0.605
+#> 3  2020 Østlandet        0.704  0.0369         0.631
+#> 4  2021 Sørlandet        0.548  0.0647         0.422
+#> 5  2021 Trøndelag        0.664  0.0289         0.606
+#> 6  2021 Østlandet        0.704  0.0359         0.629
+#> 7  2022 Sørlandet        0.546  0.0647         0.412
+#> 8  2022 Trøndelag        0.666  0.0282         0.607
+#> 9  2022 Østlandet        0.705  0.0354         0.634
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 
 ```r
-plot(richness_sn_diff)
+plot(richness_sn_diff,
+     limit = c(0, 1))
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-52-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-59-1.png" width="672" />
 
+
+```r
+map_plot(richness_sn_diff,
+         whole_country = T,
+         limit = c(0, 1))
+```
+
+<img src="insectIndicators_files/figure-html/richness-1.png" width="672" />
+   
 Prepare export format.
 
 
 ```r
-richness_sn_to_exp <- richness_sn_diff$bootstrap_summary
+richness_sn_to_exp <- richness_sn_boot$bootstrap_summary
 
 richness_sn_to_exp <- richness_sn_to_exp %>% 
+  mutate(reference_high = NA,
+         reference_low = 0,
+         thr = 0.6,
+         i = NA) %>% 
   select(year,
          region = region_name,
-         ind_value = boot_value,
-         ind_sd = boot_sd,
-         ind_lower2.5 = boot_lower2.5,
-         ind_upper97.5 = boot_upper97.5)
+         v = boot_value,
+         sd = boot_sd,
+         reference_high,
+         reference_low,
+         thr,
+         i
+         )
 
-richness_sn_to_exp <- norway_reg_NorIns  %>% 
+richness_sn_to_exp <- norway_reg_NorIns %>% 
   inner_join(richness_sn_to_exp,
             by = c("region" = "region"),
             multiple = "all")
 
-richness_sn_to_exp
-#> Simple feature collection with 6 features and 6 fields
-#> Geometry type: MULTIPOLYGON
-#> Dimension:     XY
-#> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
-#> Projected CRS: ETRS89 / UTM zone 33N
-#> # A tibble: 6 × 7
-#>   region                           geom  year ind_v…¹ ind_sd
-#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.546 0.0674
-#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.699 0.0454
-#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.631 0.0294
-#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.523 0.0470
-#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.769 0.0417
-#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.626 0.0213
-#> # … with 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>, and abbreviated variable name
-#> #   ¹​ind_value
+insect_richness_semi_nat <- richness_sn_to_exp
 ```
 
 
@@ -928,7 +979,7 @@ pollinator_fam <- get_pollinators() %>%
 ```r
 pollinators_sn <- get_observations(subset_year = 2020:2022,
                                    subset_families = pollinator_fam,
-                                   subset_region = NULL)
+                                   subset_habitat = "Semi-nat")
 ```
 
 
@@ -953,79 +1004,84 @@ Plot the results and display uncertainty.
 
 ```r
 pollinators_sn_diff
-#> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
-#> 1  2020 Østlandet        0.921  0.0768         0.741   1    
-#> 2  2021 Trøndelag        0.838  0.0639         0.702   0.948
-#> 3  2021 Østlandet        0.909  0.0732         0.759   1    
-#> 4  2022 Sørlandet        0.589  0.116          0.368   0.824
-#> 5  2022 Trøndelag        0.696  0.0487         0.598   0.796
-#> 6  2022 Østlandet        0.639  0.0560         0.528   0.755
-#> # … with abbreviated variable name ¹​boot_upper97.5
+#> # A tibble: 9 × 6
+#>    year region_name no_species boot_sd boot_lower2.5
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>
+#> 1  2020 Sørlandet        0.592  0.113          0.366
+#> 2  2020 Trøndelag        0.767  0.0444         0.677
+#> 3  2020 Østlandet        0.974  0.0374         0.876
+#> 4  2021 Sørlandet        0.599  0.119          0.372
+#> 5  2021 Trøndelag        0.769  0.0431         0.683
+#> 6  2021 Østlandet        0.973  0.0392         0.87 
+#> 7  2022 Sørlandet        0.596  0.115          0.368
+#> 8  2022 Trøndelag        0.766  0.0405         0.683
+#> 9  2022 Østlandet        0.972  0.0406         0.861
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 
 ```r
-plot(pollinators_sn_diff)
+plot(pollinators_sn_diff,
+     limit = c(0, 1))
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-59-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-66-1.png" width="672" />
 
 Prepare export format.
 
 
 ```r
-pollinators_sn_to_exp <- pollinators_sn_diff$bootstrap_summary
+pollinators_sn_to_exp <- pollinators_sn_boot$bootstrap_summary
 
 pollinators_sn_to_exp <- pollinators_sn_to_exp %>% 
+  mutate(reference_high = NA,
+         reference_low = 0,
+         thr = 0.6,
+         i = NA) %>% 
   select(year,
          region = region_name,
-         ind_value = boot_value,
-         ind_sd = boot_sd,
-         ind_lower2.5 = boot_lower2.5,
-         ind_upper97.5 = boot_upper97.5)
+         v = boot_value,
+         sd = boot_sd,
+         reference_high,
+         reference_low,
+         thr,
+         i
+         )
 
-pollinators_sn_to_exp <- norway_reg_NorIns  %>% 
+pollinators_sn_to_exp <- norway_reg_NorIns %>% 
   inner_join(pollinators_sn_to_exp,
             by = c("region" = "region"),
             multiple = "all")
 
-pollinators_sn_to_exp
-#> Simple feature collection with 6 features and 6 fields
-#> Geometry type: MULTIPOLYGON
-#> Dimension:     XY
-#> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
-#> Projected CRS: ETRS89 / UTM zone 33N
-#> # A tibble: 6 × 7
-#>   region                           geom  year ind_v…¹ ind_sd
-#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.589 0.116 
-#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.838 0.0639
-#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.696 0.0487
-#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.921 0.0768
-#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.909 0.0732
-#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.639 0.0560
-#> # … with 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>, and abbreviated variable name
-#> #   ¹​ind_value
+insect_pollinators_semi_nat <- pollinators_sn_to_exp
 ```
 
 #### Species richness of dung associated insects
-Note that the species list will probably be expanded, after a taxonomic review.
-
-Fetch the data.
+We here note all observations of a set of species, known to be associated with dung. This species list can be expanded after a further taxonomic review. Here we take all observed species in the house fly/stable fly family Muscidae, together with a selection of 70 beetle species known to be associated with dung.
 
 
 ```r
-dung_fam <- c("Muscidae") 
-  
-dung_sn <- get_observations(subset_year = 2020:2022,
-                                   subset_families = dung_fam,
-                                   subset_region = NULL)
+muscidae_species <- tbl(con,
+                    Id(schema = "views",
+                       table = "observed_muscidae_species")) %>% 
+  pull()
+
+coleoptera_dung_species <- tbl(con,
+                    Id(schema = "lookup",
+                       table = "coleoptera_dung_species")) %>% 
+  select(species_latin) %>% 
+  pull()
+
+dung_species <- c(coleoptera_dung_species, muscidae_species)
 ```
 
-[This will be amended with data based on genus and species lists. Need to use the lowest taxonomic resolution. Will implement a species lookup list in the database]
+
+```r
+dung_sn <- get_observations(subset_year = 2020:2022,
+                            subset_species = dung_species,
+                            subset_habitat = "Semi-nat")
+```
+
 
 Calculate the indicator values for each region and year.
 
@@ -1040,7 +1096,7 @@ Compare to arbitrary reference value and normalize.
 
 
 ```r
-dung_ref <- 90
+dung_ref <- 100
   
 dung_sn_diff <- dung_sn_boot / dung_ref
 ```
@@ -1049,66 +1105,61 @@ Plot the results and display uncertainty.
 
 ```r
 dung_sn_diff
-#> # A tibble: 6 × 6
-#>    year region_name no_species boot_sd boot_lower2.5 boot_…¹
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
-#> 1  2020 Østlandet        0.684  0.0485         0.593   0.781
-#> 2  2021 Trøndelag        0.929  0.0555         0.804   1    
-#> 3  2021 Østlandet        0.836  0.0517         0.729   0.939
-#> 4  2022 Sørlandet        0.673  0.0711         0.546   0.828
-#> 5  2022 Trøndelag        0.922  0.0421         0.834   0.997
-#> 6  2022 Østlandet        0.637  0.0440         0.547   0.724
-#> # … with abbreviated variable name ¹​boot_upper97.5
+#> # A tibble: 9 × 6
+#>    year region_name no_species boot_sd boot_lower2.5
+#>   <int> <chr>            <dbl>   <dbl>         <dbl>
+#> 1  2020 Sørlandet        0.608  0.0608         0.489
+#> 2  2020 Trøndelag        0.835  0.0322         0.766
+#> 3  2020 Østlandet        0.760  0.0304         0.700
+#> 4  2021 Sørlandet        0.603  0.0611         0.496
+#> 5  2021 Trøndelag        0.833  0.0327         0.764
+#> 6  2021 Østlandet        0.761  0.0318         0.696
+#> 7  2022 Sørlandet        0.609  0.0610         0.489
+#> 8  2022 Trøndelag        0.831  0.0316         0.765
+#> 9  2022 Østlandet        0.761  0.0335         0.696
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 
 ```r
-plot(dung_sn_diff)
+plot(dung_sn_diff,
+     limit = c(0, 1))
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-65-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-73-1.png" width="672" />
 
 Prepare export format.
 
 
 ```r
-dung_sn_to_exp <- dung_sn_diff$bootstrap_summary
+dung_sn_to_exp <- dung_sn_boot$bootstrap_summary
 
 dung_sn_to_exp <- dung_sn_to_exp %>% 
+  mutate(reference_high = NA,
+         reference_low = 0,
+         thr = 0.6,
+         i = NA) %>% 
   select(year,
          region = region_name,
-         ind_value = boot_value,
-         ind_sd = boot_sd,
-         ind_lower2.5 = boot_lower2.5,
-         ind_upper97.5 = boot_upper97.5)
+         v = boot_value,
+         sd = boot_sd,
+         reference_high,
+         reference_low,
+         thr,
+         i
+         )
 
 dung_sn_to_exp <- norway_reg_NorIns  %>% 
   inner_join(dung_sn_to_exp,
             by = c("region" = "region"),
             multiple = "all")
 
-dung_sn_to_exp
-#> Simple feature collection with 6 features and 6 fields
-#> Geometry type: MULTIPOLYGON
-#> Dimension:     XY
-#> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
-#> Projected CRS: ETRS89 / UTM zone 33N
-#> # A tibble: 6 × 7
-#>   region                           geom  year ind_v…¹ ind_sd
-#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.673 0.0711
-#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.929 0.0555
-#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.922 0.0421
-#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.684 0.0485
-#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.836 0.0517
-#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.637 0.0440
-#> # … with 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>, and abbreviated variable name
-#> #   ¹​ind_value
+insect_dung_assoc_semi_nat <- dung_sn_to_exp
 ```
 
 
 #### Relationship between Symphyta and Parasitica in semi-natural land
+Parasitica and Symphyta wasps are here defined as a set of families. 
 
 
 ```r
@@ -1119,29 +1170,27 @@ symphyta_fam <- c("Argidae", "Cephidae", "Cimbicidae",
 
 symphyta_sn <- get_observations(subset_year = 2020:2022,
                                 subset_families = symphyta_fam,
-                                subset_region = NULL)
+                                subset_habitat = "Semi-nat")
 
 symphyta_sn
-#> # A tibble: 90 × 8
-#>     year locality habitat_…¹ regio…² no_sp…³ shann…⁴ mean_…⁵
-#>    <int> <chr>    <chr>      <chr>     <int>   <dbl>   <dbl>
-#>  1  2020 Skog_01  Forest     Østlan…      15   15       1   
-#>  2  2020 Skog_02  Forest     Østlan…      42   36.8     1.31
-#>  3  2020 Skog_03  Forest     Østlan…      24   21       1.38
-#>  4  2020 Skog_04  Forest     Østlan…       5    4.37    1.4 
-#>  5  2020 Skog_05  Forest     Østlan…      23   21.6     1.17
-#>  6  2020 Skog_06  Forest     Østlan…       9    8.71    1.11
-#>  7  2020 Skog_07  Forest     Østlan…      25   22.5     1.4 
-#>  8  2020 Skog_08  Forest     Østlan…       7    6.73    1.14
-#>  9  2020 Skog_09  Forest     Østlan…      18   17.4     1.11
-#> 10  2020 Skog_10  Forest     Østlan…      11    4.6     2.64
-#> # … with 80 more rows, 1 more variable: GDE_by_asv <dbl>,
-#> #   and abbreviated variable names ¹​habitat_type,
-#> #   ²​region_name, ³​no_species, ⁴​shannon_div,
-#> #   ⁵​mean_asv_per_species
+#> # A tibble: 60 × 8
+#>     year locality    habitat_type region_name no_species
+#>    <int> <chr>       <chr>        <chr>            <int>
+#>  1  2020 Semi-nat_01 Semi-nat     Østlandet           38
+#>  2  2020 Semi-nat_02 Semi-nat     Østlandet           16
+#>  3  2020 Semi-nat_03 Semi-nat     Østlandet           13
+#>  4  2020 Semi-nat_04 Semi-nat     Østlandet           39
+#>  5  2020 Semi-nat_05 Semi-nat     Østlandet           65
+#>  6  2020 Semi-nat_06 Semi-nat     Østlandet           22
+#>  7  2020 Semi-nat_07 Semi-nat     Østlandet           36
+#>  8  2020 Semi-nat_08 Semi-nat     Østlandet           46
+#>  9  2020 Semi-nat_09 Semi-nat     Østlandet           21
+#> 10  2020 Semi-nat_10 Semi-nat     Østlandet           68
+#> # ℹ 50 more rows
+#> # ℹ 3 more variables: shannon_div <dbl>,
+#> #   mean_no_asv_per_species <dbl>, GDE_by_asv <dbl>
 ```
 
-[Note, this list needs to be checked over by e.g. Arnstein.]
 
 ```r
 parasitica_fam <- c("Braconidae", "Ichneumonidae", "Chalcididae", 
@@ -1158,26 +1207,25 @@ parasitica_fam <- c("Braconidae", "Ichneumonidae", "Chalcididae",
 
 parasitica_sn <- get_observations(subset_year = 2020:2022,
                                 subset_families = parasitica_fam,
-                                subset_region = NULL)
+                                subset_habitat = "Semi-nat")
 
 parasitica_sn
-#> # A tibble: 90 × 8
-#>     year locality habitat_…¹ regio…² no_sp…³ shann…⁴ mean_…⁵
-#>    <int> <chr>    <chr>      <chr>     <int>   <dbl>   <dbl>
-#>  1  2020 Skog_01  Forest     Østlan…     208   187.     1.34
-#>  2  2020 Skog_02  Forest     Østlan…     508   447.     1.39
-#>  3  2020 Skog_03  Forest     Østlan…     312   256.     1.56
-#>  4  2020 Skog_04  Forest     Østlan…     130   121.     1.2 
-#>  5  2020 Skog_05  Forest     Østlan…     236   208.     1.43
-#>  6  2020 Skog_06  Forest     Østlan…      99    90.3    1.23
-#>  7  2020 Skog_07  Forest     Østlan…     337   284.     1.46
-#>  8  2020 Skog_08  Forest     Østlan…     114   111.     1.08
-#>  9  2020 Skog_09  Forest     Østlan…     168   152.     1.27
-#> 10  2020 Skog_10  Forest     Østlan…     175   161.     1.22
-#> # … with 80 more rows, 1 more variable: GDE_by_asv <dbl>,
-#> #   and abbreviated variable names ¹​habitat_type,
-#> #   ²​region_name, ³​no_species, ⁴​shannon_div,
-#> #   ⁵​mean_asv_per_species
+#> # A tibble: 60 × 8
+#>     year locality    habitat_type region_name no_species
+#>    <int> <chr>       <chr>        <chr>            <int>
+#>  1  2020 Semi-nat_01 Semi-nat     Østlandet          480
+#>  2  2020 Semi-nat_02 Semi-nat     Østlandet          112
+#>  3  2020 Semi-nat_03 Semi-nat     Østlandet          119
+#>  4  2020 Semi-nat_04 Semi-nat     Østlandet          369
+#>  5  2020 Semi-nat_05 Semi-nat     Østlandet          642
+#>  6  2020 Semi-nat_06 Semi-nat     Østlandet          190
+#>  7  2020 Semi-nat_07 Semi-nat     Østlandet          253
+#>  8  2020 Semi-nat_08 Semi-nat     Østlandet          323
+#>  9  2020 Semi-nat_09 Semi-nat     Østlandet          216
+#> 10  2020 Semi-nat_10 Semi-nat     Østlandet          531
+#> # ℹ 50 more rows
+#> # ℹ 3 more variables: shannon_div <dbl>,
+#> #   mean_no_asv_per_species <dbl>, GDE_by_asv <dbl>
 ```
 
 Divide the richness of Parasitica by Symphyta. [Could make a function for this later on.]
@@ -1218,17 +1266,19 @@ Plot the results and display uncertainty.
 
 ```r
 par_sym_sn_diff
-#> # A tibble: 6 × 6
-#>    year region_name par_per_sym_ri…¹ boot_sd boot_…² boot_…³
-#>   <int> <chr>                  <dbl>   <dbl>   <dbl>   <dbl>
-#> 1  2020 Østlandet              0.288  0.0237   0.246   0.342
-#> 2  2021 Trøndelag              0.888  0.0931   0.692   1    
-#> 3  2021 Østlandet              0.603  0.0535   0.506   0.713
-#> 4  2022 Sørlandet              0.823  0.166    0.526   1    
-#> 5  2022 Trøndelag              0.559  0.0643   0.444   0.699
-#> 6  2022 Østlandet              0.702  0.132    0.468   0.992
-#> # … with abbreviated variable names ¹​par_per_sym_richn,
-#> #   ²​boot_lower2.5, ³​boot_upper97.5
+#> # A tibble: 9 × 6
+#>    year region_name par_per_sym_richn boot_sd boot_lower2.5
+#>   <int> <chr>                   <dbl>   <dbl>         <dbl>
+#> 1  2020 Sørlandet               0.824  0.166          0.520
+#> 2  2020 Trøndelag               0.735  0.0744         0.594
+#> 3  2020 Østlandet               0.444  0.0419         0.366
+#> 4  2021 Sørlandet               0.820  0.166          0.531
+#> 5  2021 Trøndelag               0.731  0.0763         0.600
+#> 6  2021 Østlandet               0.447  0.0417         0.367
+#> 7  2022 Sørlandet               0.819  0.167          0.532
+#> 8  2022 Trøndelag               0.738  0.0810         0.593
+#> 9  2022 Østlandet               0.447  0.0435         0.363
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 
@@ -1236,137 +1286,677 @@ par_sym_sn_diff
 plot(par_sym_sn_diff)
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-73-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-81-1.png" width="672" />
 
 Prepare export format.
 
 
 ```r
-par_sym_sn_exp <- par_sym_sn_diff$bootstrap_summary
+par_sym_sn_exp <- par_sym_sn_boot$bootstrap_summary
 
 par_sym_sn_exp <- par_sym_sn_exp %>% 
+  mutate(reference_high = NA,
+         reference_low = 0,
+         thr = 0.6,
+         i = NA) %>% 
   select(year,
          region = region_name,
-         ind_value = boot_value,
-         ind_sd = boot_sd,
-         ind_lower2.5 = boot_lower2.5,
-         ind_upper97.5 = boot_upper97.5)
+         v = boot_value,
+         sd = boot_sd,
+         reference_high,
+         reference_low,
+         thr,
+         i
+         )
 
-par_sym_sn_exp <- norway_reg_NorIns  %>% 
+par_sym_sn_exp <- norway_reg_NorIns %>% 
   inner_join(par_sym_sn_exp,
             by = c("region" = "region"),
             multiple = "all")
 
-par_sym_sn_exp
-#> Simple feature collection with 6 features and 6 fields
-#> Geometry type: MULTIPOLYGON
-#> Dimension:     XY
-#> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
-#> Projected CRS: ETRS89 / UTM zone 33N
-#> # A tibble: 6 × 7
-#>   region                           geom  year ind_v…¹ ind_sd
-#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.823 0.166 
-#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.888 0.0931
-#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.559 0.0643
-#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.288 0.0237
-#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.603 0.0535
-#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.702 0.132 
-#> # … with 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>, and abbreviated variable name
-#> #   ¹​ind_value
+insect_par_sym_semi_nat <- par_sym_sn_exp
 ```
 
-#### Genetic diversity evenness of flying insects in semi-natural land
-This is not fully implemented yet, and the method shown here functions as a placeholder, awaiting a proper calculation. Here, the intraspecific variation is based simply on the number of unique genetic variants (ASVs), and their relative abundance measured as number of DNA-reads in the samples. But to do this properly, we need to use the full COI sequence to calculate the true GDE (see Connor et al. 2023). This temporarily postponed due to lack of software, but will be updated (and amended here) as soon as possible.
-
-
-Fetch the data.
-
-```r
-richness_sn <- get_observations(subset_year = 2020:2022,
-                                subset_region = NULL)
-```
-
-Calculate the indicator values for each region and year.
+**Also calculate and export only parasitica values**
+Could also do similar with symphyta, if needed.
 
 
 ```r
-gde_sn_boot <- bootstrap_value(df = richness_sn,
-                                   value = GDE_by_asv,
+par_sn_boot <- bootstrap_value(par_sym,
+                                value = no_species_par,
+                                groups = c("year", 
+                                           "region_name"))
+```
+
+
+```r
+par_sn_exp <- par_sn_boot$bootstrap_summary
+
+par_sn_exp <- par_sn_exp %>% 
+  mutate(reference_high = NA,
+         reference_low = 0,
+         thr = 0.6,
+         i = NA) %>% 
+  select(year,
+         region = region_name,
+         v = boot_value,
+         sd = boot_sd,
+         reference_high,
+         reference_low,
+         thr,
+         i
+         )
+
+par_sn_exp <- norway_reg_NorIns %>% 
+  inner_join(par_sn_exp,
+            by = c("region" = "region"),
+            multiple = "all")
+
+insect_par_semi_nat <- par_sn_exp
+```
+
+
+#### Number of alien species in semi-natural land
+Here we measure the prevalence of alien species in the trap catches. We present two options for calculating the indicator, as it is not clear at this point which of them is superior.
+
+**The simplest** approach is to just sum up the number of alien species present in a region, i.e. the species richness of alien species. This can be related to the total species richness of the community, and expressed as the proportion of alien species in the community. The reference state of alien species is zero by definition, since we don't want any alien species. The value for good ecological condition could be set at a low (but arbitrary) proportion of alien species in the community. This is done for the indicator of alien plant species, where the value for good ecological condition is set to 0.05 (< 5 % of the plant community should be alien). For a hyper-diverse community such as insects, this is probably too high a value. In a community of say 20 000 insect species, 5 % would mean 1 000 alien species, which is hard to see as a good condition. It is not clear to us at present what level to set here, but we exemplify the calculations with a good condition set to 0.1 % (< 20 species in a 20 000 species community). It is also likely that the species richness of the entire community will increase, perhaps substantially, with increased sampling. It is not clear if the number of detected native and alien species will increase at the same rate, so it may be that the proportion of alien species will change, perhaps substantially, with increased sampling effort. It may be difficult therefore to interpret this frequency of alien insect species.
+
+In addition, this approach will not take into account the spread of the species, a measure that is especially relevant for rare but increasing species. A species found only once will count as much as a species found in every locality. **To take the prevalence of the species into account**, we can measure the proportion of localities each alien species is observed in. These proportions could then be summed together for at total score of alien species. Here, a species found in all localities will count much more than a species only found once. 
+
+For each alien species, the observation frequency is calculated as the number of localities the species is observed in, divided by the total amount of localities in a geographical region and time period. $$p_i = \frac{1}{N} \sum_{i=1, j=1}^{N}{obs_{ij}},$$ where $obs_ij$ is an observation of species $i$ in locality $j$, and $N$ is the total number of possible observations (localities in the region and time period).
+These proportions are combined into a common score for all alien species simply by summing them together; $$alien~score =\sum_{i=1}^{S}{~p_{i}},$$ where $p_i$ is the observation frequency of species $i$, and $S$ is the set of all observed alien species. If all alien species are present in all localities, the indicator value simply becomes $S$. If the species is not present in all localities, it's influence on the indicator is weighted down linearly with it presence frequency. The uncertainty of both types of indicators is calculated by bootstrapping the set of localities within a temporal and spatial scope, similarly to the other indicators.
+
+**Fetch the species list.**
+
+The alien species observations are stored in a materialized view for convenience. This is simply a list of observations of the alien species of categories LO, PH, HI, or SE, together with the year localities and locality samplings they were observed in. For the purposes of this calculation, we will only consider observations aggregated to the year localities level (and not the prevalence of alien species within locality and season). So the first thing to do is to fetch this list, and aggregate it to the year locality level. This summary is based on the 2023 of the alien species evaluation, and we only consider species that are identified by metabarcoding with identification confidence "Moderate" or "High" (not Low or Poor). In addition, we filter out the forest sites.
+
+
+```r
+alien_obs <- tbl(con,
+                 Id(schema = "views",
+                    table = "alien_obs")) %>% 
+  filter(identification_confidence %in% c("MODERATE", "HIGH"),
+         grepl("Semi-nat", locality))
+```
+
+
+
+```r
+no_alien_obs_ls <- alien_obs %>% 
+  summarize(as.integer(n_distinct(ls_id))) %>% 
+  pull()
+
+no_alien_obs_yl <- alien_obs %>% 
+  summarize(as.integer(n_distinct(yl_id))) %>% 
+  pull()
+
+no_alien_spec <- alien_obs %>% 
+  summarize(as.integer(n_distinct(species_latin_fixed))) %>% 
+  pull()
+
+no_alien_cat <- alien_obs %>% 
+  summarize(as.integer(n_distinct(risikokategori_2023))) %>% 
+  pull()
+```
+
+We can have quick look at some statistics of the data. We see that the project thus far has identified 15 alien species, representing 3 risk-categories, and that the observations area spread across (all) 60 semi-natural localities.
+
+To continue, we aggregate the presences of alien species to locality years, meaning recording in how many localities each alien species were detected at least once.  
+ 
+
+```r
+alien_obs_yl <- alien_obs %>% 
+  group_by(yl_id,
+           locality,
+           year,
+           region_name,
+           risikokategori_2023,
+           species_latin_fixed) %>% 
+  summarize(present = sum(present) > 0,
+            na.rm = TRUE,
+            .groups = "drop") %>% 
+  arrange(locality, species_latin_fixed) %>% 
+  collect(na.rm = TRUE)
+#> Warning: Missing values are always removed in SQL aggregation
+#> functions.
+#> Use `na.rm = TRUE` to silence this warning
+#> This warning is displayed once every 8 hours.
+```
+
+
+```r
+alien_obs_yl
+#> # A tibble: 900 × 8
+#>    yl_id      locality  year region_name risikokategori_2023
+#>    <chr>      <chr>    <int> <chr>       <chr>              
+#>  1 a3f86975-… Semi-na…  2020 Østlandet   LO                 
+#>  2 a3f86975-… Semi-na…  2020 Østlandet   PH                 
+#>  3 a3f86975-… Semi-na…  2020 Østlandet   LO                 
+#>  4 a3f86975-… Semi-na…  2020 Østlandet   LO                 
+#>  5 a3f86975-… Semi-na…  2020 Østlandet   PH                 
+#>  6 a3f86975-… Semi-na…  2020 Østlandet   LO                 
+#>  7 a3f86975-… Semi-na…  2020 Østlandet   LO                 
+#>  8 a3f86975-… Semi-na…  2020 Østlandet   LO                 
+#>  9 a3f86975-… Semi-na…  2020 Østlandet   LO                 
+#> 10 a3f86975-… Semi-na…  2020 Østlandet   SE                 
+#> # ℹ 890 more rows
+#> # ℹ 3 more variables: species_latin_fixed <chr>,
+#> #   present <lgl>, na.rm <lgl>
+```
+
+Next step is to bootstrap the alien observations to get the uncertainty measurement. This has to be done in a slightly different way than for the aggregated diversity or biomass values that we have used for the other indicators. Here we have a set of alien species presences for a locality, and when we bootstrap the localities, all these presences should go together, as they represent a coherent community. So we first have to take bootstrap samples of sets of localities (with replacement). Then we calculate the presence (or presence frequency) of each alien species $p_i$, before we can summarize all of these into the indicator value $H_{alien}$. This is implemented in a separate function `bootstrap_alien_obs` in the `Norimon` package, were we can optionally either sum the species numbers, or sum the species presence frequencies. Note that for all alien species $i$ recorded in at least one locality, we have recorded the presences and absences in all localities $j$. This is needed for his function to work. This function is more computer intensive than the bootstrap of already aggregated values, so we employ parallelization through the `parallel` package internally.
+
+**We first calculate the indicator based on the the number of alien species** 
+
+
+```r
+alien_sn_boot <- bootstrap_alien_obs(alien_obs_yl,
+                                     groups = c("year",
+                                                "region_name"),
+                                     rolling_year_window = TRUE,
+                                     only_no_spec = TRUE)
+```
+
+
+```r
+plot(alien_sn_boot)
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-90-1.png" width="672" />
+
+The jagged lines in the density plot comes from the discrete values of number of species. Østlandet has the most alien species, followed by Sørlandet, and lastly Trøndelag. Trøndelag has a fewer total number of species, but similar amount of alien species in each locality, leading to a very narrow confidence band from the bootstrap.
+
+
+```r
+ts_plot(alien_sn_boot)
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-91-1.png" width="672" />
+
+As explained above, these values could be expressed as a proportion of the the total species richness. Since the total species richness is different for the different regions, we (currently) have to do this separately for each region. 
+
+
+```r
+alien_obs_yl_sor <- alien_obs_yl %>% 
+  filter(region_name == "Sørlandet")
+
+alien_obs_yl_ost <- alien_obs_yl %>% 
+  filter(region_name == "Østlandet")
+
+alien_obs_yl_trond <- alien_obs_yl %>% 
+  filter(region_name == "Trøndelag")
+```
+ 
+
+```r
+alien_sn_sor_boot <- bootstrap_alien_obs(alien_obs_yl_sor,
+                                     groups = c("year",
+                                                "region_name"),
+                                     rolling_year_window = TRUE,
+                                     only_no_spec = TRUE)
+alien_sn_ost_boot <- bootstrap_alien_obs(alien_obs_yl_ost,
+                                     groups = c("year",
+                                                "region_name"),
+                                     rolling_year_window = TRUE,
+                                     only_no_spec = TRUE)
+alien_sn_trond_boot <- bootstrap_alien_obs(alien_obs_yl_trond,
+                                     groups = c("year",
+                                                "region_name"),
+                                     rolling_year_window = TRUE,
+                                     only_no_spec = TRUE)
+```
+
+Next, we fetch a record of the species richness found so far, in each region.
+
+
+```r
+region_richn <- get_observations(agg_level = "region_habitat")
+```
+
+```r
+region_richn
+#> # A tibble: 4 × 6
+#>   habitat_type region_name no_species shannon_div
+#>   <chr>        <chr>            <int>       <dbl>
+#> 1 Forest       Østlandet        13726       4924.
+#> 2 Semi-nat     Sørlandet         6679       3204.
+#> 3 Semi-nat     Trøndelag        10063       3359.
+#> 4 Semi-nat     Østlandet        15515       5716.
+#> # ℹ 2 more variables: mean_no_asv_per_species <dbl>,
+#> #   GDE_by_asv <dbl>
+```
+
+
+
+```r
+region_richn_sor <- region_richn %>% 
+  filter(region_name == "Sørlandet",
+         habitat_type == "Semi-nat") %>% 
+  select(no_species) %>% 
+  pull() %>% 
+  as.numeric()
+
+region_richn_ost <- region_richn %>% 
+  filter(region_name == "Østlandet",
+         habitat_type == "Semi-nat") %>% 
+  select(no_species) %>% 
+  pull() %>% 
+  as.numeric()
+
+region_richn_trond <- region_richn %>% 
+  filter(region_name == "Trøndelag",
+         habitat_type == "Semi-nat") %>% 
+  select(no_species) %>% 
+  pull() %>% 
+  as.numeric()
+
+```
+Next, we scale each indicator to the total number of observed species.
+
+
+```r
+alien_sn_sor_prop <- alien_sn_sor_boot / region_richn_sor
+alien_sn_ost_prop <- alien_sn_ost_boot / region_richn_ost
+alien_sn_trond_prop <- alien_sn_trond_boot / region_richn_trond
+```
+
+We could scale these values with a reference value of 0, and a breaking point of 0.001. eaTools has a function for that, but for this to work, we currently can only operate on the aggregate values of the indicator (not the bootstrap samples).
+
+
+```r
+alien_sn_prop <- alien_sn_sor_prop[[1]] %>% 
+  rbind(alien_sn_ost_prop[[1]]) %>% 
+  rbind(alien_sn_trond_prop[[1]]) %>% 
+  select(year,
+         region = region_name,
+         alien_score = boot_value,
+         boot_sd)
+```
+
+```r
+alien_sn_prop_sf <- norway_reg_NorIns  %>% 
+  inner_join(alien_sn_prop,
+            by = c("region" = "region"),
+            multiple = "all")
+```
+
+
+```r
+alien_sn_prop_sf$alien_score_scaled <- eaTools::ea_normalise(alien_sn_prop_sf, 
+                                              vector = "alien_score", 
+                                              upper_reference_level = 0.01,
+                                              lower_reference_level = 0,
+                                              break_point = 0.001, 
+                                              reverse = TRUE,
+                                              plot = FALSE)
+```
+
+This calculation is then an sf-object that can be exported.
+
+
+```r
+
+alien_sn_exp <- alien_sn_prop_sf %>% 
+  mutate(reference_high = 0.01,
+         reference_low = 0,
+         thr = 0.001) %>% 
+  select(year,
+         region,
+         v = alien_score,
+         sd = boot_sd,
+         reference_high,
+         reference_low,
+         thr,
+         i = alien_score_scaled
+         )
+
+
+
+insect_alien_prop_semi_nat <- alien_sn_exp
+```
+
+
+**Secondly, we calculate the indicator based on the distribution of the alien species**
+
+We call this alien_H, since the calculation resembles Hill numbers from calculations of Shannon information.
+ 
+
+```r
+alien_H_boot <- bootstrap_alien_obs(alien_obs_yl,
+                                    groups = c("year",
+                                               "region_name"),
+                                    rolling_year_window = TRUE,
+                                    only_no_spec = FALSE)
+```
+
+```r
+alien_H_boot
+#> # A tibble: 9 × 6
+#>    year region_name alien_score boot_sd boot_lower2.5
+#>   <int> <chr>             <dbl>   <dbl>         <dbl>
+#> 1  2020 Sørlandet         0.894   0.248         0.4  
+#> 2  2020 Trøndelag         0.695   0.150         0.4  
+#> 3  2020 Østlandet         0.934   0.159         0.633
+#> 4  2021 Sørlandet         0.898   0.248         0.4  
+#> 5  2021 Trøndelag         0.701   0.159         0.4  
+#> 6  2021 Østlandet         0.934   0.152         0.667
+#> 7  2022 Sørlandet         0.893   0.244         0.5  
+#> 8  2022 Trøndelag         0.699   0.162         0.4  
+#> 9  2022 Østlandet         0.936   0.158         0.633
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
+```
+
+
+```r
+plot(alien_H_boot)
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-104-1.png" width="672" />
+<br/>
+Interstingly, by this calculation method, the different regions have much more similar values. Specifically, the southern region has comparable values to the eastern region, while Trøndelag has lower values. This indicates that region Østlandet has markedly higher number of alien species than the Southern region, but with generally more limited distribution. While in comparison, the alien species in the south are more frequently distributed throughout the sampling localities.
+
+
+```r
+ts_plot(alien_H_boot)
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-105-1.png" width="672" />
+
+This indicator also has a natural reference value, with zero presences of alien species, meaning an alien score of 0. We could scale this indicator similarly as with the indicator based on the pure number of alien species. Similar to that case, there is no upper limit to how many alien species there can be, but we set a high enough value, and use a breaking point for the scaling, this upper end point has limited influence.
+
+We don't have enough experience to determine an appropriate breakpoint for the scaling at this point, or an upper value, but exemplify the calculation with some subjective values
+
+
+```r
+
+alien_H_boot_sf <- alien_H_boot[[1]] %>% 
+  select(year,
+         region = region_name,
+         alien_score = boot_value,
+         boot_sd)
+
+alien_H_boot_sf <- norway_reg_NorIns  %>% 
+  inner_join(alien_H_boot_sf,
+            by = c("region" = "region"),
+            multiple = "all")
+
+
+alien_H_boot_sf$alien_score_scaled <- eaTools::ea_normalise(alien_H_boot_sf,
+                                                            vector = "alien_score", 
+                                                            upper_reference_level = 10,
+                                                            lower_reference_level = 0,
+                                                            break_point = 2, 
+                                                            reverse = TRUE,
+                                                            plot = FALSE)
+```
+
+This is then ready for export.
+
+```r
+alien_H_sn_exp <- alien_H_boot_sf %>% 
+  mutate(reference_high = 10,
+         reference_low = 0,
+         thr = 2) %>% 
+  select(year,
+         region,
+         v = alien_score,
+         sd = boot_sd,
+         reference_high,
+         reference_low,
+         thr,
+         i = alien_score_scaled
+         )
+
+
+
+insect_alien_H_semi_nat <- alien_H_sn_exp
+```
+
+
+#### Genetic diversity of flying insects in semi-natural land
+The genetic diversity (GD) of a species is a measurement of the differences between DNA variants within the same species, here calculated on the COI region of the mitochondrial DNA. It is a different measurement in principle than the total number of species in a community, and the number of distinct DNA variants in a community. It is an empirical question whether these measurement correlate on the global or local scale. For instance, Miraldo et al. (2016) found global patterns of decreasing GD near the poles, coinciding with global patterns of species richness. These patterns may share causes, such as higher mutation rates and shorter generation times in warmer climates (Rohde K. 1992). However, it is not clear if and how these patterns are distributed within a smaller region, such as within Norway. Spatial and temporal trends in genetic diversity may indicate pressures on species with reduced effective population sizes, before the complete loss of a species.
+
+Following e.g. Miranda et al. (2016), we define GD as the average number of nucleotide differences per nucleotide site across all pairwise sequence comparisons within a species. Mathematically this can be expressed as: $$\hat{\prod}_s = \frac{1}{(\frac{n}{2})} \sum_{i=1}^{n-1}\sum_{j=i+1}^{n}\frac{k_{ij}}{m_{ij}},$$ where $s$ is a single species, $k_{ij}$ is the number of different nucleotides between sequence $i$ and sequence $j$, $m_{ij}$ is the number of shared base pairs between sequence $i$ and $j$, and $(\frac{n}{2})$ represents the number of pairwise comparisons made (Theodoridis et al 2020). Following French et al. (2023), we here considered only species that where found at least 3 separate times, to make sure we had enough samples to observe any intraspecific diversity.
+
+These species-specific measurements can be combined into single community measurements in several ways. Firstly, we can simply take the average GD of a community of species (GDM), or $$GDM = \frac{1}{S}\sum_{s=1}^{S}\hat{\prod}_s, $$ where $S$ is the total number of species, and $s$ is each species (Theodoridis et al. 2020). The mean genetic diversity of a community is a natural starting point, but can - analogous to species richness -, hide important patterns in the relative contributions from individual species. In short, the distributions of GD might be skewed, so that a few species carries the most influence on the measurement. Therefore, French et al. (2023) has developed a genetic evenness measurement (GDE), that is analogous to Shannon's entropy for communities on the species level. This is defined as $$\frac{exp(\sum_{i=0}^{N} - \hat{\prod}_i ln(\hat{\prod}_i))}{N},$$ where the denominator $N$ is the number of species in the community, and $\hat{\prod}_i$ is the GD calculated above for a single species. The numerator is the Hill number of the Shannon entropy. This results in a measurement that can be compared across communities of different species richness.
+
+We have calculated both the GDM and GDE, but here show only the results of the GDM. The calculated GDE values showed a strong relationship with the number of species in the samples. This could indicate a possible error in the calculation routines, or a more fundamental problem, which needs to be checked before going forward with this measurement. Alternatively, the calculation is correct, but then the values are superfluous, since they give essentially the same information as the total richness, already calculated as a separate indicator.
+
+Therefore, we here present only the GDM as an indicator. Note that this is a relatively new measures, and this is the first time it is calculated for large insect communities in Norway. We need further experience with these measurements to tease out potential pro's and con's in the Norwegian setting. The raw-data on the DNA-sequences is as of yet not publicly available, and the calculations of GDM and GDE is not shown in detail. 
+
+
+
+```r
+gdm <- readRDS("data/GDM_year_locality.rds")
+```
+
+The `gdm` contains the mean genetic diversity for the species found in every year locality combination. This is calculated after first filtering on species that is found at least 3 times.
+
+The `gdm` object contains the year_locality_ids as a key, which we can join to the relevant metadata, e.g. through the alien observation object used above.
+
+
+
+```r
+gdm_sn <- alien_obs_yl  %>% 
+  ungroup() %>% 
+  select(yl_id, locality, year, region_name) %>% 
+  distinct() %>% 
+  inner_join(gdm, by = c("yl_id"= "year_locality_id"))
+
+gdm_sn
+#> # A tibble: 60 × 5
+#>    yl_id                  locality  year region_name     GDM
+#>    <chr>                  <chr>    <int> <chr>         <dbl>
+#>  1 a3f86975-b0c2-4200-98… Semi-na…  2020 Østlandet   0.00723
+#>  2 11b4435f-8cc9-4ba2-9d… Semi-na…  2020 Østlandet   0.00947
+#>  3 0b2956ca-3449-47b8-b9… Semi-na…  2020 Østlandet   0.00883
+#>  4 f0412a3b-7864-472d-a8… Semi-na…  2020 Østlandet   0.00618
+#>  5 b462682b-d037-43fd-b1… Semi-na…  2020 Østlandet   0.00973
+#>  6 c76f63db-56a2-47c4-b2… Semi-na…  2020 Østlandet   0.00950
+#>  7 0256d2aa-07f1-45ce-a3… Semi-na…  2020 Østlandet   0.00613
+#>  8 271cb773-e404-46a7-a7… Semi-na…  2020 Østlandet   0.00999
+#>  9 9768a7ca-0bc8-43bf-94… Semi-na…  2020 Østlandet   0.0111 
+#> 10 6a19c4e6-8226-432c-94… Semi-na…  2020 Østlandet   0.00840
+#> # ℹ 50 more rows
+```
+
+Since these calculations are so novel, it can be worth spending some time exploring how the mean genetic diversity relates to other richness measurement at the locality level. Remember that globally, the species richness and genetic mean diversity show a general positive correlation (Miraldo et al. 2016). 
+
+
+```r
+richness_sn <- get_observations(agg_level = "year_locality",
+                                subset_habitat = "Semi-nat")
+```
+
+
+```r
+richness_gdm_join <- richness_sn %>% 
+  inner_join(gdm_sn,
+             by = c("locality" = "locality",
+                    "year" = "year",
+                    "region_name" = "region_name"))
+```
+
+
+```r
+ggplot(richness_gdm_join) +
+  geom_point(aes(x = no_species,
+                 y = GDM,
+                 color = region_name)) +
+  geom_smooth(aes(x = no_species,
+                 y = GDM,
+                 color = region_name),
+              method = lm) +
+  NinaR::scale_color_nina(name = "Region") +
+  xlab("Antall arter")
+#> `geom_smooth()` using formula = 'y ~ x'
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-112-1.png" width="672" />
+<br/>
+Interestingly, and perhaps reassuringly, the number of species doesn't seem to be clearly related to the average genetic diversity. We can look at the mean number of ASVs as well.
+
+
+```r
+ggplot(richness_gdm_join) +
+  geom_point(aes(x = mean_no_asv_per_species,
+                 y = GDM,
+                 color = region_name)) +
+  geom_smooth(aes(x = mean_no_asv_per_species,
+                 y = GDM,
+                 color = region_name),
+              method = lm) +
+  NinaR::scale_color_nina(name = "Region") +
+  xlab("Antall genetiske varianter per art")
+#> `geom_smooth()` using formula = 'y ~ x'
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-113-1.png" width="672" />
+<br/>
+Here we see a positive relationship in Trøndelag (although uncertain), but not the other regions.
+
+
+```r
+ggplot(richness_gdm_join) +
+  geom_point(aes(x = no_species,
+                 y = mean_no_asv_per_species,
+                 color = region_name)) +
+  geom_smooth(aes(x = no_species,
+                 y = mean_no_asv_per_species,
+                 color = region_name),
+              method = lm) +
+  NinaR::scale_color_nina(name = "Region") +
+  xlab("Antall arter") +
+  ylab("Antall genetiske varianter per art")
+#> `geom_smooth()` using formula = 'y ~ x'
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-114-1.png" width="672" />
+<br/>
+While, for comparison, the number of ASVs (genetic variants) and the number of species per locality show more clear relationships. This was just a quick look at the genetic aspect of biodiversity, and we would require further analysis to interpret them robustly. In the meantime, we continue with the calculation example of the indicators. We bootstrap the mean genetic diversity like with the other indicators. 
+
+
+```r
+gdm_sn_boot <- bootstrap_value(df = gdm_sn,
+                                   value = GDM,
                                    groups = c("year",
                                               "region_name")
                                    )
+gdm_sn_boot
+#> # A tibble: 9 × 6
+#>    year region_name     GDM  boot_sd boot_lower2.5
+#>   <int> <chr>         <dbl>    <dbl>         <dbl>
+#> 1  2020 Sørlandet   0.00895 0.000561       0.00797
+#> 2  2020 Trøndelag   0.00843 0.000366       0.00770
+#> 3  2020 Østlandet   0.00881 0.000265       0.00827
+#> 4  2021 Sørlandet   0.00893 0.000582       0.00791
+#> 5  2021 Trøndelag   0.00841 0.000364       0.00765
+#> 6  2021 Østlandet   0.00881 0.000263       0.00829
+#> 7  2022 Sørlandet   0.00891 0.000563       0.00797
+#> 8  2022 Trøndelag   0.00840 0.000353       0.00769
+#> 9  2022 Østlandet   0.00883 0.000269       0.00829
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
+
+
+
+```r
+plot(gdm_sn_boot)
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-116-1.png" width="672" />
+
+So far, Trøndelag seem to have lower genetic diversity than Sørlandet and Østlandet.
+
+
+```r
+ts_plot(gdm_sn_boot)
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-117-1.png" width="672" />
+
+Although, as with the other indicators, we see variation between years. This can be seen if we do not bootstrap on a rolling 5 year window.
+ 
+
+```r
+gdm_sn_yearly_boot <- bootstrap_value(df = gdm_sn,
+                                      value = GDM,
+                                      groups = c("year",
+                                                 "region_name"),
+                                      rolling_year_window = FALSE
+                                   )
+```
+
+
+
+```r
+ts_plot(gdm_sn_yearly_boot)
+```
+
+<img src="insectIndicators_files/figure-html/unnamed-chunk-119-1.png" width="672" />
 
 Compare to arbitrary reference value and normalize.
 
 ```r
-gde_sn_ref <- 0.7
+gdm_sn_ref <- 0.02
   
-gde_sn_diff <- gde_sn_boot / gde_sn_ref
+gdm_sn_diff <- gdm_sn_boot / gdm_sn_ref
 ```
 
 Plot the results and display uncertainty.
 
 ```r
-gde_sn_diff
-#> # A tibble: 6 × 6
-#>    year region_name GDE_by_asv boot_sd boot_lower2.5 boot_…¹
-#>   <int> <chr>            <dbl>   <dbl>         <dbl>   <dbl>
-#> 1  2020 Østlandet        0.868  0.0300         0.812   0.93 
-#> 2  2021 Trøndelag        0.754  0.0258         0.703   0.803
-#> 3  2021 Østlandet        0.825  0.0182         0.788   0.861
-#> 4  2022 Sørlandet        0.811  0.0286         0.753   0.869
-#> 5  2022 Trøndelag        0.747  0.0221         0.706   0.794
-#> 6  2022 Østlandet        0.932  0.0150         0.902   0.961
-#> # … with abbreviated variable name ¹​boot_upper97.5
+gdm_sn_diff
+#> # A tibble: 9 × 6
+#>    year region_name   GDM boot_sd boot_lower2.5
+#>   <int> <chr>       <dbl>   <dbl>         <dbl>
+#> 1  2020 Sørlandet   0.448  0.0281         0.398
+#> 2  2020 Trøndelag   0.421  0.0183         0.385
+#> 3  2020 Østlandet   0.441  0.0133         0.414
+#> 4  2021 Sørlandet   0.446  0.0291         0.395
+#> 5  2021 Trøndelag   0.421  0.0182         0.383
+#> 6  2021 Østlandet   0.440  0.0132         0.414
+#> 7  2022 Sørlandet   0.446  0.0281         0.398
+#> 8  2022 Trøndelag   0.420  0.0176         0.384
+#> 9  2022 Østlandet   0.441  0.0134         0.415
+#> # ℹ 1 more variable: boot_upper97.5 <dbl>
 ```
 
 
 ```r
-plot(gde_sn_diff)
+plot(gdm_sn_diff,
+     limit = c(0, 1))
 ```
 
-<img src="insectIndicators_files/figure-html/unnamed-chunk-79-1.png" width="672" />
+<img src="insectIndicators_files/figure-html/unnamed-chunk-122-1.png" width="672" />
 
 Prepare export format.
 
 
 ```r
-gde_sn_to_exp <- gde_sn_diff$bootstrap_summary
+gdm_sn_to_exp <- gdm_sn_boot$bootstrap_summary
 
-gde_sn_to_exp <- gde_sn_to_exp %>% 
+gdm_sn_to_exp <- gdm_sn_to_exp %>% 
+  mutate(reference_high = NA,
+         reference_low = 0,
+         thr = 0.6,
+         i = NA) %>% 
   select(year,
          region = region_name,
-         ind_value = boot_value,
-         ind_sd = boot_sd,
-         ind_lower2.5 = boot_lower2.5,
-         ind_upper97.5 = boot_upper97.5)
+         v = boot_value,
+         sd = boot_sd,
+         reference_high,
+         reference_low,
+         thr,
+         i
+         )
 
-gde_sn_to_exp <- norway_reg_NorIns  %>% 
-  inner_join(gde_sn_to_exp,
+gdm_sn_to_exp <- norway_reg_NorIns %>% 
+  inner_join(gdm_sn_to_exp,
             by = c("region" = "region"),
             multiple = "all")
 
-gde_sn_to_exp
-#> Simple feature collection with 6 features and 6 fields
-#> Geometry type: MULTIPOLYGON
-#> Dimension:     XY
-#> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
-#> Projected CRS: ETRS89 / UTM zone 33N
-#> # A tibble: 6 × 7
-#>   region                           geom  year ind_v…¹ ind_sd
-#>   <chr>              <MULTIPOLYGON [m]> <int>   <dbl>  <dbl>
-#> 1 Sørlandet (((-31605 6513854, -31464 …  2022   0.811 0.0286
-#> 2 Trøndelag (((227783 7068646, 227876 …  2021   0.754 0.0258
-#> 3 Trøndelag (((227783 7068646, 227876 …  2022   0.747 0.0221
-#> 4 Østlandet (((179915 6537265, 180246 …  2020   0.868 0.0300
-#> 5 Østlandet (((179915 6537265, 180246 …  2021   0.825 0.0182
-#> 6 Østlandet (((179915 6537265, 180246 …  2022   0.932 0.0150
-#> # … with 2 more variables: ind_lower2.5 <dbl>,
-#> #   ind_upper97.5 <dbl>, and abbreviated variable name
-#> #   ¹​ind_value
+insect_genetic_div_semi_nat <- gdm_sn_to_exp
 ```
 
 ### Calculation of NBBM indicators
@@ -1383,7 +1973,6 @@ humlesommerfConnect(host = "ninradardata01.nina.no")
 
 
 
-
 ```r
 allBombusGressmark2022 <- getAllData(type = "bumblebees",
                           habitat = "gressmark",
@@ -1395,8 +1984,8 @@ surveyBarplot(allBombusGressmark2022)
 ```
 
 <div class="figure">
-<img src="insectIndicators_files/figure-html/bombusGressBarplot-1.png" alt="Bumblebees in grasslands 2021" width="672" />
-<p class="caption">(\#fig:bombusGressBarplot)Bumblebees in grasslands 2021</p>
+<img src="insectIndicators_files/figure-html/bombusGressBarplot-1.png" alt="Bumblebees in grasslands 2022" width="672" />
+<p class="caption">(\#fig:bombusGressBarplot)Bumblebees in grasslands 2022</p>
 </div>
 
 
@@ -1489,163 +2078,9 @@ sInd2022VestGress <- calcInd(type = "Sommerfugl",
                               save.draws = T)
 ```
 
-
-The calculations for earlier years are already present as datasets in the R-package and can be fetched individually. Once this is done, we can plot the timeseries of values using the function `indPlot`.
-
+The calculations for earlier years are already present as datasets in the R-package and can be fetched individually with `data("dataset")`. Once this is done, we can plot the timeseries of values using the function `indPlot`.
 
 
-
-```r
-data("sInd2022VestGress")
-data("sInd2022VestSkog")
-data("sInd2022TrondGress")
-data("sInd2022TrondSkog")
-data("sInd2022OstGress")
-data("sInd2022OstSkog")
-data("sInd2022SorGress")
-data("sInd2022SorSkog")
-
-data("sInd2021TrondGress")
-data("sInd2021TrondSkog")
-data("sInd2021OstGress")
-data("sInd2021OstSkog")
-data("sInd2021SorGress")
-data("sInd2021SorSkog")
-
-data("sInd2020TrondGress")
-data("sInd2020TrondSkog")
-data("sInd2020OstGress")
-data("sInd2020OstSkog")
-data("sInd2020SorGress")
-data("sInd2020SorSkog")
-
-
-data("sInd2019TrondGress")
-data("sInd2019TrondSkog")
-data("sInd2019OstGress")
-data("sInd2019OstSkog")
-data("sInd2019SorGress")
-data("sInd2019SorSkog")
-data("sInd2018TrondGress")
-data("sInd2018TrondSkog")
-data("sInd2018OstGress")
-data("sInd2018OstSkog")
-data("sInd2018SorGress")
-data("sInd2018SorSkog")
-data("sInd2017TrondGress")
-data("sInd2017TrondSkog")
-data("sInd2017OstGress")
-data("sInd2017OstSkog")
-data("sInd2017SorGress")
-data("sInd2017SorSkog")
-data("sInd2016TrondGress")
-data("sInd2016TrondSkog")
-data("sInd2016OstGress")
-data("sInd2016OstSkog")
-data("sInd2016SorGress")
-data("sInd2016SorSkog")
-data("sInd2015TrondGress")
-data("sInd2015TrondSkog")
-data("sInd2015OstGress")
-data("sInd2015OstSkog")
-data("sInd2015SorGress")
-data("sInd2015SorSkog")
-data("sInd2014TrondGress")
-data("sInd2014TrondSkog")
-data("sInd2014OstGress")
-data("sInd2014OstSkog")
-data("sInd2014SorGress")
-data("sInd2014SorSkog")
-data("sInd2013TrondGress")
-data("sInd2013TrondSkog")
-data("sInd2013OstGress")
-data("sInd2013OstSkog")
-data("sInd2013SorGress")
-data("sInd2013SorSkog")
-data("sInd2012TrondGress")
-data("sInd2012TrondSkog")
-data("sInd2012OstGress")
-data("sInd2012OstSkog")
-data("sInd2011OstGress")
-data("sInd2011OstSkog")
-data("sInd2010OstGress")
-data("sInd2010OstSkog")
-data("sInd2009OstGress")
-data("sInd2009OstSkog")
-
-data("hInd2022VestGress")
-data("hInd2022VestSkog")
-data("hInd2022TrondGress")
-data("hInd2022TrondSkog")
-data("hInd2022OstGress")
-data("hInd2022OstSkog")
-data("hInd2022SorGress")
-data("hInd2022SorSkog")
-data("hInd2021TrondGress")
-data("hInd2021TrondSkog")
-data("hInd2021OstGress")
-data("hInd2021OstSkog")
-data("hInd2021SorGress")
-data("hInd2021SorSkog")
-data("hInd2020TrondGress")
-data("hInd2020TrondSkog")
-data("hInd2020OstGress")
-data("hInd2020OstSkog")
-data("hInd2020SorGress")
-data("hInd2020SorSkog")
-data("hInd2019TrondGress")
-data("hInd2019TrondSkog")
-data("hInd2019OstGress")
-data("hInd2019OstSkog")
-data("hInd2019SorGress")
-data("hInd2019SorSkog")
-data("hInd2018TrondGress")
-data("hInd2018TrondSkog")
-data("hInd2018OstGress")
-data("hInd2018OstSkog")
-data("hInd2018SorGress")
-data("hInd2018SorSkog")
-data("hInd2017TrondGress")
-data("hInd2017TrondSkog")
-data("hInd2017OstGress")
-data("hInd2017OstSkog")
-data("hInd2017SorGress")
-data("hInd2017SorSkog")
-data("hInd2016TrondGress")
-data("hInd2016TrondSkog")
-data("hInd2016OstGress")
-data("hInd2016OstSkog")
-data("hInd2016SorGress")
-data("hInd2016SorSkog")
-data("hInd2015TrondGress")
-data("hInd2015TrondSkog")
-data("hInd2015OstGress")
-data("hInd2015OstSkog")
-data("hInd2015SorGress")
-data("hInd2015SorSkog")
-data("hInd2014TrondGress")
-data("hInd2014TrondSkog")
-data("hInd2014OstGress")
-data("hInd2014OstSkog")
-data("hInd2014SorGress")
-data("hInd2014SorSkog")
-data("hInd2013TrondGress")
-data("hInd2013TrondSkog")
-data("hInd2013OstGress")
-data("hInd2013OstSkog")
-data("hInd2013SorGress")
-data("hInd2013SorSkog")
-data("hInd2012TrondGress")
-data("hInd2012TrondSkog")
-data("hInd2012OstGress")
-data("hInd2012OstSkog")
-data("hInd2011OstGress")
-data("hInd2011OstSkog")
-data("hInd2010OstGress")
-data("hInd2010OstSkog")
-data("hInd2009OstGress")
-data("hInd2009OstSkog")
-```
 
 Once loaded, the yearly datasets can be organized through the convenience function `collectIndData`, and plotted with `indPlot`.
 
@@ -1704,9 +2139,13 @@ norway_reg_NBBM <- bombLepiSurv::get_map() %>%
 ```r
 
 hGressIndVals_to_exp <- hGressIndVals %>% 
+  mutate(reference_high = 1,
+         reference_low = 0,
+         thr = 0.6,
+         v = NA) %>% 
   select(year = Year,
          region = Region,
-         ind_value = Indicator_value,
+         i = Indicator_value,
          ind_sd = NULL,
          ind_lower2.5 = lower95,
          ind_upper97.5 = upper95)
@@ -1716,39 +2155,21 @@ hGressIndVals_to_exp <- norway_reg_NBBM  %>%
             by = c("region" = "region"),
             multiple = "all")
 
-hGressIndVals_to_exp
-#> Simple feature collection with 36 features and 5 fields
-#> Geometry type: MULTIPOLYGON
-#> Dimension:     XY
-#> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
-#> Projected CRS: ETRS89 / UTM zone 33N
-#> # A tibble: 36 × 6
-#>    region                         geom  year ind_v…¹ ind_l…²
-#>    <chr>            <MULTIPOLYGON [m]> <int>   <dbl>   <dbl>
-#>  1 Sør    (((-31605 6513854, -31464 6…  2013   0.596   0.423
-#>  2 Sør    (((-31605 6513854, -31464 6…  2014   0.635   0.5  
-#>  3 Sør    (((-31605 6513854, -31464 6…  2015   0.519   0.385
-#>  4 Sør    (((-31605 6513854, -31464 6…  2016   0.635   0.462
-#>  5 Sør    (((-31605 6513854, -31464 6…  2017   0.615   0.423
-#>  6 Sør    (((-31605 6513854, -31464 6…  2018   0.577   0.462
-#>  7 Sør    (((-31605 6513854, -31464 6…  2019   0.519   0.422
-#>  8 Sør    (((-31605 6513854, -31464 6…  2020   0.593   0.444
-#>  9 Sør    (((-31605 6513854, -31464 6…  2021   0.519   0.389
-#> 10 Sør    (((-31605 6513854, -31464 6…  2022   0.593   0.370
-#> # … with 26 more rows, 1 more variable:
-#> #   ind_upper97.5 <dbl>, and abbreviated variable names
-#> #   ¹​ind_value, ²​ind_lower2.5
+insect_bumblebees_semi_nat <- hGressIndVals_to_exp
 ```
 
 
 
 ```r
 
-
 sGressIndVals_to_exp <- sGressIndVals %>% 
+  mutate(reference_high = 1,
+         reference_low = 0,
+         thr = 0.6,
+         v = NA) %>% 
   select(year = Year,
          region = Region,
-         ind_value = Indicator_value,
+         i = Indicator_value,
          ind_sd = NULL,
          ind_lower2.5 = lower95,
          ind_upper97.5 = upper95)
@@ -1758,33 +2179,35 @@ sGressIndVals_to_exp <- norway_reg_NBBM  %>%
             by = c("region" = "region"),
             multiple = "all")
 
-sGressIndVals_to_exp
-#> Simple feature collection with 36 features and 5 fields
-#> Geometry type: MULTIPOLYGON
-#> Dimension:     XY
-#> Bounding box:  xmin: -76208 ymin: 6450245 xmax: 468357.5 ymax: 7237323
-#> Projected CRS: ETRS89 / UTM zone 33N
-#> # A tibble: 36 × 6
-#>    region                         geom  year ind_v…¹ ind_l…²
-#>    <chr>            <MULTIPOLYGON [m]> <int>   <dbl>   <dbl>
-#>  1 Sør    (((-31605 6513854, -31464 6…  2013   0.259   0.151
-#>  2 Sør    (((-31605 6513854, -31464 6…  2014   0.374   0.273
-#>  3 Sør    (((-31605 6513854, -31464 6…  2015   0.345   0.230
-#>  4 Sør    (((-31605 6513854, -31464 6…  2016   0.302   0.216
-#>  5 Sør    (((-31605 6513854, -31464 6…  2017   0.345   0.237
-#>  6 Sør    (((-31605 6513854, -31464 6…  2018   0.309   0.201
-#>  7 Sør    (((-31605 6513854, -31464 6…  2019   0.388   0.281
-#>  8 Sør    (((-31605 6513854, -31464 6…  2020   0.419   0.284
-#>  9 Sør    (((-31605 6513854, -31464 6…  2021   0.399   0.270
-#> 10 Sør    (((-31605 6513854, -31464 6…  2022   0.358   0.25 
-#> # … with 26 more rows, 1 more variable:
-#> #   ind_upper97.5 <dbl>, and abbreviated variable names
-#> #   ¹​ind_value, ²​ind_lower2.5
+insect_butterflies_semi_nat <- sGressIndVals_to_exp
 ```
 
 ### Eksport file (final product)
 <!-- Export final file. Ideally a georeferenced shape or raster with indicators values (raw and normalised), reference values and errors. -->
 
-TBD. Need to consult with others.
+
+```r
+to_export <- ls()[grepl("insect_", ls())] %>% 
+  as.list
+ 
+```
+
+
+```r
+
+write_indicators <- function(x,
+                             out_dir = "indicators/indicatorMaps",
+                             suffix = ".shp"){
+  
+  system(paste0("mkdir -p ", out_dir, "/", x))
+  
+  write_sf(get(x[1]),
+           dsn = paste0(out_dir,"/", x, "/", x, suffix))
+  
+}
+
+lapply(to_export, write_indicators)
+```
+
 
 

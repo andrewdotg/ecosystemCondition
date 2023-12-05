@@ -24,7 +24,7 @@ September 2023
 
 
 ```{=html}
-<div class="tabwid"><style>.cl-cf5746bc{table-layout:auto;}.cl-cf506c98{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cf506cac{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cf53bb78{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-cf53d680{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cf53d68a{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-cf5746bc'><thead><tr style="overflow-wrap:break-word;"><th class="cl-cf53d680"><p class="cl-cf53bb78"><span class="cl-cf506c98">Ecosystem</span></p></th><th class="cl-cf53d680"><p class="cl-cf53bb78"><span class="cl-cf506c98">Økologisk egenskap</span></p></th><th class="cl-cf53d680"><p class="cl-cf53bb78"><span class="cl-cf506c98">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-cf53d68a"><p class="cl-cf53bb78"><span class="cl-cf506cac">naturlig åpen</span></p></td><td class="cl-cf53d68a"><p class="cl-cf53bb78"><span class="cl-cf506cac">Primærproduksjon</span></p></td><td class="cl-cf53d68a"><p class="cl-cf53bb78"><span class="cl-cf506cac">Structural state characteristics</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-85cb0c04{table-layout:auto;}.cl-85c2c062{font-family:'DejaVu Sans';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-85c2c06c{font-family:'DejaVu Sans';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-85c6b064{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-85c6d422{background-color:rgba(173, 216, 230, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-85c6d42c{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-85cb0c04'><thead><tr style="overflow-wrap:break-word;"><th class="cl-85c6d422"><p class="cl-85c6b064"><span class="cl-85c2c062">Ecosystem</span></p></th><th class="cl-85c6d422"><p class="cl-85c6b064"><span class="cl-85c2c062">Økologisk egenskap</span></p></th><th class="cl-85c6d422"><p class="cl-85c6b064"><span class="cl-85c2c062">ECT class</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-85c6d42c"><p class="cl-85c6b064"><span class="cl-85c2c06c">naturlig åpen</span></p></td><td class="cl-85c6d42c"><p class="cl-85c6b064"><span class="cl-85c2c06c">Primærproduksjon</span></p></td><td class="cl-85c6d42c"><p class="cl-85c6b064"><span class="cl-85c2c06c">Structural state characteristics</span></p></td></tr></tbody></table></div>
 ```
 
 <!-- Don't remove these three html lines -->
@@ -396,10 +396,6 @@ nin.natopen2 <- as.data.frame(nin.natopen2)
 ## Sentinel-2
 # join nin.natopen & Sentinel NDVI data
 SentinelNDVI.natopen <- full_join(nin.natopen, df.s, by = "id")
-#> Warning in sf_column %in% names(g): Each row in `x` is expected to match at most 1 row in `y`.
-#> ℹ Row 1 of `x` matches multiple rows.
-#> ℹ If multiple matches are expected, set `multiple = "all"`
-#>   to silence this warning.
 # summary(SentinelNDVI.natopen)
 SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
   mutate(
@@ -442,10 +438,6 @@ SentinelNDVI.natopen <- SentinelNDVI.natopen %>%
 ## MODIS
 # join nin.natopen and Modis NDVI data
 ModisNDVI.natopen <- full_join(nin.natopen, df.m, by = "id")
-#> Warning in sf_column %in% names(g): Each row in `x` is expected to match at most 1 row in `y`.
-#> ℹ Row 1 of `x` matches multiple rows.
-#> ℹ If multiple matches are expected, set `multiple = "all"`
-#>   to silence this warning.
 
 # summary(ModisNDVI.natopen)
 ModisNDVI.natopen <- ModisNDVI.natopen %>%
@@ -482,10 +474,6 @@ ModisNDVI.natopen <- ModisNDVI.natopen %>%
 ## Landsat
 # join nin.natopen & Landsat NDVI data
 LandsatNDVI.natopen <- full_join(nin.natopen, df.l, by = "id")
-#> Warning in sf_column %in% names(g): Each row in `x` is expected to match at most 1 row in `y`.
-#> ℹ Row 1 of `x` matches multiple rows.
-#> ℹ If multiple matches are expected, set `multiple = "all"`
-#>   to silence this warning.
 
 # summary(LandsatNDVI.natopen)
 LandsatNDVI.natopen <- LandsatNDVI.natopen %>%
