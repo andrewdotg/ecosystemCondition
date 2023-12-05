@@ -429,7 +429,9 @@ bootstrap-observations
 comparing-bootstrap-values-to-a-reference-point
 normalizing-the-values
 display-and-plot-bootstrap-values
+time-series-plots
 map-plots
+year-rolling-window-summaries
 calculation-principles-for-nbbm-indicators
 calculation-example
 data-sets-5
@@ -442,7 +444,8 @@ species-richness-of-flying-insects-in-semi-natural-land
 species-richness-of-pollinators-in-semi-natural-land
 species-richness-of-dung-associated-insects
 relationship-between-symphyta-and-parasitica-in-semi-natural-land
-genetic-diversity-evenness-of-flying-insects-in-semi-natural-land
+number-of-alien-species-in-semi-natural-land
+genetic-diversity-of-flying-insects-in-semi-natural-land
 calculation-of-nbbm-indicators
 bumblebees-in-open-landscapes
 butterflies-in-open-landscapes
