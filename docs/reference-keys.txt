@@ -470,7 +470,7 @@ refs-bb
 analyses-bb
 workflow-setup
 datasets-bb
-monitoring-data-from-hekkefuglovervåkingen
+monitoring-data-from-hekkefuglovervåking
 pecbms-trim-results-from-predecessor-monitoring-programme
 lists-of-species-information
 regions-bb
