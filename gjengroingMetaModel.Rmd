@@ -179,7 +179,7 @@ The remaining datasets will be imported into the R session.
 
 ```{r}
 wms_base_url <- 'https://wms.geonorge.no/skwms1/wms.nib?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&SRS=EPSG:25833'
-output_dir <- "/data/P-Prosjekter2/412421_okologisk_tilstand_2024/Andrew/meta/HighResCanopyHeight-main/DataDownload/testHarstad/tiles"
+output_dir <- "data/encroachment/metamodel/tiles"
 metadata_url <- 'https://tjenester.norgeibilder.no/rest/projectMetadata.ashx'
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
@@ -245,13 +245,10 @@ get_most_recent_metadata <- function(metadata) {
 ```
 
 ##### Defining the area of interest
-Here we include a shapefile of our area of intertest. The script will loop through all features in the shapefile, calculate their extent and query the WMS to download orthophotos within that extent in 256 x 256 pixel tiles. 
+Here we include a shapefile of our area of intertest. The script will loop through all features in the shapefile, calculate their extent and query the WMS to download orthophotos within that extent in 256 x 256 pixel tiles. The AOI shape file should be in EPSG:25833 
 ```{r}
-ROIs <- vect("/data/P-Prosjekter2/412421_okologisk_tilstand_2024/Andrew/meta/HighResCanopyHeight-main/DataDownload/testHarstad/aoi.shp")
-RegionPolygonUTM33N <- st_as_sf(ROIs)
-if (st_crs(RegionPolygonUTM33N)$epsg != 25833) {
-  RegionPolygonUTM33N <- st_transform(RegionPolygonUTM33N, crs = 25833)
-}
+
+AOIs <- sf::st_read("data/encroachment/metamodel/AOIs.shp")
 
 tile_size <- 256
 resolution <- 0.5  # 0.5 meter resolution
@@ -366,12 +363,16 @@ We can run the functions in parallel to speed up processing time adjust the numb
 numCores <- 30  
 
 # Use mclapply for parallel processing
-mclapply(1:nrow(RegionPolygonUTM33N), function(i) {
-  geometry <- RegionPolygonUTM33N[i, ]
-  id_field <- RegionPolygonUTM33N$id[i]  # Adjust field name if necessary
+mclapply(1:nrow(AOIs), function(i) {
+  geometry <- AOIs[i, ]
+  id_field <- AOIs$id[i]  # Adjust field name if necessary
   fn.getOrtoImages(geometry, id_field, output_dir)
 }, mc.cores = numCores)
 ```
+
+OK, now that we have our tiles, we can pass them to the canopy height model please see https://github.com/facebookresearch/HighResCanopyHeight for more details on the model.
+
+
 
 
 
